@@ -12,7 +12,7 @@ Clap! is a web application to create videos written in Typescript.
 Use docker to run the app:
 
 ```bash
-docker-compose up
+docker compose up
 ```
 
 ## Contributing
