@@ -1,5 +1,8 @@
 #!/bin/bash
 cd clap
-sudo docker stop clap && sudo docker rm clap
-sudo docker run -d -p 5000:5000 --env-file=.env --name clap clap_image
-sudo docker image prune -f
+aws ecr get-login-password --region eu-west-3 | docker login --username AWS --password-stdin $ECR_REGISTRY
+docker pull $IMAGE
+docker tag $IMAGE clap
+docker stop clap && docker rm clap
+docker run -d -p 5000:5000 --env-file=.env --name clap clap
+docker image prune -f
