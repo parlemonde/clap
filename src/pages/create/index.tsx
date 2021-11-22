@@ -16,14 +16,16 @@ const Create: React.FunctionComponent = () => {
   const { isLoggedIn } = React.useContext(UserServiceContext);
   const { themes } = useThemes({ user: isLoggedIn, isDefault: true });
 
-  const handleThemeClick = (index: number) => (path: string): void => {
-    if (index >= 0) {
-      updateProject({
-        theme: themes[index],
-      });
-    }
-    router.push(path);
-  };
+  const handleThemeClick =
+    (index: number) =>
+    (path: string): void => {
+      if (index >= 0) {
+        updateProject({
+          theme: themes[index],
+        });
+      }
+      router.push(path);
+    };
 
   return (
     <>

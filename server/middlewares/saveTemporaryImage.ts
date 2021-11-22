@@ -11,6 +11,11 @@ import { Ratio } from "./saveImage";
 
 export function saveTemporaryImage(tableName: string, ratio: Ratio = { width: null, height: 500 }): RequestHandler {
   return async (req: Request, _: Response, next: NextFunction): Promise<void> => {
+    if (!req.file?.buffer) {
+      next();
+      return;
+    }
+
     // First save image on disk to resize it.
     const dir = path.join(__dirname, "../static/temp-images/", tableName);
     await fs.ensureDir(dir).catch();

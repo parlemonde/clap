@@ -198,7 +198,7 @@ const AdminUsers: React.FunctionComponent = () => {
                     </StyledTableRow>
                   ))}
                   <TableRow>
-                    <TablePagination rowsPerPageOptions={[5, 10, 25]} count={count} rowsPerPage={args.limit || 10} page={(args.page || 1) - 1} onChangePage={handleChangePage} onChangeRowsPerPage={handleChangeRowsPerPage} />
+                    <TablePagination rowsPerPageOptions={[5, 10, 25]} count={count} rowsPerPage={args.limit || 10} page={(args.page || 1) - 1} onPageChange={handleChangePage} onChangeRowsPerPage={handleChangeRowsPerPage} />
                   </TableRow>
                 </TableBody>
               </>

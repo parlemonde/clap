@@ -62,7 +62,7 @@ export class LanguageController extends Controller {
 
   @oneFile({ path: "/:value/po", userType: UserType.PLMO_ADMIN })
   public async addPOTranslations(req: Request, res: Response, next: NextFunction): Promise<void> {
-    if (!req.file.buffer) {
+    if (!req.file?.buffer) {
       next();
       return;
     }

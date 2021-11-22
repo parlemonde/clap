@@ -105,38 +105,40 @@ const QuestionChoice: React.FunctionComponent = () => {
     setDeleteIndex(null);
   };
 
-  const onShowSaveModalClose = (save: boolean = false) => async () => {
-    if (save && !project.title) {
-      setHasError(true);
-      return;
-    }
-    if (save) {
-      const response = await axiosLoggedRequest({
-        method: "POST",
-        url: "/projects",
-        data: project,
-      });
-      if (!response.error) {
-        const questions: Question[] = response.data.questions;
-        const requests: Promise<Plan | null>[] = [];
-        for (let i = 0, n = questions.length; i < n; i++) {
-          requests.push(addPlan(questions[i].id));
-        }
-        const plans: Array<Plan | null> = await Promise.all(requests);
-        for (let i = 0, n = plans.length; i < n; i++) {
-          if (plans[i] === null) {
-            return;
-          }
-          if (questions[i]) {
-            questions[i].plans = [plans[i]];
-          }
-        }
-        updateProject({ ...response.data, questions });
-        queryCache.invalidateQueries("projects");
+  const onShowSaveModalClose =
+    (save: boolean = false) =>
+    async () => {
+      if (save && !project.title) {
+        setHasError(true);
+        return;
       }
-    }
-    router.push(`/create/3-storyboard-and-filming-schedule`);
-  };
+      if (save) {
+        const response = await axiosLoggedRequest({
+          method: "POST",
+          url: "/projects",
+          data: project,
+        });
+        if (!response.error) {
+          const questions: Question[] = response.data.questions;
+          const requests: Promise<Plan | null>[] = [];
+          for (let i = 0, n = questions.length; i < n; i++) {
+            requests.push(addPlan(questions[i].id));
+          }
+          const plans: Array<Plan | null> = await Promise.all(requests);
+          for (let i = 0, n = plans.length; i < n; i++) {
+            if (plans[i] === null) {
+              return;
+            }
+            if (questions[i]) {
+              questions[i].plans = [plans[i]];
+            }
+          }
+          updateProject({ ...response.data, questions });
+          queryCache.invalidateQueries("projects");
+        }
+      }
+      router.push(`/create/3-storyboard-and-filming-schedule`);
+    };
 
   const updateProjectTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
     setHasError(false);

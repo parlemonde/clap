@@ -38,7 +38,6 @@ export async function getUserFromPLM(code: string): Promise<User | null> {
     return user;
   } catch (error) {
     logger.error(error);
-    logger.error(JSON.stringify(error?.response?.data) || "");
     return null;
   }
 }

@@ -15,6 +15,11 @@ export type Ratio = {
 
 export function saveImage(tableName: string, ratio: Ratio = { width: 420, height: 308 }): RequestHandler {
   return async (req: Request, _: Response, next: NextFunction): Promise<void> => {
+    if (!req.file?.buffer) {
+      next();
+      return;
+    }
+
     // First save image on disk to resize it.
     const dir = path.join(__dirname, "../static/images/", tableName);
     await fs.ensureDir(dir).catch();

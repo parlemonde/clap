@@ -32,7 +32,11 @@ export const useUsers = (args: UserArgs = {}): { users: User[]; count: number } 
   }, [args]);
 
   const { data, isLoading, error } = useQuery<User[], unknown>(["users", args], getUsers);
-  const { data: count, isLoading: isLoading2, error: error2 } = useQuery<number, unknown>(["users", "count"], async () => {
+  const {
+    data: count,
+    isLoading: isLoading2,
+    error: error2,
+  } = useQuery<number, unknown>(["users", "count"], async () => {
     const response = await axiosRequest({
       method: "GET",
       url: `/users/count`,

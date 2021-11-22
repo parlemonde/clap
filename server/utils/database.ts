@@ -190,9 +190,9 @@ export async function connectToDatabase(tries: number = 10): Promise<Connection 
   } catch (e) {
     logger.error(e);
     logger.info("Could not connect to database. Retry in 10 seconds...");
-    if ((e.message || "").split(":")[0] === "ER_BAD_DB_ERROR") {
+    if (((e as Error).message || "").split(":")[0] === "ER_BAD_DB_ERROR") {
       await createMySQLDB();
-    } else if (e.code && e.code === "3D000") {
+    } else if (((e as Error) || "").toString().includes("Unknown database")) {
       try {
         await createPostgresDB();
       } catch (e2) {
