@@ -1,9 +1,9 @@
 import { useRouter } from "next/router";
 import React from "react";
 
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import FormHelperText from "@mui/material/FormHelperText";
-import Hidden from "@mui/material/Hidden";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 
@@ -99,21 +99,17 @@ const QuestionEdit: React.FunctionComponent = () => {
             </FormHelperText>
           </div>
         </Typography>
-        <Hidden smDown implementation="css">
-          <div style={{ width: "100%", textAlign: "right" }}>
-            <Button component="a" variant="outlined" color="secondary" style={{ marginRight: "1rem" }} href={`/create/2-questions-choice`} onClick={handleBack}>
-              {t("cancel")}
-            </Button>
-            <Button variant="contained" color="secondary" onClick={handleSubmit}>
-              {t("edit")}
-            </Button>
-          </div>
-        </Hidden>
-        <Hidden mdUp implementation="css">
-          <Button variant="contained" color="secondary" onClick={handleSubmit} style={{ width: "100%", marginTop: "2rem" }}>
+        <Box sx={{ display: { xs: "none", md: "block" } }} style={{ width: "100%", textAlign: "right" }}>
+          <Button component="a" variant="outlined" color="secondary" style={{ marginRight: "1rem" }} href={`/create/2-questions-choice`} onClick={handleBack}>
+            {t("cancel")}
+          </Button>
+          <Button variant="contained" color="secondary" onClick={handleSubmit}>
             {t("edit")}
           </Button>
-        </Hidden>
+        </Box>
+        <Button sx={{ display: { xs: "inline-flex", md: "none" } }} variant="contained" color="secondary" onClick={handleSubmit} style={{ width: "100%", marginTop: "2rem" }}>
+          {t("edit")}
+        </Button>
       </div>
     </div>
   );

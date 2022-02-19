@@ -22,9 +22,7 @@ import TableRow from "@mui/material/TableRow";
 import Table from "@mui/material/Table";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
-import { Theme as MaterialTheme } from "@mui/material/styles";
 import { Link } from "@mui/material";
-import { makeStyles, createStyles, withStyles } from "@mui/styles";
 
 import { Modal } from "src/components/Modal";
 import { AdminTile } from "src/components/admin/AdminTile";
@@ -34,44 +32,6 @@ import { useScenarios } from "src/services/useScenarios";
 import { useThemeNames } from "src/services/useThemes";
 import { GroupedScenario, groupScenarios } from "src/util/groupScenarios";
 
-const useTableStyles = makeStyles((theme: MaterialTheme) =>
-  createStyles({
-    toolbar: {
-      backgroundColor: theme.palette.secondary.main,
-      color: "white",
-      fontWeight: "bold",
-      minHeight: "unset",
-      padding: "8px 8px 8px 16px",
-    },
-    title: {
-      flex: "1 1 100%",
-    },
-    button: {
-      color: "white",
-    },
-    themeRow: {
-      padding: "4px 16px",
-      backgroundColor: theme.palette.secondary.dark,
-      borderBottom: "none",
-      color: "white",
-    },
-    normalRow: {
-      backgroundColor: "white",
-    },
-    evenRow: {
-      backgroundColor: "rgb(224 239 232)",
-    },
-  }),
-);
-
-const HtmlTooltip = withStyles(() => ({
-  tooltip: {
-    backgroundColor: "white",
-    color: "rgba(0, 0, 0, 0.87)",
-    border: "1px solid grey",
-  },
-}))(Tooltip);
-
 interface ScenarioData {
   id: number;
   startIndex: number;
@@ -80,7 +40,6 @@ interface ScenarioData {
 }
 
 const AdminScenarios: React.FunctionComponent = () => {
-  const classes = useTableStyles();
   const router = useRouter();
   const queryCache = useQueryCache();
   const { enqueueSnackbar } = useSnackbar();
@@ -136,7 +95,7 @@ const AdminScenarios: React.FunctionComponent = () => {
   const selectLanguage = (
     <span style={{ marginLeft: "2rem" }}>
       (
-      <Select value={selectedLanguage} color="secondary" style={{ color: "white" }} onChange={onLanguageChange}>
+      <Select variant="standard" value={selectedLanguage} color="secondary" style={{ color: "white" }} onChange={onLanguageChange}>
         {languages.map((l) => (
           <MenuItem key={l.value} value={l.value}>
             {l.label.toLowerCase()}
@@ -148,7 +107,14 @@ const AdminScenarios: React.FunctionComponent = () => {
   );
 
   const helpIcon = (
-    <HtmlTooltip
+    <Tooltip
+      sx={{
+        "& .MuiTooltip-tooltip": {
+          backgroundColor: "white",
+          color: "rgba(0, 0, 0, 0.87)",
+          border: "1px solid grey",
+        },
+      }}
       title={
         <Typography color="inherit" variant="caption">
           {"Un scénario non traduit ne sera pas affiché. Il n'est donc pas nécessaire de le traduire si le scénario n'est que pour une langue spécifique."}
@@ -157,7 +123,7 @@ const AdminScenarios: React.FunctionComponent = () => {
       style={{ cursor: "pointer" }}
     >
       <HelpIcon fontSize="inherit" />
-    </HtmlTooltip>
+    </Tooltip>
   );
 
   const onDeleteScenario = async () => {
@@ -209,7 +175,7 @@ const AdminScenarios: React.FunctionComponent = () => {
           selectLanguage={selectLanguage}
           toolbarButton={
             scenariosData.length > 0 ? (
-              <Button component="a" href="/admin/scenarios/new" onClick={goToPath("/admin/scenarios/new")} style={{ flexShrink: 0 }} variant="contained" startIcon={<AddCircleIcon />}>
+              <Button color="inherit" sx={{ color: "black" }} component="a" href="/admin/scenarios/new" onClick={goToPath("/admin/scenarios/new")} style={{ flexShrink: 0 }} variant="contained" startIcon={<AddCircleIcon />}>
                 Ajouter un scénario
               </Button>
             ) : null
@@ -219,7 +185,7 @@ const AdminScenarios: React.FunctionComponent = () => {
             <Table aria-labelledby="themetabletitle" size="medium" aria-label="tout les scénarios">
               {scenariosData.length > 0 ? (
                 <>
-                  <TableHead style={{ borderBottom: "none" }} className={classes.toolbar}>
+                  <TableHead style={{ borderBottom: "none" }} sx={{ backgroundColor: (theme) => theme.palette.secondary.main, color: "white", fontWeight: "bold", minHeight: "unset", padding: "8px 8px 8px 16px" }}>
                     <TableRow>
                       <TableCell style={{ color: "white", fontWeight: "bold", border: "none" }}>#</TableCell>
                       <TableCell style={{ color: "white", fontWeight: "bold", border: "none" }}>Nom</TableCell>
@@ -233,13 +199,13 @@ const AdminScenarios: React.FunctionComponent = () => {
                     {scenariosData.map((theme) => (
                       <React.Fragment key={`top_${theme.id}`}>
                         <TableRow key={theme.id}>
-                          <TableCell colSpan={4} className={classes.themeRow}>
+                          <TableCell colSpan={4} sx={{ padding: "4px 16px", backgroundColor: (theme) => theme.palette.secondary.dark, borderBottom: "none", color: "white" }}>
                             Thème : {themeNames[theme.id] ? themeNames[theme.id][selectedLanguage] || themeNames[theme.id].fr || "" : `numéro ${theme.id}`}
                           </TableCell>
                         </TableRow>
                         {theme.scenarios.length > 0 ? (
                           theme.scenarios.map((s, index) => (
-                            <TableRow key={`${theme.id}_${s.id}`} className={index % 2 === 0 ? classes.normalRow : classes.evenRow}>
+                            <TableRow key={`${theme.id}_${s.id}`} sx={index % 2 === 0 ? { backgroundColor: "white" } : { backgroundColor: "rgb(224 239 232)" }}>
                               <TableCell style={{ width: "3rem" }}>{index + theme.startIndex + 1}</TableCell>
                               <TableCell style={{ color: s.names[selectedLanguage] ? "inherit" : "grey" }}>
                                 {s.names[selectedLanguage] || `${s.names.default} (non traduit)`}
@@ -266,7 +232,7 @@ const AdminScenarios: React.FunctionComponent = () => {
                             </TableRow>
                           ))
                         ) : (
-                          <TableRow className={classes.normalRow} key={`${theme.id}_no_data`}>
+                          <TableRow sx={{ backgroundColor: "white" }} key={`${theme.id}_no_data`}>
                             <TableCell colSpan={4} align="center" style={{ padding: "4px" }}>
                               {`Ce thème n'a pas de scénario ! `}
                               <Link href={`/admin/scenarios/new?themeId=${theme.id}`} onClick={goToPath(`/admin/scenarios/new?themeId=${theme.id}`)}>
@@ -317,7 +283,7 @@ const AdminScenarios: React.FunctionComponent = () => {
           <AdminTile title="Scénarios des utilisateurs" selectLanguage={selectLanguage} style={{ marginTop: "2rem" }}>
             <TableContainer>
               <Table aria-labelledby="themetabletitle" size="medium" aria-label="Scénarios des utilisateurs">
-                <TableHead style={{ borderBottom: "none" }} className={classes.toolbar}>
+                <TableHead style={{ borderBottom: "none" }} sx={{ backgroundColor: (theme) => theme.palette.secondary.main, color: "white", fontWeight: "bold", minHeight: "unset", padding: "8px 8px 8px 16px" }}>
                   <TableRow>
                     <TableCell style={{ color: "white", fontWeight: "bold", border: "none" }}>#</TableCell>
                     <TableCell style={{ color: "white", fontWeight: "bold", border: "none" }}>Nom</TableCell>
@@ -332,12 +298,12 @@ const AdminScenarios: React.FunctionComponent = () => {
                   {userScenariosData.map((theme) => (
                     <React.Fragment key={`user_top_${theme.id}`}>
                       <TableRow key={theme.id}>
-                        <TableCell colSpan={4} className={classes.themeRow}>
+                        <TableCell colSpan={4} sx={{ padding: "4px 16px", backgroundColor: (theme) => theme.palette.secondary.dark, borderBottom: "none", color: "white" }}>
                           {theme.id === -1 ? "Autres thèmes (créés par les utilisateurs)" : `Thème : ${themeNames[theme.id] ? themeNames[theme.id][selectedLanguage] || themeNames[theme.id].fr || "" : `numéro ${theme.id}`}`}
                         </TableCell>
                       </TableRow>
                       {theme.scenarios.map((s, index) => (
-                        <TableRow key={`${theme.id}_${s.id}`} className={index % 2 === 0 ? classes.normalRow : classes.evenRow}>
+                        <TableRow key={`${theme.id}_${s.id}`} sx={index % 2 === 0 ? { backgroundColor: "white" } : { backgroundColor: "rgb(224 239 232)" }}>
                           <TableCell style={{ width: "3rem" }}>{index + theme.startIndex + 1}</TableCell>
                           <TableCell style={{ color: s.names[selectedLanguage] ? "inherit" : "grey" }}>{s.names[selectedLanguage] || `${s.names.default} (non traduit)`}</TableCell>
                           <TableCell style={{ color: s.descriptions[selectedLanguage] ? "inherit" : "grey" }}>{s.descriptions[selectedLanguage] || s.descriptions.default}</TableCell>

@@ -9,8 +9,6 @@ import Divider from "@mui/material/Divider";
 import Link from "@mui/material/Link";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import { Theme as MaterialTheme } from "@mui/material/styles";
-import { withStyles } from "@mui/styles";
 
 import { Modal } from "src/components/Modal";
 import { Trans } from "src/components/Trans";
@@ -18,16 +16,6 @@ import { useTranslation } from "src/i18n/useTranslation";
 import { UserServiceContext } from "src/services/UserService";
 import { getQueryString } from "src/util";
 import type { Project } from "types/models/project.type";
-
-const RedButton = withStyles((theme: MaterialTheme) => ({
-  root: {
-    color: theme.palette.error.contrastText,
-    background: theme.palette.error.light,
-    "&:hover": {
-      backgroundColor: theme.palette.error.dark,
-    },
-  },
-}))(Button);
 
 const EditProject: React.FC = () => {
   const router = useRouter();
@@ -176,9 +164,22 @@ const EditProject: React.FC = () => {
         </Button>
         <Divider style={{ margin: "1rem 0 1.5rem" }} />
         <Typography variant="h2">{t("project_delete")}</Typography>
-        <RedButton style={{ marginTop: "0.8rem" }} onClick={() => setShowModal(2)} className="mobile-full-width" variant="contained" size="small">
+        <Button
+          sx={{
+            color: (theme) => theme.palette.error.contrastText,
+            background: (theme) => theme.palette.error.light,
+            "&:hover": {
+              backgroundColor: (theme) => theme.palette.error.dark,
+            },
+          }}
+          style={{ marginTop: "0.8rem" }}
+          onClick={() => setShowModal(2)}
+          className="mobile-full-width"
+          variant="contained"
+          size="small"
+        >
           {t("project_delete")}
-        </RedButton>
+        </Button>
       </div>
 
       <Modal

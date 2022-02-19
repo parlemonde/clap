@@ -6,8 +6,6 @@ import Backdrop from "@mui/material/Backdrop";
 import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
 import Typography from "@mui/material/Typography";
-import { Theme } from "@mui/material/styles";
-import { makeStyles } from "@mui/styles";
 
 import { Inverted } from "src/components/Inverted";
 import { Trans } from "src/components/Trans";
@@ -17,15 +15,7 @@ import { useTranslation } from "src/i18n/useTranslation";
 import { UserServiceContext } from "src/services/UserService";
 import { ProjectServiceContext } from "src/services/useProject";
 
-const useStyles = makeStyles((theme: Theme) => ({
-  backdrop: {
-    zIndex: theme.zIndex.drawer + 1,
-    color: "#fff",
-  },
-}));
-
 const ToCamera: React.FunctionComponent = () => {
-  const classes = useStyles();
   const { t, currentLocale } = useTranslation();
   const { axiosLoggedRequest } = React.useContext(UserServiceContext);
   const { project } = React.useContext(ProjectServiceContext);
@@ -86,7 +76,14 @@ const ToCamera: React.FunctionComponent = () => {
           />
         </Typography>
 
-        <Backdrop className={classes.backdrop} open={isLoading} onClick={() => {}}>
+        <Backdrop
+          sx={{
+            zIndex: (theme) => theme.zIndex.drawer + 1,
+            color: "#fff",
+          }}
+          open={isLoading}
+          onClick={() => {}}
+        >
           <CircularProgress color="inherit" />
         </Backdrop>
         <Typography variant="h2" style={{ marginBottom: "1rem" }}>

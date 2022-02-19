@@ -23,9 +23,7 @@ import TableRow from "@mui/material/TableRow";
 import Table from "@mui/material/Table";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
-import { Theme as MaterialTheme } from "@mui/material/styles";
 import { Link } from "@mui/material";
-import { makeStyles, createStyles, withStyles } from "@mui/styles";
 
 import { Modal } from "src/components/Modal";
 import { AdminTile } from "src/components/admin/AdminTile";
@@ -34,40 +32,7 @@ import { useLanguages } from "src/services/useLanguages";
 import { useThemes } from "src/services/useThemes";
 import type { Theme } from "types/models/theme.type";
 
-const useTableStyles = makeStyles((theme: MaterialTheme) =>
-  createStyles({
-    toolbar: {
-      backgroundColor: theme.palette.secondary.main,
-      color: "white",
-      fontWeight: "bold",
-      minHeight: "unset",
-      padding: "8px 8px 8px 16px",
-    },
-    title: {
-      flex: "1 1 100%",
-    },
-    button: {
-      color: "white",
-    },
-  }),
-);
-
-const StyledTableRow = withStyles(() =>
-  createStyles({
-    root: {
-      backgroundColor: "white",
-      "&:nth-of-type(even)": {
-        backgroundColor: "rgb(224 239 232)",
-      },
-      "&.sortable-ghost": {
-        opacity: 0,
-      },
-    },
-  }),
-)(TableRow);
-
 const AdminThemes: React.FunctionComponent = () => {
-  const classes = useTableStyles();
   const router = useRouter();
   const queryCache = useQueryCache();
   const { enqueueSnackbar } = useSnackbar();
@@ -168,7 +133,7 @@ const AdminThemes: React.FunctionComponent = () => {
         <AdminTile
           title="Liste des thèmes"
           toolbarButton={
-            <Button component="a" href="/admin/themes/new" onClick={goToPath("/admin/themes/new")} style={{ flexShrink: 0 }} variant="contained" startIcon={<AddCircleIcon />}>
+            <Button color="inherit" sx={{ color: "black" }} component="a" href="/admin/themes/new" onClick={goToPath("/admin/themes/new")} style={{ flexShrink: 0 }} variant="contained" startIcon={<AddCircleIcon />}>
               Ajouter un thème
             </Button>
           }
@@ -177,14 +142,14 @@ const AdminThemes: React.FunctionComponent = () => {
             <Table aria-labelledby="themetabletitle" size="medium" aria-label="tout les thèmes">
               {defaultThemes.length > 0 ? (
                 <>
-                  <TableHead style={{ borderBottom: "1px solid white" }} className={classes.toolbar}>
+                  <TableHead style={{ borderBottom: "1px solid white" }} sx={{ backgroundColor: (theme) => theme.palette.secondary.main, color: "white", fontWeight: "bold", minHeight: "unset", padding: "8px 8px 8px 16px" }}>
                     <TableRow>
                       <TableCell style={{ color: "white", fontWeight: "bold" }}>Ordre</TableCell>
                       <TableCell style={{ color: "white", fontWeight: "bold" }}>
                         Nom{" "}
                         <span style={{ marginLeft: "2rem" }}>
                           (
-                          <Select value={selectedLanguage} color="secondary" style={{ color: "white" }} onChange={onLanguageChange}>
+                          <Select variant="standard" value={selectedLanguage} color="secondary" style={{ color: "white" }} onChange={onLanguageChange}>
                             {languages.map((l) => (
                               <MenuItem key={l.value} value={l.value}>
                                 {l.label.toLowerCase()}
@@ -203,7 +168,18 @@ const AdminThemes: React.FunctionComponent = () => {
 
                   <ReactSortable tag={"tbody"} list={defaultThemes} setList={setThemesOrder} animation={100} handle=".theme-index">
                     {defaultThemes.map((t, index) => (
-                      <StyledTableRow key={t.id}>
+                      <TableRow
+                        sx={{
+                          backgroundColor: "white",
+                          "&:nth-of-type(even)": {
+                            backgroundColor: "rgb(224 239 232)",
+                          },
+                          "&.sortable-ghost": {
+                            opacity: 0,
+                          },
+                        }}
+                        key={t.id}
+                      >
                         <TableCell padding="none" className="theme-index">
                           <div style={{ display: "flex", alignItems: "center", cursor: "grab", marginLeft: "8px" }}>
                             <DragIndicatorIcon />
@@ -231,7 +207,7 @@ const AdminThemes: React.FunctionComponent = () => {
                             </IconButton>
                           </Tooltip>
                         </TableCell>
-                      </StyledTableRow>
+                      </TableRow>
                     ))}
                   </ReactSortable>
                 </>
@@ -273,7 +249,7 @@ const AdminThemes: React.FunctionComponent = () => {
           <AdminTile title="Thèmes des utilisateurs" style={{ marginTop: "2rem" }}>
             <TableContainer>
               <Table aria-labelledby="themetabletitle" size="medium" aria-label="tout les thèmes">
-                <TableHead style={{ borderBottom: "1px solid white" }} className={classes.toolbar}>
+                <TableHead style={{ borderBottom: "1px solid white" }} sx={{ backgroundColor: (theme) => theme.palette.secondary.main, color: "white", fontWeight: "bold", minHeight: "unset", padding: "8px 8px 8px 16px" }}>
                   <TableRow>
                     <TableCell style={{ color: "white", fontWeight: "bold" }}>Nom</TableCell>
                     <TableCell style={{ color: "white", fontWeight: "bold" }} align="right">
@@ -283,7 +259,18 @@ const AdminThemes: React.FunctionComponent = () => {
                 </TableHead>
                 <TableBody>
                   {userThemes.map((t, index) => (
-                    <StyledTableRow key={t.id}>
+                    <TableRow
+                      sx={{
+                        backgroundColor: "white",
+                        "&:nth-of-type(even)": {
+                          backgroundColor: "rgb(224 239 232)",
+                        },
+                        "&.sortable-ghost": {
+                          opacity: 0,
+                        },
+                      }}
+                      key={t.id}
+                    >
                       <TableCell>{t.names.fr}</TableCell>
                       <TableCell align="right" padding="none">
                         <Tooltip title="Valider le thème">
@@ -292,7 +279,7 @@ const AdminThemes: React.FunctionComponent = () => {
                           </IconButton>
                         </Tooltip>
                       </TableCell>
-                    </StyledTableRow>
+                    </TableRow>
                   ))}
                 </TableBody>
               </Table>

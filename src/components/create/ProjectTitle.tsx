@@ -2,17 +2,9 @@ import React, { useContext } from "react";
 
 import EditIcon from "@mui/icons-material/Edit";
 import { Typography, IconButton } from "@mui/material";
-import { withStyles } from "@mui/styles";
 
 import { useTranslation } from "src/i18n/useTranslation";
 import { ProjectServiceContext } from "src/services/useProject";
-
-const StyledEditButton = withStyles((theme) => ({
-  root: {
-    border: "1px solid",
-    borderColor: theme.palette.primary.main,
-  },
-}))(IconButton);
 
 interface ProjectTitleProp {
   smaller?: boolean;
@@ -50,9 +42,9 @@ export const ProjectTitle: React.FunctionComponent<ProjectTitleProp> = ({ smalle
       >
         {project.title}
       </Typography>
-      <StyledEditButton aria-label="edit" size="small" color="primary" style={{ marginLeft: "0.6rem", marginTop: "-0.3rem" }} onClick={onClick}>
+      <IconButton sx={{ border: "1px solid", borderColor: (theme) => theme.palette.primary.main }} aria-label="edit" size="small" color="primary" style={{ marginLeft: "0.6rem", marginTop: "-0.3rem" }} onClick={onClick}>
         <EditIcon />
-      </StyledEditButton>
+      </IconButton>
     </div>
   );
 };

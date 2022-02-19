@@ -1,8 +1,7 @@
 import { useRouter } from "next/router";
 import React from "react";
 
-import { Button, Link, TextField, Typography, Backdrop, CircularProgress, Theme as MaterialTheme } from "@mui/material";
-import { makeStyles } from "@mui/styles";
+import { Button, Link, TextField, Typography, Backdrop, CircularProgress } from "@mui/material";
 
 import { useTranslation } from "src/i18n/useTranslation";
 import { axiosRequest } from "src/util/axiosRequest";
@@ -12,16 +11,8 @@ const errorMessages = {
   1: "login_email_error",
 };
 
-const useStyles = makeStyles((theme: MaterialTheme) => ({
-  backdrop: {
-    zIndex: theme.zIndex.drawer + 1,
-    color: "#fff",
-  },
-}));
-
 const ResetPassword: React.FunctionComponent = () => {
   const router = useRouter();
-  const classes = useStyles();
   const { t, currentLocale } = useTranslation();
   const [email, setEmail] = React.useState<string>("");
   const [errorCode, setErrorCode] = React.useState<number>(-1);
@@ -100,7 +91,7 @@ const ResetPassword: React.FunctionComponent = () => {
           </Link>
         </div>
       </form>
-      <Backdrop className={classes.backdrop} open={loading}>
+      <Backdrop sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, color: "#fff" }} open={loading}>
         <CircularProgress color="inherit" />
       </Backdrop>
     </div>

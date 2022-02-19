@@ -16,8 +16,6 @@ import TableRow from "@mui/material/TableRow";
 import Table from "@mui/material/Table";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
-import { Theme as MaterialTheme } from "@mui/material/styles";
-import { makeStyles, createStyles, withStyles } from "@mui/styles";
 
 import { AdminTile } from "src/components/admin/AdminTile";
 import { AddLanguageModal } from "src/components/admin/languages/AddLanguageModal";
@@ -26,41 +24,8 @@ import { UploadLanguageModal } from "src/components/admin/languages/UploadLangua
 import { useLanguages } from "src/services/useLanguages";
 import type { Language } from "types/models/language.type";
 
-const useTableStyles = makeStyles((theme: MaterialTheme) =>
-  createStyles({
-    toolbar: {
-      backgroundColor: theme.palette.secondary.main,
-      color: "white",
-      fontWeight: "bold",
-      minHeight: "unset",
-      padding: "8px 8px 8px 16px",
-    },
-    title: {
-      flex: "1 1 100%",
-    },
-    button: {
-      color: "white",
-    },
-  }),
-);
-
-const StyledTableRow = withStyles(() =>
-  createStyles({
-    root: {
-      backgroundColor: "white",
-      "&:nth-of-type(even)": {
-        backgroundColor: "rgb(224 239 232)",
-      },
-      "&.sortable-ghost": {
-        opacity: 0,
-      },
-    },
-  }),
-)(TableRow);
-
 const AdminLanguages: React.FunctionComponent = () => {
   const queryCache = useQueryCache();
-  const classes = useTableStyles();
   const { languages } = useLanguages();
   const [isAddModalOpen, setIsAddModalOpen] = React.useState<boolean>(false);
   const [uploadLanguageIndex, setUploadLanguageIndex] = React.useState<number>(-1);
@@ -88,6 +53,8 @@ const AdminLanguages: React.FunctionComponent = () => {
           title="Liste des langues"
           toolbarButton={
             <Button
+              color="inherit"
+              sx={{ color: "black" }}
               onClick={() => {
                 setIsAddModalOpen(true);
               }}
@@ -102,7 +69,7 @@ const AdminLanguages: React.FunctionComponent = () => {
           <Table aria-labelledby="themetabletitle" size="medium" aria-label="toutes les langues">
             {languages.length > 0 ? (
               <>
-                <TableHead style={{ borderBottom: "1px solid white" }} className={classes.toolbar}>
+                <TableHead style={{ borderBottom: "1px solid white" }} sx={{ backgroundColor: (theme) => theme.palette.secondary.main, color: "white", fontWeight: "bold", minHeight: "unset", padding: "8px 8px 8px 16px" }}>
                   <TableRow>
                     <TableCell style={{ color: "white", fontWeight: "bold", maxWidth: "2rem" }}>Code langue</TableCell>
                     <TableCell style={{ color: "white", fontWeight: "bold" }}>Langue</TableCell>
@@ -113,7 +80,18 @@ const AdminLanguages: React.FunctionComponent = () => {
                 </TableHead>
                 <TableBody>
                   {languages.map((l, index) => (
-                    <StyledTableRow key={l.value}>
+                    <TableRow
+                      key={l.value}
+                      sx={{
+                        backgroundColor: "white",
+                        "&:nth-of-type(even)": {
+                          backgroundColor: "rgb(224 239 232)",
+                        },
+                        "&.sortable-ghost": {
+                          opacity: 0,
+                        },
+                      }}
+                    >
                       <TableCell style={{ maxWidth: "2rem" }}>
                         <strong>{l.value.toUpperCase()}</strong>
                       </TableCell>
@@ -147,7 +125,7 @@ const AdminLanguages: React.FunctionComponent = () => {
                           </Tooltip>
                         )}
                       </TableCell>
-                    </StyledTableRow>
+                    </TableRow>
                   ))}
                 </TableBody>
               </>

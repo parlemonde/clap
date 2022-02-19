@@ -3,9 +3,9 @@ import { useMutation, useQueryCache } from "react-query";
 import React, { useContext, useState } from "react";
 
 import ArrowForwardIcon from "@mui/icons-material/ArrowForwardIos";
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import FormHelperText from "@mui/material/FormHelperText";
-import Hidden from "@mui/material/Hidden";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 
@@ -184,21 +184,17 @@ const NewScenario: React.FunctionComponent = () => {
             </div>
           </Typography>
           <Typography color="inherit" variant="h2" style={{ marginTop: "1rem" }}>
-            <Hidden smDown>
-              <div style={{ width: "100%", textAlign: "right" }}>
-                <Button component="a" variant="outlined" color="secondary" style={{ marginRight: "1rem" }} href={`/create/1-scenario-choice?themeId=${themeId}`} onClick={handleBack}>
-                  {t("cancel")}
-                </Button>
-                <Button variant="contained" color="secondary" onClick={handleSubmit} endIcon={<ArrowForwardIcon />}>
-                  {t("next")}
-                </Button>
-              </div>
-            </Hidden>
-            <Hidden mdUp>
-              <Button variant="contained" color="secondary" style={{ width: "100%", marginTop: "2rem" }} onClick={handleSubmit}>
+            <Box sx={{ display: { xs: "none", md: "block" } }} style={{ width: "100%", textAlign: "right" }}>
+              <Button component="a" variant="outlined" color="secondary" style={{ marginRight: "1rem" }} href={`/create/1-scenario-choice?themeId=${themeId}`} onClick={handleBack}>
+                {t("cancel")}
+              </Button>
+              <Button variant="contained" color="secondary" onClick={handleSubmit} endIcon={<ArrowForwardIcon />}>
                 {t("next")}
               </Button>
-            </Hidden>
+            </Box>
+            <Button sx={{ display: { xs: "inline-flex", md: "none" } }} variant="contained" color="secondary" style={{ width: "100%", marginTop: "2rem" }} onClick={handleSubmit}>
+              {t("next")}
+            </Button>
           </Typography>
         </div>
       </div>

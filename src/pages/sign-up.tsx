@@ -3,9 +3,7 @@ import qs from "query-string";
 import React from "react";
 
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { Theme } from "@mui/material/styles";
 import { Link, Typography, Backdrop, CircularProgress, InputAdornment, IconButton, TextField, Button, FormControl, InputLabel, Select /*, TextFieldProps */ } from "@mui/material";
-import { makeStyles } from "@mui/styles";
 
 // import Autocomplete from "@material-ui/lab/Autocomplete";
 import { useTranslation } from "src/i18n/useTranslation";
@@ -14,13 +12,6 @@ import { useLanguages } from "src/services/useLanguages";
 import { axiosRequest } from "src/util/axiosRequest";
 import { getQueryString } from "src/util";
 import type { User } from "types/models/user.type";
-
-const useStyles = makeStyles((theme: Theme) => ({
-  backdrop: {
-    zIndex: theme.zIndex.drawer + 1,
-    color: "#fff",
-  },
-}));
 
 // eslint-disable-next-line no-control-regex
 const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/i;
@@ -57,7 +48,6 @@ const checkInviteCode = async (code: string): Promise<boolean> => {
 };
 
 const Signup: React.FunctionComponent = () => {
-  const classes = useStyles();
   const router = useRouter();
   const { t } = useTranslation();
   const { isLoggedIn, signup } = React.useContext(UserServiceContext);
@@ -187,7 +177,13 @@ const Signup: React.FunctionComponent = () => {
 
   return (
     <div className="text-center">
-      <Backdrop className={classes.backdrop} open={loading}>
+      <Backdrop
+        sx={{
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+          color: "#fff",
+        }}
+        open={loading}
+      >
         <CircularProgress color="inherit" />
       </Backdrop>
 

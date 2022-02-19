@@ -1,9 +1,9 @@
 import { useRouter } from "next/router";
 import React from "react";
 
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import FormHelperText from "@mui/material/FormHelperText";
-import Hidden from "@mui/material/Hidden";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 
@@ -131,18 +131,14 @@ const PlanEdit: React.FunctionComponent = () => {
 
         {(question !== null && plan !== null && !!plan.url) || <PlanEditButtons questionIndex={questionIndex} planIndex={planIndex} submitImageWithUrl={submitImageWithUrl} />}
 
-        <Hidden smDown implementation="css">
-          <div style={{ width: "100%", textAlign: "right" }}>
-            <Button component="a" variant="contained" color="secondary" style={{ margin: "0 1rem 3rem 0" }} href="/create/3-storyboard-and-filming-schedule" onClick={handleBack}>
-              {t("continue")}
-            </Button>
-          </div>
-        </Hidden>
-        <Hidden mdUp implementation="css">
-          <Button component="a" variant="contained" color="secondary" style={{ margin: "3rem 0", width: "100%" }} href={`/create/3-storyboard-and-filming-schedule`} onClick={handleBack}>
+        <Box sx={{ display: { xs: "none", md: "block" } }} style={{ width: "100%", textAlign: "right" }}>
+          <Button component="a" variant="contained" color="secondary" style={{ margin: "0 1rem 3rem 0" }} href="/create/3-storyboard-and-filming-schedule" onClick={handleBack}>
             {t("continue")}
           </Button>
-        </Hidden>
+        </Box>
+        <Button sx={{ display: { xs: "inline-flex", md: "none" } }} component="a" variant="contained" color="secondary" style={{ margin: "3rem 0", width: "100%" }} href={`/create/3-storyboard-and-filming-schedule`} onClick={handleBack}>
+          {t("continue")}
+        </Button>
       </div>
     </div>
   );

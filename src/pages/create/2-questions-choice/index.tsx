@@ -3,9 +3,9 @@ import { useQueryCache } from "react-query";
 import { ReactSortable } from "react-sortablejs";
 import React from "react";
 
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import DialogContentText from "@mui/material/DialogContentText";
-import Hidden from "@mui/material/Hidden";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 
@@ -193,18 +193,15 @@ const QuestionChoice: React.FunctionComponent = () => {
           </ReactSortable>
         )}
 
-        <Hidden smDown implementation="css">
-          <div style={{ width: "100%", textAlign: "right", marginTop: "2rem" }}>
-            <Button component="a" href={`/create/3-storyboard-and-filming-schedule`} color="secondary" onClick={handleNext} variant="contained" style={{ width: "200px" }}>
-              {t("next")}
-            </Button>
-          </div>
-        </Hidden>
-        <Hidden mdUp>
-          <Button component="a" href={`/create/3-storyboard-and-filming-schedule`} color="secondary" onClick={handleNext} variant="contained" style={{ width: "100%", marginTop: "2rem" }}>
+        <Box sx={{ display: { xs: "none", md: "block" } }} style={{ width: "100%", textAlign: "right", marginTop: "2rem" }}>
+          <Button component="a" href={`/create/3-storyboard-and-filming-schedule`} color="secondary" onClick={handleNext} variant="contained" style={{ width: "200px" }}>
             {t("next")}
           </Button>
-        </Hidden>
+        </Box>
+
+        <Button sx={{ display: { xs: "inline-flex", md: "none" } }} component="a" href={`/create/3-storyboard-and-filming-schedule`} color="secondary" onClick={handleNext} variant="contained" style={{ width: "100%", marginTop: "2rem" }}>
+          {t("next")}
+        </Button>
 
         <Modal
           open={project.questions !== null && deleteIndex !== null}

@@ -12,8 +12,6 @@ import InputAdornment from "@mui/material/InputAdornment";
 import Link from "@mui/material/Link";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import { Theme as MaterialTheme } from "@mui/material/styles";
-import { makeStyles, createStyles, withStyles } from "@mui/styles";
 
 import { Modal } from "src/components/Modal";
 import { Trans } from "src/components/Trans";
@@ -21,15 +19,6 @@ import { useTranslation } from "src/i18n/useTranslation";
 import { UserServiceContext } from "src/services/UserService";
 import { axiosRequest } from "src/util/axiosRequest";
 import type { User } from "types/models/user.type";
-
-const useStyles = makeStyles((theme: MaterialTheme) =>
-  createStyles({
-    backdrop: {
-      zIndex: theme.zIndex.drawer + 1,
-      color: "#fff",
-    },
-  }),
-);
 
 type UpdatedUser = Partial<User> & { oldPassword: string };
 
@@ -57,24 +46,7 @@ const isPseudoAvailable = async (userPseudo: string, pseudo: string): Promise<bo
   return response.data.available;
 };
 
-const RedButton = withStyles((theme: MaterialTheme) => ({
-  root: {
-    color: theme.palette.error.contrastText,
-    background: theme.palette.error.light,
-    "&:hover": {
-      backgroundColor: theme.palette.error.dark,
-    },
-  },
-}))(Button);
-const RedButtonBis = withStyles((theme) => ({
-  root: {
-    color: theme.palette.error.main,
-    borderColor: theme.palette.error.main,
-  },
-}))(Button);
-
 const Account: React.FunctionComponent = () => {
-  const classes = useStyles();
   const { t } = useTranslation();
   const { enqueueSnackbar } = useSnackbar();
   const { user, logout, axiosLoggedRequest, setUser, deleteAccount } = React.useContext(UserServiceContext);
@@ -228,18 +200,32 @@ const Account: React.FunctionComponent = () => {
         </Button>
         <Divider style={{ margin: "1rem 0 1.5rem" }} />
         <Typography variant="h2">{t("logout_button")}</Typography>
-        <RedButtonBis variant="outlined" className="mobile-full-width" onClick={logout} size="small">
+        <Button sx={{ color: (theme) => theme.palette.error.main, borderColor: (theme) => theme.palette.error.main }} variant="outlined" className="mobile-full-width" onClick={logout} size="small">
           {t("logout_button")}
-        </RedButtonBis>
+        </Button>
         <Divider style={{ margin: "1rem 0 1.5rem" }} />
         <Typography variant="h2">{t("my_account")}</Typography>
         {/* <Button style={{ marginTop: "0.8rem" }} className="mobile-full-width" onClick={() => {}} variant="contained" color="secondary" size="small">
           Télécharger toutes mes données
         </Button> */}
         {/* <br /> */}
-        <RedButton style={{ marginTop: "0.8rem" }} className="mobile-full-width" onClick={openModal(5)} variant="contained" color="secondary" size="small">
+        <Button
+          sx={{
+            color: (theme) => theme.palette.error.contrastText,
+            background: (theme) => theme.palette.error.light,
+            "&:hover": {
+              backgroundColor: (theme) => theme.palette.error.dark,
+            },
+          }}
+          style={{ marginTop: "0.8rem" }}
+          className="mobile-full-width"
+          onClick={openModal(5)}
+          variant="contained"
+          color="secondary"
+          size="small"
+        >
           {t("account_delete_button")}
-        </RedButton>
+        </Button>
 
         <Modal
           open={showModal === 1 && updatedUser !== null}
@@ -477,7 +463,13 @@ const Account: React.FunctionComponent = () => {
           </div>
         </Modal>
       </div>
-      <Backdrop className={classes.backdrop} open={loading}>
+      <Backdrop
+        sx={{
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+          color: "#fff",
+        }}
+        open={loading}
+      >
         <CircularProgress color="inherit" />
       </Backdrop>
     </div>

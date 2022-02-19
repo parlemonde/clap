@@ -3,20 +3,9 @@ import React from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ButtonBase from "@mui/material/ButtonBase";
 import IconButton from "@mui/material/IconButton";
-import { withStyles } from "@mui/styles";
 
 import { useTranslation } from "src/i18n/useTranslation";
 import type { Plan } from "types/models/plan.type";
-
-const StyledDeleteButton = withStyles((theme) => ({
-  root: {
-    backgroundColor: theme.palette.error.main,
-    color: "white",
-    "&:hover": {
-      backgroundColor: theme.palette.error.light,
-    },
-  },
-}))(IconButton);
 
 interface PlanCardProps {
   plan: Plan;
@@ -46,9 +35,20 @@ export const PlanCard: React.FunctionComponent<PlanCardProps> = ({ plan, questio
           <div className="edit">{t("edit")}</div>
           {canDelete && (
             <div className="delete">
-              <StyledDeleteButton aria-label={t("delete")} size="small" onClick={handleDelete}>
+              <IconButton
+                sx={{
+                  backgroundColor: (theme) => theme.palette.error.main,
+                  color: "white",
+                  "&:hover": {
+                    backgroundColor: (theme) => theme.palette.error.light,
+                  },
+                }}
+                aria-label={t("delete")}
+                size="small"
+                onClick={handleDelete}
+              >
                 <DeleteIcon />
-              </StyledDeleteButton>
+              </IconButton>
             </div>
           )}
         </div>

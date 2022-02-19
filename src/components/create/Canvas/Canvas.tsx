@@ -6,7 +6,6 @@ import ClearIcon from "@mui/icons-material/Clear";
 import RedoIcon from "@mui/icons-material/Redo";
 import UndoIcon from "@mui/icons-material/Undo";
 import { IconButton, Tooltip } from "@mui/material";
-import { withStyles } from "@mui/styles";
 
 import { useTranslation } from "src/i18n/useTranslation";
 
@@ -14,13 +13,11 @@ import { ClearModal } from "./ClearModal";
 import { ColorModal } from "./ColorModal";
 import { SizeModal } from "./SizeModal";
 
-const ActionButton = withStyles({
-  root: {
-    border: "1px solid",
-    borderBottom: "none",
-    borderRadius: 0,
-  },
-})(IconButton);
+const IconButtonSX = {
+  border: "1px solid",
+  borderBottom: "none",
+  borderRadius: 0,
+};
 
 const sizes = [2, 4, 8];
 
@@ -193,35 +190,35 @@ const CanvasComponent: React.ForwardRefRenderFunction<CanvasRef> = (_, ref: Reac
         <div>
           <div role="group" className="actions-buttons-container" aria-label="outlined primary button group">
             <Tooltip title={t("tool_color")}>
-              <ActionButton aria-label={t("tool_color")} onClick={handleOpenModalColor}>
+              <IconButton sx={IconButtonSX} aria-label={t("tool_color")} onClick={handleOpenModalColor}>
                 <BorderColorIcon
                   style={{
                     color,
                     stroke: `${color === "white" ? "#444" : "none"}`,
                   }}
                 />
-              </ActionButton>
+              </IconButton>
             </Tooltip>
             <Tooltip title={t("tool_stroke_width")}>
-              <ActionButton aria-label={t("tool_stroke_width")} onClick={handleOpenModalSize}>
+              <IconButton sx={IconButtonSX} aria-label={t("tool_stroke_width")} onClick={handleOpenModalSize}>
                 <AdjustIcon />
-              </ActionButton>
+              </IconButton>
             </Tooltip>
             <Tooltip title={t("tool_go_back")}>
-              <ActionButton aria-label={t("tool_go_back")} onClick={handleUndo}>
+              <IconButton sx={IconButtonSX} aria-label={t("tool_go_back")} onClick={handleUndo}>
                 <UndoIcon color="secondary" />
-              </ActionButton>
+              </IconButton>
             </Tooltip>
             <Tooltip title={t("tool_go_forward")}>
-              <ActionButton aria-label={t("tool_go_forward")} style={{ borderRight: "1px solid" }} onClick={handleRedo}>
+              <IconButton sx={IconButtonSX} aria-label={t("tool_go_forward")} style={{ borderRight: "1px solid" }} onClick={handleRedo}>
                 <RedoIcon color="secondary" />
-              </ActionButton>
+              </IconButton>
             </Tooltip>
             <div style={{ flex: 1 }} />
             <Tooltip title={t("tool_clear")}>
-              <ActionButton aria-label={t("tool_clear")} onClick={handleOpenModalClear}>
+              <IconButton sx={IconButtonSX} aria-label={t("tool_clear")} onClick={handleOpenModalClear}>
                 <ClearIcon color="error" />
-              </ActionButton>
+              </IconButton>
             </Tooltip>
           </div>
         </div>

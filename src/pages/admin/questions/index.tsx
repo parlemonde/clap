@@ -22,8 +22,6 @@ import TableRow from "@mui/material/TableRow";
 import Table from "@mui/material/Table";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
-import { Theme as MaterialTheme } from "@mui/material/styles";
-import { makeStyles, createStyles, withStyles } from "@mui/styles";
 
 import { AdminTile } from "src/components/admin/AdminTile";
 import { CreateQuestionModal } from "src/components/admin/questions/CreateQuestionModal";
@@ -37,40 +35,7 @@ import { groupScenarios } from "src/util/groupScenarios";
 import type { Language } from "types/models/language.type";
 import type { Question } from "types/models/question.type";
 
-const useTableStyles = makeStyles((theme: MaterialTheme) =>
-  createStyles({
-    toolbar: {
-      backgroundColor: theme.palette.secondary.main,
-      color: "white",
-      fontWeight: "bold",
-      minHeight: "unset",
-      padding: "8px 8px 8px 16px",
-    },
-    title: {
-      flex: "1 1 100%",
-    },
-    button: {
-      color: "white",
-    },
-  }),
-);
-
-const StyledTableRow = withStyles(() =>
-  createStyles({
-    root: {
-      backgroundColor: "white",
-      "&:nth-of-type(even)": {
-        backgroundColor: "rgb(224 239 232)",
-      },
-      "&.sortable-ghost": {
-        opacity: 0,
-      },
-    },
-  }),
-)(TableRow);
-
 const AdminQuestions: React.FunctionComponent = () => {
-  const classes = useTableStyles();
   const queryCache = useQueryCache();
   const { enqueueSnackbar } = useSnackbar();
   const { axiosLoggedRequest } = React.useContext(UserServiceContext);
@@ -146,7 +111,7 @@ const AdminQuestions: React.FunctionComponent = () => {
   const selectLanguage = (
     <span style={{ marginLeft: "2rem" }}>
       (
-      <Select value={selectedArgs.languageCode} color="secondary" style={{ color: "white" }} onChange={onLanguageChange}>
+      <Select variant="standard" value={selectedArgs.languageCode} color="secondary" style={{ color: "white" }} onChange={onLanguageChange}>
         {availableLanguages.map((l) => (
           <MenuItem key={l.value} value={l.value}>
             {l.label.toLowerCase()}
@@ -167,7 +132,7 @@ const AdminQuestions: React.FunctionComponent = () => {
           <div style={{ padding: "8px 16px 16px 16px" }}>
             <FormControl fullWidth color="secondary">
               <InputLabel id="demo-simple-select-label">Choisir le scénario</InputLabel>
-              <Select labelId="demo-simple-select-label" id="demo-simple-select" value={selectedArgs.scenarioId || ""} onChange={onSelectScenario}>
+              <Select variant="standard" labelId="demo-simple-select-label" id="demo-simple-select" value={selectedArgs.scenarioId || ""} onChange={onSelectScenario}>
                 {groupedScenarios.map((s) => (
                   <MenuItem value={s.id} key={s.id}>
                     {s.names.default}
@@ -183,6 +148,8 @@ const AdminQuestions: React.FunctionComponent = () => {
             selectLanguage={selectLanguage}
             toolbarButton={
               <Button
+                color="inherit"
+                sx={{ color: "black" }}
                 onClick={() => {
                   setCreateModalOpen(true);
                 }}
@@ -198,7 +165,7 @@ const AdminQuestions: React.FunctionComponent = () => {
             <Table aria-labelledby="themetabletitle" size="medium" aria-label="toutes les questions">
               {questions.length > 0 ? (
                 <>
-                  <TableHead style={{ borderBottom: "1px solid white" }} className={classes.toolbar}>
+                  <TableHead style={{ borderBottom: "1px solid white" }} sx={{ backgroundColor: (theme) => theme.palette.secondary.main, color: "white", fontWeight: "bold", minHeight: "unset", padding: "8px 8px 8px 16px" }}>
                     <TableRow>
                       <TableCell style={{ color: "white", fontWeight: "bold" }}>Ordre</TableCell>
                       <TableCell style={{ color: "white", fontWeight: "bold" }}>Question</TableCell>
@@ -209,7 +176,18 @@ const AdminQuestions: React.FunctionComponent = () => {
                   </TableHead>
                   <ReactSortable tag={"tbody"} list={questions} setList={setQuestionsOrder} animation={100} handle=".questions-index">
                     {questions.map((q, index) => (
-                      <StyledTableRow key={q.id}>
+                      <TableRow
+                        key={q.id}
+                        sx={{
+                          backgroundColor: "white",
+                          "&:nth-of-type(even)": {
+                            backgroundColor: "rgb(224 239 232)",
+                          },
+                          "&.sortable-ghost": {
+                            opacity: 0,
+                          },
+                        }}
+                      >
                         <TableCell padding="none" className="questions-index">
                           <div style={{ display: "flex", alignItems: "center", cursor: "grab", marginLeft: "8px" }}>
                             <DragIndicatorIcon />
@@ -239,7 +217,7 @@ const AdminQuestions: React.FunctionComponent = () => {
                             </IconButton>
                           </Tooltip>
                         </TableCell>
-                      </StyledTableRow>
+                      </TableRow>
                     ))}
                   </ReactSortable>
                 </>

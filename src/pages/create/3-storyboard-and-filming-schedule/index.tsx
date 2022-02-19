@@ -1,9 +1,9 @@
 import { useRouter } from "next/router";
 import React from "react";
 
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import DialogContentText from "@mui/material/DialogContentText";
-import Hidden from "@mui/material/Hidden";
 import Typography from "@mui/material/Typography";
 
 import { Inverted } from "src/components/Inverted";
@@ -122,18 +122,14 @@ const PlanAll: React.FunctionComponent = () => {
           </DialogContentText>
         </Modal>
 
-        <Hidden smDown implementation="css">
-          <div style={{ width: "100%", textAlign: "right", marginTop: "2rem" }}>
-            <Button component="a" href={`/create/4-to-your-camera`} color="secondary" onClick={handleNext} variant="contained" style={{ width: "200px" }}>
-              {t("next")}
-            </Button>
-          </div>
-        </Hidden>
-        <Hidden mdUp implementation="css">
-          <Button component="a" href={`/create/4-to-your-camera`} color="secondary" onClick={handleNext} variant="contained" style={{ width: "100%", marginTop: "2rem" }}>
+        <Box sx={{ display: { xs: "none", md: "block" } }} style={{ width: "100%", textAlign: "right", marginTop: "2rem" }}>
+          <Button component="a" href={`/create/4-to-your-camera`} color="secondary" onClick={handleNext} variant="contained" style={{ width: "200px" }}>
             {t("next")}
           </Button>
-        </Hidden>
+        </Box>
+        <Button sx={{ display: { xs: "inline-flex", md: "none" } }} component="a" href={`/create/4-to-your-camera`} color="secondary" onClick={handleNext} variant="contained" style={{ width: "100%", marginTop: "2rem" }}>
+          {t("next")}
+        </Button>
       </div>
     </div>
   );

@@ -1,22 +1,13 @@
 import { useRouter } from "next/router";
 import React from "react";
 
-import { Backdrop, CircularProgress, Theme as MaterialTheme } from "@mui/material";
-import { makeStyles } from "@mui/styles";
+import { Backdrop, CircularProgress } from "@mui/material";
 
 import { UserServiceContext } from "src/services/UserService";
-
-const useStyles = makeStyles((theme: MaterialTheme) => ({
-  backdrop: {
-    zIndex: theme.zIndex.drawer + 1,
-    color: "#fff",
-  },
-}));
 
 const VerifyEmail: React.FunctionComponent = () => {
   const router = useRouter();
   const { verifyEmail } = React.useContext(UserServiceContext);
-  const classes = useStyles();
   const [user] = React.useState({
     email: (router.query.email as string) || "",
     verifyToken: (router.query["verify-token"] as string) || "",
@@ -37,7 +28,13 @@ const VerifyEmail: React.FunctionComponent = () => {
 
   return (
     <div className="text-center">
-      <Backdrop className={classes.backdrop} open={true}>
+      <Backdrop
+        sx={{
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+          color: "#fff",
+        }}
+        open={true}
+      >
         <CircularProgress color="inherit" />
       </Backdrop>
     </div>

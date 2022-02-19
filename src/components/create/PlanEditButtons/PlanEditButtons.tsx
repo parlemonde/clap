@@ -5,35 +5,30 @@ import React, { useRef, useState } from "react";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import CreateIcon from "@mui/icons-material/Create";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
-import type { Theme } from "@mui/material/styles";
-import { Backdrop, Button, CircularProgress, Hidden, Typography } from "@mui/material";
-import { makeStyles } from "@mui/styles";
+import type { Theme as MaterialTheme } from "@mui/material/styles";
+import { Backdrop, Button, CircularProgress, Box, Typography } from "@mui/material";
 
 import { useTranslation } from "src/i18n/useTranslation";
 
 import { PlanUpload } from "./PlanUpload";
 
-const useStyles = makeStyles((theme: Theme) => ({
+const styles = {
   verticalLine: {
-    backgroundColor: theme.palette.secondary.main,
+    backgroundColor: (theme: MaterialTheme) => theme.palette.secondary.main,
     flex: 1,
     width: "1px",
     margin: "0.2rem 0",
   },
   horizontalLine: {
-    backgroundColor: theme.palette.secondary.main,
+    backgroundColor: (theme: MaterialTheme) => theme.palette.secondary.main,
     flex: 1,
     height: "1px",
     margin: "2rem 1rem",
   },
   secondaryColor: {
-    color: theme.palette.secondary.main,
+    color: (theme: MaterialTheme) => theme.palette.secondary.main,
   },
-  backdrop: {
-    zIndex: theme.zIndex.drawer + 1,
-    color: "#fff",
-  },
-}));
+};
 
 interface PlanEditButtonsProps {
   questionIndex: number;
@@ -44,7 +39,6 @@ interface PlanEditButtonsProps {
 export const PlanEditButtons: React.FunctionComponent<PlanEditButtonsProps> = ({ questionIndex, planIndex, submitImageWithUrl = async () => {} }: PlanEditButtonsProps) => {
   const router = useRouter();
   const { t } = useTranslation();
-  const classes = useStyles();
 
   const inputRef = useRef(null);
   const [imageUrl, setImageUrl] = useState(null);
@@ -104,7 +98,7 @@ export const PlanEditButtons: React.FunctionComponent<PlanEditButtonsProps> = ({
   } else {
     content = (
       <React.Fragment>
-        <Hidden smDown>
+        <Box sx={{ display: { xs: "none", md: "block" } }}>
           <Typography color="inherit" variant="h2">
             {t("part3_plan_edit_title_desktop")}
           </Typography>
@@ -113,17 +107,21 @@ export const PlanEditButtons: React.FunctionComponent<PlanEditButtonsProps> = ({
               {t("import_image")}
             </Button>
             <div className="or-vertical-divider">
-              <div className={classes.verticalLine} />
-              <span className={classes.secondaryColor}>{t("or").toUpperCase()}</span>
-              <div className={classes.verticalLine} />
+              <Box sx={styles.verticalLine} />
+              <Box component="span" sx={styles.secondaryColor}>
+                {t("or").toUpperCase()}
+              </Box>
+              <Box sx={styles.verticalLine} />
             </div>
             <Button variant="outlined" color="secondary" style={{ textTransform: "none" }} onClick={toggleShowCamera(true)} startIcon={<PhotoCameraIcon />}>
               {t("take_picture")}
             </Button>
             <div className="or-vertical-divider">
-              <div className={classes.verticalLine} />
-              <span className={classes.secondaryColor}>{t("or").toUpperCase()}</span>
-              <div className={classes.verticalLine} />
+              <Box sx={styles.verticalLine} />
+              <Box component="span" sx={styles.secondaryColor}>
+                {t("or").toUpperCase()}
+              </Box>
+              <Box sx={styles.verticalLine} />
             </div>
             <Button
               component="a"
@@ -137,8 +135,8 @@ export const PlanEditButtons: React.FunctionComponent<PlanEditButtonsProps> = ({
               {t("draw_plan")}
             </Button>
           </div>
-        </Hidden>
-        <Hidden mdUp>
+        </Box>
+        <Box sx={{ display: { xs: "block", md: "none" } }}>
           <Typography color="inherit" variant="h2">
             {t("part3_plan_edit_title_mobile")}
           </Typography>
@@ -147,22 +145,24 @@ export const PlanEditButtons: React.FunctionComponent<PlanEditButtonsProps> = ({
               {t("import_image")}
             </Button>
             <div className="or-horizontal-divider">
-              <div className={classes.horizontalLine} />
-              <span className={classes.secondaryColor}>{t("or").toUpperCase()}</span>
-              <div className={classes.horizontalLine} />
+              <Box sx={styles.horizontalLine} />
+              <Box component="span" sx={styles.secondaryColor}>
+                {t("or").toUpperCase()}
+              </Box>
+              <Box sx={styles.horizontalLine} />
             </div>
             <Button variant="outlined" color="secondary" style={{ textTransform: "none" }} onClick={toggleShowCamera(true)} startIcon={<PhotoCameraIcon />}>
               {t("take_picture")}
             </Button>
           </div>
-        </Hidden>
+        </Box>
       </React.Fragment>
     );
   }
 
   return (
     <React.Fragment>
-      <Backdrop className={classes.backdrop} open={isLoading}>
+      <Backdrop sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, color: "#fff" }} open={isLoading}>
         <CircularProgress color="inherit" />
       </Backdrop>
       {content}

@@ -1,9 +1,8 @@
 import { useRouter } from "next/router";
 import React from "react";
 
-import type { Theme } from "@mui/material/styles";
+import Box from "@mui/material/Box";
 import { Drawer, List, ListItem, ListItemText } from "@mui/material";
-import { makeStyles } from "@mui/styles";
 
 const DRAWER_WIDTH = 240;
 
@@ -39,20 +38,7 @@ const adminTabs: Tab[] = [
   },
 ];
 
-const useStyles = makeStyles((theme: Theme) => ({
-  drawer: {
-    width: DRAWER_WIDTH,
-    flexShrink: 0,
-  },
-  drawerPaper: {
-    width: DRAWER_WIDTH,
-    backgroundColor: "white",
-  },
-  toolbar: theme.mixins.toolbar,
-}));
-
 export const AdminDrawer: React.FunctionComponent = () => {
-  const classes = useStyles();
   const router = useRouter();
   const [selectedIndex, setSelectedIndex] = React.useState(0);
 
@@ -63,13 +49,17 @@ export const AdminDrawer: React.FunctionComponent = () => {
 
   return (
     <Drawer
-      className={classes.drawer}
-      variant="permanent"
-      classes={{
-        paper: classes.drawerPaper,
+      sx={{
+        width: DRAWER_WIDTH,
+        flexShrink: 0,
+        "& .MuiDrawer-paper": {
+          width: DRAWER_WIDTH,
+          backgroundColor: "white",
+        },
       }}
+      variant="permanent"
     >
-      <div className={classes.toolbar} />
+      <Box sx={(theme) => theme.mixins.toolbar} />
       <List>
         {adminTabs.map((tab, index) => (
           <ListItem

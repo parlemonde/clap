@@ -21,8 +21,6 @@ import NoSsr from "@mui/material/NoSsr";
 import Select from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import { Theme as MaterialTheme } from "@mui/material/styles";
-import { makeStyles, createStyles } from "@mui/styles";
 
 import { Modal } from "src/components/Modal";
 import { AdminTile } from "src/components/admin/AdminTile";
@@ -32,15 +30,6 @@ import type { AxiosReturnType } from "src/util/axiosRequest";
 import { GroupedScenario, groupScenarios } from "src/util/groupScenarios";
 import { getQueryString } from "src/util";
 import type { Language } from "types/models/language.type";
-
-const useStyles = makeStyles((theme: MaterialTheme) =>
-  createStyles({
-    backdrop: {
-      zIndex: theme.zIndex.drawer + 1,
-      color: "#fff",
-    },
-  }),
-);
 
 const getUpdateRequest = (scenario: GroupedScenario, language: string): AxiosRequestConfig => ({
   method: "PUT",
@@ -68,7 +57,6 @@ const getDeleteRequest = (scenario: GroupedScenario, language: string): AxiosReq
 });
 
 const AdminEditScenario: React.FunctionComponent = () => {
-  const classes = useStyles();
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   const scenarioId = React.useMemo(() => parseInt(getQueryString(router.query.id), 10) || 0, [router]);
@@ -238,7 +226,13 @@ const AdminEditScenario: React.FunctionComponent = () => {
         <Button variant="outlined" style={{ marginTop: "1rem" }} onClick={goToPath("/admin/scenarios")}>
           Retour
         </Button>
-        <Backdrop className={classes.backdrop} open={loading}>
+        <Backdrop
+          sx={{
+            zIndex: (theme) => theme.zIndex.drawer + 1,
+            color: "#fff",
+          }}
+          open={loading}
+        >
           <CircularProgress color="inherit" />
         </Backdrop>
 

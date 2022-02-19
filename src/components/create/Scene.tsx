@@ -5,22 +5,11 @@ import AddIcon from "@mui/icons-material/Add";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
-import { withStyles } from "@mui/styles";
 
 import { useTranslation } from "src/i18n/useTranslation";
 import type { Question } from "types/models/question.type";
 
 import { PlanCard } from "./PlanCard";
-
-const StyledAddButton = withStyles((theme) => ({
-  root: {
-    backgroundColor: theme.palette.primary.main,
-    color: "white",
-    "&:hover": {
-      backgroundColor: theme.palette.primary.light,
-    },
-  },
-}))(IconButton);
 
 interface SceneProps {
   q: Question;
@@ -58,9 +47,20 @@ export const Scene: React.FunctionComponent<SceneProps> = ({ q, index, addPlan =
         ))}
         <div className="plan-button-container add">
           <Tooltip title={t("part3_add_plan")} aria-label={t("part3_add_plan")}>
-            <StyledAddButton color="primary" aria-label={t("part3_add_plan")} onClick={addPlan}>
+            <IconButton
+              sx={{
+                backgroundColor: (theme) => theme.palette.primary.main,
+                color: "white",
+                "&:hover": {
+                  backgroundColor: (theme) => theme.palette.primary.light,
+                },
+              }}
+              color="primary"
+              aria-label={t("part3_add_plan")}
+              onClick={addPlan}
+            >
               <AddIcon />
-            </StyledAddButton>
+            </IconButton>
           </Tooltip>
         </div>
       </div>

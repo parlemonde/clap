@@ -3,22 +3,21 @@ import React, { useEffect } from "react";
 
 import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import BottomNavigation from "@mui/material/BottomNavigation";
-import { withStyles } from "@mui/styles";
+import Box from "@mui/material/Box";
+import { Theme as MaterialTheme } from "@mui/material/styles";
 
 import { useTranslation } from "src/i18n/useTranslation";
 import { UserServiceContext } from "src/services/UserService";
 import { getTabs } from "src/util/tabs";
 
-const StyledTab = withStyles((theme) => ({
-  root: {
-    fill: "#808080",
-    color: "#808080",
+const BottomNavigationActionSx = {
+  fill: "#808080",
+  color: "#808080",
+  "&.Mui-selected": {
+    fill: (theme: MaterialTheme) => theme.palette.secondary.main,
+    color: (theme: MaterialTheme) => theme.palette.secondary.main,
   },
-  selected: {
-    fill: theme.palette.secondary.main,
-    color: `${theme.palette.secondary.main}!important`,
-  },
-}))(BottomNavigationAction);
+};
 
 export const BottomNavBar: React.FunctionComponent = () => {
   const { t } = useTranslation();
@@ -35,7 +34,7 @@ export const BottomNavBar: React.FunctionComponent = () => {
   }, [user, isLoggedIn, router.pathname]);
 
   return (
-    <React.Fragment>
+    <Box sx={{ display: { md: "none", xs: "block" } }}>
       <div style={{ height: "60px" }} />
       <BottomNavigation
         value={activeTab}
@@ -45,9 +44,10 @@ export const BottomNavBar: React.FunctionComponent = () => {
         showLabels
         className="bottom-navbar"
       >
-        <StyledTab label="" style={{ display: "none" }} />
+        <BottomNavigationAction sx={BottomNavigationActionSx} label="" style={{ display: "none" }} />
         {tabs.map((tab, index) => (
-          <StyledTab
+          <BottomNavigationAction
+            sx={BottomNavigationActionSx}
             label={t(tab.label)}
             icon={tab.icon}
             key={index}
@@ -58,6 +58,6 @@ export const BottomNavBar: React.FunctionComponent = () => {
           />
         ))}
       </BottomNavigation>
-    </React.Fragment>
+    </Box>
   );
 };

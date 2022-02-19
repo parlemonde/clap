@@ -18,7 +18,6 @@ import React from "react";
 
 import Container from "@mui/material/Container";
 import CssBaseline from "@mui/material/CssBaseline";
-import Hidden from "@mui/material/Hidden";
 import { ThemeProvider } from "@mui/material/styles";
 
 import { BottomNavBar } from "src/components/BottomNavBar";
@@ -114,17 +113,13 @@ const MyApp: React.FunctionComponent<AppProps> & {
   } else {
     content = (
       <ProjectServiceProvider>
-        <Hidden smDown implementation="css">
-          <TopNavBar title={"Par Le monde"} homeLink="/create" />
-        </Hidden>
+        <TopNavBar title={"Par Le monde"} homeLink="/create" />
         <main>
           <Container maxWidth="lg">
             <Component {...pageProps} />
           </Container>
         </main>
-        <Hidden mdUp implementation="css">
-          <BottomNavBar />
-        </Hidden>
+        <BottomNavBar />
       </ProjectServiceProvider>
     );
   }

@@ -5,8 +5,6 @@ import Backdrop from "@mui/material/Backdrop";
 import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
 import Typography from "@mui/material/Typography";
-import { Theme } from "@mui/material/styles";
-import { makeStyles } from "@mui/styles";
 
 import { Inverted } from "src/components/Inverted";
 import { Canvas, CanvasRef } from "src/components/create/Canvas";
@@ -18,18 +16,10 @@ import { ProjectServiceContext } from "src/services/useProject";
 import { getQuestions } from "src/util";
 import { getQueryString } from "src/util";
 
-const useStyles = makeStyles((theme: Theme) => ({
-  backdrop: {
-    zIndex: theme.zIndex.drawer + 1,
-    color: "#fff",
-  },
-}));
-
 const PlanEdit: React.FunctionComponent = () => {
   const router = useRouter();
   const { t } = useTranslation();
   const { uploadPlanImage } = usePlanRequests();
-  const classes = useStyles();
   const { project } = React.useContext(ProjectServiceContext);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const canvasRef = React.useRef<CanvasRef | null>(null);
@@ -74,7 +64,14 @@ const PlanEdit: React.FunctionComponent = () => {
 
         <Canvas ref={canvasRef} />
 
-        <Backdrop className={classes.backdrop} open={isLoading} onClick={() => {}}>
+        <Backdrop
+          sx={{
+            zIndex: (theme) => theme.zIndex.drawer + 1,
+            color: "#fff",
+          }}
+          open={isLoading}
+          onClick={() => {}}
+        >
           <CircularProgress color="inherit" />
         </Backdrop>
 

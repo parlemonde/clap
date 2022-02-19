@@ -4,6 +4,7 @@ import React from "react";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Chip from "@mui/material/Chip";
 import IconButton from "@mui/material/IconButton";
@@ -17,8 +18,6 @@ import TableSortLabel from "@mui/material/TableSortLabel";
 import Table from "@mui/material/Table";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
-import { Theme as MaterialTheme } from "@mui/material/styles";
-import { makeStyles, createStyles, withStyles } from "@mui/styles";
 
 import { AdminTile } from "src/components/admin/AdminTile";
 import { DeleteUserModal } from "src/components/admin/users/DeleteUserModal";
@@ -26,48 +25,19 @@ import { InviteUserModal } from "src/components/admin/users/InviteUserModal";
 import { UserServiceContext } from "src/services/UserService";
 import { useUsers, UserArgs } from "src/services/useUsers";
 
-const useTableStyles = makeStyles((theme: MaterialTheme) =>
-  createStyles({
-    toolbar: {
-      backgroundColor: theme.palette.secondary.main,
-      color: "white",
-      fontWeight: "bold",
-      minHeight: "unset",
-      padding: "8px 8px 8px 16px",
-    },
-    title: {
-      flex: "1 1 100%",
-    },
-    button: {
-      color: "white",
-    },
-    visuallyHidden: {
-      border: 0,
-      clip: "rect(0 0 0 0)",
-      height: 1,
-      margin: -1,
-      overflow: "hidden",
-      padding: 0,
-      position: "absolute",
-      top: 20,
-      width: 1,
-    },
-  }),
-);
-
-const StyledTableRow = withStyles(() =>
-  createStyles({
-    root: {
-      backgroundColor: "white",
-      "&:nth-of-type(even)": {
-        backgroundColor: "rgb(224 239 232)",
-      },
-      "&.sortable-ghost": {
-        opacity: 0,
-      },
-    },
-  }),
-)(TableRow);
+const styles = {
+  visuallyHidden: {
+    border: 0,
+    clip: "rect(0 0 0 0)",
+    height: 1,
+    margin: -1,
+    overflow: "hidden",
+    padding: 0,
+    position: "absolute",
+    top: 20,
+    width: 1,
+  },
+};
 
 const userTypeNames = {
   0: "Classe",
@@ -76,7 +46,6 @@ const userTypeNames = {
 };
 
 const AdminUsers: React.FunctionComponent = () => {
-  const classes = useTableStyles();
   const router = useRouter();
   const [args, setArgs] = React.useState<UserArgs>({
     page: 1,
@@ -121,6 +90,8 @@ const AdminUsers: React.FunctionComponent = () => {
           title="Liste des utilisateurs"
           toolbarButton={
             <Button
+              color="inherit"
+              sx={{ color: "black" }}
               onClick={() => {
                 setInviteOpen(true);
               }}
@@ -135,30 +106,46 @@ const AdminUsers: React.FunctionComponent = () => {
           <Table aria-labelledby="themetabletitle" size="medium" aria-label="toutes les langues">
             {users.length > 0 ? (
               <>
-                <TableHead style={{ borderBottom: "1px solid white" }} className={classes.toolbar}>
+                <TableHead style={{ borderBottom: "1px solid white" }} sx={{ backgroundColor: (theme) => theme.palette.secondary.main, color: "white", fontWeight: "bold", minHeight: "unset", padding: "8px 8px 8px 16px" }}>
                   <TableRow>
                     <TableCell style={{ color: "white", fontWeight: "bold" }}>
                       <TableSortLabel active={args.order === "pseudo"} direction={args.sort} onClick={onHeaderClick("pseudo")}>
                         Pseudo
-                        {args.order === "pseudo" ? <span className={classes.visuallyHidden}>{args.sort === "desc" ? "sorted descending" : "sorted ascending"}</span> : null}
+                        {args.order === "pseudo" ? (
+                          <Box component="span" sx={styles.visuallyHidden}>
+                            {args.sort === "desc" ? "sorted descending" : "sorted ascending"}
+                          </Box>
+                        ) : null}
                       </TableSortLabel>
                     </TableCell>
                     <TableCell style={{ color: "white", fontWeight: "bold" }}>
                       <TableSortLabel active={args.order === "email"} direction={args.sort} onClick={onHeaderClick("email")}>
                         Email
-                        {args.order === "email" ? <span className={classes.visuallyHidden}>{args.sort === "desc" ? "sorted descending" : "sorted ascending"}</span> : null}
+                        {args.order === "email" ? (
+                          <Box component="span" sx={styles.visuallyHidden}>
+                            {args.sort === "desc" ? "sorted descending" : "sorted ascending"}
+                          </Box>
+                        ) : null}
                       </TableSortLabel>
                     </TableCell>
                     <TableCell style={{ color: "white", fontWeight: "bold" }}>
                       <TableSortLabel active={args.order === "school"} direction={args.sort} onClick={onHeaderClick("school")}>
                         École
-                        {args.order === "school" ? <span className={classes.visuallyHidden}>{args.sort === "desc" ? "sorted descending" : "sorted ascending"}</span> : null}
+                        {args.order === "school" ? (
+                          <Box component="span" sx={styles.visuallyHidden}>
+                            {args.sort === "desc" ? "sorted descending" : "sorted ascending"}
+                          </Box>
+                        ) : null}
                       </TableSortLabel>
                     </TableCell>
                     <TableCell style={{ color: "white", fontWeight: "bold" }}>
                       <TableSortLabel active={args.order === "level"} direction={args.sort} onClick={onHeaderClick("level")}>
                         Niveau de la classe
-                        {args.order === "level" ? <span className={classes.visuallyHidden}>{args.sort === "desc" ? "sorted descending" : "sorted ascending"}</span> : null}
+                        {args.order === "level" ? (
+                          <Box component="span" sx={styles.visuallyHidden}>
+                            {args.sort === "desc" ? "sorted descending" : "sorted ascending"}
+                          </Box>
+                        ) : null}
                       </TableSortLabel>
                     </TableCell>
                     <TableCell style={{ color: "white", fontWeight: "bold" }}>Compte</TableCell>
@@ -169,7 +156,18 @@ const AdminUsers: React.FunctionComponent = () => {
                 </TableHead>
                 <TableBody>
                   {users.map((user, index) => (
-                    <StyledTableRow key={user.id}>
+                    <TableRow
+                      sx={{
+                        backgroundColor: "white",
+                        "&:nth-of-type(even)": {
+                          backgroundColor: "rgb(224 239 232)",
+                        },
+                        "&.sortable-ghost": {
+                          opacity: 0,
+                        },
+                      }}
+                      key={user.id}
+                    >
                       <TableCell>{user.pseudo}</TableCell>
                       <TableCell>{user.email}</TableCell>
                       <TableCell>{user.school || <span style={{ color: "grey" }}>Non renseignée</span>}</TableCell>
@@ -196,7 +194,7 @@ const AdminUsers: React.FunctionComponent = () => {
                           </Tooltip>
                         )}
                       </TableCell>
-                    </StyledTableRow>
+                    </TableRow>
                   ))}
                   <TableRow>
                     <TablePagination rowsPerPageOptions={[5, 10, 25]} count={count} rowsPerPage={args.limit || 10} page={(args.page || 1) - 1} onPageChange={handleChangePage} onRowsPerPageChange={handleChangeRowsPerPage} />

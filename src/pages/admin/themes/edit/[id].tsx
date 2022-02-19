@@ -15,8 +15,6 @@ import Link from "@mui/material/Link";
 import NoSsr from "@mui/material/NoSsr";
 import Select from "@mui/material/Select";
 import Typography from "@mui/material/Typography";
-import { Theme as MaterialTheme } from "@mui/material/styles";
-import { makeStyles, createStyles } from "@mui/styles";
 
 import { ImgCroppie, ImgCroppieRef } from "src/components/ImgCroppie";
 import { Modal } from "src/components/Modal";
@@ -28,17 +26,7 @@ import { getQueryString } from "src/util";
 import type { Language } from "types/models/language.type";
 import type { Theme } from "types/models/theme.type";
 
-const useStyles = makeStyles((theme: MaterialTheme) =>
-  createStyles({
-    backdrop: {
-      zIndex: theme.zIndex.drawer + 1,
-      color: "#fff",
-    },
-  }),
-);
-
 const AdminEditTheme: React.FunctionComponent = () => {
-  const classes = useStyles();
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   const queryCache = useQueryCache();
@@ -272,7 +260,13 @@ const AdminEditTheme: React.FunctionComponent = () => {
         <Button variant="outlined" style={{ marginTop: "1rem" }} onClick={goToPath("/admin/themes")}>
           Retour
         </Button>
-        <Backdrop className={classes.backdrop} open={loading}>
+        <Backdrop
+          sx={{
+            zIndex: (theme) => theme.zIndex.drawer + 1,
+            color: "#fff",
+          }}
+          open={loading}
+        >
           <CircularProgress color="inherit" />
         </Backdrop>
 

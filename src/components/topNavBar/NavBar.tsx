@@ -2,28 +2,18 @@ import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 
 import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Tabs from "@mui/material/Tabs";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import type { Theme } from "@mui/material/styles";
-import { makeStyles } from "@mui/styles";
 
 import { UserServiceContext } from "src/services/UserService";
 import { getTabs } from "src/util/tabs";
 
 import ElevationScroll from "./ElevationScroll";
 import NavBarTab from "./NavBarTab";
-
-const useStyles = makeStyles((theme: Theme) => ({
-  appBar: {
-    zIndex: theme.zIndex.drawer + 1,
-  },
-  indicator: {
-    backgroundColor: theme.palette.primary.main,
-  },
-}));
 
 interface NavBarProps {
   title: string;
@@ -32,7 +22,6 @@ interface NavBarProps {
 }
 
 export const NavBar: React.FunctionComponent<NavBarProps> = (props: NavBarProps) => {
-  const classes = useStyles();
   const router = useRouter();
   const [value, setValue] = React.useState(0);
   const { user, isLoggedIn } = React.useContext(UserServiceContext);
@@ -53,9 +42,14 @@ export const NavBar: React.FunctionComponent<NavBarProps> = (props: NavBarProps)
   const currentTab = value > tabs.length ? 0 : value;
 
   return (
-    <React.Fragment>
+    <Box sx={{ display: { xs: props.isOnAdmin ? "block" : "none", md: "block" } }}>
       <ElevationScroll {...props}>
-        <AppBar position="fixed" className={classes.appBar}>
+        <AppBar
+          position="fixed"
+          sx={{
+            zIndex: (theme) => theme.zIndex.drawer + 1,
+          }}
+        >
           <Container maxWidth="lg">
             <Toolbar variant="dense" style={{ padding: 0 }}>
               <Grid container alignItems="center" justifyContent="space-between">
@@ -68,7 +62,7 @@ export const NavBar: React.FunctionComponent<NavBarProps> = (props: NavBarProps)
                   </a>
                 </Grid>
                 <Grid item>
-                  <Tabs value={currentTab} aria-label="navbar" classes={{ indicator: classes.indicator }}>
+                  <Tabs value={currentTab} aria-label="navbar" sx={{ "& .MuiTabs-indicator": { backgroundColor: (theme) => theme.palette.primary.main } }}>
                     <NavBarTab label="" path="/" style={{ display: "none" }} />
                     {tabs.map((tab, index) => (
                       <NavBarTab label={tab.label} path={tab.path} icon={tab.icon} key={index} selected={index === currentTab - 1} />
@@ -81,6 +75,6 @@ export const NavBar: React.FunctionComponent<NavBarProps> = (props: NavBarProps)
         </AppBar>
       </ElevationScroll>
       <Toolbar variant="dense" />
-    </React.Fragment>
+    </Box>
   );
 };

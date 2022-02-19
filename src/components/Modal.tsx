@@ -5,20 +5,8 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import Dialog from "@mui/material/Dialog";
-import type { Theme as MaterialTheme } from "@mui/material/styles";
-import { withStyles } from "@mui/styles";
 
 import { useTranslation } from "src/i18n/useTranslation";
-
-const RedButton = withStyles((theme: MaterialTheme) => ({
-  root: {
-    color: theme.palette.error.contrastText,
-    background: theme.palette.error.light,
-    "&:hover": {
-      backgroundColor: theme.palette.error.dark,
-    },
-  },
-}))(Button);
 
 interface ModalProps {
   open?: boolean;
@@ -63,9 +51,20 @@ export const Modal: React.FunctionComponent<ModalProps> = ({
           {cancelLabel || t("cancel")}
         </Button>
         {onConfirm !== null && error && (
-          <RedButton onClick={onConfirm} disabled={disabled} variant="contained">
+          <Button
+            sx={{
+              color: (theme) => theme.palette.error.contrastText,
+              background: (theme) => theme.palette.error.light,
+              "&:hover": {
+                backgroundColor: (theme) => theme.palette.error.dark,
+              },
+            }}
+            onClick={onConfirm}
+            disabled={disabled}
+            variant="contained"
+          >
             {confirmLabel || t("yes")}
-          </RedButton>
+          </Button>
         )}
         {onConfirm !== null && !error && (
           <Button onClick={onConfirm} disabled={disabled} color="secondary" variant="contained">

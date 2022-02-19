@@ -2,13 +2,12 @@ import { useRouter } from "next/router";
 import React from "react";
 
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Hidden from "@mui/material/Hidden";
 import MobileStepper from "@mui/material/MobileStepper";
 import StepLabel from "@mui/material/StepLabel";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
-import { withStyles } from "@mui/styles";
 
 import type { tFunction } from "src/i18n/translateFunction";
 // import ProjectTitle from "../ProjectTitle";
@@ -41,24 +40,6 @@ const steps = [
   //   back: () => "/create",
   // },
 ];
-
-const StyleMobileStepper = withStyles((theme) => ({
-  root: {
-    position: "relative",
-    margin: "1rem 0",
-  },
-  dot: {
-    backgroundColor: "white",
-    borderColor: (theme.palette.secondary || {}).main,
-    border: "1px solid",
-    width: "13px",
-    height: "13px",
-    margin: "0 4px",
-  },
-  dotActive: {
-    backgroundColor: (theme.palette.secondary || {}).main,
-  },
-}))(MobileStepper);
 
 interface StepsProps {
   activeStep: number;
@@ -95,18 +76,24 @@ export const Steps: React.FunctionComponent<StepsProps> = ({ activeStep }: Steps
 
   return (
     <div>
-      <Hidden smDown>
+      <Box sx={{ display: { xs: "none", md: "block" } }}>
         {activeStep > 0 && <ProjectTitle onClick={handleProjectTitleClick} />}
-        <Stepper activeStep={activeStep} alternativeLabel>
+        <Stepper sx={{ padding: "24px 0" }} activeStep={activeStep} alternativeLabel>
           {steps.map((step, index) => (
             <Step key={step.name(t, activeStep, project)} style={{ cursor: "pointer" }} onClick={handleBack(index)}>
               <StepLabel>{step.name(t, activeStep, project)}</StepLabel>
             </Step>
           ))}
         </Stepper>
-      </Hidden>
-      <Hidden mdUp>
-        <StyleMobileStepper
+      </Box>
+      <Box sx={{ display: { xs: "block", md: "none" } }}>
+        <MobileStepper
+          sx={{
+            position: "relative",
+            margin: "1rem 0",
+            "& .MuiMobileStepper-dot": { backgroundColor: "white", border: "1px solid", borderColor: (theme) => theme.palette.secondary.main, width: "13px", height: "13px", margin: "0 4px" },
+            "& .MuiMobileStepper-dotActive": { backgroundColor: (theme) => theme.palette.secondary.main },
+          }}
           variant="dots"
           steps={steps.length}
           position="top"
@@ -120,7 +107,7 @@ export const Steps: React.FunctionComponent<StepsProps> = ({ activeStep }: Steps
           nextButton={null}
         />
         {activeStep > 0 && <ProjectTitle onClick={handleProjectTitleClick} smaller />}
-      </Hidden>
+      </Box>
     </div>
   );
 };

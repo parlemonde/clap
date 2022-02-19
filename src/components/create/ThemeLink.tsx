@@ -3,7 +3,6 @@ import React from "react";
 
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
-import Hidden from "@mui/material/Hidden";
 import Link from "@mui/material/Link";
 import Typography from "@mui/material/Typography";
 
@@ -23,13 +22,11 @@ export const ThemeLink: React.FunctionComponent = () => {
   const themeName = project.theme?.names[currentLocale] || project.theme?.names["fr"] || "";
 
   return (
-    <Hidden smDown>
-      <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
-        <Link color="inherit" href="/create" onClick={handleHome}>
-          {t("all_themes")}
-        </Link>
-        <Typography color="textPrimary">{themeName}</Typography>
-      </Breadcrumbs>
-    </Hidden>
+    <Breadcrumbs sx={{ display: { xs: "none", md: "block" } }} separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
+      <Link color="inherit" sx={{ textDecoration: "none", "&:hover": { textDecoration: "underline" } }} href="/create" onClick={handleHome}>
+        {t("all_themes")}
+      </Link>
+      <Typography color="textPrimary">{themeName}</Typography>
+    </Breadcrumbs>
   );
 };

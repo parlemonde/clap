@@ -5,9 +5,9 @@ import React from "react";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForwardIos";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
+import Box from "@mui/material/Box";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
 import Button from "@mui/material/Button";
-import Hidden from "@mui/material/Hidden";
 import Link from "@mui/material/Link";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
@@ -73,14 +73,12 @@ const NewTheme: React.FunctionComponent = () => {
 
   return (
     <div>
-      <Hidden smDown implementation="css">
-        <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
-          <Link color="inherit" href="/create" onClick={handleHome}>
-            {t("all_themes")}
-          </Link>
-          <Typography color="textPrimary">{t("create_new_theme")}</Typography>
-        </Breadcrumbs>
-      </Hidden>
+      <Breadcrumbs sx={{ display: { xs: "none", md: "block" } }} separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
+        <Link color="inherit" href="/create" onClick={handleHome}>
+          {t("all_themes")}
+        </Link>
+        <Typography color="textPrimary">{t("create_new_theme")}</Typography>
+      </Breadcrumbs>
 
       <div
         style={{
@@ -89,12 +87,10 @@ const NewTheme: React.FunctionComponent = () => {
           paddingBottom: "2rem",
         }}
       >
-        <Hidden mdUp implementation="css">
-          <Button size="medium" onClick={handleHome} style={{ paddingLeft: "0!important", margin: "1rem 0 0 0" }}>
-            <KeyboardArrowLeft />
-            {t("back")}
-          </Button>
-        </Hidden>
+        <Button sx={{ display: { xs: "inline-flex", md: "none" }, paddingLeft: "0!important", margin: "1rem 0 0 0" }} size="medium" onClick={handleHome}>
+          <KeyboardArrowLeft />
+          {t("back")}
+        </Button>
         <Typography color="primary" variant="h1" style={{ marginTop: "1rem" }}>
           <Trans i18nKey="new_theme_title">
             Créer votre <Inverted>thème</Inverted> :
@@ -123,21 +119,17 @@ const NewTheme: React.FunctionComponent = () => {
         </Typography>
 
         <div style={{ marginTop: "2rem" }}>
-          <Hidden smDown implementation="css">
-            <div style={{ width: "100%", textAlign: "right" }}>
-              <Button component="a" variant="outlined" color="secondary" style={{ marginRight: "1rem" }} href={`/create`} onClick={handleHome}>
-                {t("cancel")}
-              </Button>
-              <Button variant="contained" color="secondary" onClick={handleSubmit} endIcon={<ArrowForwardIcon />}>
-                {t("next")}
-              </Button>
-            </div>
-          </Hidden>
-          <Hidden mdUp implementation="css">
-            <Button variant="contained" color="secondary" style={{ width: "100%", marginTop: "2rem" }} onClick={handleSubmit}>
+          <Box sx={{ display: { xs: "none", md: "block" } }} style={{ width: "100%", textAlign: "right" }}>
+            <Button component="a" variant="outlined" color="secondary" style={{ marginRight: "1rem" }} href={`/create`} onClick={handleHome}>
+              {t("cancel")}
+            </Button>
+            <Button variant="contained" color="secondary" onClick={handleSubmit} endIcon={<ArrowForwardIcon />}>
               {t("next")}
             </Button>
-          </Hidden>
+          </Box>
+          <Button sx={{ display: { xs: "inline-flex", md: "none" } }} variant="contained" color="secondary" style={{ width: "100%", marginTop: "2rem" }} onClick={handleSubmit}>
+            {t("next")}
+          </Button>
         </div>
       </div>
     </div>

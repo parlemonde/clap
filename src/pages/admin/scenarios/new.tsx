@@ -20,8 +20,6 @@ import MenuItem from "@mui/material/MenuItem";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import { Theme as MaterialTheme } from "@mui/material/styles";
-import { makeStyles, createStyles } from "@mui/styles";
 
 import { Modal } from "src/components/Modal";
 import { AdminTile } from "src/components/admin/AdminTile";
@@ -34,17 +32,7 @@ import { getQueryString } from "src/util";
 import type { Language } from "types/models/language.type";
 import type { Scenario } from "types/models/scenario.type";
 
-const useStyles = makeStyles((theme: MaterialTheme) =>
-  createStyles({
-    backdrop: {
-      zIndex: theme.zIndex.drawer + 1,
-      color: "#fff",
-    },
-  }),
-);
-
 const AdminNewScenario: React.FunctionComponent = () => {
-  const classes = useStyles();
   const router = useRouter();
   const queryCache = useQueryCache();
   const { enqueueSnackbar } = useSnackbar();
@@ -209,7 +197,7 @@ const AdminNewScenario: React.FunctionComponent = () => {
           <div style={{ padding: "8px 16px 16px 16px", width: "100%" }}>
             <FormControl fullWidth color="secondary">
               <InputLabel id="demo-simple-select-label">Choisir le thème associé</InputLabel>
-              <Select labelId="demo-simple-select-label" id="demo-simple-select" value={scenario.themeId === -1 ? "" : scenario.themeId} onChange={onThemeSelect}>
+              <Select variant="standard" labelId="demo-simple-select-label" id="demo-simple-select" value={scenario.themeId === -1 ? "" : scenario.themeId} onChange={onThemeSelect}>
                 {Object.keys(themeNames).map((themeId) => (
                   <MenuItem value={themeId} key={themeId}>
                     {themeNames[parseInt(themeId, 10)].fr}
@@ -268,7 +256,7 @@ const AdminNewScenario: React.FunctionComponent = () => {
       <Button variant="outlined" style={{ marginTop: "1rem" }} onClick={goToPath("/admin/scenarios")}>
         Retour
       </Button>
-      <Backdrop className={classes.backdrop} open={loading}>
+      <Backdrop sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, color: "#fff" }} open={loading}>
         <CircularProgress color="inherit" />
       </Backdrop>
 
