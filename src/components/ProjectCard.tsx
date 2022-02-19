@@ -1,8 +1,8 @@
 import React from "react";
 
-import IconButton from "@material-ui/core/IconButton";
-import { Typography, ButtonBase } from "@material-ui/core";
-import EditIcon from "@material-ui/icons/Edit";
+import EditIcon from "@mui/icons-material/Edit";
+import IconButton from "@mui/material/IconButton";
+import { Typography, ButtonBase } from "@mui/material";
 
 import { useTranslation } from "src/i18n/useTranslation";
 

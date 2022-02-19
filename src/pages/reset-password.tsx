@@ -1,7 +1,8 @@
 import { useRouter } from "next/router";
 import React from "react";
 
-import { Button, Link, TextField, Typography, makeStyles, Backdrop, CircularProgress, Theme as MaterialTheme } from "@material-ui/core";
+import { Button, Link, TextField, Typography, Backdrop, CircularProgress, Theme as MaterialTheme } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 
 import { useTranslation } from "src/i18n/useTranslation";
 import { axiosRequest } from "src/util/axiosRequest";

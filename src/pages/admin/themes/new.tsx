@@ -3,18 +3,19 @@ import { useSnackbar } from "notistack";
 import { useQueryCache } from "react-query";
 import React from "react";
 
-import Backdrop from "@material-ui/core/Backdrop";
-import Breadcrumbs from "@material-ui/core/Breadcrumbs";
-import Button from "@material-ui/core/Button";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import FormControl from "@material-ui/core/FormControl";
-import InputLabel from "@material-ui/core/InputLabel";
-import Link from "@material-ui/core/Link";
-import Select from "@material-ui/core/Select";
-import Typography from "@material-ui/core/Typography";
-import { makeStyles, createStyles, Theme as MaterialTheme } from "@material-ui/core/styles";
-import CloudUploadIcon from "@material-ui/icons/CloudUpload";
-import NavigateNextIcon from "@material-ui/icons/NavigateNext";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import NavigateNextIcon from "@mui/icons-material/NavigateNext";
+import Backdrop from "@mui/material/Backdrop";
+import Breadcrumbs from "@mui/material/Breadcrumbs";
+import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import Link from "@mui/material/Link";
+import Select from "@mui/material/Select";
+import Typography from "@mui/material/Typography";
+import { Theme as MaterialTheme } from "@mui/material/styles";
+import { makeStyles, createStyles } from "@mui/styles";
 
 import { ImgCroppie, ImgCroppieRef } from "src/components/ImgCroppie";
 import { Modal } from "src/components/Modal";
@@ -252,8 +253,8 @@ const AdminNewTheme: React.FunctionComponent = () => {
             <Select
               native
               value={languageToAdd}
-              onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
-                setLanguageToAdd(parseInt(event.target.value, 10));
+              onChange={(event) => {
+                setLanguageToAdd(typeof event.target.value === "number" ? event.target.value : parseInt(event.target.value, 10));
               }}
               label={"Langages"}
               inputProps={{

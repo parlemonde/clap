@@ -1,7 +1,9 @@
 import { useRouter } from "next/router";
 import React from "react";
 
-import { Drawer, makeStyles, List, ListItem, ListItemText } from "@material-ui/core";
+import type { Theme } from "@mui/material/styles";
+import { Drawer, List, ListItem, ListItemText } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 
 const DRAWER_WIDTH = 240;
 
@@ -37,7 +39,7 @@ const adminTabs: Tab[] = [
   },
 ];
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
   drawer: {
     width: DRAWER_WIDTH,
     flexShrink: 0,

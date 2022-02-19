@@ -1,11 +1,12 @@
 import React from "react";
 
-import Button from "@material-ui/core/Button";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import Dialog from "@material-ui/core/Dialog";
-import { withStyles, Theme as MaterialTheme } from "@material-ui/core/styles";
+import Button from "@mui/material/Button";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import Dialog from "@mui/material/Dialog";
+import type { Theme as MaterialTheme } from "@mui/material/styles";
+import { withStyles } from "@mui/styles";
 
 import { useTranslation } from "src/i18n/useTranslation";
 

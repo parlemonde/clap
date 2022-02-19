@@ -1,7 +1,8 @@
 import { useRouter } from "next/router";
 import React from "react";
 
-import { makeStyles, Backdrop, CircularProgress, Theme as MaterialTheme } from "@material-ui/core";
+import { Backdrop, CircularProgress, Theme as MaterialTheme } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 
 import { UserServiceContext } from "src/services/UserService";
 

@@ -1,7 +1,8 @@
 import React, { useContext } from "react";
 
-import { Typography, withStyles, IconButton } from "@material-ui/core";
-import EditIcon from "@material-ui/icons/Edit";
+import EditIcon from "@mui/icons-material/Edit";
+import { Typography, IconButton } from "@mui/material";
+import { withStyles } from "@mui/styles";
 
 import { useTranslation } from "src/i18n/useTranslation";
 import { ProjectServiceContext } from "src/services/useProject";

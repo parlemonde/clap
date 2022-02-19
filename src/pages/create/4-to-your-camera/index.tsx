@@ -1,12 +1,13 @@
 import QRCode from "qrcode";
 import React from "react";
 
-import Backdrop from "@material-ui/core/Backdrop";
-import Button from "@material-ui/core/Button";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import Typography from "@material-ui/core/Typography";
-import { makeStyles } from "@material-ui/core/styles";
-import VideocamIcon from "@material-ui/icons/Videocam";
+import VideocamIcon from "@mui/icons-material/Videocam";
+import Backdrop from "@mui/material/Backdrop";
+import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
+import Typography from "@mui/material/Typography";
+import { Theme } from "@mui/material/styles";
+import { makeStyles } from "@mui/styles";
 
 import { Inverted } from "src/components/Inverted";
 import { Trans } from "src/components/Trans";
@@ -16,7 +17,7 @@ import { useTranslation } from "src/i18n/useTranslation";
 import { UserServiceContext } from "src/services/UserService";
 import { ProjectServiceContext } from "src/services/useProject";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
     color: "#fff",

@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 
-import { Button } from "@material-ui/core";
+import { Button } from "@mui/material";
 
 import { ImgCroppie, ImgCroppieRef } from "src/components/ImgCroppie";
 import { useTranslation } from "src/i18n/useTranslation";

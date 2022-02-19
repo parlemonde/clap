@@ -2,16 +2,18 @@ import { useRouter } from "next/router";
 import Camera from "react-html5-camera-photo";
 import React, { useRef, useState } from "react";
 
-import { Backdrop, Button, CircularProgress, Hidden, makeStyles, Typography } from "@material-ui/core";
-import CloudUploadIcon from "@material-ui/icons/CloudUpload";
-import CreateIcon from "@material-ui/icons/Create";
-import PhotoCameraIcon from "@material-ui/icons/PhotoCamera";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import CreateIcon from "@mui/icons-material/Create";
+import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
+import type { Theme } from "@mui/material/styles";
+import { Backdrop, Button, CircularProgress, Hidden, Typography } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 
 import { useTranslation } from "src/i18n/useTranslation";
 
 import { PlanUpload } from "./PlanUpload";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
   verticalLine: {
     backgroundColor: theme.palette.secondary.main,
     flex: 1,

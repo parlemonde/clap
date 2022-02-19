@@ -5,6 +5,8 @@ import "react-html5-camera-photo/build/css/index.css";
 import "src/styles/globals.css";
 import "src/styles/user.css";
 
+import { CacheProvider } from "@emotion/react";
+import type { EmotionCache } from "@emotion/react";
 import App from "next/app";
 import type { AppProps, AppInitialProps, AppContext } from "next/app";
 import Head from "next/head";
@@ -14,10 +16,10 @@ import { ReactQueryDevtools } from "react-query-devtools";
 import { QueryCache, ReactQueryCacheProvider } from "react-query";
 import React from "react";
 
-import Container from "@material-ui/core/Container";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Hidden from "@material-ui/core/Hidden";
-import { ThemeProvider } from "@material-ui/core/styles";
+import Container from "@mui/material/Container";
+import CssBaseline from "@mui/material/CssBaseline";
+import Hidden from "@mui/material/Hidden";
+import { ThemeProvider } from "@mui/material/styles";
 
 import { BottomNavBar } from "src/components/BottomNavBar";
 import { ScrollTopButton } from "src/components/ScrollTopButton";
@@ -26,6 +28,7 @@ import { TopNavBar } from "src/components/topNavBar";
 import { useTranslationContext } from "src/i18n/useTranslation";
 import { UserServiceProvider } from "src/services/UserService";
 import { ProjectServiceProvider } from "src/services/useProject";
+import createEmotionCache from "src/styles/createEmotionCache";
 import theme from "src/styles/theme";
 import { getInitialData } from "src/util/data";
 import type { User } from "types/models/user.type";
@@ -36,7 +39,10 @@ interface MyAppOwnProps {
   csrfToken: string | null;
   user: User | null;
 }
-type MyAppProps = AppProps & MyAppOwnProps;
+type MyAppProps = AppProps &
+  MyAppOwnProps & {
+    emotionCache: EmotionCache;
+  };
 
 const queryCache = new QueryCache({
   defaultConfig: {
@@ -46,9 +52,12 @@ const queryCache = new QueryCache({
   },
 });
 
+// Client-side cache, shared for the whole session of the user in the browser.
+const clientSideEmotionCache = createEmotionCache();
+
 const MyApp: React.FunctionComponent<AppProps> & {
-  getInitialProps(appContext: AppContext): Promise<AppInitialProps & { locales: { [key: string]: string } }>;
-} = ({ Component, pageProps, router, currentLocale, locales, user, csrfToken }: MyAppProps) => {
+  getInitialProps(appContext: AppContext): Promise<AppInitialProps>;
+} = ({ Component, pageProps, router, currentLocale, locales, user, csrfToken, emotionCache = clientSideEmotionCache }: MyAppProps) => {
   const { t, translationContext } = useTranslationContext(currentLocale, locales);
 
   const onRouterChangeStart = (): void => {
@@ -61,12 +70,6 @@ const MyApp: React.FunctionComponent<AppProps> & {
     }, 200);
   };
   React.useEffect(() => {
-    // Remove the server-side injected CSS.
-    const jssStyles = document.querySelector("#jss-server-side");
-    if (jssStyles) {
-      jssStyles.parentElement.removeChild(jssStyles);
-    }
-
     // get current route
     router.events.on("routeChangeStart", onRouterChangeStart);
     router.events.on("routeChangeComplete", onRouterChangeComplete);
@@ -127,7 +130,7 @@ const MyApp: React.FunctionComponent<AppProps> & {
   }
 
   return (
-    <>
+    <CacheProvider value={emotionCache}>
       <Head>
         <title>Par Le Monde{isOnAdmin ? " - Admin" : ""}</title>
         <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
@@ -153,11 +156,11 @@ const MyApp: React.FunctionComponent<AppProps> & {
         </SnackbarProvider>
         <ScrollTopButton />
       </ThemeProvider>
-    </>
+    </CacheProvider>
   );
 };
 
-MyApp.getInitialProps = async (appContext: AppContext): Promise<AppInitialProps & MyAppOwnProps> => {
+MyApp.getInitialProps = async (appContext: AppContext): Promise<AppInitialProps> => {
   // calls page's `getInitialProps` and fills `appProps.pageProps`
   const appProps = await App.getInitialProps(appContext);
   return { ...appProps, ...getInitialData(appContext.ctx) };

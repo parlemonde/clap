@@ -1,20 +1,21 @@
 import classnames from "classnames";
 import React from "react";
 
-import IconButton from "@material-ui/core/IconButton";
-import { makeStyles, withStyles } from "@material-ui/core/styles";
-import DeleteIcon from "@material-ui/icons/Delete";
-import DragIndicatorIcon from "@material-ui/icons/DragIndicator";
-import EditIcon from "@material-ui/icons/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
+import EditIcon from "@mui/icons-material/Edit";
+import IconButton from "@mui/material/IconButton";
+import type { Theme } from "@mui/material/styles";
+import { makeStyles, withStyles } from "@mui/styles";
 
-const StyledDeleteButton = withStyles((theme) => ({
+const StyledDeleteButton = withStyles((theme: Theme) => ({
   root: {
     border: "1px solid",
     borderColor: theme.palette.secondary.main,
   },
 }))(IconButton);
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
   greenBorder: {
     borderColor: (theme.palette.secondary || {}).main,
     border: "1px solid",

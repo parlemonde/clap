@@ -1,11 +1,11 @@
 import { useRouter } from "next/router";
 import React from "react";
 
-import Button from "@material-ui/core/Button";
-import FormHelperText from "@material-ui/core/FormHelperText";
-import Hidden from "@material-ui/core/Hidden";
-import TextField from "@material-ui/core/TextField";
-import Typography from "@material-ui/core/Typography";
+import Button from "@mui/material/Button";
+import FormHelperText from "@mui/material/FormHelperText";
+import Hidden from "@mui/material/Hidden";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 
 import { Inverted } from "src/components/Inverted";
 import { Modal } from "src/components/Modal";
@@ -15,8 +15,8 @@ import { ThemeLink } from "src/components/create/ThemeLink";
 import { useTranslation } from "src/i18n/useTranslation";
 import { usePlanRequests } from "src/services/usePlans";
 import { ProjectServiceContext } from "src/services/useProject";
-import { getQueryString } from "src/util";
 import { getQuestions } from "src/util";
+import { getQueryString } from "src/util";
 import type { Question } from "types/models/question.type";
 
 const PlanEdit: React.FunctionComponent = () => {

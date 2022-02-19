@@ -2,11 +2,12 @@ import { useRouter } from "next/router";
 import qs from "query-string";
 import React from "react";
 
-import { Link, Typography, makeStyles, Backdrop, CircularProgress, InputAdornment, IconButton, TextField, Button, FormControl, InputLabel, Select /*, TextFieldProps */ } from "@material-ui/core";
-import { Visibility, VisibilityOff } from "@material-ui/icons";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { Theme } from "@mui/material/styles";
+import { Link, Typography, Backdrop, CircularProgress, InputAdornment, IconButton, TextField, Button, FormControl, InputLabel, Select /*, TextFieldProps */ } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 
 // import Autocomplete from "@material-ui/lab/Autocomplete";
-
 import { useTranslation } from "src/i18n/useTranslation";
 import { UserServiceContext } from "src/services/UserService";
 import { useLanguages } from "src/services/useLanguages";
@@ -14,7 +15,7 @@ import { axiosRequest } from "src/util/axiosRequest";
 import { getQueryString } from "src/util";
 import type { User } from "types/models/user.type";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
     color: "#fff",

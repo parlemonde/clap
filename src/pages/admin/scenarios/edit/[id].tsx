@@ -4,24 +4,25 @@ import { useSnackbar } from "notistack";
 import { useQueryCache } from "react-query";
 import React from "react";
 
-import Backdrop from "@material-ui/core/Backdrop";
-import Breadcrumbs from "@material-ui/core/Breadcrumbs";
-import Button from "@material-ui/core/Button";
-import CardActions from "@material-ui/core/CardActions";
-import CardContent from "@material-ui/core/CardContent";
-import Card from "@material-ui/core/Card";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import FormControl from "@material-ui/core/FormControl";
-import IconButton from "@material-ui/core/IconButton";
-import InputLabel from "@material-ui/core/InputLabel";
-import Link from "@material-ui/core/Link";
-import NoSsr from "@material-ui/core/NoSsr";
-import Select from "@material-ui/core/Select";
-import TextField from "@material-ui/core/TextField";
-import Typography from "@material-ui/core/Typography";
-import { makeStyles, createStyles, Theme as MaterialTheme } from "@material-ui/core/styles";
-import Close from "@material-ui/icons/Close";
-import NavigateNextIcon from "@material-ui/icons/NavigateNext";
+import Close from "@mui/icons-material/Close";
+import NavigateNextIcon from "@mui/icons-material/NavigateNext";
+import Backdrop from "@mui/material/Backdrop";
+import Breadcrumbs from "@mui/material/Breadcrumbs";
+import Button from "@mui/material/Button";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import Card from "@mui/material/Card";
+import CircularProgress from "@mui/material/CircularProgress";
+import FormControl from "@mui/material/FormControl";
+import IconButton from "@mui/material/IconButton";
+import InputLabel from "@mui/material/InputLabel";
+import Link from "@mui/material/Link";
+import NoSsr from "@mui/material/NoSsr";
+import Select from "@mui/material/Select";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import { Theme as MaterialTheme } from "@mui/material/styles";
+import { makeStyles, createStyles } from "@mui/styles";
 
 import { Modal } from "src/components/Modal";
 import { AdminTile } from "src/components/admin/AdminTile";
@@ -202,8 +203,17 @@ const AdminEditScenario: React.FunctionComponent = () => {
                   )}
                 </CardActions>
                 <CardContent style={{ paddingTop: "0" }}>
-                  <TextField label="Nom" value={scenario.names[languages[languageIndex].value] || ""} onChange={onNameInputChange(languages[languageIndex].value)} color="secondary" fullWidth />
-                  <TextField style={{ marginTop: "8px" }} label="Description" value={scenario.descriptions[languages[languageIndex].value] || ""} onChange={onDescInputChange(languages[languageIndex].value)} color="secondary" multiline fullWidth />
+                  <TextField variant="standard" label="Nom" value={scenario.names[languages[languageIndex].value] || ""} onChange={onNameInputChange(languages[languageIndex].value)} color="secondary" fullWidth />
+                  <TextField
+                    variant="standard"
+                    style={{ marginTop: "8px" }}
+                    label="Description"
+                    value={scenario.descriptions[languages[languageIndex].value] || ""}
+                    onChange={onDescInputChange(languages[languageIndex].value)}
+                    color="secondary"
+                    multiline
+                    fullWidth
+                  />
                 </CardContent>
               </Card>
             ))}
@@ -251,8 +261,8 @@ const AdminEditScenario: React.FunctionComponent = () => {
               <Select
                 native
                 value={languageToAdd}
-                onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
-                  setLanguageToAdd(parseInt(event.target.value, 10));
+                onChange={(event) => {
+                  setLanguageToAdd(typeof event.target.value === "number" ? event.target.value : parseInt(event.target.value, 10));
                 }}
                 label={"Langages"}
                 inputProps={{

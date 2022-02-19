@@ -3,11 +3,11 @@ import { useQueryCache } from "react-query";
 import { ReactSortable } from "react-sortablejs";
 import React from "react";
 
-import Button from "@material-ui/core/Button";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import Hidden from "@material-ui/core/Hidden";
-import TextField from "@material-ui/core/TextField";
-import Typography from "@material-ui/core/Typography";
+import Button from "@mui/material/Button";
+import DialogContentText from "@mui/material/DialogContentText";
+import Hidden from "@mui/material/Hidden";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 
 import { Inverted } from "src/components/Inverted";
 import { Modal } from "src/components/Modal";

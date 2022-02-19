@@ -1,6 +1,6 @@
 import React from "react";
 
-import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogContentText from "@mui/material/DialogContentText";
 
 import { Modal } from "src/components/Modal";
 import { useTranslation } from "src/i18n/useTranslation";

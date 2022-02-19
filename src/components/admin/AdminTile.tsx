@@ -1,5 +1,11 @@
 import React from "react";
 
+import Paper from "@mui/material/Paper";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import { Theme as MaterialTheme } from "@mui/material/styles";
+import { makeStyles, createStyles } from "@mui/styles";
+
 interface AdminTileProps {
   title: string;
   selectLanguage?: React.ReactNode | null;
@@ -7,11 +13,6 @@ interface AdminTileProps {
   toolbarButton?: React.ReactNode | null;
   style?: React.CSSProperties;
 }
-
-import Paper from "@material-ui/core/Paper";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import { makeStyles, createStyles, Theme as MaterialTheme } from "@material-ui/core/styles";
 
 const useTableStyles = makeStyles((theme: MaterialTheme) =>
   createStyles({

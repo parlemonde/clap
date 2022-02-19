@@ -1,11 +1,11 @@
 import { useRouter } from "next/router";
 import React from "react";
 
-import Breadcrumbs from "@material-ui/core/Breadcrumbs";
-import Hidden from "@material-ui/core/Hidden";
-import Link from "@material-ui/core/Link";
-import Typography from "@material-ui/core/Typography";
-import NavigateNextIcon from "@material-ui/icons/NavigateNext";
+import NavigateNextIcon from "@mui/icons-material/NavigateNext";
+import Breadcrumbs from "@mui/material/Breadcrumbs";
+import Hidden from "@mui/material/Hidden";
+import Link from "@mui/material/Link";
+import Typography from "@mui/material/Typography";
 
 import { useTranslation } from "src/i18n/useTranslation";
 import { ProjectServiceContext } from "src/services/useProject";

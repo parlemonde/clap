@@ -1,13 +1,14 @@
 import { useRouter } from "next/router";
 import React from "react";
 
-import Tab from "@material-ui/core/Tab";
-import { makeStyles } from "@material-ui/core/styles";
+import Tab from "@mui/material/Tab";
+import type { Theme } from "@mui/material/styles";
+import { makeStyles } from "@mui/styles";
 
 import { useTranslation } from "src/i18n/useTranslation";
 
 // === Styling the NavBarTab ===
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
   root: {
     fill: "#fff",
     fontFamily: "'Alegreya Sans', sans-serif",
@@ -45,7 +46,7 @@ const NavBarTab: React.FunctionComponent<NavBarTabProps & TabOwnProps> = ({ labe
   return (
     <Tab
       component="a"
-      onClick={(event) => {
+      onClick={(event: React.SyntheticEvent<HTMLAnchorElement>) => {
         event.preventDefault();
         router.push(path);
       }}

@@ -1,7 +1,7 @@
 import { useSnackbar } from "notistack";
 import React from "react";
 
-import { Button } from "@material-ui/core";
+import { Button } from "@mui/material";
 
 import { Modal } from "src/components/Modal";
 import { UserServiceContext } from "src/services/UserService";

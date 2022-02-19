@@ -1,14 +1,14 @@
 import { useRouter } from "next/router";
 import React from "react";
 
-import Button from "@material-ui/core/Button";
-import Hidden from "@material-ui/core/Hidden";
-import MobileStepper from "@material-ui/core/MobileStepper";
-import StepLabel from "@material-ui/core/StepLabel";
-import Stepper from "@material-ui/core/Stepper";
-import Step from "@material-ui/core/Step";
-import { withStyles } from "@material-ui/core/styles";
-import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
+import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
+import Button from "@mui/material/Button";
+import Hidden from "@mui/material/Hidden";
+import MobileStepper from "@mui/material/MobileStepper";
+import StepLabel from "@mui/material/StepLabel";
+import Stepper from "@mui/material/Stepper";
+import Step from "@mui/material/Step";
+import { withStyles } from "@mui/styles";
 
 import type { tFunction } from "src/i18n/translateFunction";
 // import ProjectTitle from "../ProjectTitle";

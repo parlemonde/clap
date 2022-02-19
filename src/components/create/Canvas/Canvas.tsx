@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState, forwardRef, useImperativeHandle } from "react";
 
-import { IconButton, withStyles, Tooltip } from "@material-ui/core";
-import AdjustIcon from "@material-ui/icons/Adjust";
-import BorderColorIcon from "@material-ui/icons/BorderColor";
-import ClearIcon from "@material-ui/icons/Clear";
-import RedoIcon from "@material-ui/icons/Redo";
-import UndoIcon from "@material-ui/icons/Undo";
+import AdjustIcon from "@mui/icons-material/Adjust";
+import BorderColorIcon from "@mui/icons-material/BorderColor";
+import ClearIcon from "@mui/icons-material/Clear";
+import RedoIcon from "@mui/icons-material/Redo";
+import UndoIcon from "@mui/icons-material/Undo";
+import { IconButton, Tooltip } from "@mui/material";
+import { withStyles } from "@mui/styles";
 
 import { useTranslation } from "src/i18n/useTranslation";
 

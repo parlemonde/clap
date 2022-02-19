@@ -2,8 +2,8 @@ import { Chart } from "react-charts";
 import { useQuery } from "react-query";
 import React from "react";
 
-import Typography from "@material-ui/core/Typography";
-import { Divider, Paper, Grid, NoSsr } from "@material-ui/core";
+import Typography from "@mui/material/Typography";
+import { Divider, Paper, Grid, NoSsr } from "@mui/material";
 
 import { UserServiceContext } from "src/services/UserService";
 
@@ -80,7 +80,7 @@ const AdminStats: React.FunctionComponent = () => {
         Statistiques
       </Typography>
       <Divider style={{ marginBottom: "1rem" }}></Divider>
-      <Grid container justify="space-between" spacing={3}>
+      <Grid container justifyContent="space-between" spacing={3}>
         {/* UTILISATEURS */}
         <Grid item xs={6} md={3}>
           <Paper className="admin-stat-tile">

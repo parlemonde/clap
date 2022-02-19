@@ -1,9 +1,9 @@
 import React from "react";
 
-import TextField from "@material-ui/core/TextField";
-import { makeStyles } from "@material-ui/core/styles";
-import { Button } from "@material-ui/core";
-import Close from "@material-ui/icons/Close";
+import Close from "@mui/icons-material/Close";
+import TextField from "@mui/material/TextField";
+import { Button } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 
 import type { Language } from "types/models/language.type";
 
@@ -37,7 +37,7 @@ export const NameInput: React.FunctionComponent<NameInputProps> = ({ value = "",
     <div className={classes.containerNames}>
       <div className={classes.textFieldLanguage}>{language.label}</div>
 
-      <TextField color="secondary" id={language.value} type="text" value={value} onChange={onChange} fullWidth className={classes.textFieldNames} />
+      <TextField variant="standard" color="secondary" id={language.value} type="text" value={value} onChange={onChange} fullWidth className={classes.textFieldNames} />
 
       {canDelete && (
         <Button style={{ borderRadius: "100px", minWidth: "32px", marginLeft: "8px" }} onClick={onDelete}>

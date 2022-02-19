@@ -1,9 +1,9 @@
 import React from "react";
 
-import ButtonBase from "@material-ui/core/ButtonBase";
-import IconButton from "@material-ui/core/IconButton";
-import { withStyles } from "@material-ui/core/styles";
-import DeleteIcon from "@material-ui/icons/Delete";
+import DeleteIcon from "@mui/icons-material/Delete";
+import ButtonBase from "@mui/material/ButtonBase";
+import IconButton from "@mui/material/IconButton";
+import { withStyles } from "@mui/styles";
 
 import { useTranslation } from "src/i18n/useTranslation";
 import type { Plan } from "types/models/plan.type";

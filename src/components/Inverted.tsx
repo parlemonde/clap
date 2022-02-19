@@ -1,10 +1,11 @@
 import classnames from "classnames";
 import React from "react";
 
-import { makeStyles } from "@material-ui/core/styles";
+import type { Theme } from "@mui/material/styles";
+import { makeStyles } from "@mui/styles";
 
 const useStyles = (color: "primary" | "secondary") =>
-  makeStyles((theme) => ({
+  makeStyles((theme: Theme) => ({
     inverted: {
       backgroundColor: (theme.palette[color] || {}).main,
       color: (theme.palette[color] || {}).contrastText,

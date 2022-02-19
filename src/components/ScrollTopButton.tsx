@@ -1,8 +1,8 @@
 import classNames from "classnames";
 import React from "react";
 
-import Fab from "@material-ui/core/Fab";
-import NavigationIcon from "@material-ui/icons/Navigation";
+import NavigationIcon from "@mui/icons-material/Navigation";
+import Fab from "@mui/material/Fab";
 
 export const ScrollTopButton: React.FC = () => {
   const [showScroll, setShowScroll] = React.useState(false);

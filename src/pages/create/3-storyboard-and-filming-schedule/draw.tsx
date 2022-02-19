@@ -1,11 +1,12 @@
 import { useRouter } from "next/router";
 import React from "react";
 
-import Backdrop from "@material-ui/core/Backdrop";
-import Button from "@material-ui/core/Button";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import Typography from "@material-ui/core/Typography";
-import { makeStyles } from "@material-ui/core/styles";
+import Backdrop from "@mui/material/Backdrop";
+import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
+import Typography from "@mui/material/Typography";
+import { Theme } from "@mui/material/styles";
+import { makeStyles } from "@mui/styles";
 
 import { Inverted } from "src/components/Inverted";
 import { Canvas, CanvasRef } from "src/components/create/Canvas";
@@ -17,7 +18,7 @@ import { ProjectServiceContext } from "src/services/useProject";
 import { getQuestions } from "src/util";
 import { getQueryString } from "src/util";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
     color: "#fff",

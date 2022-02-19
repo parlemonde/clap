@@ -1,10 +1,10 @@
 import { useSnackbar } from "notistack";
 import React from "react";
 
-import FormControl from "@material-ui/core/FormControl";
-import InputLabel from "@material-ui/core/InputLabel";
-import MenuItem from "@material-ui/core/MenuItem";
-import Select from "@material-ui/core/Select";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
 
 import { Modal } from "src/components/Modal";
 import { UserServiceContext } from "src/services/UserService";
@@ -52,8 +52,8 @@ export const AddLanguageModal: React.FunctionComponent<AddLanguageModalProps> = 
     onClose();
   };
 
-  const onSelectLanguage = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedLanguageIndex(parseInt(event.target.value, 10));
+  const onSelectLanguage = (event: SelectChangeEvent<string | number>) => {
+    setSelectedLanguageIndex(typeof event.target.value === "number" ? event.target.value : parseInt(event.target.value, 10));
   };
 
   return (

@@ -1,11 +1,11 @@
 import { useRouter } from "next/router";
 import React from "react";
 
-import IconButton from "@material-ui/core/IconButton";
-import Tooltip from "@material-ui/core/Tooltip";
-import Typography from "@material-ui/core/Typography";
-import { withStyles } from "@material-ui/core/styles";
-import AddIcon from "@material-ui/icons/Add";
+import AddIcon from "@mui/icons-material/Add";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
+import Typography from "@mui/material/Typography";
+import { withStyles } from "@mui/styles";
 
 import { useTranslation } from "src/i18n/useTranslation";
 import type { Question } from "types/models/question.type";

@@ -3,13 +3,14 @@ import { useSnackbar } from "notistack";
 import { useQueryCache } from "react-query";
 import React from "react";
 
-import Button from "@material-ui/core/Button";
-import Divider from "@material-ui/core/Divider";
-import Link from "@material-ui/core/Link";
-import TextField from "@material-ui/core/TextField";
-import Typography from "@material-ui/core/Typography";
-import { withStyles, Theme as MaterialTheme } from "@material-ui/core/styles";
-import Alert from "@material-ui/lab/Alert";
+import Alert from "@mui/material/Alert";
+import Button from "@mui/material/Button";
+import Divider from "@mui/material/Divider";
+import Link from "@mui/material/Link";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import { Theme as MaterialTheme } from "@mui/material/styles";
+import { withStyles } from "@mui/styles";
 
 import { Modal } from "src/components/Modal";
 import { Trans } from "src/components/Trans";

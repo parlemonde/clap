@@ -3,26 +3,27 @@ import { useQueryCache } from "react-query";
 import { ReactSortable } from "react-sortablejs";
 import React from "react";
 
-import Button from "@material-ui/core/Button";
-import FormControl from "@material-ui/core/FormControl";
-import IconButton from "@material-ui/core/IconButton";
-import InputLabel from "@material-ui/core/InputLabel";
-import Link from "@material-ui/core/Link";
-import MenuItem from "@material-ui/core/MenuItem";
-import NoSsr from "@material-ui/core/NoSsr";
-import Select from "@material-ui/core/Select";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Table from "@material-ui/core/Table";
-import Tooltip from "@material-ui/core/Tooltip";
-import Typography from "@material-ui/core/Typography";
-import { makeStyles, createStyles, withStyles, Theme as MaterialTheme } from "@material-ui/core/styles";
-import AddCircleIcon from "@material-ui/icons/AddCircle";
-import DeleteIcon from "@material-ui/icons/Delete";
-import DragIndicatorIcon from "@material-ui/icons/DragIndicator";
-import EditIcon from "@material-ui/icons/Edit";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
+import DeleteIcon from "@mui/icons-material/Delete";
+import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
+import EditIcon from "@mui/icons-material/Edit";
+import Button from "@mui/material/Button";
+import FormControl from "@mui/material/FormControl";
+import IconButton from "@mui/material/IconButton";
+import InputLabel from "@mui/material/InputLabel";
+import Link from "@mui/material/Link";
+import MenuItem from "@mui/material/MenuItem";
+import NoSsr from "@mui/material/NoSsr";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Table from "@mui/material/Table";
+import Tooltip from "@mui/material/Tooltip";
+import Typography from "@mui/material/Typography";
+import { Theme as MaterialTheme } from "@mui/material/styles";
+import { makeStyles, createStyles, withStyles } from "@mui/styles";
 
 import { AdminTile } from "src/components/admin/AdminTile";
 import { CreateQuestionModal } from "src/components/admin/questions/CreateQuestionModal";
@@ -91,8 +92,8 @@ const AdminQuestions: React.FunctionComponent = () => {
   const [editQuestionIndex, setEditQuestionIndex] = React.useState<number>(-1);
   const [deleteQuestionIndex, setDeleteQuestionIndex] = React.useState<number>(-1);
 
-  const onSelectScenario = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const scenarioId = parseInt(event.target.value, 10);
+  const onSelectScenario = (event: SelectChangeEvent<string | number>) => {
+    const scenarioId = typeof event.target.value === "number" ? event.target.value : parseInt(event.target.value, 10);
     const scenarioLanguages = Object.keys(groupedScenarios.find((s) => s.id === scenarioId)?.names || {}).filter((key) => key !== "default");
     if (scenarioLanguages.length === 0) {
       enqueueSnackbar("Une erreur inconnue est survenue...", {
@@ -102,9 +103,9 @@ const AdminQuestions: React.FunctionComponent = () => {
     }
     setAvailableLanguages(languages.filter((l) => scenarioLanguages.includes(l.value)));
     const selectedLanguage = scenarioLanguages.includes("fr") ? "fr" : scenarioLanguages[0];
-    setSelectedArgs((s) => ({ ...s, scenarioId: parseInt(event.target.value, 10), languageCode: selectedLanguage }));
+    setSelectedArgs((s) => ({ ...s, scenarioId, languageCode: selectedLanguage }));
   };
-  const onLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const onLanguageChange = (event: SelectChangeEvent<string>) => {
     setSelectedArgs((s) => ({ ...s, languageCode: event.target.value }));
   };
 

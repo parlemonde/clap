@@ -3,20 +3,21 @@ import { useSnackbar } from "notistack";
 import { useQueryCache } from "react-query";
 import React from "react";
 
-import Backdrop from "@material-ui/core/Backdrop";
-import Breadcrumbs from "@material-ui/core/Breadcrumbs";
-import Button from "@material-ui/core/Button";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormControl from "@material-ui/core/FormControl";
-import Link from "@material-ui/core/Link";
-import NoSsr from "@material-ui/core/NoSsr";
-import RadioGroup from "@material-ui/core/RadioGroup";
-import Radio from "@material-ui/core/Radio";
-import TextField from "@material-ui/core/TextField";
-import Typography from "@material-ui/core/Typography";
-import { makeStyles, createStyles, Theme as MaterialTheme } from "@material-ui/core/styles";
-import NavigateNextIcon from "@material-ui/icons/NavigateNext";
+import NavigateNextIcon from "@mui/icons-material/NavigateNext";
+import Backdrop from "@mui/material/Backdrop";
+import Breadcrumbs from "@mui/material/Breadcrumbs";
+import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormControl from "@mui/material/FormControl";
+import Link from "@mui/material/Link";
+import NoSsr from "@mui/material/NoSsr";
+import RadioGroup from "@mui/material/RadioGroup";
+import Radio from "@mui/material/Radio";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import { Theme as MaterialTheme } from "@mui/material/styles";
+import { makeStyles, createStyles } from "@mui/styles";
 
 import { Modal } from "src/components/Modal";
 import { AdminTile } from "src/components/admin/AdminTile";
@@ -122,8 +123,8 @@ const AdminEditUser: React.FunctionComponent = () => {
             <div style={{ padding: "1rem" }}>
               <Typography variant="h3">Identifiants de connexion</Typography>
               <div style={{ margin: "0.5rem 0 2rem 0" }}>
-                <TextField label="Pseudo" value={user.pseudo || ""} color="secondary" fullWidth disabled={isBlocked} onChange={onChangeValue("pseudo")} />
-                <TextField style={{ marginTop: "0.5rem" }} label="Email" value={user.email || ""} color="secondary" fullWidth disabled={isBlocked} onChange={onChangeValue("email")} />
+                <TextField variant="standard" label="Pseudo" value={user.pseudo || ""} color="secondary" fullWidth disabled={isBlocked} onChange={onChangeValue("pseudo")} />
+                <TextField variant="standard" style={{ marginTop: "0.5rem" }} label="Email" value={user.email || ""} color="secondary" fullWidth disabled={isBlocked} onChange={onChangeValue("email")} />
                 {isBlocked && (
                   <Button
                     style={{ marginTop: "0.8rem" }}
@@ -141,6 +142,7 @@ const AdminEditUser: React.FunctionComponent = () => {
               <Typography variant="h3">École</Typography>
               <div style={{ margin: "0.5rem 0 2rem 0" }}>
                 <TextField
+                  variant="standard"
                   label="École"
                   value={user.school || ""}
                   placeholder="Non renseignée"
@@ -152,6 +154,7 @@ const AdminEditUser: React.FunctionComponent = () => {
                   }}
                 />
                 <TextField
+                  variant="standard"
                   style={{ marginTop: "0.5rem" }}
                   label="Niveau de la classe"
                   value={user.level || ""}

@@ -1,9 +1,9 @@
 import React from "react";
 
-import FormControl from "@material-ui/core/FormControl";
-import InputLabel from "@material-ui/core/InputLabel";
-import Select from "@material-ui/core/Select";
-import Typography from "@material-ui/core/Typography";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
+import Typography from "@mui/material/Typography";
 
 import { useTranslation } from "src/i18n/useTranslation";
 import { useLanguages } from "src/services/useLanguages";
@@ -15,7 +15,7 @@ const Settings: React.FunctionComponent = () => {
   const [currentLanguage, setCurrentLanguage] = React.useState<string | null>(null);
   const { languages } = useLanguages();
 
-  const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleLanguageChange = (event: SelectChangeEvent<string>) => {
     setCurrentLanguage(event.target.value);
     setCookie("app-language", event.target.value, {
       "max-age": 24 * 60 * 60,

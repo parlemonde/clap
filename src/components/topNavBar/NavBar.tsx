@@ -1,13 +1,14 @@
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 
-import AppBar from "@material-ui/core/AppBar";
-import Container from "@material-ui/core/Container";
-import Grid from "@material-ui/core/Grid";
-import Tabs from "@material-ui/core/Tabs";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import { makeStyles } from "@material-ui/core/styles";
+import AppBar from "@mui/material/AppBar";
+import Container from "@mui/material/Container";
+import Grid from "@mui/material/Grid";
+import Tabs from "@mui/material/Tabs";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import type { Theme } from "@mui/material/styles";
+import { makeStyles } from "@mui/styles";
 
 import { UserServiceContext } from "src/services/UserService";
 import { getTabs } from "src/util/tabs";
@@ -15,7 +16,7 @@ import { getTabs } from "src/util/tabs";
 import ElevationScroll from "./ElevationScroll";
 import NavBarTab from "./NavBarTab";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
   },
@@ -57,7 +58,7 @@ export const NavBar: React.FunctionComponent<NavBarProps> = (props: NavBarProps)
         <AppBar position="fixed" className={classes.appBar}>
           <Container maxWidth="lg">
             <Toolbar variant="dense" style={{ padding: 0 }}>
-              <Grid container alignItems="center" justify="space-between">
+              <Grid container alignItems="center" justifyContent="space-between">
                 <Grid item>
                   <a href={props.homeLink} style={{ color: "white" }} onClick={handleHomeLink}>
                     <img src="/pelico.svg" alt="logo" style={{ height: "36px", width: "auto" }} />

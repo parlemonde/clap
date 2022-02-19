@@ -1,7 +1,7 @@
 import React from "react";
 
-import ButtonBase from "@material-ui/core/ButtonBase";
-import FiberManualRecordIcon from "@material-ui/icons/FiberManualRecord";
+import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
+import ButtonBase from "@mui/material/ButtonBase";
 
 import { Modal } from "src/components/Modal";
 import { useTranslation } from "src/i18n/useTranslation";

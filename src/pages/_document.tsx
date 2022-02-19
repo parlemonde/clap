@@ -1,7 +1,8 @@
+import createEmotionServer from "@emotion/server/create-instance";
 import Document, { Html, Head, Main, NextScript, DocumentInitialProps, DocumentContext } from "next/document";
 import React from "react";
 
-import { ServerStyleSheets } from "@material-ui/core/styles";
+import createEmotionCache from "src/styles/createEmotionCache";
 
 const APP_URL = process.env.NEXT_PUBLIC_HOST_URL || "https://clap.parlemonde.org";
 const APP_NAME = "Clap!";
@@ -9,20 +10,33 @@ const APP_DESCRIPTION = "Clap! Une application pour créer de super vidéos.";
 
 class MyDocument extends Document {
   static async getInitialProps(ctx: DocumentContext): Promise<DocumentInitialProps> {
-    // Render app and page and get the context of the page with collected side effects.
-    const sheets = new ServerStyleSheets();
     const originalRenderPage = ctx.renderPage;
+    const cache = createEmotionCache();
+    const { extractCriticalToChunks } = createEmotionServer(cache);
 
     ctx.renderPage = () =>
       originalRenderPage({
-        enhanceApp: (App) => (props) => sheets.collect(<App {...props} />),
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        // eslint-disable-next-line react/display-name
+        enhanceApp: (App) => (props) => <App emotionCache={cache} {...props} />,
       });
 
     const initialProps = await Document.getInitialProps(ctx);
+    const emotionStyles = extractCriticalToChunks(initialProps.html);
+    const emotionStyleTags = emotionStyles.styles.map((style) => (
+      <style
+        data-emotion={`${style.key} ${style.ids.join(" ")}`}
+        key={style.key}
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: style.css }}
+      />
+    ));
+
     return {
       ...initialProps,
       // Styles fragment is rendered after the app and page rendering finish.
-      styles: [...React.Children.toArray(initialProps.styles), sheets.getStyleElement()],
+      styles: [...React.Children.toArray(initialProps.styles), ...emotionStyleTags],
     };
   }
 

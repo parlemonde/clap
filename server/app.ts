@@ -1,9 +1,11 @@
-// eslint-disable-next-line
+// eslint-disable-next-line arca/newline-after-import-section
+import { config } from "dotenv";
+config();
+
+// eslint-disable-next-line arca/import-ordering
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-// eslint-disable-next-line
-import { config } from "dotenv";
 import express, { Response, Router } from "express";
 import helmet from "helmet";
 import morgan from "morgan";
@@ -24,8 +26,6 @@ import { connectToDatabase } from "./utils/database";
 import { logger } from "./utils/logger";
 import { normalizePort, onError, getDefaultDirectives } from "./utils/server";
 import { apiSpecs } from "./utils/swagger";
-
-config();
 
 const dev = process.env.NODE_ENV !== "production";
 const frontendHandler = next({ dev });

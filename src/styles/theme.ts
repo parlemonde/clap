@@ -1,8 +1,7 @@
-/* eslint-disable sort-keys */
-import { frFR } from "@material-ui/core/locale";
-import { createMuiTheme } from "@material-ui/core/styles";
+import { frFR } from "@mui/material/locale";
+import { createTheme } from "@mui/material/styles";
 
-const theme = createMuiTheme(
+const theme = createTheme(
   {
     palette: {
       primary: {

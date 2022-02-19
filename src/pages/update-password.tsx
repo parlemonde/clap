@@ -1,8 +1,8 @@
 import { useRouter } from "next/router";
 import React from "react";
 
-import { Button, TextField, Typography, InputAdornment, IconButton } from "@material-ui/core";
-import { Visibility, VisibilityOff } from "@material-ui/icons";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { Button, TextField, Typography, InputAdornment, IconButton } from "@mui/material";
 
 import { useTranslation } from "src/i18n/useTranslation";
 import { UserServiceContext } from "src/services/UserService";

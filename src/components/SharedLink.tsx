@@ -1,9 +1,9 @@
 import { useSnackbar } from "notistack";
 import React from "react";
 
+import FileCopyIcon from "@mui/icons-material/FileCopy";
 // import "./sharedLink.css";
-import { Fab, Tooltip } from "@material-ui/core";
-import FileCopyIcon from "@material-ui/icons/FileCopy";
+import { Fab, Tooltip } from "@mui/material";
 
 interface SharedLinkProps {
   link?: string;

@@ -1,8 +1,8 @@
 import { useSnackbar } from "notistack";
 import React from "react";
 
-import FormHelperText from "@material-ui/core/FormHelperText";
-import TextField from "@material-ui/core/TextField";
+import FormHelperText from "@mui/material/FormHelperText";
+import TextField from "@mui/material/TextField";
 
 import { Modal } from "src/components/Modal";
 import { UserServiceContext } from "src/services/UserService";
