@@ -66,6 +66,6 @@ dump
 
 test.js
 test.html
+docker-compose.build.yml
+docker-compose.bdd.yml
 docker-compose.dev.yml
-docker-compose.bdd.yml
-docker-compose.bdd.yml
