@@ -11,8 +11,6 @@ import { logger } from '../utils/logger';
 import { generateTemporaryToken, isPasswordValid } from '../utils/utils';
 import { getAccessToken } from './lib/tokens';
 
-const secret: string = process.env.APP_SECRET || '';
-
 // --- RESET PASSWORD ---
 type ResetPasswordData = {
     email: string;
@@ -70,6 +68,7 @@ const UPDATE_SCHEMA: JSONSchemaType<UpdatePasswordData> = {
 };
 const updateValidator = ajv.compile(UPDATE_SCHEMA);
 export async function updatePassword(req: Request, res: Response, next: NextFunction): Promise<void> {
+    const secret: string = process.env.APP_SECRET || '';
     if (secret.length === 0) {
         next();
         return;

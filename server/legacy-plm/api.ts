@@ -7,11 +7,11 @@ import { logger } from '../utils/logger';
 import type { PLM_User } from './user';
 import { createPLMUserToDB } from './user';
 
-const plmSsoUrl = process.env.PLM_HOST || '';
-const client_id = process.env.CLIENT_ID || '';
-const client_secret = process.env.CLIENT_SECRET || '';
-
 export async function getUserFromPLM(code: string): Promise<User | null> {
+    const plmSsoUrl = process.env.PLM_HOST || '';
+    const client_id = process.env.CLIENT_ID || '';
+    const client_secret = process.env.CLIENT_SECRET || '';
+
     try {
         const ssoResponse = await axios({
             method: 'POST',

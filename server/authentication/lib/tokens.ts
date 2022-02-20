@@ -5,8 +5,6 @@ import { getRepository, MoreThan } from 'typeorm';
 import { Token } from '../../entities/token';
 import { generateTemporaryToken } from '../../utils/utils';
 
-const secret: string = process.env.APP_SECRET || '';
-
 export async function getAccessToken(
     userId: number,
     withRefreshToken: boolean = false,
@@ -14,6 +12,7 @@ export async function getAccessToken(
     accessToken: string;
     refreshToken: string;
 }> {
+    const secret: string = process.env.APP_SECRET || '';
     const accessToken = jwt.sign({ userId }, secret, { expiresIn: '4h' });
     let refreshToken = '';
     if (withRefreshToken) {
@@ -35,6 +34,7 @@ export async function getNewAccessToken(refreshToken: string): Promise<{
     accessToken: string;
     refreshToken: string;
 } | null> {
+    const secret: string = process.env.APP_SECRET || '';
     const expiredDate = new Date(new Date().getTime() - 7890000000); // now minus 3 months.
 
     const refreshTokenID: string = refreshToken.split('-')[0];

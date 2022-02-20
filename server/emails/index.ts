@@ -8,9 +8,6 @@ import { logger } from '../utils/logger';
 import { getNodeMailer } from './nodemailer';
 import { renderFile } from './renderFile';
 
-const frontUrl = process.env.HOST_URL || 'http://localhost:5000';
-const domain = process.env.HOST_DOMAIN || 'clap.parlemonde.org';
-
 let transporter: Mail | null = null;
 getNodeMailer()
     .then((t) => {
@@ -36,6 +33,7 @@ type emailData = {
 };
 
 function getTemplateData<E extends Email>(email: E, receiverEmail: string, options: EmailOptions<E>): emailData | undefined {
+    const frontUrl = process.env.HOST_URL || 'http://localhost:5000';
     if (email === Email.RESET_PASSWORD) {
         return {
             filename: 'reset-password_mini.html',
@@ -65,6 +63,8 @@ function getTemplateData<E extends Email>(email: E, receiverEmail: string, optio
 }
 
 export async function sendMail<E extends Email>(email: E, receiverEmail: string, options: EmailOptions<E>, language: string = 'fr'): Promise<void> {
+    const frontUrl = process.env.HOST_URL || 'http://localhost:5000';
+    const domain = process.env.HOST_DOMAIN || 'clap.parlemonde.org';
     if (transporter === null) {
         logger.error('Could not send mail, transporter is null!');
         return;

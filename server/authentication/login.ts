@@ -9,8 +9,6 @@ import { ajv, sendInvalidDataError } from '../utils/jsonSchemaValidator';
 import { logger } from '../utils/logger';
 import { getAccessToken } from './lib/tokens';
 
-const secret: string = process.env.APP_SECRET || '';
-
 // --- LOGIN ---
 type LoginData = {
     username: string;
@@ -29,6 +27,8 @@ const LOGIN_SCHEMA: JSONSchemaType<LoginData> = {
 };
 const loginValidator = ajv.compile(LOGIN_SCHEMA);
 export async function login(req: Request, res: Response, next: NextFunction): Promise<void> {
+    const secret: string = process.env.APP_SECRET || '';
+
     if (secret.length === 0) {
         next();
         return;

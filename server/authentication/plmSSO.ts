@@ -6,8 +6,6 @@ import { AppError, ErrorCode } from '../middlewares/handleErrors';
 import { ajv, sendInvalidDataError } from '../utils/jsonSchemaValidator';
 import { getAccessToken } from './lib/tokens';
 
-const secret: string = process.env.APP_SECRET || '';
-
 // --- LOGIN WITH PLM SSO---
 type SsoData = {
     code: string;
@@ -22,6 +20,7 @@ const SSO_SCHEMA: JSONSchemaType<SsoData> = {
 };
 const ssoValidator = ajv.compile(SSO_SCHEMA);
 export async function loginWithPlmSSO(req: Request, res: Response, next: NextFunction): Promise<void> {
+    const secret: string = process.env.APP_SECRET || '';
     if (secret.length === 0) {
         next();
         return;

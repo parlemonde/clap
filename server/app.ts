@@ -1,20 +1,13 @@
-// eslint-disable-next-line import/order
+import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
 import { config } from 'dotenv';
-
-config();
-
 import express, { Router } from 'express';
 import type { Response } from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import next from 'next';
 import path from 'path';
-// eslint-disable-next-line import/order
-import bodyParser from 'body-parser';
-// eslint-disable-next-line import/order
-import cookieParser from 'cookie-parser';
-// eslint-disable-next-line import/order
-import cors from 'cors';
 import swaggerUi from 'swagger-ui-express';
 import type { Connection } from 'typeorm';
 
@@ -30,6 +23,8 @@ import { connectToDatabase } from './utils/database';
 import { logger } from './utils/logger';
 import { normalizePort, onError, getDefaultDirectives } from './utils/server';
 import { apiSpecs } from './utils/swagger';
+
+config();
 
 const dev = process.env.NODE_ENV !== 'production';
 const frontendHandler = next({ dev });

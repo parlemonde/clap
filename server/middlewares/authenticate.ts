@@ -7,10 +7,9 @@ import type { UserType } from '../entities/user';
 import { User } from '../entities/user';
 import { getHeader } from '../utils/utils';
 
-const secret: string = process.env.APP_SECRET || '';
-
 export function authenticate(userType: UserType | undefined = undefined): RequestHandler {
     return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        const secret: string = process.env.APP_SECRET || '';
         let token: string;
         if (req.cookies && req.cookies['access-token']) {
             if (!req.isCsrfValid && req.method !== 'GET') {
