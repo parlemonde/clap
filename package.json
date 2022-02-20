@@ -1,24 +1,22 @@
 {
-  "name": "par-le-monde-webapp",
-  "version": "0.1.0",
-  "private": true,
+  "name": "clap",
+  "version": "1.0.0",
+  "description": "Clap! is web application to create storyboard and videos script for an educational purpose.",
+  "author": "Par Le Monde",
+  "license": "GPL-3.0-only",
+  "main": "dist/server/app.js",
   "scripts": {
-    "dev": "nodemon",
     "copy:templates": "yarn cpx 'server/pdf/templates/*' 'dist/server/pdf/templates' && yarn cpx 'server/emails/templates/*' 'dist/server/emails/templates'",
     "copy:swagger": "yarn cpx \"server/**/*.yaml\" dist/server",
     "copy:pwa": "yarn cpx dist/next/workbox-*.js public && yarn cpx dist/next/sw.js public",
     "build:next": "next build && yarn copy:pwa",
     "build:server": "tsc --project server/tsconfig.json && yarn copy:templates && yarn copy:swagger",
-    "start-dev": "yarn build:server && node dist/server/app.js",
     "build": "rm -rf dist && NODE_ENV=production yarn build:next && yarn build:server",
     "lint": "yarn eslint src && yarn eslint server",
-    "test-type": "yarn tsc -p . && yarn tsc --project server/tsconfig.json --noEmit",
+    "typescript": "yarn tsc -p . && yarn tsc --project server/tsconfig.json --noEmit",
     "start": "NODE_ENV=production node dist/server/app.js",
-    "test": "yarn test-type && yarn lint"
-  },
-  "resolutions": {
-    "chokidar": "^3.4.3",
-    "css": "^3.0.0"
+    "start-dev": "yarn build:server && node dist/server/app.js",
+    "dev": "nodemon"
   },
   "dependencies": {
     "@emotion/cache": "^11.7.1",
@@ -97,7 +95,7 @@
     "@types/morgan": "1.9.3",
     "@types/multer": "1.4.7",
     "@types/mysql": "2.15.19",
-    "@types/node": "16.11.9",
+    "@types/node": "16.11.25",
     "@types/nodemailer": "6.4.4",
     "@types/nprogress": "0.2.0",
     "@types/pug": "2.0.5",
@@ -123,7 +121,6 @@
     "eslint-plugin-react-hooks": "4.3.0",
     "nodemon": "2.0.15",
     "prettier": "2.5.1",
-    "ts-node": "8.10.2",
     "webpack": "4.46.0"
   },
   "packageManager": "yarn@3.1.1"

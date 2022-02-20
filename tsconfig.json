@@ -3,7 +3,13 @@
     "baseUrl": ".",
     "allowJs": true,
     "jsx": "preserve",
-    "lib": ["dom", "es2017", "es2016.array.include", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "es2017",
+      "es2016.array.include",
+      "dom.iterable",
+      "esnext"
+    ],
     "target": "es6",
     "outDir": "dist/next",
     "removeComments": true,
@@ -32,5 +38,8 @@
     "src/**/*.ts",
     "src/**/*.tsx",
     "types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
   ]
 }
