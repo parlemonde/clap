@@ -14,7 +14,11 @@ interface EditQuestionModalProps {
   setQuestions?(f: (questions: Question[]) => Question[]): void;
 }
 
-export const EditQuestionModal: React.FunctionComponent<EditQuestionModalProps> = ({ question = null, onClose = () => {}, setQuestions = () => {} }: EditQuestionModalProps) => {
+export const EditQuestionModal: React.FunctionComponent<EditQuestionModalProps> = ({
+  question = null,
+  onClose = () => {},
+  setQuestions = () => {},
+}: EditQuestionModalProps) => {
   const { enqueueSnackbar } = useSnackbar();
   const { axiosLoggedRequest } = React.useContext(UserServiceContext);
   const [q, setQ] = React.useState<string>("");
@@ -67,9 +71,28 @@ export const EditQuestionModal: React.FunctionComponent<EditQuestionModalProps> 
   };
 
   return (
-    <Modal open={question !== null} onClose={onClose} onConfirm={onSubmit} confirmLabel="Modifier" cancelLabel="Annuler" title="Modifer une question" ariaLabelledBy="create-dialog-title" ariaDescribedBy="create-dialog-description" fullWidth>
+    <Modal
+      open={question !== null}
+      onClose={onClose}
+      onConfirm={onSubmit}
+      confirmLabel="Modifier"
+      cancelLabel="Annuler"
+      title="Modifer une question"
+      ariaLabelledBy="create-dialog-title"
+      ariaDescribedBy="create-dialog-description"
+      fullWidth
+    >
       <div id="create-dialog-description">
-        <TextField value={q} onChange={onQuestionChange} error={hasError} className={hasError ? "shake" : ""} label="Question" variant="outlined" fullWidth color="secondary" />
+        <TextField
+          value={q}
+          onChange={onQuestionChange}
+          error={hasError}
+          className={hasError ? "shake" : ""}
+          label="Question"
+          variant="outlined"
+          fullWidth
+          color="secondary"
+        />
         <FormHelperText id="component-helper-text" style={{ marginLeft: "0.2rem", marginTop: "0.2rem" }}>
           {q.length}/280
         </FormHelperText>

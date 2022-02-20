@@ -37,7 +37,7 @@ const PlanAll: React.FunctionComponent = () => {
 
   const updateQuestion = (index: number, newQuestion: Partial<Question>) => {
     const questions = project.questions || [];
-    const prevQuestion = project.questions[index];
+    const prevQuestion = questions[index];
     questions[index] = { ...prevQuestion, ...newQuestion };
     updateProject({ questions });
   };
@@ -67,7 +67,8 @@ const PlanAll: React.FunctionComponent = () => {
   const handleDeletePlan = (questionIndex: number) => (planIndex: number) => async (event: React.MouseEvent) => {
     event.preventDefault();
     event.stopPropagation();
-    await deletePlan(questions[questionIndex].plans[planIndex].id);
+    const plans = questions[questionIndex].plans || [];
+    await deletePlan(plans[planIndex].id);
     setDeleteIndexes({
       questionIndex,
       planIndex,
@@ -77,7 +78,7 @@ const PlanAll: React.FunctionComponent = () => {
 
   const handleClose = (confirmDelete: boolean) => () => {
     if (confirmDelete && deleteIndexes !== null) {
-      const plans = questions[deleteIndexes.questionIndex].plans;
+      const plans = questions[deleteIndexes.questionIndex].plans || [];
       plans.splice(deleteIndexes.planIndex, 1);
       updateQuestion(deleteIndexes.questionIndex, { plans });
     }
@@ -123,11 +124,26 @@ const PlanAll: React.FunctionComponent = () => {
         </Modal>
 
         <Box sx={{ display: { xs: "none", md: "block" } }} style={{ width: "100%", textAlign: "right", marginTop: "2rem" }}>
-          <Button component="a" href={`/create/4-to-your-camera`} color="secondary" onClick={handleNext} variant="contained" style={{ width: "200px" }}>
+          <Button
+            component="a"
+            href={`/create/4-to-your-camera`}
+            color="secondary"
+            onClick={handleNext}
+            variant="contained"
+            style={{ width: "200px" }}
+          >
             {t("next")}
           </Button>
         </Box>
-        <Button sx={{ display: { xs: "inline-flex", md: "none" } }} component="a" href={`/create/4-to-your-camera`} color="secondary" onClick={handleNext} variant="contained" style={{ width: "100%", marginTop: "2rem" }}>
+        <Button
+          sx={{ display: { xs: "inline-flex", md: "none" } }}
+          component="a"
+          href={`/create/4-to-your-camera`}
+          color="secondary"
+          onClick={handleNext}
+          variant="contained"
+          style={{ width: "100%", marginTop: "2rem" }}
+        >
           {t("next")}
         </Button>
       </div>

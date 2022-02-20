@@ -13,7 +13,12 @@ interface QuestionCardProps {
   handleEdit?(event: React.MouseEvent): void;
 }
 
-export const QuestionCard: React.FunctionComponent<QuestionCardProps> = ({ question, index = 0, handleDelete = () => {}, handleEdit = () => {} }: QuestionCardProps) => {
+export const QuestionCard: React.FunctionComponent<QuestionCardProps> = ({
+  question,
+  index = 0,
+  handleDelete = () => {},
+  handleEdit = () => {},
+}: QuestionCardProps) => {
   return (
     <Box sx={{ border: "1px solid", borderColor: (theme) => theme.palette.secondary.main }} className="question-container">
       <Box sx={{ backgroundColor: (theme) => theme.palette.secondary.main }} className="question-index">
@@ -24,10 +29,23 @@ export const QuestionCard: React.FunctionComponent<QuestionCardProps> = ({ quest
         <p>{question}</p>
       </div>
       <div className="question-actions">
-        <IconButton sx={{ border: "1px solid", borderColor: (theme) => theme.palette.secondary.main }} aria-label="edit" size="small" color="secondary" style={{ marginRight: "0.6rem" }} onClick={handleEdit}>
+        <IconButton
+          sx={{ border: "1px solid", borderColor: (theme) => theme.palette.secondary.main }}
+          aria-label="edit"
+          size="small"
+          color="secondary"
+          style={{ marginRight: "0.6rem" }}
+          onClick={handleEdit}
+        >
           <EditIcon />
         </IconButton>
-        <IconButton sx={{ border: "1px solid", borderColor: (theme) => theme.palette.secondary.main }} aria-label="delete" size="small" color="secondary" onClick={handleDelete}>
+        <IconButton
+          sx={{ border: "1px solid", borderColor: (theme) => theme.palette.secondary.main }}
+          aria-label="delete"
+          size="small"
+          color="secondary"
+          onClick={handleDelete}
+        >
           <DeleteIcon />
         </IconButton>
       </div>

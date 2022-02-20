@@ -25,9 +25,12 @@ const QuestionEdit: React.FunctionComponent = () => {
   const [question, setQuestion] = React.useState<string>("");
   const questionId = parseInt(getQueryString(router.query.question) || "-1", 10);
 
-  const canEditQuestion = React.useMemo(() => project.questions !== null && questionId !== -1 && questionId < project.questions.length, [project.questions, questionId]);
+  const canEditQuestion = React.useMemo(
+    () => project.questions !== null && questionId !== -1 && questionId < project.questions.length,
+    [project.questions, questionId],
+  );
   React.useEffect(() => {
-    setQuestion(canEditQuestion ? project.questions[questionId].question : "");
+    setQuestion(canEditQuestion && project.questions !== null ? project.questions[questionId].question : "");
   }, [canEditQuestion, project.questions, questionId]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,7 +55,7 @@ const QuestionEdit: React.FunctionComponent = () => {
     if (!canEditQuestion) {
       return;
     }
-    const questions = project.questions;
+    const questions = project.questions || [];
     questions[questionId].question = question;
     updateProject({
       questions,
@@ -100,14 +103,27 @@ const QuestionEdit: React.FunctionComponent = () => {
           </div>
         </Typography>
         <Box sx={{ display: { xs: "none", md: "block" } }} style={{ width: "100%", textAlign: "right" }}>
-          <Button component="a" variant="outlined" color="secondary" style={{ marginRight: "1rem" }} href={`/create/2-questions-choice`} onClick={handleBack}>
+          <Button
+            component="a"
+            variant="outlined"
+            color="secondary"
+            style={{ marginRight: "1rem" }}
+            href={`/create/2-questions-choice`}
+            onClick={handleBack}
+          >
             {t("cancel")}
           </Button>
           <Button variant="contained" color="secondary" onClick={handleSubmit}>
             {t("edit")}
           </Button>
         </Box>
-        <Button sx={{ display: { xs: "inline-flex", md: "none" } }} variant="contained" color="secondary" onClick={handleSubmit} style={{ width: "100%", marginTop: "2rem" }}>
+        <Button
+          sx={{ display: { xs: "inline-flex", md: "none" } }}
+          variant="contained"
+          color="secondary"
+          onClick={handleSubmit}
+          style={{ width: "100%", marginTop: "2rem" }}
+        >
           {t("edit")}
         </Button>
       </div>

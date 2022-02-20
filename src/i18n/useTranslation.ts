@@ -7,7 +7,10 @@ type useTranslationContextReturn = {
   translationContext: React.Context<{ t: tFunction; currentLocale: string }>;
 };
 
-const translationContext = React.createContext<{ t: tFunction; currentLocale: string }>(undefined);
+const translationContext = React.createContext<{ t: tFunction; currentLocale: string }>({
+  t: () => "",
+  currentLocale: "",
+});
 
 export const useTranslationContext = (language: string, locales: { [key: string]: string }): useTranslationContextReturn => {
   translator.init(language, locales);

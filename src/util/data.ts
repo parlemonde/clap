@@ -15,7 +15,7 @@ export const getInitialData = (ctx: NextPageContext): initialData => {
 
   if (ctxRequest === null) {
     // client code
-    const initialData = JSON.parse(window.document.getElementById("__NEXT_DATA__")?.innerText);
+    const initialData = JSON.parse(window.document.getElementById("__NEXT_DATA__")?.innerText || "null");
     return {
       currentLocale: initialData?.props?.currentLocale || "fr",
       locales: initialData?.props?.locales || {},

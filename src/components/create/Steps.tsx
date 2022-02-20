@@ -10,7 +10,6 @@ import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 
 import type { tFunction } from "src/i18n/translateFunction";
-// import ProjectTitle from "../ProjectTitle";
 import { useTranslation } from "src/i18n/useTranslation";
 import { ProjectServiceContext } from "src/services/useProject";
 import { getQueryString } from "src/util";
@@ -35,10 +34,6 @@ const steps = [
     name: (t: tFunction) => t("step4"),
     back: () => "/create",
   },
-  // {
-  //   name: (t: tFunction) => t("step5"),
-  //   back: () => "/create",
-  // },
 ];
 
 interface StepsProps {
@@ -91,7 +86,14 @@ export const Steps: React.FunctionComponent<StepsProps> = ({ activeStep }: Steps
           sx={{
             position: "relative",
             margin: "1rem 0",
-            "& .MuiMobileStepper-dot": { backgroundColor: "white", border: "1px solid", borderColor: (theme) => theme.palette.secondary.main, width: "13px", height: "13px", margin: "0 4px" },
+            "& .MuiMobileStepper-dot": {
+              backgroundColor: "white",
+              border: "1px solid",
+              borderColor: (theme) => theme.palette.secondary.main,
+              width: "13px",
+              height: "13px",
+              margin: "0 4px",
+            },
             "& .MuiMobileStepper-dotActive": { backgroundColor: (theme) => theme.palette.secondary.main },
           }}
           variant="dots"

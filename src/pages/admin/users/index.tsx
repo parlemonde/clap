@@ -106,7 +106,16 @@ const AdminUsers: React.FunctionComponent = () => {
           <Table aria-labelledby="themetabletitle" size="medium" aria-label="toutes les langues">
             {users.length > 0 ? (
               <>
-                <TableHead style={{ borderBottom: "1px solid white" }} sx={{ backgroundColor: (theme) => theme.palette.secondary.main, color: "white", fontWeight: "bold", minHeight: "unset", padding: "8px 8px 8px 16px" }}>
+                <TableHead
+                  style={{ borderBottom: "1px solid white" }}
+                  sx={{
+                    backgroundColor: (theme) => theme.palette.secondary.main,
+                    color: "white",
+                    fontWeight: "bold",
+                    minHeight: "unset",
+                    padding: "8px 8px 8px 16px",
+                  }}
+                >
                   <TableRow>
                     <TableCell style={{ color: "white", fontWeight: "bold" }}>
                       <TableSortLabel active={args.order === "pseudo"} direction={args.sort} onClick={onHeaderClick("pseudo")}>
@@ -181,7 +190,7 @@ const AdminUsers: React.FunctionComponent = () => {
                             <EditIcon />
                           </IconButton>
                         </Tooltip>
-                        {user.id !== currentUser.id && (
+                        {currentUser !== null && user.id !== currentUser.id && (
                           <Tooltip title="Supprimer">
                             <IconButton
                               aria-label="delete"
@@ -197,7 +206,14 @@ const AdminUsers: React.FunctionComponent = () => {
                     </TableRow>
                   ))}
                   <TableRow>
-                    <TablePagination rowsPerPageOptions={[5, 10, 25]} count={count} rowsPerPage={args.limit || 10} page={(args.page || 1) - 1} onPageChange={handleChangePage} onRowsPerPageChange={handleChangeRowsPerPage} />
+                    <TablePagination
+                      rowsPerPageOptions={[5, 10, 25]}
+                      count={count}
+                      rowsPerPage={args.limit || 10}
+                      page={(args.page || 1) - 1}
+                      onPageChange={handleChangePage}
+                      onRowsPerPageChange={handleChangeRowsPerPage}
+                    />
                   </TableRow>
                 </TableBody>
               </>

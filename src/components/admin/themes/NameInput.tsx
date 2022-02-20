@@ -30,12 +30,27 @@ interface NameInputProps {
   onDelete?(): void;
 }
 
-export const NameInput: React.FunctionComponent<NameInputProps> = ({ value = "", language = { label: "Français", value: "fr" }, canDelete = false, onChange = () => {}, onDelete = () => {} }: NameInputProps) => {
+export const NameInput: React.FunctionComponent<NameInputProps> = ({
+  value = "",
+  language = { label: "Français", value: "fr" },
+  canDelete = false,
+  onChange = () => {},
+  onDelete = () => {},
+}: NameInputProps) => {
   return (
     <Box sx={styles.containerNames}>
       <Box sx={styles.textFieldLanguage}>{language.label}</Box>
 
-      <TextField variant="standard" color="secondary" id={language.value} type="text" value={value} onChange={onChange} fullWidth sx={styles.textFieldNames} />
+      <TextField
+        variant="standard"
+        color="secondary"
+        id={language.value}
+        type="text"
+        value={value}
+        onChange={onChange}
+        fullWidth
+        sx={styles.textFieldNames}
+      />
 
       {canDelete && (
         <Button style={{ borderRadius: "100px", minWidth: "32px", marginLeft: "8px" }} onClick={onDelete}>

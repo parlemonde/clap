@@ -44,13 +44,13 @@ const QuestionNew: React.FunctionComponent = () => {
       return;
     }
 
-    const questions = [...project.questions];
+    const questions = project.questions !== null ? [...project.questions] : [];
     let newQ: Question | null = {
       id: 0,
       isDefault: false,
       question: newQuestion,
-      scenarioId: project.scenario.id,
-      languageCode: project.scenario.languageCode,
+      scenarioId: project.scenario?.id || 0,
+      languageCode: project.scenario?.languageCode || "fr",
       index: questions.length,
     };
     if (project !== null && project.id !== null && project.id !== -1) {
@@ -114,14 +114,27 @@ const QuestionNew: React.FunctionComponent = () => {
           </div>
         </Typography>
         <Box sx={{ display: { xs: "none", md: "block" } }} style={{ width: "100%", textAlign: "right" }}>
-          <Button component="a" variant="outlined" color="secondary" style={{ marginRight: "1rem" }} href={`/create/2-questions-choice`} onClick={handleBack}>
+          <Button
+            component="a"
+            variant="outlined"
+            color="secondary"
+            style={{ marginRight: "1rem" }}
+            href={`/create/2-questions-choice`}
+            onClick={handleBack}
+          >
             {t("cancel")}
           </Button>
           <Button variant="contained" color="secondary" onClick={handleSubmit}>
             {t("add")}
           </Button>
         </Box>
-        <Button sx={{ display: { xs: "inline-flex", md: "none" } }} variant="contained" color="secondary" onClick={handleSubmit} style={{ width: "100%", marginTop: "2rem" }}>
+        <Button
+          sx={{ display: { xs: "inline-flex", md: "none" } }}
+          variant="contained"
+          color="secondary"
+          onClick={handleSubmit}
+          style={{ width: "100%", marginTop: "2rem" }}
+        >
           {t("add")}
         </Button>
       </div>

@@ -3,7 +3,20 @@ import qs from "query-string";
 import React from "react";
 
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { Link, Typography, Backdrop, CircularProgress, InputAdornment, IconButton, TextField, Button, FormControl, InputLabel, Select /*, TextFieldProps */ } from "@mui/material";
+import {
+  Link,
+  Typography,
+  Backdrop,
+  CircularProgress,
+  InputAdornment,
+  IconButton,
+  TextField,
+  Button,
+  FormControl,
+  InputLabel,
+  Select /*, TextFieldProps */,
+  SelectChangeEvent,
+} from "@mui/material";
 
 // import Autocomplete from "@material-ui/lab/Autocomplete";
 import { useTranslation } from "src/i18n/useTranslation";
@@ -14,7 +27,8 @@ import { getQueryString } from "src/util";
 import type { User } from "types/models/user.type";
 
 // eslint-disable-next-line no-control-regex
-const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/i;
+const emailRegex =
+  /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/i;
 const strongPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/;
 // const frenchClasses = ["CP", "CE1", "CE2", "CM1", "CM2"];
 
@@ -91,7 +105,8 @@ const Signup: React.FunctionComponent = () => {
     const userKeys: Array<"email" | "pseudo" | "password" | "passwordConfirm"> = ["email", "pseudo", "password", "passwordConfirm"];
     let isFormValid = true;
     for (const userKey of userKeys) {
-      if (!checks[userKey](user[userKey], user)) {
+      const value = user[userKey];
+      if (value === undefined || !checks[userKey](value, user)) {
         isFormValid = false;
         setErrors((e) => ({ ...e, [userKey]: true }));
       }
@@ -106,7 +121,7 @@ const Signup: React.FunctionComponent = () => {
       setLoading(false);
       return;
     }
-    const response = await signup(user, inviteCode);
+    const response = await signup(user, inviteCode || "");
     setLoading(false);
     if (response.success) {
       router.push("/create");
@@ -145,7 +160,7 @@ const Signup: React.FunctionComponent = () => {
     setInviteCodeError(false);
   };
 
-  const handleInputChange = (userKey: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (userKey: string) => (event: SelectChangeEvent<string> | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setUser({ ...user, [userKey]: event.target.value });
     setErrors((e) => ({ ...e, [userKey]: false, global: false }));
   };
@@ -245,7 +260,10 @@ const Signup: React.FunctionComponent = () => {
             variant="outlined"
             fullWidth
             error={errors.pseudo || errors.pseudoNotAvailable}
-            helperText={(errors.pseudo ? `${t("signup_required")} | ` : errors.pseudoNotAvailable ? `${t("signup_pseudo_error")} |` : "") + t("signup_pseudo_help")}
+            helperText={
+              (errors.pseudo ? `${t("signup_required")} | ` : errors.pseudoNotAvailable ? `${t("signup_pseudo_error")} |` : "") +
+              t("signup_pseudo_help")
+            }
           />
           {/* <TextField id="school" name="school" type="text" color="secondary" label={t("signup_school")} value={user.school || ""} onChange={handleInputChange("school")} variant="outlined" fullWidth />
           <Autocomplete

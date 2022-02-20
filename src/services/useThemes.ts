@@ -21,7 +21,7 @@ export const useThemes = (
     if (response.error) {
       return [];
     }
-    const localThemes: Theme[] = args.user === false ? JSON.parse(localStorage.getItem("themes")) || [] : [];
+    const localThemes: Theme[] = args.user === false ? JSON.parse(localStorage.getItem("themes") || "[]") || [] : [];
     return [...response.data, ...localThemes];
   }, [args, axiosLoggedRequest]);
   const { data, isLoading, error } = useQuery<Theme[], unknown>(["themes", args], getThemes);
@@ -33,7 +33,7 @@ export const useThemes = (
     [args, queryCache],
   );
   return {
-    themes: isLoading || error ? [] : data,
+    themes: isLoading || error ? [] : data || [],
     setThemes,
   };
 };
@@ -59,7 +59,7 @@ export const useThemeRequests = (): {
         }
         args.newTheme.id = response.data.id;
       } else {
-        const localThemes = JSON.parse(localStorage.getItem("themes")) || [];
+        const localThemes = JSON.parse(localStorage.getItem("themes") || "[]") || [];
         args.newTheme.id = `local_${localThemes.length + 1}`;
         localThemes.push(args.newTheme);
         localStorage.setItem("themes", JSON.stringify(localThemes));

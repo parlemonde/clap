@@ -69,7 +69,16 @@ const AdminLanguages: React.FunctionComponent = () => {
           <Table aria-labelledby="themetabletitle" size="medium" aria-label="toutes les langues">
             {languages.length > 0 ? (
               <>
-                <TableHead style={{ borderBottom: "1px solid white" }} sx={{ backgroundColor: (theme) => theme.palette.secondary.main, color: "white", fontWeight: "bold", minHeight: "unset", padding: "8px 8px 8px 16px" }}>
+                <TableHead
+                  style={{ borderBottom: "1px solid white" }}
+                  sx={{
+                    backgroundColor: (theme) => theme.palette.secondary.main,
+                    color: "white",
+                    fontWeight: "bold",
+                    minHeight: "unset",
+                    padding: "8px 8px 8px 16px",
+                  }}
+                >
                   <TableRow>
                     <TableCell style={{ color: "white", fontWeight: "bold", maxWidth: "2rem" }}>Code langue</TableCell>
                     <TableCell style={{ color: "white", fontWeight: "bold" }}>Langue</TableCell>

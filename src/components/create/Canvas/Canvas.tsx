@@ -22,7 +22,7 @@ const IconButtonSX = {
 const sizes = [2, 4, 8];
 
 export interface CanvasRef {
-  getBlob(): Promise<Blob>;
+  getBlob(): Promise<Blob | null>;
 }
 
 interface Path {
@@ -33,7 +33,7 @@ interface Path {
 
 const CanvasComponent: React.ForwardRefRenderFunction<CanvasRef> = (_, ref: React.Ref<CanvasRef>) => {
   const { t } = useTranslation();
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [isDrawing, setIsDrawing] = useState<boolean>(false);
   const [paths, setPaths] = useState<Array<Path>>([]);
   const [redoPaths, setRedoPaths] = useState<Array<Path>>([]);
@@ -61,10 +61,13 @@ const CanvasComponent: React.ForwardRefRenderFunction<CanvasRef> = (_, ref: Reac
     };
   }, []);
 
-  const getXY = (event: React.MouseEvent<HTMLCanvasElement>) => ({
-    x: event.clientX - canvasRef.current.getBoundingClientRect().left,
-    y: event.clientY - canvasRef.current.getBoundingClientRect().top,
-  });
+  const getXY = (event: React.MouseEvent<HTMLCanvasElement>) =>
+    canvasRef.current
+      ? {
+          x: event.clientX - canvasRef.current.getBoundingClientRect().left,
+          y: event.clientY - canvasRef.current.getBoundingClientRect().top,
+        }
+      : { x: 0, y: 0 };
 
   const drawPath = React.useCallback(
     (x1: number, y1: number, x2: number, y2: number, isNew: boolean, save: boolean, specificColor?: string, specificSize?: number) => {
@@ -177,9 +180,13 @@ const CanvasComponent: React.ForwardRefRenderFunction<CanvasRef> = (_, ref: Reac
           reject();
         });
       return new Promise((resolve) => {
-        canvasRef.current.toBlob(function (blob) {
-          resolve(blob);
-        });
+        if (canvasRef.current) {
+          canvasRef.current.toBlob(function (blob) {
+            resolve(blob);
+          });
+        } else {
+          resolve(null);
+        }
       });
     },
   }));
@@ -223,7 +230,14 @@ const CanvasComponent: React.ForwardRefRenderFunction<CanvasRef> = (_, ref: Reac
           </div>
         </div>
         <div className="draw-canvas-container">
-          <canvas ref={canvasRef} className="draw-canvas" onMouseDown={onMouseDown} onMouseMove={onMouseMove} onMouseUp={onMouseUpOrOut} onMouseOut={onMouseUpOrOut} />
+          <canvas
+            ref={canvasRef}
+            className="draw-canvas"
+            onMouseDown={onMouseDown}
+            onMouseMove={onMouseMove}
+            onMouseUp={onMouseUpOrOut}
+            onMouseOut={onMouseUpOrOut}
+          />
         </div>
       </div>
 

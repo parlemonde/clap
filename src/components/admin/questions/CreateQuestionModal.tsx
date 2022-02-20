@@ -17,7 +17,14 @@ interface CreateQuestionModalProps {
   setQuestions?(f: (questions: Question[]) => Question[]): void;
 }
 
-export const CreateQuestionModal: React.FunctionComponent<CreateQuestionModalProps> = ({ scenarioId, languageCode, open = false, onClose = () => {}, order = 0, setQuestions = () => {} }: CreateQuestionModalProps) => {
+export const CreateQuestionModal: React.FunctionComponent<CreateQuestionModalProps> = ({
+  scenarioId,
+  languageCode,
+  open = false,
+  onClose = () => {},
+  order = 0,
+  setQuestions = () => {},
+}: CreateQuestionModalProps) => {
   const { enqueueSnackbar } = useSnackbar();
   const { axiosLoggedRequest } = React.useContext(UserServiceContext);
   const [question, setQuestion] = React.useState<string>("");
@@ -64,9 +71,28 @@ export const CreateQuestionModal: React.FunctionComponent<CreateQuestionModalPro
     return null;
   }
   return (
-    <Modal open={open} onClose={onClose} onConfirm={onSubmit} confirmLabel="Créer" cancelLabel="Annuler" title="Ajouter une question" ariaLabelledBy="create-dialog-title" ariaDescribedBy="create-dialog-description" fullWidth>
+    <Modal
+      open={open}
+      onClose={onClose}
+      onConfirm={onSubmit}
+      confirmLabel="Créer"
+      cancelLabel="Annuler"
+      title="Ajouter une question"
+      ariaLabelledBy="create-dialog-title"
+      ariaDescribedBy="create-dialog-description"
+      fullWidth
+    >
       <div id="create-dialog-description">
-        <TextField value={question} onChange={onQuestionChange} error={hasError} className={hasError ? "shake" : ""} label="Question" variant="outlined" fullWidth color="secondary" />
+        <TextField
+          value={question}
+          onChange={onQuestionChange}
+          error={hasError}
+          className={hasError ? "shake" : ""}
+          label="Question"
+          variant="outlined"
+          fullWidth
+          color="secondary"
+        />
         <FormHelperText id="component-helper-text" style={{ marginLeft: "0.2rem", marginTop: "0.2rem" }}>
           {question.length}/280
         </FormHelperText>

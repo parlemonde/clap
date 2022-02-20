@@ -20,11 +20,13 @@ const ToCamera: React.FunctionComponent = () => {
   const { axiosLoggedRequest } = React.useContext(UserServiceContext);
   const { project } = React.useContext(ProjectServiceContext);
   const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
-  const [isLoading] = React.useState<boolean>(false);
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
   const generatePDF = async () => {
-    event.preventDefault();
-    // setIsLoading(true);
+    if (project === null || project.theme === null || project.scenario === null) {
+      return;
+    }
+    setIsLoading(true);
     const response = await axiosLoggedRequest({
       method: "POST",
       url: "/projects/pdf",
@@ -39,7 +41,7 @@ const ToCamera: React.FunctionComponent = () => {
         languageCode: currentLocale,
       },
     });
-    // setIsLoading(false);
+    setIsLoading(false);
     if (!response.error) {
       window.open(`/static/pdf/${response.data.url}`);
     }

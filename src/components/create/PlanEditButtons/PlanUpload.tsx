@@ -11,13 +11,20 @@ interface PlanUploadProps {
   handleSubmit(img: Blob): Promise<void>;
 }
 
-export const PlanUpload: React.FunctionComponent<PlanUploadProps> = ({ imageUrl, handleClearInput = () => {}, handleSubmit = async () => {} }: PlanUploadProps) => {
+export const PlanUpload: React.FunctionComponent<PlanUploadProps> = ({
+  imageUrl,
+  handleClearInput = () => {},
+  handleSubmit = async () => {},
+}: PlanUploadProps) => {
   const { t } = useTranslation();
   const croppieRef = useRef<ImgCroppieRef | null>(null);
 
   const submit = async () => {
     if (croppieRef.current) {
-      await handleSubmit(await croppieRef.current.getBlob());
+      const blob = await croppieRef.current.getBlob();
+      if (blob !== null) {
+        await handleSubmit(blob);
+      }
     }
   };
 

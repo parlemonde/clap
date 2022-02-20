@@ -42,7 +42,14 @@ export const ProjectTitle: React.FunctionComponent<ProjectTitleProp> = ({ smalle
       >
         {project.title}
       </Typography>
-      <IconButton sx={{ border: "1px solid", borderColor: (theme) => theme.palette.primary.main }} aria-label="edit" size="small" color="primary" style={{ marginLeft: "0.6rem", marginTop: "-0.3rem" }} onClick={onClick}>
+      <IconButton
+        sx={{ border: "1px solid", borderColor: (theme) => theme.palette.primary.main }}
+        aria-label="edit"
+        size="small"
+        color="primary"
+        style={{ marginLeft: "0.6rem", marginTop: "-0.3rem" }}
+        onClick={onClick}
+      >
         <EditIcon />
       </IconButton>
     </div>

@@ -20,7 +20,7 @@ export const useScenarios = (
     if (args.themeId === undefined || args.themeId === null) {
       localScenarios = [];
     } else {
-      localScenarios = (JSON.parse(localStorage.getItem("scenarios")) || []).filter((s: Scenario) => s.themeId === args.themeId);
+      localScenarios = (JSON.parse(localStorage.getItem("scenarios") || "[]") || []).filter((s: Scenario) => s.themeId === args.themeId);
     }
     // local only
     if (typeof args.themeId === "string") {
@@ -37,7 +37,7 @@ export const useScenarios = (
   }, [args, axiosLoggedRequest]);
   const { data, isLoading, error } = useQuery<Scenario[], unknown>(["scenarios", args], getScenarios);
   return {
-    scenarios: isLoading || error ? [] : data,
+    scenarios: isLoading || error ? [] : data || [],
   };
 };
 
@@ -61,7 +61,7 @@ export const useScenarioRequests = (): {
         }
         return null;
       } else {
-        const localScenarios = JSON.parse(localStorage.getItem("scenarios")) || [];
+        const localScenarios = JSON.parse(localStorage.getItem("scenarios") || "[]") || [];
         args.newScenario.id = `local_${localScenarios.length}`;
         localScenarios.push(args.newScenario);
         localStorage.setItem("scenarios", JSON.stringify(localScenarios));

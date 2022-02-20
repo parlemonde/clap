@@ -38,7 +38,10 @@ const AdminNewScenario: React.FunctionComponent = () => {
   const { enqueueSnackbar } = useSnackbar();
   const { axiosLoggedRequest } = React.useContext(UserServiceContext);
   const { languages } = useLanguages();
-  const languagesMap = React.useMemo(() => languages.reduce((acc: { [key: string]: number }, language: Language, index: number) => ({ ...acc, [language.value]: index }), {}), [languages]);
+  const languagesMap = React.useMemo(
+    () => languages.reduce((acc: { [key: string]: number }, language: Language, index: number) => ({ ...acc, [language.value]: index }), {}),
+    [languages],
+  );
   const { themeNames } = useThemeNames();
   const [scenario, setScenario] = React.useState<GroupedScenario>({
     id: 0,
@@ -197,7 +200,13 @@ const AdminNewScenario: React.FunctionComponent = () => {
           <div style={{ padding: "8px 16px 16px 16px", width: "100%" }}>
             <FormControl fullWidth color="secondary">
               <InputLabel id="demo-simple-select-label">Choisir le thème associé</InputLabel>
-              <Select variant="standard" labelId="demo-simple-select-label" id="demo-simple-select" value={scenario.themeId === -1 ? "" : scenario.themeId} onChange={onThemeSelect}>
+              <Select
+                variant="standard"
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={scenario.themeId === -1 ? "" : scenario.themeId}
+                onChange={onThemeSelect}
+              >
                 {Object.keys(themeNames).map((themeId) => (
                   <MenuItem value={themeId} key={themeId}>
                     {themeNames[parseInt(themeId, 10)].fr}
@@ -221,7 +230,14 @@ const AdminNewScenario: React.FunctionComponent = () => {
                 )}
               </CardActions>
               <CardContent style={{ paddingTop: "0" }}>
-                <TextField variant="standard" label="Nom" value={scenario.names[languages[languageIndex].value] || ""} onChange={onNameInputChange(languages[languageIndex].value)} color="secondary" fullWidth />
+                <TextField
+                  variant="standard"
+                  label="Nom"
+                  value={scenario.names[languages[languageIndex].value] || ""}
+                  onChange={onNameInputChange(languages[languageIndex].value)}
+                  color="secondary"
+                  fullWidth
+                />
                 <TextField
                   variant="standard"
                   style={{ marginTop: "8px" }}

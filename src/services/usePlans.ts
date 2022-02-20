@@ -66,8 +66,8 @@ export const usePlanRequests = (): PlanRequests => {
 
   const uploadPlanImage = React.useCallback(
     async (questionIndex: number, planIndex: number, imageBlob: Blob) => {
-      const questions = project.questions;
-      const question = project.questions[questionIndex] || null;
+      const questions = project.questions || [];
+      const question = questions[questionIndex] || null;
       if (question === null) return;
       question.plans = question.plans || [];
       const plan = question.plans[planIndex] || null;
@@ -82,7 +82,7 @@ export const usePlanRequests = (): PlanRequests => {
         plan.url = await uploadTemporaryImage(imageBlob);
       }
 
-      questions[questionIndex].plans[planIndex] = plan;
+      (questions[questionIndex].plans || [])[planIndex] = plan;
       updateProject({
         questions,
       });

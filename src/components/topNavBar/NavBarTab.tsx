@@ -15,7 +15,13 @@ export interface TabOwnProps {
   style?: React.CSSProperties;
 }
 
-const NavBarTab: React.FunctionComponent<NavBarTabProps & TabOwnProps> = ({ label, path, icon = <span />, style = {}, selected = false }: NavBarTabProps & TabOwnProps) => {
+const NavBarTab: React.FunctionComponent<NavBarTabProps & TabOwnProps> = ({
+  label,
+  path,
+  icon = <span />,
+  style = {},
+  selected = false,
+}: NavBarTabProps & TabOwnProps) => {
   const router = useRouter();
   const { t } = useTranslation();
 

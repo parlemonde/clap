@@ -52,7 +52,7 @@ const EditProject: React.FC = () => {
   }, [project]);
 
   const onUpdateProject = async () => {
-    if (projectTitle.length === 0) {
+    if (project === null || projectTitle.length === 0) {
       setHasError(true);
       return;
     }
@@ -126,30 +126,38 @@ const EditProject: React.FC = () => {
             {t("account_change_button")}
           </Link>
         </div>
-        <div style={{ marginTop: "0.5rem" }}>
-          <label style={{ marginRight: "0.5rem" }}>
-            <strong>{t("pdf_theme")}</strong>
-          </label>
-          {project.theme.names[currentLocale] || project.theme.names.fr}
-        </div>
-        <div style={{ marginTop: "0.5rem" }}>
-          <label style={{ marginRight: "0.5rem" }}>
-            <strong>{t("pdf_scenario")}</strong>
-          </label>
-          {project.scenario.name}
-        </div>
-        <div style={{ marginTop: "0.5rem" }}>
-          <label style={{ marginRight: "0.5rem" }}>
-            <strong>{t("project_question_number")}</strong>
-          </label>
-          {project.questions.length}
-        </div>
-        <div style={{ marginTop: "0.5rem" }}>
-          <label style={{ marginRight: "0.5rem" }}>
-            <strong>{t("project_plan_number")}</strong>
-          </label>
-          {project.questions.reduce<number>((n, q) => n + (q.plans || []).length, 0)}
-        </div>
+        {project.theme !== null && (
+          <div style={{ marginTop: "0.5rem" }}>
+            <label style={{ marginRight: "0.5rem" }}>
+              <strong>{t("pdf_theme")}</strong>
+            </label>
+            {project.theme.names[currentLocale] || project.theme.names.fr}
+          </div>
+        )}
+        {project.scenario !== null && (
+          <div style={{ marginTop: "0.5rem" }}>
+            <label style={{ marginRight: "0.5rem" }}>
+              <strong>{t("pdf_scenario")}</strong>
+            </label>
+            {project.scenario.name}
+          </div>
+        )}
+        {project.questions !== null && (
+          <>
+            <div style={{ marginTop: "0.5rem" }}>
+              <label style={{ marginRight: "0.5rem" }}>
+                <strong>{t("project_question_number")}</strong>
+              </label>
+              {project.questions.length}
+            </div>
+            <div style={{ marginTop: "0.5rem" }}>
+              <label style={{ marginRight: "0.5rem" }}>
+                <strong>{t("project_plan_number")}</strong>
+              </label>
+              {project.questions.reduce<number>((n, q) => n + (q.plans || []).length, 0)}
+            </div>
+          </>
+        )}
         <Button
           style={{ marginTop: "0.8rem" }}
           className="mobile-full-width"
@@ -231,7 +239,8 @@ const EditProject: React.FC = () => {
         <div id="delete-dialog-description">
           <Alert severity="error" style={{ marginBottom: "1rem" }}>
             <Trans i18nKey="project_delete_desc1" i18nParams={{ projectTitle: project.title }}>
-              Attention! Êtes-vous sur de vouloir supprimer le projet <strong>{project.title}</strong> ? Cette action est <strong>irréversible</strong> et supprimera toutes les données du projet incluant questions, plans et images.
+              Attention! Êtes-vous sur de vouloir supprimer le projet <strong>{project.title}</strong> ? Cette action est{" "}
+              <strong>irréversible</strong> et supprimera toutes les données du projet incluant questions, plans et images.
             </Trans>
             <br />
           </Alert>

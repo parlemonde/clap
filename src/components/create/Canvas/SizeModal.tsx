@@ -22,7 +22,13 @@ export const SizeModal: React.FunctionComponent<SizeModalProps> = ({ open = fals
   };
 
   return (
-    <Modal open={open} ariaDescribedBy="size-dialog-title" ariaLabelledBy="size-dialog-description" onClose={handleCloseModalSize()} title={t("tool_stroke_width_title")}>
+    <Modal
+      open={open}
+      ariaDescribedBy="size-dialog-title"
+      ariaLabelledBy="size-dialog-description"
+      onClose={handleCloseModalSize()}
+      title={t("tool_stroke_width_title")}
+    >
       <div className="canvas-colors-container" id="size-dialog-description">
         <ButtonBase style={{ backgroundColor: "white", border: "1px solid #444" }} onClick={handleCloseModalSize(0)}>
           <FiberManualRecordIcon fontSize="small" />

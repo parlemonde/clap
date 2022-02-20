@@ -18,10 +18,22 @@ interface UserServiceContextValue {
   verifyEmail(user: Partial<User>): UserServiceFunc;
   logout(): Promise<void>;
   deleteAccount(): Promise<boolean>;
-  setUser: (value: React.SetStateAction<User>) => void;
+  setUser: (value: React.SetStateAction<User | null>) => void;
 }
 
-export const UserServiceContext = React.createContext<UserServiceContextValue>(undefined);
+export const UserServiceContext = React.createContext<UserServiceContextValue>({
+  user: null,
+  isLoggedIn: false,
+  login: () => Promise.resolve({ success: false, errorCode: 0 }),
+  loginWithSso: () => Promise.resolve({ success: false, errorCode: 0 }),
+  axiosLoggedRequest: () => Promise.resolve({ data: null, error: true, status: 404 }),
+  signup: () => Promise.resolve({ success: false, errorCode: 0 }),
+  updatePassword: () => Promise.resolve({ success: false, errorCode: 0 }),
+  verifyEmail: () => Promise.resolve({ success: false, errorCode: 0 }),
+  logout: () => Promise.resolve(),
+  deleteAccount: () => Promise.resolve(false),
+  setUser: () => {},
+});
 
 interface UserServiceProviderProps {
   user: User | null;
@@ -29,7 +41,11 @@ interface UserServiceProviderProps {
   children: React.ReactNode;
 }
 
-export const UserServiceProvider: React.FunctionComponent<UserServiceProviderProps> = ({ user: initialUser, csrfToken, children }: UserServiceProviderProps) => {
+export const UserServiceProvider: React.FunctionComponent<UserServiceProviderProps> = ({
+  user: initialUser,
+  csrfToken,
+  children,
+}: UserServiceProviderProps) => {
   const [user, setUser] = useState<User | null>(initialUser);
   const router = useRouter();
   const headers = React.useMemo(
@@ -107,6 +123,9 @@ export const UserServiceProvider: React.FunctionComponent<UserServiceProviderPro
   };
 
   const deleteAccount = async (): Promise<boolean> => {
+    if (user === null) {
+      return false;
+    }
     const response = await axiosRequest({
       method: "DELETE",
       headers,

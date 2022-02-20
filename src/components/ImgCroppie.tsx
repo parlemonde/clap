@@ -1,7 +1,6 @@
+import "croppie/croppie.css";
 import Croppie from "croppie";
 import React, { forwardRef, memo, useEffect, useImperativeHandle } from "react";
-
-// import "croppie/croppie.css";
 
 interface ImgCroppieProps {
   src: string;
@@ -11,10 +10,13 @@ interface ImgCroppieProps {
 }
 
 export interface ImgCroppieRef {
-  getBlob(): Promise<Blob>;
+  getBlob(): Promise<Blob | null>;
 }
 
-const ImgCroppieComponent: React.ForwardRefRenderFunction<ImgCroppieRef, ImgCroppieProps> = ({ src, alt, imgWidth = 340, imgHeight = 340 }: ImgCroppieProps, ref: React.Ref<ImgCroppieRef>) => {
+const ImgCroppieComponent: React.ForwardRefRenderFunction<ImgCroppieRef, ImgCroppieProps> = (
+  { src, alt, imgWidth = 340, imgHeight = 340 }: ImgCroppieProps,
+  ref: React.Ref<ImgCroppieRef>,
+) => {
   const croppie = React.useRef<Croppie | null>(null);
 
   useImperativeHandle(ref, () => ({
@@ -32,16 +34,22 @@ const ImgCroppieComponent: React.ForwardRefRenderFunction<ImgCroppieRef, ImgCrop
 
   // init croppie
   useEffect(() => {
-    croppie.current = new Croppie(document.getElementById("my-croppie-img"), {
-      viewport: {
-        width: imgWidth,
-        height: imgHeight,
-        type: "square",
-      },
-    });
-    return () => {
-      croppie.current = null;
-    };
+    const $el = document.getElementById("my-croppie-img");
+    if ($el) {
+      const newCroppie = new Croppie($el, {
+        viewport: {
+          width: imgWidth,
+          height: imgHeight,
+          type: "square",
+        },
+      });
+      croppie.current = newCroppie;
+      return () => {
+        newCroppie.destroy();
+        croppie.current = null;
+      };
+    }
+    return () => {};
   }, [imgHeight, imgWidth]);
 
   return <img id="my-croppie-img" alt={alt} src={src} />;

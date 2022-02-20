@@ -102,7 +102,14 @@ const AdminStats: React.FunctionComponent = () => {
             <Divider />
             <NoSsr>
               {levels && (
-                <div style={{ height: `${Math.max(4, 3 * dataLevel[0].data.length)}rem`, marginTop: `${Math.max(0, 7.5 - Math.max(4, 3 * dataLevel[0].data.length))}rem`, width: "95%", paddingTop: "0.5rem" }}>
+                <div
+                  style={{
+                    height: `${Math.max(4, 3 * dataLevel[0].data.length)}rem`,
+                    marginTop: `${Math.max(0, 7.5 - Math.max(4, 3 * dataLevel[0].data.length))}rem`,
+                    width: "95%",
+                    paddingTop: "0.5rem",
+                  }}
+                >
                   <Chart data={dataLevel} series={levelSerie} axes={levelAxes} />
                 </div>
               )}

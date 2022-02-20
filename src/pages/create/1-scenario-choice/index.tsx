@@ -23,7 +23,7 @@ const ScenarioChoice: React.FunctionComponent = () => {
     user: isLoggedIn,
     isDefault: true,
     languageCode: currentLocale,
-    themeId: project.theme?.id || null,
+    themeId: project.theme?.id ?? undefined,
   });
 
   const handleScenarioClick = (path: string): void => {
@@ -45,7 +45,19 @@ const ScenarioChoice: React.FunctionComponent = () => {
           {t("part1_subtitle2")}
         </Typography>
         <div className="scenarios-container">
-          <ScenarioCard scenario={{ id: "new", languageCode: "fr", isDefault: true, name: t("new_scenario_card_title"), description: t("new_scenario_card_desc"), questionsCount: 0, user: null }} isNew onClick={handleScenarioClick} />
+          <ScenarioCard
+            scenario={{
+              id: "new",
+              languageCode: "fr",
+              isDefault: true,
+              name: t("new_scenario_card_title"),
+              description: t("new_scenario_card_desc"),
+              questionsCount: 0,
+              user: null,
+            }}
+            isNew
+            onClick={handleScenarioClick}
+          />
           {scenarios.map((scenario, index) => (
             <ScenarioCard scenario={scenario} onClick={handleScenarioClick} key={index} />
           ))}

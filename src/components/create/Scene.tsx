@@ -27,20 +27,22 @@ export const Scene: React.FunctionComponent<SceneProps> = ({ q, index, addPlan =
     router.push(`/create/3-storyboard-and-filming-schedule/edit?question=${index}&plan=${planIndex}`);
   };
 
+  const plans = q.plans || [];
+
   return (
     <div style={{ width: "100%", marginTop: "2rem" }}>
       <Typography color="primary" variant="h2">
         {index + 1}. {q.question}
       </Typography>
       <div className="plans">
-        {q.plans.map((plan, planIndex) => (
+        {plans.map((plan, planIndex) => (
           <PlanCard
             key={`${index}_${planIndex}`}
             plan={plan}
             questionIndex={index}
             planIndex={planIndex}
-            showNumber={q.planStartIndex + planIndex}
-            canDelete={q.plans.length > 1}
+            showNumber={(q.planStartIndex ?? 0) + planIndex}
+            canDelete={plans.length > 1}
             handleClick={handleClick(planIndex)}
             handleDelete={removePlan(planIndex)}
           />

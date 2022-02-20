@@ -25,10 +25,10 @@ export const BottomNavBar: React.FunctionComponent = () => {
   const { user, isLoggedIn } = React.useContext(UserServiceContext);
   const [activeTab, setActiveTab] = React.useState(0);
 
-  const tabs = getTabs(isLoggedIn, user && user.type === 2, false);
+  const tabs = getTabs(isLoggedIn, user !== null && user.type === 2, false);
 
   useEffect(() => {
-    const navtabs = getTabs(isLoggedIn, user && user.type === 2, false);
+    const navtabs = getTabs(isLoggedIn, user !== null && user.type === 2, false);
     const index = navtabs.reduce((i1, tab, i2) => (tab.path.split("/")[1] === router.pathname.split("/")[1] ? i2 : i1), -1);
     setActiveTab(index + 1);
   }, [user, isLoggedIn, router.pathname]);

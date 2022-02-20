@@ -15,7 +15,12 @@ interface ProjectCardProps {
   onClickEdit?(event: React.MouseEvent): void;
 }
 
-export const ProjectCard: React.FunctionComponent<ProjectCardProps> = ({ title = "", themeName = "", onClick = () => {}, onClickEdit = () => {} }: ProjectCardProps) => {
+export const ProjectCard: React.FunctionComponent<ProjectCardProps> = ({
+  title = "",
+  themeName = "",
+  onClick = () => {},
+  onClickEdit = () => {},
+}: ProjectCardProps) => {
   const { t } = useTranslation();
 
   return (

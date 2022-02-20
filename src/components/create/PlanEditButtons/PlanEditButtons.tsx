@@ -36,17 +36,21 @@ interface PlanEditButtonsProps {
   submitImageWithUrl?(img: Blob): Promise<void>;
 }
 
-export const PlanEditButtons: React.FunctionComponent<PlanEditButtonsProps> = ({ questionIndex, planIndex, submitImageWithUrl = async () => {} }: PlanEditButtonsProps) => {
+export const PlanEditButtons: React.FunctionComponent<PlanEditButtonsProps> = ({
+  questionIndex,
+  planIndex,
+  submitImageWithUrl = async () => {},
+}: PlanEditButtonsProps) => {
   const router = useRouter();
   const { t } = useTranslation();
 
-  const inputRef = useRef(null);
-  const [imageUrl, setImageUrl] = useState(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [showCamera, setShowCamera] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleInputchange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files.length > 0) {
+    if (event.target.files !== null && event.target.files.length > 0) {
       const url = URL.createObjectURL(event.target.files[0]);
       setImageUrl(url);
     } else {
@@ -103,7 +107,14 @@ export const PlanEditButtons: React.FunctionComponent<PlanEditButtonsProps> = ({
             {t("part3_plan_edit_title_desktop")}
           </Typography>
           <div className="edit-plans-container">
-            <Button variant="outlined" color="secondary" component="label" htmlFor="plan-img-upload" style={{ textTransform: "none" }} startIcon={<CloudUploadIcon />}>
+            <Button
+              variant="outlined"
+              color="secondary"
+              component="label"
+              htmlFor="plan-img-upload"
+              style={{ textTransform: "none" }}
+              startIcon={<CloudUploadIcon />}
+            >
               {t("import_image")}
             </Button>
             <div className="or-vertical-divider">
@@ -113,7 +124,13 @@ export const PlanEditButtons: React.FunctionComponent<PlanEditButtonsProps> = ({
               </Box>
               <Box sx={styles.verticalLine} />
             </div>
-            <Button variant="outlined" color="secondary" style={{ textTransform: "none" }} onClick={toggleShowCamera(true)} startIcon={<PhotoCameraIcon />}>
+            <Button
+              variant="outlined"
+              color="secondary"
+              style={{ textTransform: "none" }}
+              onClick={toggleShowCamera(true)}
+              startIcon={<PhotoCameraIcon />}
+            >
               {t("take_picture")}
             </Button>
             <div className="or-vertical-divider">
@@ -141,7 +158,14 @@ export const PlanEditButtons: React.FunctionComponent<PlanEditButtonsProps> = ({
             {t("part3_plan_edit_title_mobile")}
           </Typography>
           <div className="edit-plans-container-mobile" style={{ marginTop: "1rem" }}>
-            <Button variant="outlined" component="label" htmlFor="plan-img-upload" color="secondary" style={{ textTransform: "none", width: "100%" }} startIcon={<CloudUploadIcon />}>
+            <Button
+              variant="outlined"
+              component="label"
+              htmlFor="plan-img-upload"
+              color="secondary"
+              style={{ textTransform: "none", width: "100%" }}
+              startIcon={<CloudUploadIcon />}
+            >
               {t("import_image")}
             </Button>
             <div className="or-horizontal-divider">
@@ -151,7 +175,13 @@ export const PlanEditButtons: React.FunctionComponent<PlanEditButtonsProps> = ({
               </Box>
               <Box sx={styles.horizontalLine} />
             </div>
-            <Button variant="outlined" color="secondary" style={{ textTransform: "none" }} onClick={toggleShowCamera(true)} startIcon={<PhotoCameraIcon />}>
+            <Button
+              variant="outlined"
+              color="secondary"
+              style={{ textTransform: "none" }}
+              onClick={toggleShowCamera(true)}
+              startIcon={<PhotoCameraIcon />}
+            >
               {t("take_picture")}
             </Button>
           </div>

@@ -42,7 +42,13 @@ const MyVideos: React.FunctionComponent = () => {
         {projects.length > 0 ? (
           <React.Fragment>
             {projects.map((p) => (
-              <ProjectCard key={p.id} title={p.title || ""} themeName={p.theme?.names?.[currentLocale] || p.theme?.names?.fr || ""} onClick={handleWipProjectClick(p.id)} onClickEdit={handleWipProjectClickEdit(p.id)} />
+              <ProjectCard
+                key={p.id}
+                title={p.title || ""}
+                themeName={p.theme?.names?.[currentLocale] || p.theme?.names?.fr || ""}
+                onClick={handleWipProjectClick(p.id)}
+                onClickEdit={handleWipProjectClickEdit(p.id)}
+              />
             ))}
           </React.Fragment>
         ) : (

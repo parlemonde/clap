@@ -87,7 +87,11 @@ const NewTheme: React.FunctionComponent = () => {
           paddingBottom: "2rem",
         }}
       >
-        <Button sx={{ display: { xs: "inline-flex", md: "none" }, paddingLeft: "0!important", margin: "1rem 0 0 0" }} size="medium" onClick={handleHome}>
+        <Button
+          sx={{ display: { xs: "inline-flex", md: "none" }, paddingLeft: "0!important", margin: "1rem 0 0 0" }}
+          size="medium"
+          onClick={handleHome}
+        >
           <KeyboardArrowLeft />
           {t("back")}
         </Button>
@@ -127,7 +131,13 @@ const NewTheme: React.FunctionComponent = () => {
               {t("next")}
             </Button>
           </Box>
-          <Button sx={{ display: { xs: "inline-flex", md: "none" } }} variant="contained" color="secondary" style={{ width: "100%", marginTop: "2rem" }} onClick={handleSubmit}>
+          <Button
+            sx={{ display: { xs: "inline-flex", md: "none" } }}
+            variant="contained"
+            color="secondary"
+            style={{ width: "100%", marginTop: "2rem" }}
+            onClick={handleSubmit}
+          >
             {t("next")}
           </Button>
         </div>

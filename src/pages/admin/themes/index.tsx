@@ -133,7 +133,16 @@ const AdminThemes: React.FunctionComponent = () => {
         <AdminTile
           title="Liste des thèmes"
           toolbarButton={
-            <Button color="inherit" sx={{ color: "black" }} component="a" href="/admin/themes/new" onClick={goToPath("/admin/themes/new")} style={{ flexShrink: 0 }} variant="contained" startIcon={<AddCircleIcon />}>
+            <Button
+              color="inherit"
+              sx={{ color: "black" }}
+              component="a"
+              href="/admin/themes/new"
+              onClick={goToPath("/admin/themes/new")}
+              style={{ flexShrink: 0 }}
+              variant="contained"
+              startIcon={<AddCircleIcon />}
+            >
               Ajouter un thème
             </Button>
           }
@@ -142,14 +151,29 @@ const AdminThemes: React.FunctionComponent = () => {
             <Table aria-labelledby="themetabletitle" size="medium" aria-label="tout les thèmes">
               {defaultThemes.length > 0 ? (
                 <>
-                  <TableHead style={{ borderBottom: "1px solid white" }} sx={{ backgroundColor: (theme) => theme.palette.secondary.main, color: "white", fontWeight: "bold", minHeight: "unset", padding: "8px 8px 8px 16px" }}>
+                  <TableHead
+                    style={{ borderBottom: "1px solid white" }}
+                    sx={{
+                      backgroundColor: (theme) => theme.palette.secondary.main,
+                      color: "white",
+                      fontWeight: "bold",
+                      minHeight: "unset",
+                      padding: "8px 8px 8px 16px",
+                    }}
+                  >
                     <TableRow>
                       <TableCell style={{ color: "white", fontWeight: "bold" }}>Ordre</TableCell>
                       <TableCell style={{ color: "white", fontWeight: "bold" }}>
                         Nom{" "}
                         <span style={{ marginLeft: "2rem" }}>
                           (
-                          <Select variant="standard" value={selectedLanguage} color="secondary" style={{ color: "white" }} onChange={onLanguageChange}>
+                          <Select
+                            variant="standard"
+                            value={selectedLanguage}
+                            color="secondary"
+                            style={{ color: "white" }}
+                            onChange={onLanguageChange}
+                          >
                             {languages.map((l) => (
                               <MenuItem key={l.value} value={l.value}>
                                 {l.label.toLowerCase()}
@@ -186,7 +210,9 @@ const AdminThemes: React.FunctionComponent = () => {
                             {index}
                           </div>
                         </TableCell>
-                        <TableCell style={{ color: t.names[selectedLanguage] ? "inherit" : "grey" }}>{t.names[selectedLanguage] || `${t.names.fr} (non traduit)`}</TableCell>
+                        <TableCell style={{ color: t.names[selectedLanguage] ? "inherit" : "grey" }}>
+                          {t.names[selectedLanguage] || `${t.names.fr} (non traduit)`}
+                        </TableCell>
                         <TableCell style={{ padding: "0 16px" }} padding="none">
                           {t.image ? <img style={{ display: "table-cell" }} height="40" src={t.image.path} /> : "Aucune image"}
                         </TableCell>
@@ -249,7 +275,16 @@ const AdminThemes: React.FunctionComponent = () => {
           <AdminTile title="Thèmes des utilisateurs" style={{ marginTop: "2rem" }}>
             <TableContainer>
               <Table aria-labelledby="themetabletitle" size="medium" aria-label="tout les thèmes">
-                <TableHead style={{ borderBottom: "1px solid white" }} sx={{ backgroundColor: (theme) => theme.palette.secondary.main, color: "white", fontWeight: "bold", minHeight: "unset", padding: "8px 8px 8px 16px" }}>
+                <TableHead
+                  style={{ borderBottom: "1px solid white" }}
+                  sx={{
+                    backgroundColor: (theme) => theme.palette.secondary.main,
+                    color: "white",
+                    fontWeight: "bold",
+                    minHeight: "unset",
+                    padding: "8px 8px 8px 16px",
+                  }}
+                >
                   <TableRow>
                     <TableCell style={{ color: "white", fontWeight: "bold" }}>Nom</TableCell>
                     <TableCell style={{ color: "white", fontWeight: "bold" }} align="right">

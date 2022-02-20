@@ -12,7 +12,10 @@ interface UploadLanguageModalProps {
   onClose?(): void;
 }
 
-export const UploadLanguageModal: React.FunctionComponent<UploadLanguageModalProps> = ({ language = null, onClose = () => {} }: UploadLanguageModalProps) => {
+export const UploadLanguageModal: React.FunctionComponent<UploadLanguageModalProps> = ({
+  language = null,
+  onClose = () => {},
+}: UploadLanguageModalProps) => {
   const { enqueueSnackbar } = useSnackbar();
   const { axiosLoggedRequest } = React.useContext(UserServiceContext);
   const [file, setFile] = React.useState<File | null>(null);
@@ -63,7 +66,11 @@ export const UploadLanguageModal: React.FunctionComponent<UploadLanguageModalPro
       ariaDescribedBy="delete-dialog-description"
       fullWidth
     >
-      <div id="delete-dialog-description">{"Veuillez choisir le fichier .po de la langue pour la mettre à jour. Attention ! Ne vous trompez pas de langue, l'API actuelle ne vérifie pas si la langue dans le fichier .po envoyée correspond bien."}</div>
+      <div id="delete-dialog-description">
+        {
+          "Veuillez choisir le fichier .po de la langue pour la mettre à jour. Attention ! Ne vous trompez pas de langue, l'API actuelle ne vérifie pas si la langue dans le fichier .po envoyée correspond bien."
+        }
+      </div>
       <div style={{ width: "100%", textAlign: "center", margin: "1rem 0" }}>
         <Button component="label" htmlFor="new-language-po" style={{ textTransform: "none" }} color="secondary" variant="contained">
           {file === null ? (

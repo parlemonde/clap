@@ -5,7 +5,9 @@ import { UserServiceContext } from "src/services/UserService";
 import { serializeToQueryUrl } from "src/util";
 import type { Question } from "types/models/question.type";
 
-export const useQuestions = (args: { isDefault?: boolean; scenarioId?: string | number | null; languageCode?: string } = {}): { questions: Question[]; setQuestions(questions: Question[]): void } => {
+export const useQuestions = (
+  args: { isDefault?: boolean; scenarioId?: string | number | null; languageCode?: string } = {},
+): { questions: Question[]; setQuestions(questions: Question[]): void } => {
   const { axiosLoggedRequest } = React.useContext(UserServiceContext);
   const queryCache = useQueryCache();
   const getQuestions: QueryFunction<Question[]> = React.useCallback(async () => {
@@ -29,7 +31,7 @@ export const useQuestions = (args: { isDefault?: boolean; scenarioId?: string | 
     [args, queryCache],
   );
   return {
-    questions: isLoading || error ? [] : data,
+    questions: isLoading || error ? [] : data || [],
     setQuestions,
   };
 };

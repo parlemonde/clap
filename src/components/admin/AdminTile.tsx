@@ -12,10 +12,24 @@ interface AdminTileProps {
   style?: React.CSSProperties;
 }
 
-export const AdminTile: React.FunctionComponent<AdminTileProps> = ({ title, children = null, toolbarButton = null, selectLanguage = null, style = {} }: AdminTileProps) => {
+export const AdminTile: React.FunctionComponent<AdminTileProps> = ({
+  title,
+  children = null,
+  toolbarButton = null,
+  selectLanguage = null,
+  style = {},
+}: AdminTileProps) => {
   return (
     <Paper style={{ ...style, overflow: "hidden" }}>
-      <Toolbar sx={{ backgroundColor: (theme) => theme.palette.secondary.main, color: "white", fontWeight: "bold", minHeight: "unset", padding: "8px 8px 8px 16px" }}>
+      <Toolbar
+        sx={{
+          backgroundColor: (theme) => theme.palette.secondary.main,
+          color: "white",
+          fontWeight: "bold",
+          minHeight: "unset",
+          padding: "8px 8px 8px 16px",
+        }}
+      >
         <Typography variant="h2" id="themetabletitle" component="div" sx={{ flex: "1 1 100%", padding: "6px 0" }}>
           {title} {selectLanguage}
         </Typography>

@@ -20,5 +20,5 @@ export const useLanguages = (): { languages: Language[]; isLoading: boolean } =>
 
   const { data, isLoading, error } = useQuery<Language[], unknown>("languages", getLanguages);
 
-  return { languages: isLoading || error ? defaultLanguages : data, isLoading };
+  return { languages: isLoading || error ? defaultLanguages : data || [], isLoading };
 };

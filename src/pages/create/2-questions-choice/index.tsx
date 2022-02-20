@@ -37,7 +37,7 @@ const QuestionChoice: React.FunctionComponent = () => {
 
   const setQuestions = React.useCallback(
     (questions: Question[] | null) => {
-      if (questions !== null && isLoggedIn && project !== null && project.id !== -1 && project.id !== null) {
+      if (questions !== null && project.questions !== null && isLoggedIn && project !== null && project.id !== -1 && project.id !== null) {
         if (questions.map((q) => q.id).join(",") !== project.questions.map((q) => q.id).join(",")) updateOrder(questions).catch();
       }
       updateProject({
@@ -89,8 +89,8 @@ const QuestionChoice: React.FunctionComponent = () => {
   };
 
   const handleClose = (remove: boolean) => async () => {
-    if (remove) {
-      const questions = project.questions;
+    if (remove && deleteIndex !== null) {
+      const questions = project.questions || [];
       if (questions === null) {
         return;
       }
@@ -126,11 +126,12 @@ const QuestionChoice: React.FunctionComponent = () => {
           }
           const plans: Array<Plan | null> = await Promise.all(requests);
           for (let i = 0, n = plans.length; i < n; i++) {
-            if (plans[i] === null) {
+            const p = plans[i];
+            if (p === null) {
               return;
             }
             if (questions[i]) {
-              questions[i].plans = [plans[i]];
+              questions[i].plans = [p];
             }
           }
           updateProject({ ...response.data, questions });
@@ -155,7 +156,8 @@ const QuestionChoice: React.FunctionComponent = () => {
     router.push(`/create/3-storyboard-and-filming-schedule`);
   };
 
-  const toDeleteQuestion = project.questions !== null && deleteIndex !== null && deleteIndex < project.questions.length ? project.questions[deleteIndex].question : "";
+  const toDeleteQuestion =
+    project.questions !== null && deleteIndex !== null && deleteIndex < project.questions.length ? project.questions[deleteIndex].question : "";
 
   return (
     <div>
@@ -194,12 +196,27 @@ const QuestionChoice: React.FunctionComponent = () => {
         )}
 
         <Box sx={{ display: { xs: "none", md: "block" } }} style={{ width: "100%", textAlign: "right", marginTop: "2rem" }}>
-          <Button component="a" href={`/create/3-storyboard-and-filming-schedule`} color="secondary" onClick={handleNext} variant="contained" style={{ width: "200px" }}>
+          <Button
+            component="a"
+            href={`/create/3-storyboard-and-filming-schedule`}
+            color="secondary"
+            onClick={handleNext}
+            variant="contained"
+            style={{ width: "200px" }}
+          >
             {t("next")}
           </Button>
         </Box>
 
-        <Button sx={{ display: { xs: "inline-flex", md: "none" } }} component="a" href={`/create/3-storyboard-and-filming-schedule`} color="secondary" onClick={handleNext} variant="contained" style={{ width: "100%", marginTop: "2rem" }}>
+        <Button
+          sx={{ display: { xs: "inline-flex", md: "none" } }}
+          component="a"
+          href={`/create/3-storyboard-and-filming-schedule`}
+          color="secondary"
+          onClick={handleNext}
+          variant="contained"
+          style={{ width: "100%", marginTop: "2rem" }}
+        >
           {t("next")}
         </Button>
 

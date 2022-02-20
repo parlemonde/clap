@@ -13,7 +13,14 @@ interface ClearModalProps {
 export const ClearModal: React.FunctionComponent<ClearModalProps> = ({ open = false, onClear = () => () => {} }: ClearModalProps) => {
   const { t } = useTranslation();
   return (
-    <Modal open={open} ariaDescribedBy="clear-dialog-title" ariaLabelledBy="clear-dialog-description" onClose={onClear(false)} onConfirm={onClear(true)} title={t("tool_clear_title")}>
+    <Modal
+      open={open}
+      ariaDescribedBy="clear-dialog-title"
+      ariaLabelledBy="clear-dialog-description"
+      onClose={onClear(false)}
+      onConfirm={onClear(true)}
+      title={t("tool_clear_title")}
+    >
       <DialogContentText id="clear-dialog-description">{t("tool_clear_desc")}</DialogContentText>
     </Modal>
   );

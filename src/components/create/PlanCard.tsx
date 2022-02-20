@@ -17,7 +17,15 @@ interface PlanCardProps {
   handleDelete?(event: React.MouseEvent): void;
 }
 
-export const PlanCard: React.FunctionComponent<PlanCardProps> = ({ plan, questionIndex, planIndex, showNumber, canDelete = false, handleClick = () => {}, handleDelete = () => {} }: PlanCardProps) => {
+export const PlanCard: React.FunctionComponent<PlanCardProps> = ({
+  plan,
+  questionIndex,
+  planIndex,
+  showNumber,
+  canDelete = false,
+  handleClick = () => {},
+  handleDelete = () => {},
+}: PlanCardProps) => {
   const { t } = useTranslation();
   const buttonStyle: React.CSSProperties = { width: "100%", height: "100%" };
   if (plan.url) {
@@ -29,7 +37,12 @@ export const PlanCard: React.FunctionComponent<PlanCardProps> = ({ plan, questio
 
   return (
     <div className="plan-button-container" key={planIndex}>
-      <ButtonBase component="a" href={`/create/3-storyboard-and-filming-schedule/edit?question=${questionIndex}&plan=${planIndex}`} onClick={handleClick} style={buttonStyle}>
+      <ButtonBase
+        component="a"
+        href={`/create/3-storyboard-and-filming-schedule/edit?question=${questionIndex}&plan=${planIndex}`}
+        onClick={handleClick}
+        style={buttonStyle}
+      >
         <div className="plan">
           <div className="number">{showNumber}</div>
           <div className="edit">{t("edit")}</div>

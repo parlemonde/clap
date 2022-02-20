@@ -29,7 +29,10 @@ const AdminNewTheme: React.FunctionComponent = () => {
   const { enqueueSnackbar } = useSnackbar();
   const queryCache = useQueryCache();
   const { languages } = useLanguages();
-  const languagesMap = languages.reduce((acc: { [key: string]: number }, language: Language, index: number) => ({ ...acc, [language.value]: index }), {});
+  const languagesMap = languages.reduce(
+    (acc: { [key: string]: number }, language: Language, index: number) => ({ ...acc, [language.value]: index }),
+    {},
+  );
   const { axiosLoggedRequest } = React.useContext(UserServiceContext);
   const croppieRef = React.useRef<ImgCroppieRef | null>(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
@@ -40,7 +43,7 @@ const AdminNewTheme: React.FunctionComponent = () => {
     },
     isDefault: true,
     image: null,
-    order: null,
+    order: 0,
   });
   const [showModal, setShowModal] = React.useState<boolean>(false);
   const [languageToAdd, setLanguageToAdd] = React.useState<number>(0);
@@ -77,7 +80,7 @@ const AdminNewTheme: React.FunctionComponent = () => {
   };
 
   const onImageInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files.length > 0) {
+    if (event.target.files !== null && event.target.files.length > 0) {
       const url = URL.createObjectURL(event.target.files[0]);
       setImageUrl(url);
     } else {
@@ -267,7 +270,16 @@ const AdminNewTheme: React.FunctionComponent = () => {
       </Modal>
 
       {/* image modal */}
-      <Modal open={imageUrl !== null} onClose={onImageUrlClear} onConfirm={onSetImageBlob} confirmLabel="Valider" cancelLabel="Annuler" title="Redimensionner l'image" ariaLabelledBy="add-dialog" ariaDescribedBy="add-dialog-desc">
+      <Modal
+        open={imageUrl !== null}
+        onClose={onImageUrlClear}
+        onConfirm={onSetImageBlob}
+        confirmLabel="Valider"
+        cancelLabel="Annuler"
+        title="Redimensionner l'image"
+        ariaLabelledBy="add-dialog"
+        ariaDescribedBy="add-dialog-desc"
+      >
         {imageUrl !== null && (
           <div className="text-center">
             <div style={{ width: "500px", height: "400px", marginBottom: "2rem" }}>

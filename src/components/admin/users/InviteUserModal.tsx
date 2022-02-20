@@ -33,7 +33,15 @@ export const InviteUserModal: React.FunctionComponent<InviteUserModalProps> = ({
   }, [getInviteCode]);
 
   return (
-    <Modal open={open} onClose={onClose} cancelLabel="Retour" title="Inviter un utilisateur" ariaLabelledBy="add-dialog-title" ariaDescribedBy="add-dialog-description" fullWidth>
+    <Modal
+      open={open}
+      onClose={onClose}
+      cancelLabel="Retour"
+      title="Inviter un utilisateur"
+      ariaLabelledBy="add-dialog-title"
+      ariaDescribedBy="add-dialog-description"
+      fullWidth
+    >
       <div id="add-dialog-description">
         <div>
           <label style={{ fontWeight: "bold" }}>{"Code d'invitation :"}</label>

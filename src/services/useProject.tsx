@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import qs from "query-string";
 import React from "react";
 
+import { getQueryString } from "src/util";
 import type { Project } from "types/models/project.type";
 import type { Theme } from "types/models/theme.type";
 
@@ -25,7 +26,10 @@ interface ProjectServiceProviderProps {
   children: React.ReactNodeArray;
 }
 
-export const ProjectServiceContext = React.createContext<ProjectServiceContextValue>(undefined);
+export const ProjectServiceContext = React.createContext<ProjectServiceContextValue>({
+  project: DEFAULT_PROJECT,
+  updateProject: () => {},
+});
 
 export const ProjectServiceProvider: React.FunctionComponent<ProjectServiceProviderProps> = ({ children }: ProjectServiceProviderProps) => {
   const router = useRouter();
@@ -33,7 +37,7 @@ export const ProjectServiceProvider: React.FunctionComponent<ProjectServiceProvi
   const [project, setProject] = React.useState<Project | null>(null);
 
   const getDefaultProject = React.useCallback(async (): Promise<Project> => {
-    let defaultProject: Project = DEFAULT_PROJECT;
+    let defaultProject: Project | null = DEFAULT_PROJECT;
     if (typeof window !== "undefined") {
       const path = window.location.pathname;
       const locationParams = qs.parse(window.location.search);
@@ -49,9 +53,13 @@ export const ProjectServiceProvider: React.FunctionComponent<ProjectServiceProvi
         } else {
           defaultProject = null;
         }
-      } else if (path.slice(0, 26) === "/create/2-questions-choice" || path.slice(0, 41) === "/create/3-storyboard-and-filming-schedule" || path.slice(0, 24) === "/create/4-to-your-camera") {
+      } else if (
+        path.slice(0, 26) === "/create/2-questions-choice" ||
+        path.slice(0, 41) === "/create/3-storyboard-and-filming-schedule" ||
+        path.slice(0, 24) === "/create/4-to-your-camera"
+      ) {
         try {
-          defaultProject = JSON.parse(localStorage.getItem("lastProject") || null) || null;
+          defaultProject = JSON.parse(localStorage.getItem("lastProject") || "null") || null;
           if (defaultProject !== null && defaultProject.id !== -1 && !isLoggedIn) {
             defaultProject = null;
           }
@@ -60,10 +68,11 @@ export const ProjectServiceProvider: React.FunctionComponent<ProjectServiceProvi
         }
       } else {
         // look for location params.
-        if (locationParams.themeId !== undefined) {
+        const themeID = getQueryString(locationParams.themeId);
+        if (themeID) {
           let theme: Theme | null = null;
-          if (locationParams.themeId.slice(0, 5) === "local") {
-            theme = (JSON.parse(localStorage.getItem("themes")) || []).find((t: Theme) => t.id === locationParams.themeId) || null;
+          if (themeID.slice(0, 5) === "local") {
+            theme = (JSON.parse(localStorage.getItem("themes") || "[]") || []).find((t: Theme) => t.id === locationParams.themeId) || null;
           } else {
             const response = await axiosLoggedRequest({
               method: "GET",
@@ -104,6 +113,9 @@ export const ProjectServiceProvider: React.FunctionComponent<ProjectServiceProvi
   const updateProject = (newProject: Partial<Project>): void => {
     if (project === null) return;
     setProject((p) => {
+      if (p === null) {
+        return p;
+      }
       localStorage.setItem("lastProject", JSON.stringify({ ...p, ...newProject }));
       return {
         ...p,

@@ -18,7 +18,7 @@ interface ThemeCardProps {
 }
 
 export const ThemeCard: React.FunctionComponent<ThemeCardProps> = ({ id, names, image, onClick = () => {} }: ThemeCardProps) => {
-  const img = useRef(null);
+  const img = useRef<HTMLImageElement | null>(null);
   const { currentLocale, t } = useTranslation();
   const [imgHasError, setImgHasError] = useState(false);
 

@@ -36,10 +36,15 @@ const PlanEdit: React.FunctionComponent = () => {
 
   const handleConfirm = async (event: React.MouseEvent) => {
     event.preventDefault();
+    if (!canvasRef.current) {
+      return;
+    }
     setIsLoading(true);
     try {
       const imageBlob = await canvasRef.current.getBlob();
-      await uploadPlanImage(questionIndex, planIndex, imageBlob);
+      if (imageBlob !== null) {
+        await uploadPlanImage(questionIndex, planIndex, imageBlob);
+      }
     } catch (e) {
       console.error(e);
     }
@@ -76,10 +81,24 @@ const PlanEdit: React.FunctionComponent = () => {
         </Backdrop>
 
         <div style={{ width: "100%", textAlign: "right", margin: "2rem 0" }}>
-          <Button component="a" variant="outlined" color="secondary" style={{ marginRight: "1rem" }} href="/create/3-storyboard-and-filming-schedule" onClick={handleBack}>
+          <Button
+            component="a"
+            variant="outlined"
+            color="secondary"
+            style={{ marginRight: "1rem" }}
+            href="/create/3-storyboard-and-filming-schedule"
+            onClick={handleBack}
+          >
             {t("cancel")}
           </Button>
-          <Button component="a" variant="contained" color="secondary" style={{ marginRight: "1rem" }} href={`/create/3-storyboard-and-filming-schedule/edit?question=${questionIndex}&plan=${planIndex}`} onClick={handleConfirm}>
+          <Button
+            component="a"
+            variant="contained"
+            color="secondary"
+            style={{ marginRight: "1rem" }}
+            href={`/create/3-storyboard-and-filming-schedule/edit?question=${questionIndex}&plan=${planIndex}`}
+            onClick={handleConfirm}
+          >
             {t("save")}
           </Button>
         </div>

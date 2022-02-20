@@ -18,7 +18,11 @@ interface AddLanguageModalProps {
   setLanguages?(f: (languages: Language[]) => Language[]): void;
 }
 
-export const AddLanguageModal: React.FunctionComponent<AddLanguageModalProps> = ({ open = false, onClose = () => {}, setLanguages = () => {} }: AddLanguageModalProps) => {
+export const AddLanguageModal: React.FunctionComponent<AddLanguageModalProps> = ({
+  open = false,
+  onClose = () => {},
+  setLanguages = () => {},
+}: AddLanguageModalProps) => {
   const { enqueueSnackbar } = useSnackbar();
   const { axiosLoggedRequest } = React.useContext(UserServiceContext);
   const [selectedLanguageIndex, setSelectedLanguageIndex] = React.useState<number>(-1);
@@ -74,7 +78,13 @@ export const AddLanguageModal: React.FunctionComponent<AddLanguageModalProps> = 
       <div id="new-dialog-description">
         <FormControl fullWidth color="secondary">
           <InputLabel id="demo-simple-select-label">Choisir la langue</InputLabel>
-          <Select variant="standard" labelId="demo-simple-select-label" id="demo-simple-select" value={selectedLanguageIndex === -1 ? "" : selectedLanguageIndex} onChange={onSelectLanguage}>
+          <Select
+            variant="standard"
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            value={selectedLanguageIndex === -1 ? "" : selectedLanguageIndex}
+            onChange={onSelectLanguage}
+          >
             {allLanguages.map((l, index) => (
               <MenuItem value={index} key={l.code}>
                 {l.englishName}

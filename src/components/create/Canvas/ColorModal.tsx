@@ -23,7 +23,13 @@ export const ColorModal: React.FunctionComponent<ColorModalProps> = ({ open = fa
   };
 
   return (
-    <Modal open={open} ariaDescribedBy="color-dialog-title" ariaLabelledBy="color-dialog-description" onClose={handleCloseModalColor()} title={t("tool_color_title")}>
+    <Modal
+      open={open}
+      ariaDescribedBy="color-dialog-title"
+      ariaLabelledBy="color-dialog-description"
+      onClose={handleCloseModalColor()}
+      title={t("tool_color_title")}
+    >
       <div className="canvas-colors-container" id="color-dialog-description">
         {colors.map((c) => (
           <ButtonBase key={c} style={{ backgroundColor: c }} onClick={handleCloseModalColor(c)} />

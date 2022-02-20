@@ -28,7 +28,15 @@ export const ScenarioCard: React.FunctionComponent<ScenarioCardProps> = ({ scena
   };
 
   return (
-    <Box component="a" sx={{ border: "1px solid", borderColor: (theme) => theme.palette.secondary.main }} className="card-container" tabIndex={0} href={path} onClick={handleClick} style={isNew ? { backgroundColor: "#f0fafa" } : {}}>
+    <Box
+      component="a"
+      sx={{ border: "1px solid", borderColor: (theme) => theme.palette.secondary.main }}
+      className="card-container"
+      tabIndex={0}
+      href={path}
+      onClick={handleClick}
+      style={isNew ? { backgroundColor: "#f0fafa" } : {}}
+    >
       <div>
         <Typography color="primary" variant="h3">
           {scenario.name}

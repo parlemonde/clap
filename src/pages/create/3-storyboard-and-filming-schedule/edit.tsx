@@ -34,19 +34,22 @@ const PlanEdit: React.FunctionComponent = () => {
 
   const updateQuestion = (index: number, newQuestion: Partial<Question>) => {
     const questions = project.questions || [];
-    const prevQuestion = project.questions[index];
+    const prevQuestion = questions[index];
     questions[index] = { ...prevQuestion, ...newQuestion };
     updateProject({ questions });
   };
 
   const handleDescriptionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    if (plan === null || question === null) {
+    if (plan === null || question === null || question.plans === null || question.plans === undefined) {
       return;
     }
     question.plans[planIndex].description = (event.target.value || "").slice(0, 2000);
     updateQuestion(questionIndex, question);
   };
   const handleDescriptionBlur = async (event: React.FocusEvent<HTMLTextAreaElement>) => {
+    if (question === null || question.plans === null || question.plans === undefined) {
+      return;
+    }
     const plan = question.plans[planIndex];
     await updatePlan({ ...plan, description: (event.target.value || "").slice(0, 2000) });
   };
@@ -89,7 +92,7 @@ const PlanEdit: React.FunctionComponent = () => {
             {t("part3_plan_desc")}
             <div>
               <TextField
-                value={question.plans[planIndex].description || ""}
+                value={(question.plans || [])[planIndex]?.description ?? ""}
                 onChange={handleDescriptionChange}
                 onBlur={handleDescriptionBlur}
                 required
@@ -102,7 +105,7 @@ const PlanEdit: React.FunctionComponent = () => {
                 autoComplete="off"
               />
               <FormHelperText id="component-helper-text" style={{ marginLeft: "0.2rem", marginTop: "0.2rem" }}>
-                {(question.plans[planIndex].description || "").length}/2000
+                {((question.plans || [])[planIndex]?.description ?? "").length}/2000
               </FormHelperText>
             </div>
           </Typography>
@@ -117,11 +120,25 @@ const PlanEdit: React.FunctionComponent = () => {
               <img className="plan-img" alt="dessin du plan" src={plan.url} />
             </div>
             <div className="text-center">
-              <Button className="plan-button" variant="outlined" color="secondary" style={{ display: "inline-block" }} onClick={handleEditPlanModal(true)}>
+              <Button
+                className="plan-button"
+                variant="outlined"
+                color="secondary"
+                style={{ display: "inline-block" }}
+                onClick={handleEditPlanModal(true)}
+              >
                 {t("part3_change_image")}
               </Button>
             </div>
-            <Modal ariaLabelledBy="edit-drawing-title" ariaDescribedBy="edit-drawing-desc" title={t("part3_change_image_title")} onClose={handleEditPlanModal(false)} fullWidth={true} maxWidth="md" open={showEditPlan}>
+            <Modal
+              ariaLabelledBy="edit-drawing-title"
+              ariaDescribedBy="edit-drawing-desc"
+              title={t("part3_change_image_title")}
+              onClose={handleEditPlanModal(false)}
+              fullWidth={true}
+              maxWidth="md"
+              open={showEditPlan}
+            >
               <div id="edit-drawing-desc">
                 <PlanEditButtons questionIndex={questionIndex} planIndex={planIndex} submitImageWithUrl={submitImageWithUrl} />
               </div>
@@ -129,14 +146,31 @@ const PlanEdit: React.FunctionComponent = () => {
           </div>
         )}
 
-        {(question !== null && plan !== null && !!plan.url) || <PlanEditButtons questionIndex={questionIndex} planIndex={planIndex} submitImageWithUrl={submitImageWithUrl} />}
+        {(question !== null && plan !== null && !!plan.url) || (
+          <PlanEditButtons questionIndex={questionIndex} planIndex={planIndex} submitImageWithUrl={submitImageWithUrl} />
+        )}
 
         <Box sx={{ display: { xs: "none", md: "block" } }} style={{ width: "100%", textAlign: "right" }}>
-          <Button component="a" variant="contained" color="secondary" style={{ margin: "0 1rem 3rem 0" }} href="/create/3-storyboard-and-filming-schedule" onClick={handleBack}>
+          <Button
+            component="a"
+            variant="contained"
+            color="secondary"
+            style={{ margin: "0 1rem 3rem 0" }}
+            href="/create/3-storyboard-and-filming-schedule"
+            onClick={handleBack}
+          >
             {t("continue")}
           </Button>
         </Box>
-        <Button sx={{ display: { xs: "inline-flex", md: "none" } }} component="a" variant="contained" color="secondary" style={{ margin: "3rem 0", width: "100%" }} href={`/create/3-storyboard-and-filming-schedule`} onClick={handleBack}>
+        <Button
+          sx={{ display: { xs: "inline-flex", md: "none" } }}
+          component="a"
+          variant="contained"
+          color="secondary"
+          style={{ margin: "3rem 0", width: "100%" }}
+          href={`/create/3-storyboard-and-filming-schedule`}
+          onClick={handleBack}
+        >
           {t("continue")}
         </Button>
       </div>

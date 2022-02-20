@@ -26,10 +26,10 @@ export const NavBar: React.FunctionComponent<NavBarProps> = (props: NavBarProps)
   const [value, setValue] = React.useState(0);
   const { user, isLoggedIn } = React.useContext(UserServiceContext);
 
-  const tabs = getTabs(isLoggedIn, user && user.type === 2, props.isOnAdmin || false);
+  const tabs = getTabs(isLoggedIn, user !== null && user.type === 2, props.isOnAdmin || false);
 
   useEffect(() => {
-    const navtabs = getTabs(isLoggedIn, user && user.type === 2, props.isOnAdmin || false);
+    const navtabs = getTabs(isLoggedIn, user !== null && user.type === 2, props.isOnAdmin || false);
     const index = navtabs.reduce((i1, tab, i2) => (tab.path.split("/")[1] === router.pathname.split("/")[1] ? i2 : i1), -1);
     setValue(index + 1);
   }, [user, isLoggedIn, router.pathname, props.isOnAdmin]);
@@ -62,7 +62,11 @@ export const NavBar: React.FunctionComponent<NavBarProps> = (props: NavBarProps)
                   </a>
                 </Grid>
                 <Grid item>
-                  <Tabs value={currentTab} aria-label="navbar" sx={{ "& .MuiTabs-indicator": { backgroundColor: (theme) => theme.palette.primary.main } }}>
+                  <Tabs
+                    value={currentTab}
+                    aria-label="navbar"
+                    sx={{ "& .MuiTabs-indicator": { backgroundColor: (theme) => theme.palette.primary.main } }}
+                  >
                     <NavBarTab label="" path="/" style={{ display: "none" }} />
                     {tabs.map((tab, index) => (
                       <NavBarTab label={tab.label} path={tab.path} icon={tab.icon} key={index} selected={index === currentTab - 1} />

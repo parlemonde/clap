@@ -48,5 +48,5 @@ export const useUsers = (args: UserArgs = {}): { users: User[]; count: number } 
   });
 
   const prevUsers: User[] = queryCache.getQueryData(["users", prevArgs.current]) || [];
-  return { users: isLoading || error ? prevUsers : data, count: isLoading2 || error2 ? 0 : count };
+  return { users: isLoading || error ? prevUsers : data || [], count: isLoading2 || error2 ? 0 : count ?? 0 };
 };

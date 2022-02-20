@@ -185,14 +185,27 @@ const NewScenario: React.FunctionComponent = () => {
           </Typography>
           <Typography color="inherit" variant="h2" style={{ marginTop: "1rem" }}>
             <Box sx={{ display: { xs: "none", md: "block" } }} style={{ width: "100%", textAlign: "right" }}>
-              <Button component="a" variant="outlined" color="secondary" style={{ marginRight: "1rem" }} href={`/create/1-scenario-choice?themeId=${themeId}`} onClick={handleBack}>
+              <Button
+                component="a"
+                variant="outlined"
+                color="secondary"
+                style={{ marginRight: "1rem" }}
+                href={`/create/1-scenario-choice?themeId=${themeId}`}
+                onClick={handleBack}
+              >
                 {t("cancel")}
               </Button>
               <Button variant="contained" color="secondary" onClick={handleSubmit} endIcon={<ArrowForwardIcon />}>
                 {t("next")}
               </Button>
             </Box>
-            <Button sx={{ display: { xs: "inline-flex", md: "none" } }} variant="contained" color="secondary" style={{ width: "100%", marginTop: "2rem" }} onClick={handleSubmit}>
+            <Button
+              sx={{ display: { xs: "inline-flex", md: "none" } }}
+              variant="contained"
+              color="secondary"
+              style={{ width: "100%", marginTop: "2rem" }}
+              onClick={handleSubmit}
+            >
               {t("next")}
             </Button>
           </Typography>

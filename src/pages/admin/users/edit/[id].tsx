@@ -40,10 +40,14 @@ const AdminEditUser: React.FunctionComponent = () => {
   };
 
   const onChangeValue = (key: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUser({
-      ...user,
-      [key]: key === "type" ? parseInt(event.target.value, 10) : event.target.value,
-    });
+    setUser(
+      user === null
+        ? null
+        : {
+            ...user,
+            [key]: key === "type" ? parseInt(event.target.value, 10) : event.target.value,
+          },
+    );
   };
 
   const getUser = React.useCallback(async () => {
@@ -64,12 +68,12 @@ const AdminEditUser: React.FunctionComponent = () => {
   }, [getUser]);
 
   const submit = async () => {
-    if (!user.pseudo || !user.email) {
+    if (user === null || !user.pseudo || !user.email) {
       // todo use validations
       return;
     }
     setLoading(true);
-    const updatedUser = { ...user };
+    const updatedUser: Partial<User> = { ...user };
     if (isBlocked) {
       delete updatedUser.email;
       delete updatedUser.pseudo;
@@ -111,8 +115,25 @@ const AdminEditUser: React.FunctionComponent = () => {
             <div style={{ padding: "1rem" }}>
               <Typography variant="h3">Identifiants de connexion</Typography>
               <div style={{ margin: "0.5rem 0 2rem 0" }}>
-                <TextField variant="standard" label="Pseudo" value={user.pseudo || ""} color="secondary" fullWidth disabled={isBlocked} onChange={onChangeValue("pseudo")} />
-                <TextField variant="standard" style={{ marginTop: "0.5rem" }} label="Email" value={user.email || ""} color="secondary" fullWidth disabled={isBlocked} onChange={onChangeValue("email")} />
+                <TextField
+                  variant="standard"
+                  label="Pseudo"
+                  value={user.pseudo || ""}
+                  color="secondary"
+                  fullWidth
+                  disabled={isBlocked}
+                  onChange={onChangeValue("pseudo")}
+                />
+                <TextField
+                  variant="standard"
+                  style={{ marginTop: "0.5rem" }}
+                  label="Email"
+                  value={user.email || ""}
+                  color="secondary"
+                  fullWidth
+                  disabled={isBlocked}
+                  onChange={onChangeValue("email")}
+                />
                 {isBlocked && (
                   <Button
                     style={{ marginTop: "0.8rem" }}

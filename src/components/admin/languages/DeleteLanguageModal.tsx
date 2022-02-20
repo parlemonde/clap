@@ -11,7 +11,11 @@ interface DeleteLanguageModalProps {
   setLanguages?(f: (languages: Language[]) => Language[]): void;
 }
 
-export const DeleteLanguageModal: React.FunctionComponent<DeleteLanguageModalProps> = ({ language = null, onClose = () => {}, setLanguages = () => {} }: DeleteLanguageModalProps) => {
+export const DeleteLanguageModal: React.FunctionComponent<DeleteLanguageModalProps> = ({
+  language = null,
+  onClose = () => {},
+  setLanguages = () => {},
+}: DeleteLanguageModalProps) => {
   const { enqueueSnackbar } = useSnackbar();
   const { axiosLoggedRequest } = React.useContext(UserServiceContext);
 

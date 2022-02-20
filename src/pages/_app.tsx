@@ -1,4 +1,3 @@
-import "croppie/croppie.css";
 import "nprogress/nprogress.css";
 import "react-html5-camera-photo/build/css/index.css";
 
@@ -54,7 +53,7 @@ const queryCache = new QueryCache({
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
 
-const MyApp: React.FunctionComponent<AppProps> & {
+const MyApp: React.FunctionComponent<MyAppProps> & {
   getInitialProps(appContext: AppContext): Promise<AppInitialProps>;
 } = ({ Component, pageProps, router, currentLocale, locales, user, csrfToken, emotionCache = clientSideEmotionCache }: MyAppProps) => {
   const { t, translationContext } = useTranslationContext(currentLocale, locales);
@@ -141,7 +140,7 @@ const MyApp: React.FunctionComponent<AppProps> & {
         >
           <ReactQueryCacheProvider queryCache={queryCache}>
             <translationContext.Provider value={{ t, currentLocale }}>
-              <UserServiceProvider user={user} csrfToken={csrfToken}>
+              <UserServiceProvider user={user} csrfToken={csrfToken || ""}>
                 {content}
               </UserServiceProvider>
             </translationContext.Provider>

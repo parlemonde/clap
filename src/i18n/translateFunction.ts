@@ -2,10 +2,11 @@ import { PluralResolver } from "./getPlurals";
 
 const optionsRegex = /{{(.+?)}}/gm;
 
-interface translateOptions {
-  count?: number;
+type translateOptions = {
   [key: string]: string | number;
-}
+} & {
+  count?: number;
+};
 
 export type tFunction = (key: string, options?: translateOptions) => string;
 

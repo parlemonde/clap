@@ -28,7 +28,7 @@ interface ModalProps {
 export const Modal: React.FunctionComponent<ModalProps> = ({
   open = true,
   onClose = () => {},
-  onConfirm = null,
+  onConfirm,
   ariaLabelledBy,
   ariaDescribedBy,
   title = "",
@@ -43,14 +43,21 @@ export const Modal: React.FunctionComponent<ModalProps> = ({
 }: ModalProps) => {
   const { t } = useTranslation();
   return (
-    <Dialog open={open} onClose={noCloseOutsideModal ? () => {} : onClose} aria-labelledby={ariaLabelledBy} aria-describedby={ariaDescribedBy} fullWidth={fullWidth} maxWidth={maxWidth}>
+    <Dialog
+      open={open}
+      onClose={noCloseOutsideModal ? () => {} : onClose}
+      aria-labelledby={ariaLabelledBy}
+      aria-describedby={ariaDescribedBy}
+      fullWidth={fullWidth}
+      maxWidth={maxWidth}
+    >
       <DialogTitle id={ariaLabelledBy}>{title}</DialogTitle>
       <DialogContent>{children}</DialogContent>
       <DialogActions>
         <Button onClick={onClose} color="secondary" variant="outlined">
           {cancelLabel || t("cancel")}
         </Button>
-        {onConfirm !== null && error && (
+        {onConfirm !== undefined && error && (
           <Button
             sx={{
               color: (theme) => theme.palette.error.contrastText,
@@ -66,7 +73,7 @@ export const Modal: React.FunctionComponent<ModalProps> = ({
             {confirmLabel || t("yes")}
           </Button>
         )}
-        {onConfirm !== null && !error && (
+        {onConfirm !== undefined && !error && (
           <Button onClick={onConfirm} disabled={disabled} color="secondary" variant="contained">
             {confirmLabel || t("yes")}
           </Button>

@@ -39,7 +39,18 @@ export const DeleteUserModal: React.FunctionComponent<DeleteUserModalProps> = ({
   };
 
   return (
-    <Modal open={user !== null} onClose={onClose} onConfirm={onSubmit} confirmLabel="Supprimer" error cancelLabel="Annuler" title="Supprimer l'utilisateur ?" ariaLabelledBy="delete-dialog-title" ariaDescribedBy="delete-dialog-description" fullWidth>
+    <Modal
+      open={user !== null}
+      onClose={onClose}
+      onConfirm={onSubmit}
+      confirmLabel="Supprimer"
+      error
+      cancelLabel="Annuler"
+      title="Supprimer l'utilisateur ?"
+      ariaLabelledBy="delete-dialog-title"
+      ariaDescribedBy="delete-dialog-description"
+      fullWidth
+    >
       <div id="delete-dialog-description">
         {"Voulez-vous vraiment supprimer l'utilisateur "}
         <strong>{user?.pseudo || ""}</strong> ?

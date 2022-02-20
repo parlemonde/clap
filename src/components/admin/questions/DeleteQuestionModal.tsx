@@ -11,7 +11,11 @@ interface DeleteQuestionModalProps {
   setQuestions?(f: (questions: Question[]) => Question[]): void;
 }
 
-export const DeleteQuestionModal: React.FunctionComponent<DeleteQuestionModalProps> = ({ question = null, onClose = () => {}, setQuestions = () => {} }: DeleteQuestionModalProps) => {
+export const DeleteQuestionModal: React.FunctionComponent<DeleteQuestionModalProps> = ({
+  question = null,
+  onClose = () => {},
+  setQuestions = () => {},
+}: DeleteQuestionModalProps) => {
   const { enqueueSnackbar } = useSnackbar();
   const { axiosLoggedRequest } = React.useContext(UserServiceContext);
 

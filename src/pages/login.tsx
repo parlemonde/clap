@@ -132,7 +132,9 @@ const Login: React.FunctionComponent = () => {
     setIsLoading(true);
     const state = generateTemporaryToken();
     window.sessionStorage.setItem("oauth-state", state);
-    const url = `${ssoHost}/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${window.location.href.split("?")[0]}&state=${state}`;
+    const url = `${ssoHost}/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${
+      window.location.href.split("?")[0]
+    }&state=${state}`;
     window.location.replace(url);
   };
 
@@ -202,7 +204,10 @@ const Login: React.FunctionComponent = () => {
           helperText={errorCode === 2 ? t(errorMessages[2]) : null}
         />
         <div>
-          <FormControlLabel control={<Checkbox checked={user.remember} onChange={handleToggleLocalSave} value={user.remember} />} label={t("login_remember_me")} />
+          <FormControlLabel
+            control={<Checkbox checked={user.remember} onChange={handleToggleLocalSave} value={user.remember} />}
+            label={t("login_remember_me")}
+          />
         </div>
         <Button variant="contained" color="secondary" type="submit" value="Submit" onClick={submit}>
           {t("login_connect")}

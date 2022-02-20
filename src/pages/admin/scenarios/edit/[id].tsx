@@ -63,7 +63,10 @@ const AdminEditScenario: React.FunctionComponent = () => {
   const queryCache = useQueryCache();
   const { axiosLoggedRequest } = React.useContext(UserServiceContext);
   const { languages, isLoading } = useLanguages();
-  const languagesMap = React.useMemo(() => languages.reduce((acc: { [key: string]: number }, language: Language, index: number) => ({ ...acc, [language.value]: index }), {}), [languages]);
+  const languagesMap = React.useMemo(
+    () => languages.reduce((acc: { [key: string]: number }, language: Language, index: number) => ({ ...acc, [language.value]: index }), {}),
+    [languages],
+  );
   const [scenario, setScenario] = React.useState<GroupedScenario>({
     id: -1,
     themeId: -1,
@@ -146,7 +149,11 @@ const AdminEditScenario: React.FunctionComponent = () => {
     setLoading(true);
     const responses: Promise<AxiosReturnType>[] = [];
     for (let i = 0, n = usedLanguages.length; i < n; i++) {
-      responses.push(axiosLoggedRequest(initialLanguages.includes(usedLanguages[i]) ? getUpdateRequest(scenario, usedLanguages[i]) : getAddRequest(scenario, usedLanguages[i])));
+      responses.push(
+        axiosLoggedRequest(
+          initialLanguages.includes(usedLanguages[i]) ? getUpdateRequest(scenario, usedLanguages[i]) : getAddRequest(scenario, usedLanguages[i]),
+        ),
+      );
     }
     for (const l of initialLanguages) {
       if (!usedLanguages.includes(l)) {
@@ -191,7 +198,14 @@ const AdminEditScenario: React.FunctionComponent = () => {
                   )}
                 </CardActions>
                 <CardContent style={{ paddingTop: "0" }}>
-                  <TextField variant="standard" label="Nom" value={scenario.names[languages[languageIndex].value] || ""} onChange={onNameInputChange(languages[languageIndex].value)} color="secondary" fullWidth />
+                  <TextField
+                    variant="standard"
+                    label="Nom"
+                    value={scenario.names[languages[languageIndex].value] || ""}
+                    onChange={onNameInputChange(languages[languageIndex].value)}
+                    color="secondary"
+                    fullWidth
+                  />
                   <TextField
                     variant="standard"
                     style={{ marginTop: "8px" }}

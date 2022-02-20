@@ -21,6 +21,6 @@ export const useProjects = (): { projects: Project[] } => {
   }, [isLoggedIn, axiosLoggedRequest]);
   const { data, isLoading, error } = useQuery<Project[], unknown>(["projects", { userId: user?.id || 0 }], getProjects);
   return {
-    projects: isLoading || error ? [] : data,
+    projects: isLoading || error ? [] : data || [],
   };
 };

@@ -20,9 +20,10 @@ import { UserServiceContext } from "src/services/UserService";
 import { axiosRequest } from "src/util/axiosRequest";
 import type { User } from "types/models/user.type";
 
-type UpdatedUser = Partial<User> & { oldPassword: string };
+type UpdatedUser = Partial<User> & { oldPassword?: string };
 
-const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/i;
+const emailRegex =
+  /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/i;
 const strongPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/;
 const checks = {
   // eslint-disable-next-line
@@ -76,11 +77,16 @@ const Account: React.FunctionComponent = () => {
     return null;
   }
 
-  const onUserChange = (userKey: "email" | "pseudo" | "school" | "level" | "password" | "passwordConfirm" | "oldPassword") => (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUpdatedUser({ ...updatedUser, [userKey]: event?.target?.value || "" });
-    setErrors((e) => ({ ...e, [userKey]: false, global: false }));
-  };
+  const onUserChange =
+    (userKey: "email" | "pseudo" | "school" | "level" | "password" | "passwordConfirm" | "oldPassword") =>
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setUpdatedUser({ ...updatedUser, [userKey]: event?.target?.value || "" });
+      setErrors((e) => ({ ...e, [userKey]: false, global: false }));
+    };
   const handleInputValidations = (userKey: "email" | "pseudo" | "password" | "passwordConfirm") => (event: React.FocusEvent<HTMLInputElement>) => {
+    if (updatedUser === null) {
+      return;
+    }
     const value = event.target.value || "";
     setErrors((e) => ({
       ...e,
@@ -94,6 +100,9 @@ const Account: React.FunctionComponent = () => {
   };
 
   const onSubmit = (userKey: "email" | "pseudo" | "school" | "password") => async () => {
+    if (updatedUser === null) {
+      return;
+    }
     const data = {
       [userKey]: updatedUser[userKey],
     };
@@ -103,11 +112,12 @@ const Account: React.FunctionComponent = () => {
     if (userKey === "password") {
       data.oldPassword = updatedUser.oldPassword;
     }
-    if (!checks[userKey](updatedUser[userKey], updatedUser)) {
+    const value = updatedUser[userKey];
+    if (value === undefined || !checks[userKey](value, updatedUser)) {
       setErrors((e) => ({ ...e, [userKey]: true }));
       return;
     }
-    if (userKey === "pseudo" && !(await isPseudoAvailable(user?.pseudo || "", updatedUser.pseudo))) {
+    if (userKey === "pseudo" && !(await isPseudoAvailable(user?.pseudo || "", updatedUser.pseudo || ""))) {
       setErrors((e) => ({ ...e, pseudoNotAvailable: true }));
       return;
     }
@@ -176,7 +186,14 @@ const Account: React.FunctionComponent = () => {
                 {t("account_change_button")}
               </Link>
             </div>
-            <Button style={{ marginTop: "0.8rem" }} className="mobile-full-width" onClick={openModal(3)} variant="contained" color="secondary" size="small">
+            <Button
+              style={{ marginTop: "0.8rem" }}
+              className="mobile-full-width"
+              onClick={openModal(3)}
+              variant="contained"
+              color="secondary"
+              size="small"
+            >
               {t("account_password_change")}
             </Button>
             <Divider style={{ margin: "1rem 0 1.5rem" }} />
@@ -195,12 +212,25 @@ const Account: React.FunctionComponent = () => {
           </label>
           {user.level || t("account_unknown_level")}
         </div>
-        <Button style={{ marginTop: "0.8rem" }} className="mobile-full-width" onClick={openModal(4)} variant="contained" color="secondary" size="small">
+        <Button
+          style={{ marginTop: "0.8rem" }}
+          className="mobile-full-width"
+          onClick={openModal(4)}
+          variant="contained"
+          color="secondary"
+          size="small"
+        >
           {t("edit")}
         </Button>
         <Divider style={{ margin: "1rem 0 1.5rem" }} />
         <Typography variant="h2">{t("logout_button")}</Typography>
-        <Button sx={{ color: (theme) => theme.palette.error.main, borderColor: (theme) => theme.palette.error.main }} variant="outlined" className="mobile-full-width" onClick={logout} size="small">
+        <Button
+          sx={{ color: (theme) => theme.palette.error.main, borderColor: (theme) => theme.palette.error.main }}
+          variant="outlined"
+          className="mobile-full-width"
+          onClick={logout}
+          size="small"
+        >
           {t("logout_button")}
         </Button>
         <Divider style={{ margin: "1rem 0 1.5rem" }} />
@@ -251,7 +281,10 @@ const Account: React.FunctionComponent = () => {
               onBlur={handleInputValidations("pseudo")}
               color="secondary"
               error={errors.pseudo || errors.pseudoNotAvailable}
-              helperText={(errors.pseudo ? `${t("signup_required")} | ` : errors.pseudoNotAvailable ? `${t("signup_pseudo_error")} |` : "") + t("signup_pseudo_help")}
+              helperText={
+                (errors.pseudo ? `${t("signup_required")} | ` : errors.pseudoNotAvailable ? `${t("signup_pseudo_error")} |` : "") +
+                t("signup_pseudo_help")
+              }
             />
           </div>
         </Modal>

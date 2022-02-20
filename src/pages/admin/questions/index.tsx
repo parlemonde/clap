@@ -132,7 +132,13 @@ const AdminQuestions: React.FunctionComponent = () => {
           <div style={{ padding: "8px 16px 16px 16px" }}>
             <FormControl fullWidth color="secondary">
               <InputLabel id="demo-simple-select-label">Choisir le scénario</InputLabel>
-              <Select variant="standard" labelId="demo-simple-select-label" id="demo-simple-select" value={selectedArgs.scenarioId || ""} onChange={onSelectScenario}>
+              <Select
+                variant="standard"
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={selectedArgs.scenarioId || ""}
+                onChange={onSelectScenario}
+              >
                 {groupedScenarios.map((s) => (
                   <MenuItem value={s.id} key={s.id}>
                     {s.names.default}
@@ -165,7 +171,16 @@ const AdminQuestions: React.FunctionComponent = () => {
             <Table aria-labelledby="themetabletitle" size="medium" aria-label="toutes les questions">
               {questions.length > 0 ? (
                 <>
-                  <TableHead style={{ borderBottom: "1px solid white" }} sx={{ backgroundColor: (theme) => theme.palette.secondary.main, color: "white", fontWeight: "bold", minHeight: "unset", padding: "8px 8px 8px 16px" }}>
+                  <TableHead
+                    style={{ borderBottom: "1px solid white" }}
+                    sx={{
+                      backgroundColor: (theme) => theme.palette.secondary.main,
+                      color: "white",
+                      fontWeight: "bold",
+                      minHeight: "unset",
+                      padding: "8px 8px 8px 16px",
+                    }}
+                  >
                     <TableRow>
                       <TableCell style={{ color: "white", fontWeight: "bold" }}>Ordre</TableCell>
                       <TableCell style={{ color: "white", fontWeight: "bold" }}>Question</TableCell>
