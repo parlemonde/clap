@@ -56,12 +56,12 @@ export function generateTemporaryToken(length: number = 40): string {
   return randomState;
 }
 
-export function getQueryString(q?: string | string[] | null): string {
+export function getQueryString(q?: string | Array<string | null> | null): string {
   if (q === undefined || q === null) {
     return "";
   }
   if (Array.isArray(q)) {
-    return q[0];
+    return q.find(sub => sub !== null) || "";
   }
   return q;
 }

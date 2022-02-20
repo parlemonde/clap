@@ -13,7 +13,6 @@ import { SnackbarProvider } from 'notistack';
 import NProgress from 'nprogress';
 import React from 'react';
 import { QueryCache, ReactQueryCacheProvider } from 'react-query';
-import { ReactQueryDevtools } from 'react-query-devtools';
 
 import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -144,8 +143,6 @@ const MyApp: React.FunctionComponent<MyAppProps> & {
                                 {content}
                             </UserServiceProvider>
                         </translationContext.Provider>
-                        {/* Dev only, it won't appear after build for prod. */}
-                        <ReactQueryDevtools />
                     </ReactQueryCacheProvider>
                 </SnackbarProvider>
                 <ScrollTopButton />

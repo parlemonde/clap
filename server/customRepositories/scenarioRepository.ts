@@ -25,14 +25,10 @@ export class ScenarioRepository extends Repository<Scenario> {
 
     public async getNextID(): Promise<number> {
         let sequenceResult: Array<{ id: string }> = [];
-        if (process.env.DB_TYPE && process.env.DB_TYPE === 'postgres') {
-            sequenceResult = await this.manager.query("SELECT nextval('scenario_sequence') as id");
-        } else {
-            await this.manager.transaction(async (entityManager) => {
-                await entityManager.query('UPDATE sequence SET id=LAST_INSERT_ID(id+1)');
-                sequenceResult = await entityManager.query('SELECT LAST_INSERT_ID() as id');
-            });
-        }
+        await this.manager.transaction(async (entityManager) => {
+            await entityManager.query('UPDATE sequence SET id=LAST_INSERT_ID(id+1)');
+            sequenceResult = await entityManager.query('SELECT LAST_INSERT_ID() as id');
+        });
         return parseInt(sequenceResult[0].id, 10);
     }
 
@@ -53,12 +49,8 @@ export class ScenarioRepository extends Repository<Scenario> {
                 'scenario.id = question.scenarioId and scenario.languageCode = question.languageCode and question.isDefault = true',
             );
 
-        let themequery = '`scenario`.`themeId`';
-        let userquery = '`scenario`.`userId`';
-        if (process.env.DB_TYPE && process.env.DB_TYPE === 'postgres') {
-            themequery = '"scenario"."themeId"';
-            userquery = '"scenario"."userId"';
-        }
+        const themequery = '`scenario`.`themeId`';
+        const userquery = '`scenario`.`userId`';
 
         if (params.isDefault !== undefined && params.languageCode !== undefined) {
             query = query.where(`${themequery} = :themeId AND scenario.isDefault = :isDefault AND scenario.languageCode = :languageCode`, params);
