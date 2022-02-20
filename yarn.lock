@@ -1514,9 +1514,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emotion/react@npm:^11.8.0":
-  version: 11.8.0
-  resolution: "@emotion/react@npm:11.8.0"
+"@emotion/react@npm:^11.8.1":
+  version: 11.8.1
+  resolution: "@emotion/react@npm:11.8.1"
   dependencies:
     "@babel/runtime": ^7.13.10
     "@emotion/babel-plugin": ^11.7.1
@@ -1534,7 +1534,7 @@ __metadata:
       optional: true
     "@types/react":
       optional: true
-  checksum: 363bbb68e6cec056b465f545e8d1e0a6ea54afa1861e900e17b2f45e4ab6bec4662922b1f2865e37170236f8143315254c9e73aefd6ff9c6df1f3b6bf9854a7e
+  checksum: a767c6d7ca9e45dc3c1e873cfa51952db24e0d279944403ceb06be82d15859354e128becf6f7d0f8ff2b5f3460e3c165cd2b16ab1a2446e8e15e134a69e6ea3a
   languageName: node
   linkType: hard
 
@@ -1575,9 +1575,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emotion/styled@npm:^11.8.0":
-  version: 11.8.0
-  resolution: "@emotion/styled@npm:11.8.0"
+"@emotion/styled@npm:^11.8.1":
+  version: 11.8.1
+  resolution: "@emotion/styled@npm:11.8.1"
   dependencies:
     "@babel/runtime": ^7.13.10
     "@emotion/babel-plugin": ^11.7.1
@@ -1593,7 +1593,7 @@ __metadata:
       optional: true
     "@types/react":
       optional: true
-  checksum: 21e6bad9339fb087c5214cfba861fd5db20d429a6b6981d944aa5df1da571baa9f176455588c063a274b670ecbf12d7b9100d80186e1b8f8911fa0b4502d04bd
+  checksum: 67150fa788785c34e285b90acecc91fe7a63babceaefbeffd053bed0fa31f72a05bfeeb9d15620766e543e007b9ccac2e836812eec2e791f962ec4e52731ae4c
   languageName: node
   linkType: hard
 
@@ -2270,12 +2270,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/classnames@npm:2.3.0":
-  version: 2.3.0
-  resolution: "@types/classnames@npm:2.3.0"
+"@types/classnames@npm:2.3.1":
+  version: 2.3.1
+  resolution: "@types/classnames@npm:2.3.1"
   dependencies:
     classnames: "*"
-  checksum: e1bd6de60fc5e4ead601838078b10f378d6a66ad21112922856de59a1f450b1361f597aa3ca34f2cc33bc030f950112872fddfde43c5189bec89737a8b237f24
+  checksum: 09a17ea08fcb83380921efdfdac94cfa162f87025cae0bf6f4ba508c2fa5f436459ce7612905a3f968fdddb68c03b8e6ff08e762ed2d0c110c5c4fceb244dc55
   languageName: node
   linkType: hard
 
@@ -2599,7 +2599,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:*, @types/react@npm:17.0.36":
+"@types/react@npm:*":
   version: 17.0.36
   resolution: "@types/react@npm:17.0.36"
   dependencies:
@@ -2607,6 +2607,17 @@ __metadata:
     "@types/scheduler": "*"
     csstype: ^3.0.2
   checksum: feeaa484d5d7e354ba6830b06342dec6fd1a2ac87f73d21d3d4f2a3d311459de4090330a1e8af7275c8d1e7737b655a7550c8dd3dbc74ccf34ffd3fc824bbd12
+  languageName: node
+  linkType: hard
+
+"@types/react@npm:17.0.39":
+  version: 17.0.39
+  resolution: "@types/react@npm:17.0.39"
+  dependencies:
+    "@types/prop-types": "*"
+    "@types/scheduler": "*"
+    csstype: ^3.0.2
+  checksum: bf04d3c2894559012710d595553e12b422d3b91cd8f4f7e122d8cb044ba9c2ba17f6e8a4e09581359cc5509ddc59cd8c8fabd6774f3505a40a45393f074d6e6e
   languageName: node
   linkType: hard
 
@@ -4332,15 +4343,15 @@ __metadata:
   resolution: "clap@workspace:."
   dependencies:
     "@emotion/cache": ^11.7.1
-    "@emotion/react": ^11.8.0
+    "@emotion/react": ^11.8.1
     "@emotion/server": ^11.4.0
-    "@emotion/styled": ^11.8.0
+    "@emotion/styled": ^11.8.1
     "@mui/icons-material": ^5.4.2
     "@mui/material": ^5.4.2
     "@mui/system": ^5.4.2
     "@svgr/webpack": 5.5.0
     "@types/body-parser": 1.19.2
-    "@types/classnames": 2.3.0
+    "@types/classnames": 2.3.1
     "@types/cookie-parser": 1.4.2
     "@types/cors": 2.8.12
     "@types/cpx": 1.5.2
@@ -4357,7 +4368,7 @@ __metadata:
     "@types/pug": 2.0.6
     "@types/puppeteer": 5.4.4
     "@types/qrcode": 1.4.2
-    "@types/react": 17.0.36
+    "@types/react": 17.0.39
     "@types/sharp": 0.29.5
     "@types/sortablejs": 1.10.7
     "@types/swagger-jsdoc": 6.0.1
@@ -4373,7 +4384,7 @@ __metadata:
     axios: ^0.26.0
     base64url: ^3.0.1
     body-parser: ^1.19.2
-    classnames: ^2.2.6
+    classnames: ^2.3.1
     cookie-parser: ^1.4.6
     cors: ^2.8.5
     cpx: 1.5.0
@@ -4409,14 +4420,14 @@ __metadata:
     qrcode: ^1.5.0
     query-string: ^7.1.1
     react: ^17.0.2
-    react-charts: ^2.0.0-beta.7
+    react-charts: ^2.1.0
     react-dom: ^17.0.2
-    react-html5-camera-photo: ^1.5.4
+    react-html5-camera-photo: ^1.5.5
     react-query: ^2.26.4
-    react-sortablejs: ^5.0.5
+    react-sortablejs: ^6.1.1
     safe-buffer: ^5.2.1
     sharp: ^0.30.1
-    sortablejs: 1.10.2
+    sortablejs: 1.14.0
     swagger-jsdoc: ^6.1.0
     swagger-ui-express: ^4.3.0
     typeorm: ^0.2.43
@@ -4438,7 +4449,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"classnames@npm:*, classnames@npm:^2.2.6, classnames@npm:^2.3.1":
+"classnames@npm:*, classnames@npm:2.3.1, classnames@npm:^2.3.1":
   version: 2.3.1
   resolution: "classnames@npm:2.3.1"
   checksum: 14db8889d56c267a591f08b0834989fe542d47fac659af5a539e110cc4266694e8de86e4e3bbd271157dbd831361310a8293e0167141e80b0f03a0f175c80960
@@ -10753,7 +10764,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-charts@npm:^2.0.0-beta.7":
+"react-charts@npm:^2.1.0":
   version: 2.1.0
   resolution: "react-charts@npm:2.1.0"
   dependencies:
@@ -10784,7 +10795,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-html5-camera-photo@npm:^1.5.4":
+"react-html5-camera-photo@npm:^1.5.5":
   version: 1.5.5
   resolution: "react-html5-camera-photo@npm:1.5.5"
   dependencies:
@@ -10833,18 +10844,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-sortablejs@npm:^5.0.5":
-  version: 5.0.5
-  resolution: "react-sortablejs@npm:5.0.5"
+"react-sortablejs@npm:^6.1.1":
+  version: 6.1.1
+  resolution: "react-sortablejs@npm:6.1.1"
   dependencies:
-    classnames: ^2.2.6
-    tiny-invariant: ^1.1.0
+    classnames: 2.3.1
+    tiny-invariant: 1.2.0
   peerDependencies:
-    "@types/sortablejs": ^1.10.0
-    react: ^16.9.0
-    react-dom: ^16.9.0
-    sortablejs: ^1.10.0
-  checksum: 50493b4466fbc441b80faa1abb7431ae7dad9e3bf564bb35a15366dcfe3516ade42364150887e2e59c4a0618df32f54ae9e379f8fa6f668d6a1f158dabe3fed3
+    "@types/sortablejs": 1
+    react: ">=16.9.0"
+    react-dom: ">=16.9.0"
+    sortablejs: 1
+  checksum: 8dcdd8ea5924e7694a66ed321c0cdb573d72fcf6f08d804e178e79f467e1cf2ae4b99d1db304d4ec22d3ee6cb9e032f14402f3a6a51169e95fb8ad0763ae312a
   languageName: node
   linkType: hard
 
@@ -11763,10 +11774,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sortablejs@npm:1.10.2":
-  version: 1.10.2
-  resolution: "sortablejs@npm:1.10.2"
-  checksum: 37f8d47a9702b93c38077c5e0af90174dcf8e95cf96fe61a722033003eb293bdf3832e4a943f281eaedc433e24cd7d5a48a408706a71a21e75bc11ced0b358da
+"sortablejs@npm:1.14.0":
+  version: 1.14.0
+  resolution: "sortablejs@npm:1.14.0"
+  checksum: 7b9d2cbb0331f3f259b8703a17174ff46a941b6d59c77c75ca05a5bd484bf2b409a9c1d21344f9c933939880450803b254825c7c7d7f88034e8c7e675420b389
   languageName: node
   linkType: hard
 
@@ -12487,7 +12498,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tiny-invariant@npm:^1.1.0":
+"tiny-invariant@npm:1.2.0":
   version: 1.2.0
   resolution: "tiny-invariant@npm:1.2.0"
   checksum: e09a718a7c4a499ba592cdac61f015d87427a0867ca07f50c11fd9b623f90cdba18937b515d4a5e4f43dac92370498d7bdaee0d0e7a377a61095e02c4a92eade
