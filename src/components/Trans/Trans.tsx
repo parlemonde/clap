@@ -19,7 +19,7 @@ function getTranslatedChild(child: React.ReactNode, childIndex: number, str: str
     return null;
 }
 
-export const Trans: React.FunctionComponent<TransProps> = ({ i18nKey, i18nParams = {}, children }: TransProps) => {
+const Trans: React.FunctionComponent<TransProps> = ({ i18nKey, i18nParams = {}, children }: TransProps) => {
     const { t } = useTranslation();
     const translatedStr = t(i18nKey, i18nParams)
         .replace(/<\d>/gm, '<div>')
@@ -35,3 +35,5 @@ export const Trans: React.FunctionComponent<TransProps> = ({ i18nKey, i18nParams
         .map((child, childIndex) => getTranslatedChild(child, childIndex, translatedStrings[childIndex]));
     return <>{newChildren}</>;
 };
+
+export default Trans;
