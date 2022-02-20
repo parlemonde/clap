@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 import React, { useContext, useState } from 'react';
-import { useMutation, useQueryCache } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 
 import ArrowForwardIcon from '@mui/icons-material/ArrowForwardIos';
 import Box from '@mui/material/Box';
@@ -20,10 +20,10 @@ import { debounce } from 'src/util';
 
 const NewScenario: React.FunctionComponent = () => {
     const router = useRouter();
-    const queryCache = useQueryCache();
+    const queryClient = useQueryClient();
     const { t, currentLocale } = useTranslation();
     const { createScenario } = useScenarioRequests();
-    const [mutate] = useMutation(createScenario);
+    const { mutateAsync } = useMutation(createScenario);
     const { project, updateProject } = useContext(ProjectServiceContext);
     const [newScenario, setNewScenario] = useState({
         name: '',
@@ -42,7 +42,7 @@ const NewScenario: React.FunctionComponent = () => {
             }, 1000);
         }
         try {
-            const scenario = await mutate({
+            const scenario = await mutateAsync({
                 newScenario: {
                     id: 0,
                     languageCode: currentLocale,
@@ -58,7 +58,7 @@ const NewScenario: React.FunctionComponent = () => {
                 // TODO
                 return;
             }
-            queryCache.invalidateQueries('scenarios');
+            queryClient.invalidateQueries('scenarios');
             updateProject({
                 scenario,
                 questions: null,

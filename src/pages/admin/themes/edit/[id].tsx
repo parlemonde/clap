@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
 import React from 'react';
-import { useQueryCache } from 'react-query';
+import { useQueryClient } from 'react-query';
 
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
@@ -30,7 +30,7 @@ import type { Theme } from 'types/models/theme.type';
 const AdminEditTheme: React.FunctionComponent = () => {
     const router = useRouter();
     const { enqueueSnackbar } = useSnackbar();
-    const queryCache = useQueryCache();
+    const queryClient = useQueryClient();
     const themeId = React.useMemo(() => parseInt(getQueryString(router.query.id), 10) || 0, [router]);
     const { languages, isLoading } = useLanguages();
     const languagesMap = React.useMemo(
@@ -179,7 +179,7 @@ const AdminEditTheme: React.FunctionComponent = () => {
             enqueueSnackbar('Thème mis à jour avec succès!', {
                 variant: 'success',
             });
-            queryCache.invalidateQueries('themes');
+            queryClient.invalidateQueries('themes');
             router.push('/admin/themes');
         } catch (e) {
             enqueueSnackbar('Une erreur inconnue est survenue...', {

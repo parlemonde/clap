@@ -1,6 +1,6 @@
 import React from 'react';
 import type { QueryFunction } from 'react-query';
-import { useQueryCache, useQuery } from 'react-query';
+import { useQueryClient, useQuery } from 'react-query';
 
 import { UserServiceContext } from 'src/services/UserService';
 import { serializeToQueryUrl } from 'src/util';
@@ -10,7 +10,7 @@ export const useQuestions = (
     args: { isDefault?: boolean; scenarioId?: string | number | null; languageCode?: string } = {},
 ): { questions: Question[]; setQuestions(questions: Question[]): void } => {
     const { axiosLoggedRequest } = React.useContext(UserServiceContext);
-    const queryCache = useQueryCache();
+    const queryClient = useQueryClient();
     const getQuestions: QueryFunction<Question[]> = React.useCallback(async () => {
         if (!args.scenarioId && args.scenarioId !== 0) {
             return [];
@@ -27,9 +27,9 @@ export const useQuestions = (
     const { data, isLoading, error } = useQuery<Question[], unknown>(['questions', args], getQuestions);
     const setQuestions = React.useCallback(
         (q: Question[]) => {
-            queryCache.setQueryData(['questions', args], q);
+            queryClient.setQueryData(['questions', args], q);
         },
-        [args, queryCache],
+        [args, queryClient],
     );
     return {
         questions: isLoading || error ? [] : data || [],
@@ -44,7 +44,7 @@ export const useQuestionRequests = (): {
     updateOrder(questions: Question[]): Promise<void>;
     deleteQuestion: (question: Question) => Promise<void>;
 } => {
-    const queryCache = useQueryCache();
+    const queryClient = useQueryClient();
     const { axiosLoggedRequest } = React.useContext(UserServiceContext);
     const getDefaultQuestions = React.useCallback(
         async (args: { isDefault?: boolean; scenarioId: string | number | null; languageCode?: string }): Promise<Question[]> => {
@@ -53,8 +53,8 @@ export const useQuestionRequests = (): {
             }
             const url: string = `/questions${serializeToQueryUrl(args)}`;
             const response =
-                (queryCache.getQueryData(['questions', 'user-default', args]) as { error?: unknown; data: Question[] }) ||
-                (await queryCache.fetchQuery(['questions', 'user-default', args], async () =>
+                (queryClient.getQueryData(['questions', 'user-default', args]) as { error?: unknown; data: Question[] }) ||
+                (await queryClient.fetchQuery(['questions', 'user-default', args], async () =>
                     axiosLoggedRequest({
                         method: 'GET',
                         url,
@@ -65,7 +65,7 @@ export const useQuestionRequests = (): {
             }
             return [];
         },
-        [queryCache, axiosLoggedRequest],
+        [queryClient, axiosLoggedRequest],
     );
 
     const addQuestion = React.useCallback(

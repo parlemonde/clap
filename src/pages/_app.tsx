@@ -12,7 +12,7 @@ import Head from 'next/head';
 import { SnackbarProvider } from 'notistack';
 import NProgress from 'nprogress';
 import React from 'react';
-import { QueryCache, ReactQueryCacheProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -41,8 +41,8 @@ type MyAppProps = AppProps &
         emotionCache: EmotionCache;
     };
 
-const queryCache = new QueryCache({
-    defaultConfig: {
+const queryClient = new QueryClient({
+    defaultOptions: {
         queries: {
             staleTime: 3600000, // 1 hour
         },
@@ -137,13 +137,13 @@ const MyApp: React.FunctionComponent<MyAppProps> & {
                         horizontal: 'center',
                     }}
                 >
-                    <ReactQueryCacheProvider queryCache={queryCache}>
+                    <QueryClientProvider client={queryClient}>
                         <translationContext.Provider value={{ t, currentLocale }}>
                             <UserServiceProvider user={user} csrfToken={csrfToken || ''}>
                                 {content}
                             </UserServiceProvider>
                         </translationContext.Provider>
-                    </ReactQueryCacheProvider>
+                    </QueryClientProvider>
                 </SnackbarProvider>
                 <ScrollTopButton />
             </ThemeProvider>

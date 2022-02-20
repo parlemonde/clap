@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
 import React from 'react';
-import { useQueryCache } from 'react-query';
+import { useQueryClient } from 'react-query';
 
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import Backdrop from '@mui/material/Backdrop';
@@ -26,7 +26,7 @@ import type { User } from 'types/models/user.type';
 const AdminEditUser: React.FunctionComponent = () => {
     const router = useRouter();
     const { enqueueSnackbar } = useSnackbar();
-    const queryCache = useQueryCache();
+    const queryClient = useQueryClient();
     const userId = React.useMemo(() => parseInt(getQueryString(router.query.id), 10) || 0, [router]);
     const { axiosLoggedRequest } = React.useContext(UserServiceContext);
     const [user, setUser] = React.useState<User | null>(null);
@@ -93,7 +93,7 @@ const AdminEditUser: React.FunctionComponent = () => {
         enqueueSnackbar('Utilisateur modifié avec succès!', {
             variant: 'success',
         });
-        queryCache.invalidateQueries('users');
+        queryClient.invalidateQueries('users');
         router.push('/admin/users');
     };
 

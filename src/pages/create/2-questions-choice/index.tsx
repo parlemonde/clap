@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 import React from 'react';
-import { useQueryCache } from 'react-query';
+import { useQueryClient } from 'react-query';
 import { ReactSortable } from 'react-sortablejs';
 
 import Box from '@mui/material/Box';
@@ -26,7 +26,7 @@ import type { Question } from 'types/models/question.type';
 const QuestionChoice: React.FunctionComponent = () => {
     const router = useRouter();
     const { t, currentLocale } = useTranslation();
-    const queryCache = useQueryCache();
+    const queryClient = useQueryClient();
     const { isLoggedIn, axiosLoggedRequest } = React.useContext(UserServiceContext);
     const { project, updateProject } = React.useContext(ProjectServiceContext);
     const { getDefaultQuestions, updateOrder, deleteQuestion } = useQuestionRequests();
@@ -135,7 +135,7 @@ const QuestionChoice: React.FunctionComponent = () => {
                         }
                     }
                     updateProject({ ...response.data, questions });
-                    queryCache.invalidateQueries('projects');
+                    queryClient.invalidateQueries('projects');
                 }
             }
             router.push(`/create/3-storyboard-and-filming-schedule`);

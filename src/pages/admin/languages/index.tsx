@@ -1,5 +1,5 @@
 import React from 'react';
-import { useQueryCache } from 'react-query';
+import { useQueryClient } from 'react-query';
 
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import BackupIcon from '@mui/icons-material/Backup';
@@ -25,7 +25,7 @@ import { useLanguages } from 'src/services/useLanguages';
 import type { Language } from 'types/models/language.type';
 
 const AdminLanguages: React.FunctionComponent = () => {
-    const queryCache = useQueryCache();
+    const queryClient = useQueryClient();
     const { languages } = useLanguages();
     const [isAddModalOpen, setIsAddModalOpen] = React.useState<boolean>(false);
     const [uploadLanguageIndex, setUploadLanguageIndex] = React.useState<number>(-1);
@@ -33,9 +33,9 @@ const AdminLanguages: React.FunctionComponent = () => {
 
     const setLanguages = React.useCallback(
         (f: (ll: Language[]) => Language[]) => {
-            queryCache.setQueryData(['languages'], f(languages));
+            queryClient.setQueryData(['languages'], f(languages));
         },
-        [languages, queryCache],
+        [languages, queryClient],
     );
 
     const onDownload = (l: Language) => async (event: React.MouseEvent) => {

@@ -1,6 +1,6 @@
 import { useSnackbar } from 'notistack';
 import React from 'react';
-import { useQueryCache } from 'react-query';
+import { useQueryClient } from 'react-query';
 
 import { Modal } from 'src/components/Modal';
 import { UserServiceContext } from 'src/services/UserService';
@@ -13,7 +13,7 @@ interface DeleteUserModalProps {
 
 export const DeleteUserModal: React.FunctionComponent<DeleteUserModalProps> = ({ user = null, onClose = () => {} }: DeleteUserModalProps) => {
     const { enqueueSnackbar } = useSnackbar();
-    const queryCache = useQueryCache();
+    const queryClient = useQueryClient();
     const { axiosLoggedRequest } = React.useContext(UserServiceContext);
 
     const onSubmit = async () => {
@@ -31,7 +31,7 @@ export const DeleteUserModal: React.FunctionComponent<DeleteUserModalProps> = ({
             onClose();
             return;
         }
-        queryCache.invalidateQueries('users');
+        queryClient.invalidateQueries('users');
         enqueueSnackbar('Utilisateur supprimé avec succès!', {
             variant: 'success',
         });

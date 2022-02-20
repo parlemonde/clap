@@ -3,7 +3,6 @@ import React from 'react';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 import CreateLogo from 'src/svg/create.svg';
-// import LightLogo from "src/svg/light.svg";
 import MoviesLogo from 'src/svg/movies.svg';
 import SettingsLogo from 'src/svg/settings.svg';
 
@@ -36,11 +35,6 @@ const userTabs = [
         path: '/my-videos',
         icon: <MoviesLogo />,
     },
-    // {
-    //   label: "inspiration",
-    //   path: "/inspiration",
-    //   icon: <LightLogo />,
-    // },
     {
         icon: <SettingsLogo />,
         label: 'settings',

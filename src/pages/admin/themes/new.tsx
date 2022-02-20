@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
 import React from 'react';
-import { useQueryCache } from 'react-query';
+import { useQueryClient } from 'react-query';
 
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
@@ -28,7 +28,7 @@ import type { Theme } from 'types/models/theme.type';
 const AdminNewTheme: React.FunctionComponent = () => {
     const router = useRouter();
     const { enqueueSnackbar } = useSnackbar();
-    const queryCache = useQueryCache();
+    const queryClient = useQueryClient();
     const { languages } = useLanguages();
     const languagesMap = languages.reduce(
         (acc: { [key: string]: number }, language: Language, index: number) => ({ ...acc, [language.value]: index }),
@@ -141,7 +141,7 @@ const AdminNewTheme: React.FunctionComponent = () => {
             enqueueSnackbar('Thème créé avec succès!', {
                 variant: 'success',
             });
-            queryCache.invalidateQueries('themes');
+            queryClient.invalidateQueries('themes');
             router.push('/admin/themes');
         } catch (e) {
             enqueueSnackbar('Une erreur inconnue est survenue...', {

@@ -1,6 +1,6 @@
 import React from 'react';
 import type { QueryFunction } from 'react-query';
-import { useQuery, useQueryCache } from 'react-query';
+import { useQuery, useQueryClient } from 'react-query';
 
 import { UserServiceContext } from 'src/services/UserService';
 import { serializeToQueryUrl } from 'src/util';
@@ -12,7 +12,7 @@ export const useThemes = (
         isDefault?: boolean;
     } = {},
 ): { themes: Theme[]; setThemes(themes: Theme[]): void } => {
-    const queryCache = useQueryCache();
+    const queryClient = useQueryClient();
     const { axiosLoggedRequest } = React.useContext(UserServiceContext);
     const getThemes: QueryFunction<Theme[]> = React.useCallback(async () => {
         const response = await axiosLoggedRequest({
@@ -29,9 +29,9 @@ export const useThemes = (
 
     const setThemes = React.useCallback(
         (themes: Theme[]) => {
-            queryCache.setQueryData(['themes', args], themes);
+            queryClient.setQueryData(['themes', args], themes);
         },
-        [args, queryCache],
+        [args, queryClient],
     );
     return {
         themes: isLoading || error ? [] : data || [],

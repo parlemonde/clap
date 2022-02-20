@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
 import React from 'react';
-import { useQueryCache } from 'react-query';
+import { useQueryClient } from 'react-query';
 
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import CheckIcon from '@mui/icons-material/Check';
@@ -43,7 +43,7 @@ interface ScenarioData {
 
 const AdminScenarios: React.FunctionComponent = () => {
     const router = useRouter();
-    const queryCache = useQueryCache();
+    const queryClient = useQueryClient();
     const { enqueueSnackbar } = useSnackbar();
     const { languages } = useLanguages();
     const { themeNames } = useThemeNames();
@@ -149,7 +149,7 @@ const AdminScenarios: React.FunctionComponent = () => {
             variant: 'success',
         });
         setDeleteId(null);
-        queryCache.invalidateQueries('scenarios');
+        queryClient.invalidateQueries('scenarios');
     };
 
     const validateScenario = async (scenarioId: number | string, languageCode: string) => {
@@ -163,7 +163,7 @@ const AdminScenarios: React.FunctionComponent = () => {
         if (response.error) {
             return;
         }
-        queryCache.invalidateQueries('scenarios');
+        queryClient.invalidateQueries('scenarios');
     };
 
     const toDeleteScenarioName = deleteId === null ? '' : groupScenarios(scenarios).find((s) => s.id === deleteId)?.names.default || '';

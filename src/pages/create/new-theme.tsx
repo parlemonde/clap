@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 import React from 'react';
-import { useMutation, useQueryCache } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 
 import ArrowForwardIcon from '@mui/icons-material/ArrowForwardIos';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
@@ -20,11 +20,11 @@ import { useThemeRequests } from 'src/services/useThemes';
 
 const NewTheme: React.FunctionComponent = () => {
     const router = useRouter();
-    const queryCache = useQueryCache();
+    const queryClient = useQueryClient();
     const { t, currentLocale } = useTranslation();
     const { updateProject } = React.useContext(ProjectServiceContext);
     const { createTheme } = useThemeRequests();
-    const [mutate] = useMutation(createTheme);
+    const { mutateAsync } = useMutation(createTheme);
     const [themeName, setThemeName] = React.useState('');
     const [hasError, setHasError] = React.useState(false);
 
@@ -45,7 +45,7 @@ const NewTheme: React.FunctionComponent = () => {
             return;
         }
         try {
-            const newTheme = await mutate({
+            const newTheme = await mutateAsync({
                 newTheme: {
                     id: 0,
                     order: 0,
@@ -61,7 +61,7 @@ const NewTheme: React.FunctionComponent = () => {
                 // TODO
                 return;
             }
-            queryCache.invalidateQueries('themes');
+            queryClient.invalidateQueries('themes');
             updateProject({
                 theme: newTheme,
             });

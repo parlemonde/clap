@@ -1,6 +1,6 @@
 import { useSnackbar } from 'notistack';
 import React from 'react';
-import { useQueryCache } from 'react-query';
+import { useQueryClient } from 'react-query';
 import { ReactSortable } from 'react-sortablejs';
 
 import AddCircleIcon from '@mui/icons-material/AddCircle';
@@ -37,7 +37,7 @@ import type { Language } from 'types/models/language.type';
 import type { Question } from 'types/models/question.type';
 
 const AdminQuestions: React.FunctionComponent = () => {
-    const queryCache = useQueryCache();
+    const queryClient = useQueryClient();
     const { enqueueSnackbar } = useSnackbar();
     const { axiosLoggedRequest } = React.useContext(UserServiceContext);
     const { languages } = useLanguages();
@@ -93,14 +93,14 @@ const AdminQuestions: React.FunctionComponent = () => {
                 enqueueSnackbar('Une erreur inconnue est survenue...', {
                     variant: 'error',
                 });
-                queryCache.invalidateQueries('questions');
+                queryClient.invalidateQueries('questions');
                 console.error(response.error);
             }
         } catch (e) {
             enqueueSnackbar('Une erreur inconnue est survenue...', {
                 variant: 'error',
             });
-            queryCache.invalidateQueries('questions');
+            queryClient.invalidateQueries('questions');
             console.error(e);
         }
     };

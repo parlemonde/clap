@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
 import React from 'react';
-import { useQueryCache } from 'react-query';
+import { useQueryClient } from 'react-query';
 
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
@@ -20,7 +20,7 @@ import type { Project } from 'types/models/project.type';
 const EditProject: React.FC = () => {
     const router = useRouter();
     const { t, currentLocale } = useTranslation();
-    const queryCache = useQueryCache();
+    const queryClient = useQueryClient();
     const { enqueueSnackbar } = useSnackbar();
     const { axiosLoggedRequest, isLoggedIn } = React.useContext(UserServiceContext);
     const projectId = React.useMemo(() => parseInt(getQueryString(router.query.id), 10) || 0, [router]);
@@ -68,7 +68,7 @@ const EditProject: React.FC = () => {
                 variant: 'success',
             });
             setProject({ ...project, title: projectTitle });
-            queryCache.invalidateQueries('projects');
+            queryClient.invalidateQueries('projects');
         } else {
             enqueueSnackbar('Une erreur inconnue est survenue...', {
                 variant: 'error',
@@ -86,7 +86,7 @@ const EditProject: React.FC = () => {
             enqueueSnackbar('Projet supprimé !', {
                 variant: 'success',
             });
-            queryCache.invalidateQueries('projects');
+            queryClient.invalidateQueries('projects');
             router.push('/my-videos');
         } else {
             enqueueSnackbar('Une erreur inconnue est survenue...', {

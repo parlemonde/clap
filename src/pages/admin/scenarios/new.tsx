@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
 import React from 'react';
-import { useQueryCache } from 'react-query';
+import { useQueryClient } from 'react-query';
 
 import Close from '@mui/icons-material/Close';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
@@ -35,7 +35,7 @@ import type { Scenario } from 'types/models/scenario.type';
 
 const AdminNewScenario: React.FunctionComponent = () => {
     const router = useRouter();
-    const queryCache = useQueryCache();
+    const queryClient = useQueryClient();
     const { enqueueSnackbar } = useSnackbar();
     const { axiosLoggedRequest } = React.useContext(UserServiceContext);
     const { languages } = useLanguages();
@@ -148,7 +148,7 @@ const AdminNewScenario: React.FunctionComponent = () => {
         }
         if (usedLanguages.length === 1) {
             setLoading(false);
-            queryCache.invalidateQueries('scenarios');
+            queryClient.invalidateQueries('scenarios');
             enqueueSnackbar('Scénario créé avec succès!', {
                 variant: 'success',
             });
@@ -177,7 +177,7 @@ const AdminNewScenario: React.FunctionComponent = () => {
         enqueueSnackbar('Scénario créé avec succès!', {
             variant: 'success',
         });
-        queryCache.invalidateQueries('scenarios');
+        queryClient.invalidateQueries('scenarios');
         router.push('/admin/scenarios');
     };
 

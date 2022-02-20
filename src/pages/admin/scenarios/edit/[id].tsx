@@ -2,7 +2,7 @@ import type { AxiosRequestConfig } from 'axios';
 import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
 import React from 'react';
-import { useQueryCache } from 'react-query';
+import { useQueryClient } from 'react-query';
 
 import Close from '@mui/icons-material/Close';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
@@ -61,7 +61,7 @@ const AdminEditScenario: React.FunctionComponent = () => {
     const router = useRouter();
     const { enqueueSnackbar } = useSnackbar();
     const scenarioId = React.useMemo(() => parseInt(getQueryString(router.query.id), 10) || 0, [router]);
-    const queryCache = useQueryCache();
+    const queryClient = useQueryClient();
     const { axiosLoggedRequest } = React.useContext(UserServiceContext);
     const { languages, isLoading } = useLanguages();
     const languagesMap = React.useMemo(
@@ -168,7 +168,7 @@ const AdminEditScenario: React.FunctionComponent = () => {
         enqueueSnackbar('Scénario modifié avec succès!', {
             variant: 'success',
         });
-        queryCache.invalidateQueries('scenarios');
+        queryClient.invalidateQueries('scenarios');
         router.push('/admin/scenarios');
     };
 

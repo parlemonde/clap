@@ -1,5 +1,5 @@
 import React from 'react';
-import { useQuery, useQueryCache } from 'react-query';
+import { useQuery, useQueryClient } from 'react-query';
 
 import { serializeToQueryUrl } from 'src/util';
 import { axiosRequest } from 'src/util/axiosRequest';
@@ -15,7 +15,7 @@ export interface UserArgs {
 
 export const useUsers = (args: UserArgs = {}): { users: User[]; count: number } => {
     const prevArgs = React.useRef<UserArgs>({});
-    const queryCache = useQueryCache();
+    const queryClient = useQueryClient();
     React.useEffect(() => {
         prevArgs.current = args;
     });
@@ -47,6 +47,6 @@ export const useUsers = (args: UserArgs = {}): { users: User[]; count: number } 
         return response.data.userCount || 0;
     });
 
-    const prevUsers: User[] = queryCache.getQueryData(['users', prevArgs.current]) || [];
+    const prevUsers: User[] = queryClient.getQueryData(['users', prevArgs.current]) || [];
     return { users: isLoading || error ? prevUsers : data || [], count: isLoading2 || error2 ? 0 : count ?? 0 };
 };
