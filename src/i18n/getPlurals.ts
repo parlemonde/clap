@@ -58,61 +58,61 @@ let _rulesPluralsTypes: { [key: number]: (n: number) => number } = {
 
 /* eslint-enable */
 interface RuleWithoutPlural {
-  fc: number;
-  numbers: number[];
+    fc: number;
+    numbers: number[];
 }
 interface Rule extends RuleWithoutPlural {
-  plurals: (n: number) => number;
+    plurals: (n: number) => number;
 }
 type pluralRules = { [language: string]: RuleWithoutPlural };
 function getRules(): pluralRules {
-  const rules: pluralRules = {};
-  sets.forEach((set) => {
-    set.lngs.forEach((l) => {
-      rules[l] = {
-        fc: set.fc,
-        numbers: set.nr,
-      };
+    const rules: pluralRules = {};
+    sets.forEach((set) => {
+        set.lngs.forEach((l) => {
+            rules[l] = {
+                fc: set.fc,
+                numbers: set.nr,
+            };
+        });
     });
-  });
-  return rules;
+    return rules;
 }
 
 export class PluralResolver {
-  private rules: pluralRules = getRules();
+    private rules: pluralRules = getRules();
 
-  private getRule(language: string): Rule | null {
-    if (this.rules[language] === undefined) {
-      return null;
+    private getRule(language: string): Rule | null {
+        if (this.rules[language] === undefined) {
+            return null;
+        }
+
+        const rule: RuleWithoutPlural = this.rules[language];
+        return {
+            ...rule,
+            plurals: _rulesPluralsTypes[rule.fc],
+        };
     }
 
-    const rule: RuleWithoutPlural = this.rules[language];
-    return {
-      ...rule,
-      plurals: _rulesPluralsTypes[rule.fc],
-    };
-  }
+    public getPluralSuffix(language: string, count: number): string {
+        const rule = this.getRule(language);
+        if (rule === null) {
+            console.warn(`No rules found for language ${language}!`);
+            return '';
+        }
 
-  public getPluralSuffix(language: string, count: number): string {
-    const rule = this.getRule(language);
-    if (rule === null) {
-      console.warn(`No rules found for language ${language}!`);
-      return "";
+        const index = rule.plurals(Math.abs(count));
+        const suffixNumber = rule.numbers[index];
+        let suffix: string = `_${rule.numbers[index]}`;
+
+        // special treatment for languages only having singular and plural
+        if (rule.numbers.length === 2 && rule.numbers[0] === 1) {
+            if (suffixNumber === 2) {
+                suffix = '_plural';
+            } else if (suffixNumber === 1) {
+                suffix = '';
+            }
+        }
+
+        return suffix;
     }
-
-    const index = rule.plurals(Math.abs(count));
-    const suffixNumber = rule.numbers[index];
-    let suffix: string = `_${rule.numbers[index]}`;
-
-    // special treatment for languages only having singular and plural
-    if (rule.numbers.length === 2 && rule.numbers[0] === 1) {
-      if (suffixNumber === 2) {
-        suffix = "_plural";
-      } else if (suffixNumber === 1) {
-        suffix = "";
-      }
-    }
-
-    return suffix;
-  }
 }

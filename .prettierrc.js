@@ -1,5 +1,14 @@
 module.exports = {
-  trailingComma: "all",
-  printWidth: 150,
-  tabWidth: 2,
+    trailingComma: 'all',
+    singleQuote: true,
+    printWidth: 150,
+    tabWidth: 4,
+    overrides: [
+        {
+            files: '*.json',
+            options: {
+                tabWidth: 2,
+            },
+        },
+    ],
 };

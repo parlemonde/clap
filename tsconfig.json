@@ -32,8 +32,5 @@
     "src/**/*.ts",
     "src/**/*.tsx",
     "types/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules"
   ]
 }

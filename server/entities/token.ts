@@ -1,16 +1,16 @@
-import { Column, Entity, CreateDateColumn, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, CreateDateColumn, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Token {
-  @PrimaryGeneratedColumn()
-  public id: number;
+    @PrimaryGeneratedColumn()
+    public id: number;
 
-  @Column({ type: "varchar", length: 95 })
-  public token: string;
+    @Column({ type: 'varchar', length: 95 })
+    public token: string;
 
-  @Column()
-  public userId: number;
+    @Column()
+    public userId: number;
 
-  @CreateDateColumn()
-  public date: Date;
+    @CreateDateColumn()
+    public date: Date;
 }
