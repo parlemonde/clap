@@ -77,7 +77,7 @@ export async function htmlToPDF<P extends PDF>(pdf: P, options: PDFOptions<P>, l
     await page.setContent(html);
     await page.pdf({
         path: path.join(directory, `${filename}.pdf`),
-        format: 'A4',
+        format: 'a4',
         margin: {
             top: '50px',
             right: '0px',
