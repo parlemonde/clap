@@ -75,9 +75,9 @@ export async function htmlToPDF<P extends PDF>(pdf: P, options: PDFOptions<P>, l
     }
     const browser = await puppeteer.launch(browserOptions);
     const page = await browser.newPage();
-    await page.setContent(html);
-    await page.pdf({
-        path: path.join(directory, `${filename}.pdf`),
+    await page.setContent(html, { waitUntil: 'networkidle0', timeout: 40000 });
+    await page.emulateMediaType('print');
+    const pdfBuffer = await page.pdf({
         format: 'a4',
         margin: {
             top: '50px',
@@ -91,6 +91,7 @@ export async function htmlToPDF<P extends PDF>(pdf: P, options: PDFOptions<P>, l
         footerTemplate:
             "<div style='font-size:8px!important;color:grey!important;padding-right:1cm;text-align: right;width:100%;position: relative;' class='pdffooter'><span class='pageNumber'></span>/<span class='totalPages'></span></div>",
     });
+    await fs.writeFile(path.join(directory, `${filename}.pdf`), pdfBuffer);
     await browser.close();
 
     logger.info(`File ${filename}.pdf successfully generated!`);

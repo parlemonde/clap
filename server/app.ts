@@ -53,6 +53,9 @@ async function startApp() {
             contentSecurityPolicy: {
                 directives,
             },
+            crossOriginResourcePolicy: {
+                policy: 'cross-origin',
+            },
         }),
     );
     app.use(cors());
