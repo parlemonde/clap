@@ -19,7 +19,7 @@ const apiOptions: swaggerJSDoc.Options = {
         servers: [
             {
                 description: '',
-                url: url,
+                url,
             },
         ],
     },

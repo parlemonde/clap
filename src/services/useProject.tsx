@@ -111,7 +111,6 @@ export const ProjectServiceProvider: React.FunctionComponent<ProjectServiceProvi
     }, [router.pathname, getDefaultProject, project]);
 
     const updateProject = (newProject: Partial<Project>): void => {
-        if (project === null) return;
         setProject((p) => {
             if (p === null) {
                 return p;

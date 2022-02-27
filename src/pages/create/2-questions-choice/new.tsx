@@ -49,7 +49,7 @@ const QuestionNew: React.FunctionComponent = () => {
             id: 0,
             isDefault: false,
             question: newQuestion,
-            scenarioId: project.scenario?.id || 0,
+            scenarioId: project.scenario?.id ?? 0,
             languageCode: project.scenario?.languageCode || 'fr',
             index: questions.length,
         };

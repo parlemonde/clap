@@ -1,7 +1,7 @@
+import 'dotenv/config';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import { config } from 'dotenv';
 import express, { Router } from 'express';
 import type { Response } from 'express';
 import helmet from 'helmet';
@@ -24,10 +24,8 @@ import { logger } from './utils/logger';
 import { normalizePort, onError, getDefaultDirectives } from './utils/server';
 import { apiSpecs } from './utils/swagger';
 
-config();
-
-const dev = process.env.NODE_ENV !== 'production';
-const frontendHandler = next({ dev });
+const IS_DEV = process.env.NODE_ENV !== 'production';
+const frontendHandler = next({ dev: IS_DEV });
 const handle = frontendHandler.getRequestHandler();
 
 async function startApp() {
@@ -46,7 +44,7 @@ async function startApp() {
 
     /* --- Middlewares --- */
     const directives = getDefaultDirectives();
-    if (dev) {
+    if (IS_DEV) {
         directives['default-src'] = ["'self'", "'unsafe-eval'", "'unsafe-inline'"];
         directives['script-src'] = ["'self'", "'unsafe-eval'", "'unsafe-inline'"];
     }

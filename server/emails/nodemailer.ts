@@ -3,24 +3,25 @@ import type Mail from 'nodemailer/lib/mailer';
 
 import { logger } from '../utils/logger';
 
+const SMTP_HOST = process.env.NODEMAILER_HOST || 'smtp.ethereal.email';
+const SMTP_USER: string | null = process.env.NODEMAILER_USER || null;
+const SMTP_PASSWORD: string | null = process.env.NODEMAILER_PASS || null;
+const SMTP_PORT: number = parseInt(process.env.NODEMAILER_PORT || '', 10) || 587;
+
 /**
  * Returns the nodemailer object to send emails by smtp.
  */
 export function getNodeMailer(): Promise<Mail | null> {
-    const smtpUser: string | null = process.env.NODEMAILER_USER || null;
-    const smtpPass: string | null = process.env.NODEMAILER_PASS || null;
-    const smtpPort: number = parseInt(process.env.NODEMAILER_PORT || '', 10) || 587;
-
     return new Promise((resolve) => {
-        if (smtpUser !== null && smtpPass !== null) {
+        if (SMTP_USER !== null && SMTP_PASSWORD !== null) {
             resolve(
                 nodemailer.createTransport({
-                    host: process.env.NODEMAILER_HOST || 'smtp.ethereal.email',
-                    port: smtpPort,
-                    secure: smtpPort === 465, // true for 465, false for other ports
+                    host: SMTP_HOST,
+                    port: SMTP_PORT,
+                    secure: SMTP_PORT === 465, // true for 465, false for other ports
                     auth: {
-                        user: smtpUser,
-                        pass: smtpPass,
+                        user: SMTP_USER,
+                        pass: SMTP_PASSWORD,
                     },
                 }),
             );

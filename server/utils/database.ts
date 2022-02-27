@@ -10,7 +10,7 @@ import { logger } from './logger';
 import { sleep } from './utils';
 
 const DEFAULT_PORT = '3306';
-const DEFAULT_NAME = 'plmo';
+const DB_NAME: string = process.env.DB_DB || process.env.DB_NAME || 'plmo';
 
 const getDBConfig = (): ConnectionOptions | null => {
     let connectionOptions: ConnectionOptions;
@@ -21,7 +21,7 @@ const getDBConfig = (): ConnectionOptions | null => {
         };
     } else {
         connectionOptions = {
-            database: process.env.DB_DB || process.env.DB_NAME || DEFAULT_NAME,
+            database: DB_NAME,
             host: process.env.DB_HOST,
             password: process.env.DB_PASS,
             port: parseInt(process.env.DB_PORT || DEFAULT_PORT, 10),
@@ -66,8 +66,7 @@ async function createDB(): Promise<void> {
             password: process.env.DB_PASS,
             user: process.env.DB_USER,
         });
-        const dbName: string = process.env.DB_NAME || DEFAULT_NAME;
-        await query(`CREATE DATABASE IF NOT EXISTS ${dbName} CHARACTER SET = 'utf8mb4' COLLATE = 'utf8mb4_unicode_ci';`, connection);
+        await query(`CREATE DATABASE IF NOT EXISTS ${DB_NAME} CHARACTER SET = 'utf8mb4' COLLATE = 'utf8mb4_unicode_ci';`, connection);
         logger.info('Database PLMO created!');
     } catch (e) {
         logger.error(e);
@@ -75,9 +74,8 @@ async function createDB(): Promise<void> {
 }
 
 async function createSequences(connection: Connection): Promise<void> {
-    const dbName: string = process.env.DB_NAME || DEFAULT_NAME;
     const result = await connection.query(
-        `SELECT COUNT(*) as count FROM information_schema.tables WHERE table_schema = '${dbName}' AND table_name = 'sequence';`,
+        `SELECT COUNT(*) as count FROM information_schema.tables WHERE table_schema = '${DB_NAME}' AND table_name = 'sequence';`,
     );
     if (Array.isArray(result) && result.length > 0 && Object.prototype.hasOwnProperty.call(result[0], 'count') && Number(result[0].count) === 0) {
         await connection.transaction(async (manager: EntityManager) => {

@@ -11,6 +11,7 @@ import { getBase64File, getQRCodeURL } from '../utils/utils';
 
 const logoFont = getBase64File(path.join(__dirname, 'templates/littledays.woff'));
 const userLogo = getBase64File(path.join(__dirname, 'templates/face.png'));
+const IS_DOCKER = Boolean(process.env.DOCKER);
 
 export enum PDF {
     PLAN_DE_TOURNAGE,
@@ -68,7 +69,7 @@ export async function htmlToPDF<P extends PDF>(pdf: P, options: PDFOptions<P>, l
 
     // Use puppeteer to generate PDF.
     const browserOptions: { args?: string[] } = {};
-    if (process.env.DOCKER) {
+    if (IS_DOCKER) {
         // Only for Docker
         browserOptions.args = ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'];
     }

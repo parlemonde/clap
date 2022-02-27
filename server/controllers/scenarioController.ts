@@ -104,7 +104,7 @@ export class ScenariosController extends Controller {
         scenario.name = req.body.name || '';
         scenario.isDefault = req.body.isDefault || false;
         const scenarioId = parseInt(req.body.id, 10);
-        if (!isNaN(scenarioId)) {
+        if (!isNaN(scenarioId) && scenarioId !== 0) {
             scenario.id = scenarioId;
         }
 

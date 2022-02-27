@@ -7,9 +7,10 @@ import type { UserType } from '../entities/user';
 import { User } from '../entities/user';
 import { getHeader } from '../utils/utils';
 
+const APP_SECRET: string = process.env.APP_SECRET || '';
+
 export function authenticate(userType: UserType | undefined = undefined): RequestHandler {
     return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-        const secret: string = process.env.APP_SECRET || '';
         let token: string;
         if (req.cookies && req.cookies['access-token']) {
             if (!req.isCsrfValid && req.method !== 'GET') {
@@ -44,7 +45,7 @@ export function authenticate(userType: UserType | undefined = undefined): Reques
             // Remove Bearer from string
             token = token.slice(7, token.length);
         }
-        if (secret.length === 0) {
+        if (APP_SECRET.length === 0) {
             res.status(401).send('invalid access token');
             return;
         }
@@ -57,7 +58,7 @@ export function authenticate(userType: UserType | undefined = undefined): Reques
 
         // authenticate
         try {
-            const decoded: string | { userId: number; iat: number; exp: number } = jwt.verify(token, secret) as
+            const decoded: string | { userId: number; iat: number; exp: number } = jwt.verify(token, APP_SECRET) as
                 | string
                 | { userId: number; iat: number; exp: number };
             let data: { userId: number; iat: number; exp: number };

@@ -7,27 +7,28 @@ import { logger } from '../utils/logger';
 import type { PLM_User } from './user';
 import { createPLMUserToDB } from './user';
 
-export async function getUserFromPLM(code: string): Promise<User | null> {
-    const plmSsoUrl = process.env.PLM_HOST || '';
-    const client_id = process.env.CLIENT_ID || '';
-    const client_secret = process.env.CLIENT_SECRET || '';
+const PLM_HOST_URL = process.env.PLM_HOST || '';
+const CLAP_HOST_URL = process.env.HOST_URL || '';
+const CLIENT_ID = process.env.CLIENT_ID || '';
+const CLIENT_SECRET = process.env.CLIENT_SECRET || '';
 
+export async function getUserFromPLM(code: string): Promise<User | null> {
     try {
         const ssoResponse = await axios({
             method: 'POST',
-            url: `${plmSsoUrl}/oauth/token`,
+            url: `${PLM_HOST_URL}/oauth/token`,
             data: {
                 grant_type: 'authorization_code',
-                client_id,
-                client_secret,
-                redirect_uri: `${process.env.HOST_URL}/login`,
+                client_id: CLIENT_ID,
+                client_secret: CLIENT_SECRET,
+                redirect_uri: `${CLAP_HOST_URL}/login`,
                 code,
             },
         });
         const { access_token } = ssoResponse.data as { access_token: string };
         const userResponse = await axios({
             method: 'GET',
-            url: `${plmSsoUrl}/oauth/me?access_token=${access_token}`,
+            url: `${PLM_HOST_URL}/oauth/me?access_token=${access_token}`,
         });
         const plmUser = userResponse.data as PLM_User;
         let user = await getRepository(User).findOne({

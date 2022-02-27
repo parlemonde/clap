@@ -20,7 +20,7 @@ export const useProjects = (): { projects: Project[] } => {
         }
         return response.data;
     }, [isLoggedIn, axiosLoggedRequest]);
-    const { data, isLoading, error } = useQuery<Project[], unknown>(['projects', { userId: user?.id || 0 }], getProjects);
+    const { data, isLoading, error } = useQuery<Project[], unknown>(['projects', { userId: user?.id ?? 0 }], getProjects);
     return {
         projects: isLoading || error ? [] : data || [],
     };

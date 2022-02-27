@@ -50,7 +50,7 @@ const QuestionChoice: React.FunctionComponent = () => {
     const getQuestions = React.useCallback(async () => {
         const defaultQuestions = await getDefaultQuestions({
             isDefault: true,
-            scenarioId: project.scenario?.id || null,
+            scenarioId: project.scenario?.id ?? null,
             languageCode: currentLocale,
         });
         for (const question of defaultQuestions) {

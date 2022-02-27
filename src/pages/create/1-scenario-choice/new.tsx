@@ -31,7 +31,7 @@ const NewScenario: React.FunctionComponent = () => {
     });
     const [hasError, setHasError] = useState(false);
     const [descHasError, setDescHasError] = useState(false);
-    const themeId = project.theme?.id || -1;
+    const themeId = project.theme?.id ?? -1;
 
     const handleSubmit = async (event: React.MouseEvent) => {
         event.preventDefault();

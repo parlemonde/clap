@@ -4,14 +4,15 @@ import path from 'path';
 import { logger } from '../utils/logger';
 import { Provider } from './provider';
 
+const STOCKAGE_PROVIDER = process.env.STOCKAGE_PROVIDER_NAME || 'local';
+
 export class LocalUtils extends Provider {
     constructor() {
         super();
     }
 
     public async deleteImage(filename: string, filePath: string): Promise<void> {
-        const provider = process.env.STOCKAGE_PROVIDER_NAME || 'local';
-        if (provider !== 'local') {
+        if (STOCKAGE_PROVIDER !== 'local') {
             return;
         }
 
@@ -27,8 +28,7 @@ export class LocalUtils extends Provider {
     }
 
     public async uploadImage(filename: string, filePath: string): Promise<string> {
-        const provider = process.env.STOCKAGE_PROVIDER_NAME || 'local';
-        if (provider !== 'local') {
+        if (STOCKAGE_PROVIDER !== 'local') {
             return '';
         }
         return `${process.env.HOST_URL || 'http://localhost:5000'}/${filePath}/${filename}.jpeg`;

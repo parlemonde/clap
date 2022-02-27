@@ -8,6 +8,9 @@ import { logger } from '../utils/logger';
 import { getNodeMailer } from './nodemailer';
 import { renderFile } from './renderFile';
 
+const HOST_URL = process.env.HOST_URL || 'http://localhost:5000';
+const DOMAIN = process.env.HOST_DOMAIN || 'clap.parlemonde.org';
+
 let transporter: Mail | null = null;
 getNodeMailer()
     .then((t) => {
@@ -33,14 +36,13 @@ type emailData = {
 };
 
 function getTemplateData<E extends Email>(email: E, receiverEmail: string, options: EmailOptions<E>): emailData | undefined {
-    const frontUrl = process.env.HOST_URL || 'http://localhost:5000';
     if (email === Email.RESET_PASSWORD) {
         return {
             filename: 'reset-password_mini.html',
             filenameText: 'reset-password_text.pug',
             subject: 'email_reset_password_subject',
             args: {
-                resetUrl: `${frontUrl}/update-password?email=${encodeURI(receiverEmail)}&verify-token=${encodeURI(
+                resetUrl: `${HOST_URL}/update-password?email=${encodeURI(receiverEmail)}&verify-token=${encodeURI(
                     (options as EmailOptions<Email.RESET_PASSWORD>).resetCode,
                 )}`,
             },
@@ -52,7 +54,7 @@ function getTemplateData<E extends Email>(email: E, receiverEmail: string, optio
             filenameText: 'verify-email_text.pug',
             subject: 'email_verify_subject',
             args: {
-                verifyUrl: `${frontUrl}/verify?email=${encodeURI(receiverEmail)}&verify-token=${encodeURI(
+                verifyUrl: `${HOST_URL}/verify?email=${encodeURI(receiverEmail)}&verify-token=${encodeURI(
                     (options as EmailOptions<Email.VERIFY_EMAIL>).verifyCode,
                 )}`,
                 pseudo: (options as EmailOptions<Email.VERIFY_EMAIL>).pseudo,
@@ -63,8 +65,6 @@ function getTemplateData<E extends Email>(email: E, receiverEmail: string, optio
 }
 
 export async function sendMail<E extends Email>(email: E, receiverEmail: string, options: EmailOptions<E>, language: string = 'fr'): Promise<void> {
-    const frontUrl = process.env.HOST_URL || 'http://localhost:5000';
-    const domain = process.env.HOST_DOMAIN || 'clap.parlemonde.org';
     if (transporter === null) {
         logger.error('Could not send mail, transporter is null!');
         return;
@@ -89,9 +89,9 @@ export async function sendMail<E extends Email>(email: E, receiverEmail: string,
     // Compile text and html
     const pugOptions = {
         ...templateData.args,
-        frontUrl,
+        frontUrl: HOST_URL,
         receiverEmail,
-        plmoEmail: `contact@${domain}`,
+        plmoEmail: `contact@${DOMAIN}`,
     };
     try {
         const html = await renderFile(path.join(__dirname, 'templates', templateData.filename), pugOptions, t);
@@ -99,7 +99,7 @@ export async function sendMail<E extends Email>(email: E, receiverEmail: string,
 
         // send mail with defined transport object
         const info = await transporter.sendMail({
-            from: `"Par Le Monde" <ne-pas-repondre@${domain}>`, // sender address
+            from: `"Par Le Monde" <ne-pas-repondre@${DOMAIN}>`, // sender address
             to: receiverEmail, // receiver address
             subject: t(templateData.subject), // Subject line
             text, // plain text body
