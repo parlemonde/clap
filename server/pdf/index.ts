@@ -68,10 +68,11 @@ export async function htmlToPDF<P extends PDF>(pdf: P, options: PDFOptions<P>, l
     await fs.mkdirs(directory);
 
     // Use puppeteer to generate PDF.
-    const browserOptions: { args?: string[] } = {};
+    const browserOptions: { args?: string[]; executablePath?: string } = {};
     if (IS_DOCKER) {
         // Only for Docker
         browserOptions.args = ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'];
+        browserOptions.executablePath = 'google-chrome-stable';
     }
     const browser = await puppeteer.launch(browserOptions);
     const page = await browser.newPage();

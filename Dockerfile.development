@@ -22,10 +22,12 @@ RUN apt-get update \
 ADD https://github.com/Yelp/dumb-init/releases/download/v1.2.0/dumb-init_1.2.0_amd64 /usr/local/bin/dumb-init
 RUN chmod +x /usr/local/bin/dumb-init
 
-# Install emoji's
-RUN cd $font_directory &&\
-  wget https://github.com/emojione/emojione-assets/releases/download/3.1.2/emojione-android.ttf &&\
-  fc-cache -f -v
+# install emoji font
+RUN apt-get update -qq \
+  && apt-get install -yqq --no-install-recommends fonts-noto-color-emoji \
+  && rm -rf /var/lib/apt/lists/*
+
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 
 # Create app directory
 WORKDIR /app
@@ -54,15 +56,6 @@ COPY next-env.d.ts ./
 COPY next.config.js ./
 COPY tsconfig.json ./
 RUN mkdir dist
-
-# Add user so we don't need --no-sandbox.
-RUN groupadd -r pptruser && useradd -r -g pptruser -G audio,video pptruser \
-  && mkdir -p /home/pptruser/Downloads \
-  && chown -R pptruser:pptruser /home/pptruser \
-  && chown -R pptruser:pptruser /app
-
-# Run everything after as non-privileged user.
-USER pptruser
 
 ENV DOCKER 1
 
