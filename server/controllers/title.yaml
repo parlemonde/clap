@@ -1,0 +1,73 @@
+/titles:
+  get:
+    tags:
+      - Titles
+    summary: Returns a list of titles.
+    security:
+      - bearerAuth: []
+    responses:
+      200:
+        description: A JSON array of titles.
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/Title"
+  post:
+    tags:
+      - Titles
+    summary: Create a new title.
+    security:
+      - bearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - posX
+              - posY
+              - text
+              - fontFamily
+              - duration
+            properties:
+              - in: query
+                name: posX
+                schema:
+                  type: number
+                description: Query posX.
+              - in: query
+                name: posY
+                schema:
+                  type: number
+                description: Query posY.
+              - in: query
+                name: text
+                schema:
+                  type: string
+                description: Query text.
+              - in: query
+                name: fontFamily
+                schema:
+                  type: string
+                description: Query fontFamily.
+              - in: query
+                name: duration
+                schema:
+                  type: number
+                description: Query fontFamily.
+    responses:
+      200:
+        description: The new title.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Title"
+      401:
+        $ref: "#/components/responses/Unauthorized"
+      403:
+        $ref: "#/components/responses/Unauthorized2"
+      500:
+        $ref: "#/components/responses/InternalError"
