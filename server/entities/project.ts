@@ -1,7 +1,8 @@
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany, CreateDateColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany, CreateDateColumn, OneToOne, JoinColumn } from "typeorm";
 
 import { Question } from "./question";
 import { Scenario } from "./scenario";
+import { Sound } from "./sound";
 import { Theme } from "./theme";
 import { User } from "./user";
 
@@ -12,6 +13,9 @@ export class Project {
 
   @Column({ type: "varchar", length: 200, nullable: true })
   public title: string;
+
+  @Column({ nullable: true })
+  public musicBeginTime: number;
 
   @CreateDateColumn()
   public date: Date;
@@ -27,4 +31,8 @@ export class Project {
 
   @OneToMany(() => Question, (question) => question.project)
   public questions: Question[];
+
+  @OneToOne(() => Sound, { onDelete: "SET NULL" })
+  @JoinColumn()
+  public sound: Sound | null;
 }

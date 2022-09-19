@@ -1,0 +1,21 @@
+components:
+  schemas:
+    Sound:
+      type: object
+      properties:
+        id:
+          type: integer
+        path:
+          type: string
+          description: public url of image
+          maxLength: 200
+        localPath:
+          type: string
+          description: local path in object storage
+          maxLength: 150
+        uuid:
+          type: string
+          maxLength: 50
+          format: uuid
+        volume:
+          type: integer

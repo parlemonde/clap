@@ -6,4 +6,5 @@ export interface Plan {
   index: number;
   image: Image | null;
   url: string | null;
+  duration: number | null;
 }

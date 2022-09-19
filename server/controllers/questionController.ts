@@ -4,6 +4,7 @@ import { getRepository } from "typeorm";
 import { Project } from "../entities/project";
 import { Question } from "../entities/question";
 import { Scenario } from "../entities/scenario";
+import { Sound } from "../entities/sound";
 import { UserType } from "../entities/user";
 
 import { Controller, del, get, post, put } from "./controller";
@@ -129,6 +130,16 @@ export class QuestionController extends Controller {
     }
     if (req.body.index !== undefined) {
       question.index = req.body.index;
+    }
+    if (req.body.voiceOff !== undefined) {
+      question.voiceOff = (req.body.voiceOff || "").slice(0, 280);
+    }
+    if (req.body.voiceOffBeginTime !== undefined && req.body.voiceOffBeginTime.length > 0) {
+      question.voiceOffBeginTime = req.body.voiceOffBeginTime;
+    }
+    if (req.body.soundId !== undefined) {
+      question.sound = new Sound();
+      question.sound.id = req.body.soundId;
     }
     await getRepository(Question).save(question);
     res.sendJSON(question);

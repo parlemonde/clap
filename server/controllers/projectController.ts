@@ -7,6 +7,7 @@ import { Plan } from "../entities/plan";
 import { Project } from "../entities/project";
 import { Question } from "../entities/question";
 import { Scenario } from "../entities/scenario";
+import { Sound } from "../entities/sound";
 import { Theme } from "../entities/theme";
 import { UserType } from "../entities/user";
 import { deleteImage } from "../fileUpload";
@@ -152,6 +153,9 @@ export class ProjectController extends Controller {
     if (req.body.title !== undefined) {
       project.title = req.body.title;
     }
+    if (req.body.musicBeginTime !== undefined) {
+      project.musicBeginTime = req.body.musicBeginTime;
+    }
 
     // get questions
     project.questions = getQuestionsFromBody(req);
@@ -189,6 +193,14 @@ export class ProjectController extends Controller {
     if (project === undefined) {
       next();
       return;
+    }
+
+    if (req.body.musicBeginTime !== undefined) {
+      project.musicBeginTime = req.body.musicBeginTime;
+    }
+    if (req.body.soundId !== undefined) {
+      project.sound = new Sound();
+      project.sound.id = req.body.soundId;
     }
 
     if (req.body.title !== undefined) {

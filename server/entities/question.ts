@@ -1,9 +1,10 @@
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany, getRepository } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany, getRepository, OneToOne, JoinColumn } from "typeorm";
 
 import type { Question as QuestionInterface } from "../../types/models/question.type";
 
 import { Plan } from "./plan";
 import { Project } from "./project";
+import { Sound } from "./sound";
 
 @Entity()
 export class Question implements QuestionInterface {
@@ -38,4 +39,14 @@ export class Question implements QuestionInterface {
     }
     return this;
   }
+
+  @Column({ type: "varchar", length: 280 })
+  public voiceOff: string;
+
+  @Column()
+  public voiceOffBeginTime: number;
+
+  @OneToOne(() => Sound, { onDelete: "SET NULL" })
+  @JoinColumn()
+  public sound: Sound | null;
 }

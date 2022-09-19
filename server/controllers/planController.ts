@@ -86,6 +86,7 @@ export class PlanController extends Controller {
     plan.index = req.body.index || 0;
     plan.question = new Question();
     plan.question.id = req.body.questionId || 0;
+    plan.duration = 3000;
 
     if (plan.question.id === 0) {
       throw new AppError("questionId not provided...", ErrorCode.INVALID_DATA);
@@ -106,6 +107,9 @@ export class PlanController extends Controller {
 
     plan.description = req.body.description || plan.description;
     plan.index = req.body.index !== undefined ? req.body.index : plan.index;
+    if (req.body.duration !== undefined) {
+      plan.duration = req.body.duration;
+    }
 
     await getRepository(Plan).save(plan);
     res.sendJSON(plan);
