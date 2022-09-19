@@ -1,38 +1,38 @@
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany, CreateDateColumn, OneToOne, JoinColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany, CreateDateColumn, OneToOne, JoinColumn } from 'typeorm';
 
-import { Question } from "./question";
-import { Scenario } from "./scenario";
-import { Sound } from "./sound";
-import { Theme } from "./theme";
-import { User } from "./user";
+import { Question } from './question';
+import { Scenario } from './scenario';
+import { Sound } from './sound';
+import { Theme } from './theme';
+import { User } from './user';
 
 @Entity()
 export class Project {
-  @PrimaryGeneratedColumn()
-  public id: number;
+    @PrimaryGeneratedColumn()
+    public id: number;
 
-  @Column({ type: "varchar", length: 200, nullable: true })
-  public title: string;
+    @Column({ type: 'varchar', length: 200, nullable: true })
+    public title: string;
 
-  @Column({ nullable: true })
-  public musicBeginTime: number;
+    @Column({ nullable: true })
+    public musicBeginTime: number;
 
-  @CreateDateColumn()
-  public date: Date;
+    @CreateDateColumn()
+    public date: Date;
 
-  @ManyToOne(() => Theme)
-  public theme: Theme;
+    @ManyToOne(() => Theme)
+    public theme: Theme;
 
-  @ManyToOne(() => Scenario)
-  public scenario: Scenario;
+    @ManyToOne(() => Scenario)
+    public scenario: Scenario;
 
-  @ManyToOne(() => User)
-  public user: User;
+    @ManyToOne(() => User)
+    public user: User;
 
-  @OneToMany(() => Question, (question) => question.project)
-  public questions: Question[];
+    @OneToMany(() => Question, (question) => question.project)
+    public questions: Question[];
 
-  @OneToOne(() => Sound, { onDelete: "SET NULL" })
-  @JoinColumn()
-  public sound: Sound | null;
+    @OneToOne(() => Sound, { onDelete: 'SET NULL' })
+    @JoinColumn()
+    public sound: Sound | null;
 }

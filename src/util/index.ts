@@ -13,7 +13,7 @@ export function getQuestions(project: Project): Question[] {
       const prev = list[index - 1];
       newCurrent = {
         ...current,
-        planStartIndex: prev.planStartIndex + ((prev.plans || []).length || 1),
+        planStartIndex: (prev.planStartIndex || 0) + ((prev.plans || []).length || 1),
       };
     } else {
       newCurrent = { ...current, planStartIndex: 1 };
@@ -52,13 +52,16 @@ export function generateTemporaryToken(length: number = 40): string {
   let array = new Uint8Array(length);
   cryptoObj.getRandomValues(array);
   array = array.map((x) => validChars.charCodeAt(x % validChars.length));
-  const randomState = String.fromCharCode.apply(null, array);
+  const randomState = String.fromCharCode.apply(null, [...array]);
   return randomState;
 }
 
-export function getQueryString(q: string | string[]): string {
+export function getQueryString(q?: string | Array<string | null> | null): string {
+  if (q === undefined || q === null) {
+    return "";
+  }
   if (Array.isArray(q)) {
-    return q[0];
+    return q.find(sub => sub !== null) || "";
   }
   return q;
 }
@@ -71,8 +74,11 @@ export function serializeToQueryUrl(obj: { [key: string]: any }) {
   let str =
     "?" +
     Object.keys(obj)
-      .reduce(function (a, k) {
-        a.push(k + "=" + encodeURIComponent(obj[k]));
+      .reduce<string[]>(function (a, k) {
+        const value = obj[k];
+        if (value !== undefined && value !== null) {
+          a.push(k + '=' + encodeURIComponent(value));
+        }
         return a;
       }, [])
       .join("&");
@@ -83,19 +89,25 @@ export function serializeToQueryUrl(obj: { [key: string]: any }) {
 // be triggered. The function will be called after it stops being called for
 // N milliseconds. If `immediate` is passed, trigger the function on the
 // leading edge, instead of the trailing.
-export function debounce<T extends (args: any) => any>(func: T, wait: number, immediate: boolean): T {
-  let timeout: NodeJS.Timeout;
-  return (function () {
-    // @ts-ignore
-    const context: any = this,
-      args = arguments;
+export function debounce<T extends (args: any) => void>(func: T, wait: number, immediate: boolean): T {
+  let timeout: number | undefined;
+  return function () {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    /*@ts-ignore */ //eslint-disable-next-line @typescript-eslint/no-this-alias, @typescript-eslint/no-explicit-any
+    const context: any = this;
+    // eslint-disable-next-line prefer-rest-params
+    const args = arguments;
     const later = function () {
-      timeout = null;
+      timeout = undefined;
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       if (!immediate) func.apply(context, args);
     };
     const callNow = immediate && !timeout;
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
+    window.clearTimeout(timeout);
+    timeout = window.setTimeout(later, wait);
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     if (callNow) func.apply(context, args);
-  } as unknown) as T;
+  } as unknown as T;
 }

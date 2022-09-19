@@ -1,2 +1,2 @@
-export { Canvas } from "./Canvas";
-export type { CanvasRef } from "./Canvas";
+export { Canvas } from './Canvas';
+export type { CanvasRef } from './Canvas';

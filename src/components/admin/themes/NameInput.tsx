@@ -1,49 +1,62 @@
-import React from "react";
+import React from 'react';
 
-import TextField from "@material-ui/core/TextField";
-import { makeStyles } from "@material-ui/core/styles";
-import { Button } from "@material-ui/core";
-import Close from "@material-ui/icons/Close";
+import Close from '@mui/icons-material/Close';
+import { Button } from '@mui/material';
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
 
-import type { Language } from "types/models/language.type";
+import type { Language } from 'types/models/language.type';
 
-const useStyles = makeStyles(() => ({
-  containerNames: {
-    display: "flex",
-    marginBottom: 16,
-    alignItems: "center",
-  },
-  textFieldLanguage: {
-    marginRight: "8px",
-    fontWeight: "bold",
-  },
-  textFieldNames: {
-    margin: "0px 0px 0px 4px",
-  },
-}));
+const styles = {
+    containerNames: {
+        display: 'flex',
+        marginBottom: 16,
+        alignItems: 'center',
+    },
+    textFieldLanguage: {
+        marginRight: '8px',
+        fontWeight: 'bold',
+    },
+    textFieldNames: {
+        margin: '0px 0px 0px 4px',
+    },
+};
 
 interface NameInputProps {
-  value?: string;
-  language?: Language;
-  canDelete?: boolean;
-  onChange?(event: React.ChangeEvent<HTMLInputElement>): void;
-  onDelete?(): void;
+    value?: string;
+    language?: Language;
+    canDelete?: boolean;
+    onChange?(event: React.ChangeEvent<HTMLInputElement>): void;
+    onDelete?(): void;
 }
 
-export const NameInput: React.FunctionComponent<NameInputProps> = ({ value = "", language = { label: "Français", value: "fr" }, canDelete = false, onChange = () => {}, onDelete = () => {} }: NameInputProps) => {
-  const classes = useStyles();
+export const NameInput: React.FunctionComponent<NameInputProps> = ({
+    value = '',
+    language = { label: 'Français', value: 'fr' },
+    canDelete = false,
+    onChange = () => {},
+    onDelete = () => {},
+}: NameInputProps) => {
+    return (
+        <Box sx={styles.containerNames}>
+            <Box sx={styles.textFieldLanguage}>{language.label}</Box>
 
-  return (
-    <div className={classes.containerNames}>
-      <div className={classes.textFieldLanguage}>{language.label}</div>
+            <TextField
+                variant="standard"
+                color="secondary"
+                id={language.value}
+                type="text"
+                value={value}
+                onChange={onChange}
+                fullWidth
+                sx={styles.textFieldNames}
+            />
 
-      <TextField color="secondary" id={language.value} type="text" value={value} onChange={onChange} fullWidth className={classes.textFieldNames} />
-
-      {canDelete && (
-        <Button style={{ borderRadius: "100px", minWidth: "32px", marginLeft: "8px" }} onClick={onDelete}>
-          <Close />
-        </Button>
-      )}
-    </div>
-  );
+            {canDelete && (
+                <Button style={{ borderRadius: '100px', minWidth: '32px', marginLeft: '8px' }} onClick={onDelete}>
+                    <Close />
+                </Button>
+            )}
+        </Box>
+    );
 };

@@ -5,7 +5,7 @@
     "target": "es6",
     "outDir": "../dist",
     "isolatedModules": false,
-    "noEmit": false,
+    "noEmit": true,
     "strict": true,
     "strictPropertyInitialization": false,
     "noImplicitAny": true,

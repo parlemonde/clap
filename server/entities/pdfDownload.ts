@@ -1,10 +1,10 @@
-import { CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { CreateDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class PDFDownload {
-  @PrimaryGeneratedColumn()
-  public id: number;
+    @PrimaryGeneratedColumn()
+    public id: number;
 
-  @CreateDateColumn()
-  public date: Date;
+    @CreateDateColumn()
+    public date: Date;
 }

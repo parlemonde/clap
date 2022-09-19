@@ -1,40 +1,36 @@
-import classnames from "classnames";
-import React from "react";
+import React from 'react';
 
-import { makeStyles } from "@material-ui/core/styles";
+import Box from '@mui/material/Box';
+import type { Theme as MaterialTheme } from '@mui/material/styles';
 
-const useStyles = (color: "primary" | "secondary") =>
-  makeStyles((theme) => ({
-    inverted: {
-      backgroundColor: (theme.palette[color] || {}).main,
-      color: (theme.palette[color] || {}).contrastText,
-      padding: "0 0.1rem",
+const styles = {
+    primary: {
+        backgroundColor: (theme: MaterialTheme) => theme.palette.primary.main,
+        color: (theme: MaterialTheme) => theme.palette.primary.contrastText,
     },
-    round: {
-      borderRadius: "1rem",
-      display: "inline-block",
-      height: "2rem",
-      textAlign: "center",
-      width: "2rem",
+    secondary: {
+        backgroundColor: (theme: MaterialTheme) => theme.palette.secondary.main,
+        color: (theme: MaterialTheme) => theme.palette.secondary.contrastText,
     },
-  }));
+};
 
 interface InvertedProps {
-  children: React.ReactNode;
-  round?: boolean;
-  color?: "primary" | "secondary";
+    children: React.ReactNode;
+    round?: boolean;
+    color?: keyof typeof styles;
 }
 
-export const Inverted: React.FunctionComponent<InvertedProps> = ({ children, round = false, color = "primary" }: InvertedProps) => {
-  const classes = useStyles(color)();
-
-  return (
-    <span
-      className={classnames(classes.inverted, {
-        [classes.round]: round,
-      })}
-    >
-      {children}
-    </span>
-  );
+export const Inverted: React.FunctionComponent<InvertedProps> = ({ children, round = false, color = 'primary' }: InvertedProps) => {
+    return (
+        <Box
+            component="span"
+            sx={{
+                padding: '0 0.1rem',
+                ...styles[color],
+                ...(round ? { borderRadius: '1rem', display: 'inline-block', height: '2rem', textAlign: 'center', width: '2rem' } : {}),
+            }}
+        >
+            {children}
+        </Box>
+    );
 };

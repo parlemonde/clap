@@ -1,74 +1,73 @@
-import fs from "fs-extra";
-import path from "path";
+import fs from 'fs-extra';
+import path from 'path';
 
-import { logger } from "../utils/logger";
+import { logger } from '../utils/logger';
+import { Provider } from './provider';
 
-import { Provider } from "./provider";
+const STOCKAGE_PROVIDER = process.env.STOCKAGE_PROVIDER_NAME || 'local';
 
 export class LocalUtils extends Provider {
-  constructor() {
-    super();
-  }
-
-  public async deleteImage(filename: string, filePath: string): Promise<void> {
-    const provider = process.env.STOCKAGE_PROVIDER_NAME || "local";
-    if (provider !== "local") {
-      return;
+    constructor() {
+        super();
     }
 
-    const dir: string = path.join(__dirname, "../..", "dist", filePath);
+    public async deleteImage(filename: string, filePath: string): Promise<void> {
+        if (STOCKAGE_PROVIDER !== 'local') {
+            return;
+        }
 
-    try {
-      await fs.remove(`${dir}/${filename}.jpeg`);
-    } catch (e) {
-      logger.error(`File ${filename} not found !`);
+        const dir: string = path.join(__dirname, '../..', 'dist', filePath);
+
+        try {
+            await fs.remove(`${dir}/${filename}.jpeg`);
+        } catch (e) {
+            logger.error(`File ${filename} not found !`);
+        }
+
+        return;
     }
 
-    return;
-  }
-
-  public async uploadImage(filename: string, filePath: string): Promise<string> {
-    const provider = process.env.STOCKAGE_PROVIDER_NAME || "local";
-    if (provider !== "local") {
-      return "";
+    public async uploadImage(filename: string, filePath: string): Promise<string> {
+        if (STOCKAGE_PROVIDER !== 'local') {
+            return '';
+        }
+        return `${process.env.HOST_URL || 'http://localhost:5000'}/${filePath}/${filename}.jpeg`;
     }
-    return `${process.env.HOST_URL || "http://localhost:5000"}/${filePath}/${filename}.jpeg`;
-  }
 
-  public async getFile(filename: string): Promise<Buffer | null> {
-    let fileBuffer: Buffer | null = null;
-    try {
-      fileBuffer = await new Promise((resolve, reject) => {
-        fs.readFile(path.join(__dirname, "../..", "dist/files", filename), (err, data) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(data);
-          }
-        });
-      });
-    } catch (e) {
-      logger.error(`File ${filename} not found !`);
+    public async getFile(filename: string): Promise<Buffer | null> {
+        let fileBuffer: Buffer | null = null;
+        try {
+            fileBuffer = await new Promise((resolve, reject) => {
+                fs.readFile(path.join(__dirname, '../..', 'dist/files', filename), (err, data) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(data);
+                    }
+                });
+            });
+        } catch (e) {
+            logger.error(`File ${filename} not found !`);
+        }
+        return fileBuffer;
     }
-    return fileBuffer;
-  }
 
-  public async uploadFile(filename: string, filedata: Buffer): Promise<void> {
-    try {
-      const directory = path.join(__dirname, "../..", "dist/files", filename.split("/").slice(0, -1).join("/"));
-      await fs.mkdirs(directory);
-      await new Promise((resolve, reject) => {
-        fs.writeFile(path.join(__dirname, "../..", "dist/files", filename), filedata, (err) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(undefined);
-          }
-        });
-      });
-    } catch (e) {
-      console.error(e);
-      logger.error(`Error while uploading ${filename}.`);
+    public async uploadFile(filename: string, filedata: Buffer): Promise<void> {
+        try {
+            const directory = path.join(__dirname, '../..', 'dist/files', filename.split('/').slice(0, -1).join('/'));
+            await fs.mkdirs(directory);
+            await new Promise((resolve, reject) => {
+                fs.writeFile(path.join(__dirname, '../..', 'dist/files', filename), filedata, (err) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(undefined);
+                    }
+                });
+            });
+        } catch (e) {
+            console.error(e);
+            logger.error(`Error while uploading ${filename}.`);
+        }
     }
-  }
 }
