@@ -33,7 +33,7 @@ const PlanAll: React.FunctionComponent = () => {
 
     const handleNext = (event: React.MouseEvent) => {
         event.preventDefault();
-        router.push(`/create/4-to-your-camera`);
+        router.push(`/create/4-pre-mounting`);
     };
 
     const updateQuestion = (index: number, newQuestion: Partial<Question>) => {
@@ -56,7 +56,7 @@ const PlanAll: React.FunctionComponent = () => {
                 description: '',
                 image: null,
                 url: null,
-                duration: null,
+                duration: 3000,
             };
         }
         if (plan === null) {
@@ -80,7 +80,7 @@ const PlanAll: React.FunctionComponent = () => {
 
     const handleAddTitle = (index: number) => async (event: React.MouseEvent) => {
         event.preventDefault();
-        if (questions[index].title === null) {
+        if (questions[index].title == null) {
             let title: Title | null = null;
             if (isLoggedIn && project !== null && project.id !== -1 && project.id !== null) {
                 title = await addTitle(questions[index].id);
@@ -104,12 +104,9 @@ const PlanAll: React.FunctionComponent = () => {
         event.preventDefault();
         event.stopPropagation();
         const title = questions[questionIndex].title || { id: null };
-        await deleteTitle(title.id);
-        /*setDeleteIndexes({
-            questionIndex,
-            planIndex,
-            showNumber: (questions[questionIndex].planStartIndex || 0) + planIndex,
-        });*/
+        if (title.id !== null) await deleteTitle(title.id);
+        questions[questionIndex].title = null;
+        updateQuestion(questionIndex, questions[questionIndex]);
     };
 
     const handleClose = (confirmDelete: boolean) => () => {
@@ -170,7 +167,7 @@ const PlanAll: React.FunctionComponent = () => {
                 <Box sx={{ display: { xs: 'none', md: 'block' } }} style={{ width: '100%', textAlign: 'right', marginTop: '2rem' }}>
                     <Button
                         component="a"
-                        href={`/create/4-to-your-camera`}
+                        href={`/create/4-pre-mounting`}
                         color="secondary"
                         onClick={handleNext}
                         variant="contained"
@@ -182,7 +179,7 @@ const PlanAll: React.FunctionComponent = () => {
                 <Button
                     sx={{ display: { xs: 'inline-flex', md: 'none' } }}
                     component="a"
-                    href={`/create/4-to-your-camera`}
+                    href={`/create/4-pre-mounting`}
                     color="secondary"
                     onClick={handleNext}
                     variant="contained"

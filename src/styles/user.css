@@ -231,7 +231,7 @@
 .plan > .number.purple {
   background-color: #6065FC;
 }
-.plan > .bolt {
+.bolt {
   display: inline-block;
   width: 30px;
   text-align: center;
@@ -242,7 +242,7 @@
   justify-content: center;
   align-items: center;
 }
-.plan > .bolt.green {
+.bolt.green {
   background-color: #4BBA8D;
 }
 .plan:hover > .edit,
@@ -292,7 +292,6 @@
 .plans::before {
   content: "";
   width: 0;
-  padding-bottom: 100%;
   -ms-grid-row: 1;
   grid-row: 1 / 1;
   -ms-grid-column: 1;
@@ -314,6 +313,7 @@
   -webkit-box-pack: center;
   -ms-flex-pack: center;
   justify-content: center;
+  min-height: 150px;
 }
 .add-plan-button {
   color: white;

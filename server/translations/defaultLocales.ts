@@ -43,7 +43,7 @@ export const locales = {
   part3_add_plan: "Ajouter un plan",
   part3_delete_plan_question: "Supprimer le plan ?",
   part3_delete_plan_desc: "Voulez-vous vraiment supprimer le plan n° {{planNumber}} ?",
-  part3_edit_plan: "Créez votre plan",
+  part3_edit_plan: "Créez le plan n°",
   part3_question: "Question :",
   part3_plan_number: "Plan numéro :",
   part3_plan_desc: "Description du plan :",
@@ -69,10 +69,13 @@ export const locales = {
   edit_plan_title: "Création du titre de la séquence n°",
   edit_plan_title_desc: "Pour chaque séquence, vous pouvez choisir d’ajouter un titre.\nPar défaut, il s’agit du titre de la séquence, mais vous pouvez le modifier !",
   //--- part4 ---
-  part4_title: "À votre <1>caméra</1> !",
-  part4_subtitle1: "Téléchargez votre plan de tournage :",
-  part4_pdf_button: "Plan de tournage",
-  part4_subtitle2: "Flashez ce code QR pour accéder directement à l'application et commencer à filmer !",
+  part4_title: "Prémonter votre film !",
+  part4_subtitle1: "Pour chaque séquence vous pouvez écrire et enregistrer une voix off",
+  //--- part6 ---
+  part6_title: "À votre <1>caméra</1> !",
+  part6_subtitle1: "Téléchargez votre plan de tournage :",
+  part6_pdf_button: "Plan de tournage",
+  part6_subtitle2: "Flashez ce code QR pour accéder directement à l'application et commencer à filmer !",
   //--- project ---
   project: "Projet :",
   project_name: "Nom du projet",

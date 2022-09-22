@@ -22,17 +22,17 @@ export const TitleCard: React.FunctionComponent<TitleCardProps> = ({
 }: TitleCardProps) => {
     const { t } = useTranslation();
     const router = useRouter();
-    const buttonStyle: React.CSSProperties = { width: '100%', height: '100%' };
+    const buttonStyle: React.CSSProperties = { width: '100%' };
     const { project } = React.useContext(ProjectServiceContext);
     const questions = getQuestions(project);
     const question = questionIndex !== -1 ? questions[questionIndex] || null : null;
-    const style = question !== null && question.title !== null && question.title.style !== '' ? JSON.parse(question.title.style) : null;
+    const style = question === null || question.title == null || question.title.style === '' ? null : JSON.parse(question.title.style);
 
     return (
         <div className="plan-button-container">
             <ButtonBase component="a" onClick={addTitle} style={buttonStyle}>
                 <div className="plan title-card">
-                    {question !== null && question.title === null ? (
+                    {question !== null && question.title == null ? (
                         <p className="title-card-placeholder">
                             <span>T</span> Ajouter un titre
                         </p>

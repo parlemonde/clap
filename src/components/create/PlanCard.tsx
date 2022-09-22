@@ -28,7 +28,7 @@ export const PlanCard: React.FunctionComponent<PlanCardProps> = ({
     handleDelete = () => {},
 }: PlanCardProps) => {
     const { t } = useTranslation();
-    const buttonStyle: React.CSSProperties = { width: '100%', height: '100%' };
+    const buttonStyle: React.CSSProperties = { width: '100%' };
     if (plan.url) {
         buttonStyle.backgroundImage = `url('${plan.url}')`;
         buttonStyle.backgroundPosition = 'center'; /* Center the image */

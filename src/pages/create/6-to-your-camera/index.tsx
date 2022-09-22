@@ -61,11 +61,11 @@ const ToCamera: React.FunctionComponent = () => {
     return (
         <div>
             <ThemeLink />
-            <Steps activeStep={3} />
+            <Steps activeStep={5} />
             <div style={{ maxWidth: '1000px', margin: 'auto', paddingBottom: '2rem' }}>
                 <Typography color="primary" variant="h1">
                     <Inverted round>4</Inverted>{' '}
-                    <Trans i18nKey="part4_title">
+                    <Trans i18nKey="part6_title">
                         À votre <Inverted>caméra</Inverted> !
                     </Trans>
                     <VideocamIcon
@@ -89,18 +89,18 @@ const ToCamera: React.FunctionComponent = () => {
                     <CircularProgress color="inherit" />
                 </Backdrop>
                 <Typography variant="h2" style={{ marginBottom: '1rem' }}>
-                    {t('part4_subtitle1')}
+                    {t('part6_subtitle1')}
                 </Typography>
                 <div className="text-center">
                     <Button className="mobile-full-width" variant="contained" color="secondary" onClick={generatePDF}>
-                        {t('part4_pdf_button')}
+                        {t('part6_pdf_button')}
                     </Button>
                 </div>
 
                 {project.id !== null && (
                     <>
                         <Typography variant="h2" style={{ margin: '1rem 0' }}>
-                            {t('part4_subtitle2')}
+                            {t('part6_subtitle2')}
                         </Typography>
                         <div className="text-center">
                             <canvas ref={canvasRef} />

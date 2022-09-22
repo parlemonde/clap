@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import React from 'react';
 
+import BoltIcon from '@mui/icons-material/Bolt';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import FormHelperText from '@mui/material/FormHelperText';
@@ -77,18 +78,20 @@ const PlanEdit: React.FunctionComponent = () => {
             <Steps activeStep={2} />
             <div style={{ maxWidth: '1000px', margin: 'auto', paddingBottom: '2rem' }}>
                 <Typography color="primary" variant="h1">
-                    <Inverted round>3</Inverted> {t('part3_edit_plan')}
+                    <Inverted round>3</Inverted> {t('part3_edit_plan')} {(question?.planStartIndex || 0) + planIndex}
                 </Typography>
                 <Typography variant="h2">
                     <span>{t('part3_question')}</span> {question?.question}
                 </Typography>
-                <Typography variant="h2">
-                    <span>{t('part3_plan_number')}</span> {(question?.planStartIndex || 0) + planIndex}
-                </Typography>
 
                 {question !== null && plan !== null && (
                     <Typography color="inherit" variant="h2" style={{ margin: '1rem 0' }}>
-                        {t('part3_plan_desc')}
+                        <div style={{ display: 'flex' }}>
+                            <div className={`bolt ${(question.plans || [])[planIndex]?.description ? 'green' : ''}`} style={{ marginRight: '10px' }}>
+                                <BoltIcon />
+                            </div>
+                            {t('part3_plan_desc')}
+                        </div>
                         <div>
                             <TextField
                                 value={(question.plans || [])[planIndex]?.description ?? ''}
