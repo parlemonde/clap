@@ -161,7 +161,7 @@
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  padding: 0.25rem 0.4rem 0.25rem 0;
+  padding: 0.25rem 1rem;
   cursor: -webkit-grab;
   cursor: grab;
   -ms-touch-action: none;
@@ -196,6 +196,9 @@
   margin: 0;
   text-align: left;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 .plan > .edit {
   margin: 0;
@@ -225,6 +228,23 @@
   background-color: #737373;
   color: #fff;
 }
+.plan > .number.purple {
+  background-color: #6065FC;
+}
+.plan > .bolt {
+  display: inline-block;
+  width: 30px;
+  text-align: center;
+  border-radius: 2px;
+  background-color: #737373;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.plan > .bolt.green {
+  background-color: #4BBA8D;
+}
 .plan:hover > .edit,
 .plan:hover > .delete {
   display: block;
@@ -238,13 +258,34 @@
   }
 }
 
+/* Title card */
+.title-card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  position: relative;
+}
+.title-card .title-card-placeholder span {
+  display: block;
+  font-size: 60px;
+  line-height: 60px;
+}
+.title-card-text {
+  position: absolute;
+  font-weight: bold;
+  color: '#000';
+  width: 80%;
+  text-align: center;
+}
+
 /* Scene */
 .plans {
   margin-top: 0.5rem;
   display: -ms-grid;
   display: grid;
-  -ms-grid-columns: 1fr 1rem 1fr 1rem 1fr 1rem 1fr 1rem 1fr;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  -ms-grid-columns: 1fr 1rem 1fr 1rem 1fr 1rem 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
   grid-auto-rows: 1fr;
   grid-gap: 1rem;
 }
@@ -293,12 +334,16 @@
   display: flex;
   -webkit-box-orient: horizontal;
   -webkit-box-direction: normal;
-  -ms-flex-direction: row;
-  flex-direction: row;
+  -ms-flex-direction: column;
+  flex-direction: column;
   width: 100%;
   -ms-flex-pack: distribute;
   justify-content: space-around;
-  margin: 2rem 0;
+  margin: 2rem auto;
+  border: 1px solid rgba(0, 0, 0, 0.87);
+  border-radius: 10px;
+  padding: 50px;
+  max-width: 500px;
 }
 .edit-plans-container-mobile > button {
   width: 100%;
@@ -329,6 +374,13 @@
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
+}
+.or-horizontal-divider div {
+  width: initial;
+  height: 1px;
+}
+.or-horizontal-divider span {
+  margin: 10px;
 }
 .plan-img {
   border: 1px solid black;
@@ -384,6 +436,70 @@
   .mobile-full-width {
     width: 100% !important;
   }
+}
+
+/* Edit title */
+.titleEditor {
+  border: 1px solid #8E8E93;
+  border-radius: 10px;
+  width: 774px;
+  height: 435px;
+  margin-top: 40px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+.titleEditor .title {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+  align-items: flex-start;
+}
+.titleEditor .toolbar {
+  background-color: #6065FC;
+  border-radius: 5px 5px 0 0;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  position: absolute;
+  top: -38px;
+}
+.titleEditor .toolbar button {
+  background-color: #fff;
+  border-radius: 2px;
+  padding: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #6065FC;
+  font-size: 10px;
+  border-style: none;
+  cursor: pointer;
+  margin-right: 10px;
+}
+.titleEditor .toolbar button svg {
+  height: 15px;
+}
+.titleEditor .toolbar select {
+  border: 0;
+  border-radius: 2px;
+  padding: 3px 10px;
+}
+.titleEditor textarea {
+  border: 1px dashed #8E8E93;
+  min-width: 100%;
+  max-width: 100%;
+  padding: 3%;
+  font-size: 40px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  vertical-align: middle;
 }
 
 /* Canvas */

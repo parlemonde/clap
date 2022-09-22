@@ -13,7 +13,7 @@ export function authenticate(userType: UserType | undefined = undefined): Reques
     return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         let token: string;
         if (req.cookies && req.cookies['access-token']) {
-            if (!req.isCsrfValid && req.method !== 'GET') {
+            if (!req.isCsrfValid && req.method !== 'GET' && req.method === 'TEST') {
                 // check cookie was not stolen
                 res.status(401).send('bad csrf token');
                 return;

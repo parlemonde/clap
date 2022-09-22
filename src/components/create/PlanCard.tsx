@@ -1,5 +1,6 @@
 import React from 'react';
 
+import BoltIcon from '@mui/icons-material/Bolt';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ButtonBase from '@mui/material/ButtonBase';
 import IconButton from '@mui/material/IconButton';
@@ -44,7 +45,10 @@ export const PlanCard: React.FunctionComponent<PlanCardProps> = ({
                 style={buttonStyle}
             >
                 <div className="plan">
-                    <div className="number">{showNumber}</div>
+                    <div className={`number ${plan.url ? 'purple' : ''}`}>{showNumber}</div>
+                    <div className={`bolt ${plan.description ? 'green' : ''}`}>
+                        <BoltIcon />
+                    </div>
                     <div className="edit">{t('edit')}</div>
                     {canDelete && (
                         <div className="delete">

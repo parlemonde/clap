@@ -4,6 +4,7 @@ import type { Question as QuestionInterface } from '../../types/models/question.
 import { Plan } from './plan';
 import { Project } from './project';
 import { Sound } from './sound';
+import { Title } from './title';
 
 @Entity()
 export class Question implements QuestionInterface {
@@ -48,4 +49,8 @@ export class Question implements QuestionInterface {
     @OneToOne(() => Sound, { onDelete: 'SET NULL' })
     @JoinColumn()
     public sound: Sound | null;
+
+    @OneToOne(() => Title, { onDelete: 'SET NULL' })
+    @JoinColumn()
+    public title: Title;
 }

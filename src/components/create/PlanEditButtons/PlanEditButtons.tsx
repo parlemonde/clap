@@ -2,9 +2,9 @@ import { useRouter } from 'next/router';
 import React, { useRef, useState } from 'react';
 import Camera from 'react-html5-camera-photo';
 
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import CreateIcon from '@mui/icons-material/Create';
 import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
+import CloudUploadIcon from '@mui/icons-material/Upload';
 import { Backdrop, Button, CircularProgress, Box, Typography } from '@mui/material';
 import type { Theme as MaterialTheme } from '@mui/material/styles';
 
@@ -116,7 +116,7 @@ export const PlanEditButtons: React.FunctionComponent<PlanEditButtonsProps> = ({
                         >
                             {t('import_image')}
                         </Button>
-                        <div className="or-vertical-divider">
+                        <div className="or-horizontal-divider">
                             <Box sx={styles.verticalLine} />
                             <Box component="span" sx={styles.secondaryColor}>
                                 {t('or').toUpperCase()}
@@ -132,7 +132,7 @@ export const PlanEditButtons: React.FunctionComponent<PlanEditButtonsProps> = ({
                         >
                             {t('take_picture')}
                         </Button>
-                        <div className="or-vertical-divider">
+                        <div className="or-horizontal-divider">
                             <Box sx={styles.verticalLine} />
                             <Box component="span" sx={styles.secondaryColor}>
                                 {t('or').toUpperCase()}

@@ -7,6 +7,7 @@ import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 
 import { PlanCard } from './PlanCard';
+import { TitleCard } from './TitleCard';
 import { useTranslation } from 'src/i18n/useTranslation';
 import type { Question } from 'types/models/question.type';
 
@@ -15,9 +16,18 @@ interface SceneProps {
     index: number;
     addPlan?(event: React.MouseEvent): void;
     removePlan?(planIndex: number): (event: React.MouseEvent) => void;
+    addTitle?(event: React.MouseEvent): void;
+    removeTitle?(titleIndex: number): (event: React.MouseEvent) => void;
 }
 
-export const Scene: React.FunctionComponent<SceneProps> = ({ q, index, addPlan = () => {}, removePlan = () => () => {} }: SceneProps) => {
+export const Scene: React.FunctionComponent<SceneProps> = ({
+    q,
+    index,
+    addPlan = () => {},
+    removePlan = () => () => {},
+    addTitle = () => {},
+    removeTitle = () => () => {},
+}: SceneProps) => {
     const router = useRouter();
     const { t } = useTranslation();
 
@@ -34,6 +44,7 @@ export const Scene: React.FunctionComponent<SceneProps> = ({ q, index, addPlan =
                 {index + 1}. {q.question}
             </Typography>
             <div className="plans">
+                <TitleCard questionIndex={index} handleDelete={removeTitle(0)} addTitle={addTitle} />
                 {plans.map((plan, planIndex) => (
                     <PlanCard
                         key={`${index}_${planIndex}`}
@@ -46,24 +57,26 @@ export const Scene: React.FunctionComponent<SceneProps> = ({ q, index, addPlan =
                         handleDelete={removePlan(planIndex)}
                     />
                 ))}
-                <div className="plan-button-container add">
-                    <Tooltip title={t('part3_add_plan')} aria-label={t('part3_add_plan')}>
-                        <IconButton
-                            sx={{
-                                backgroundColor: (theme) => theme.palette.primary.main,
-                                color: 'white',
-                                '&:hover': {
-                                    backgroundColor: (theme) => theme.palette.primary.light,
-                                },
-                            }}
-                            color="primary"
-                            aria-label={t('part3_add_plan')}
-                            onClick={addPlan}
-                        >
-                            <AddIcon />
-                        </IconButton>
-                    </Tooltip>
-                </div>
+                {plans.length >= 5 ? null : (
+                    <div className="plan-button-container add">
+                        <Tooltip title={t('part3_add_plan')} aria-label={t('part3_add_plan')}>
+                            <IconButton
+                                sx={{
+                                    backgroundColor: (theme) => theme.palette.primary.main,
+                                    color: 'white',
+                                    '&:hover': {
+                                        backgroundColor: (theme) => theme.palette.primary.light,
+                                    },
+                                }}
+                                color="primary"
+                                aria-label={t('part3_add_plan')}
+                                onClick={addPlan}
+                            >
+                                <AddIcon />
+                            </IconButton>
+                        </Tooltip>
+                    </div>
+                )}
             </div>
         </div>
     );

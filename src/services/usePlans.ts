@@ -3,12 +3,16 @@ import React from 'react';
 import { UserServiceContext } from './UserService';
 import { ProjectServiceContext } from './useProject';
 import type { Plan } from 'types/models/plan.type';
+import type { Title } from 'types/models/title.type';
 
 interface PlanRequests {
     addPlan(questionId: number, index?: number): Promise<Plan | null>;
     updatePlan(plan: Plan): Promise<void>;
     deletePlan(planId: number): Promise<void>;
     uploadPlanImage(questionIndex: number, planIndex: number, imageBlob: Blob): Promise<void>;
+    addTitle(questionId: number): Promise<Title | null>;
+    updateTitle(title: Title): Promise<void>;
+    deleteTitle(titleId: number): Promise<void>;
 }
 
 export const usePlanRequests = (): PlanRequests => {
@@ -137,10 +141,61 @@ export const usePlanRequests = (): PlanRequests => {
         [axiosLoggedRequest],
     );
 
+    const addTitle = React.useCallback(
+        async (questionId: number) => {
+            const response = await axiosLoggedRequest({
+                method: 'POST',
+                url: '/titles',
+                data: {
+                    questionId,
+                },
+            });
+            if (response.error) {
+                return null;
+            }
+            return response.data;
+        },
+        [axiosLoggedRequest],
+    );
+
+    const updateTitle = React.useCallback(
+        async (title: Title) => {
+            if (!title.id) {
+                return;
+            }
+            await axiosLoggedRequest({
+                method: 'PUT',
+                url: `/title/${title.id}`,
+                data: {
+                    style: title.style,
+                    text: title.text,
+                    duration: title.duration,
+                },
+            });
+        },
+        [axiosLoggedRequest],
+    );
+
+    const deleteTitle = React.useCallback(
+        async (titleId: number) => {
+            if (!titleId) {
+                return;
+            }
+            await axiosLoggedRequest({
+                method: 'DELETE',
+                url: `/titles/${titleId}`,
+            });
+        },
+        [axiosLoggedRequest],
+    );
+
     return {
         uploadPlanImage,
         addPlan,
         updatePlan,
         deletePlan,
+        addTitle,
+        updateTitle,
+        deleteTitle,
     };
 };

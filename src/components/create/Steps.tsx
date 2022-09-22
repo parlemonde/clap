@@ -33,6 +33,14 @@ const steps = [
         name: (t: tFunction) => t('step4'),
         back: () => '/create',
     },
+    {
+        name: (t: tFunction) => t('step5'),
+        back: () => '/create',
+    },
+    {
+        name: (t: tFunction) => t('step6'),
+        back: () => '/create',
+    },
 ];
 
 interface StepsProps {

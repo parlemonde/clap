@@ -65,6 +65,9 @@ export const locales = {
   tool_clear: "Tout effacer",
   tool_clear_title: "Effacer le canvas ?",
   tool_clear_desc: "Êtes-vous sûr de vouloir effacer totalement le plan ?",
+  //--- part3 plan title ---
+  edit_plan_title: "Création du titre de la séquence n°",
+  edit_plan_title_desc: "Pour chaque séquence, vous pouvez choisir d’ajouter un titre.\nPar défaut, il s’agit du titre de la séquence, mais vous pouvez le modifier !",
   //--- part4 ---
   part4_title: "À votre <1>caméra</1> !",
   part4_subtitle1: "Téléchargez votre plan de tournage :",
@@ -117,8 +120,9 @@ export const locales = {
   step1: "Choix du scénario",
   step2: "Choix des questions",
   step3: "Storyboard et plan de tournage",
-  step4: "A votre caméra !",
-  step5: "Résultat final",
+  step4: "Prémontage",
+  step5: "Musique",
+  step6: "Téléchargements",
   //--- login ---
   login_title: "Connexion à votre compte classe",
   login_title_admin: "Connexion à votre compte",

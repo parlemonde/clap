@@ -19,13 +19,14 @@ import { ProjectServiceContext } from 'src/services/useProject';
 import { getQuestions } from 'src/util';
 import type { Plan } from 'types/models/plan.type';
 import type { Question } from 'types/models/question.type';
+import type { Title } from 'types/models/title.type';
 
 const PlanAll: React.FunctionComponent = () => {
     const router = useRouter();
     const { t } = useTranslation();
     const { isLoggedIn } = React.useContext(UserServiceContext);
     const { project, updateProject } = React.useContext(ProjectServiceContext);
-    const { addPlan, deletePlan } = usePlanRequests();
+    const { addPlan, deletePlan, addTitle, deleteTitle } = usePlanRequests();
     const [deleteIndexes, setDeleteIndexes] = React.useState<{ questionIndex: number; planIndex: number; showNumber: number } | null>(null);
 
     const questions = getQuestions(project);
@@ -55,6 +56,7 @@ const PlanAll: React.FunctionComponent = () => {
                 description: '',
                 image: null,
                 url: null,
+                duration: null,
             };
         }
         if (plan === null) {
@@ -74,6 +76,40 @@ const PlanAll: React.FunctionComponent = () => {
             planIndex,
             showNumber: (questions[questionIndex].planStartIndex || 0) + planIndex,
         });
+    };
+
+    const handleAddTitle = (index: number) => async (event: React.MouseEvent) => {
+        event.preventDefault();
+        if (questions[index].title === null) {
+            let title: Title | null = null;
+            if (isLoggedIn && project !== null && project.id !== -1 && project.id !== null) {
+                title = await addTitle(questions[index].id);
+            } else {
+                title = {
+                    id: 0,
+                    text: '',
+                    style: '',
+                    duration: 0,
+                };
+            }
+            if (title === null) {
+                return;
+            }
+            updateQuestion(index, { title });
+        }
+        router.push(`/create/3-storyboard-and-filming-schedule/title?question=${index}`);
+    };
+
+    const handleDeleteTitle = (questionIndex: number) => (planIndex: number) => async (event: React.MouseEvent) => {
+        event.preventDefault();
+        event.stopPropagation();
+        const title = questions[questionIndex].title || { id: null };
+        await deleteTitle(title.id);
+        /*setDeleteIndexes({
+            questionIndex,
+            planIndex,
+            showNumber: (questions[questionIndex].planStartIndex || 0) + planIndex,
+        });*/
     };
 
     const handleClose = (confirmDelete: boolean) => () => {
@@ -101,7 +137,15 @@ const PlanAll: React.FunctionComponent = () => {
                 </Typography>
 
                 {questions.map((q, index) => (
-                    <Scene q={q} index={index} addPlan={handleAddPlan(index)} removePlan={handleDeletePlan(index)} key={index} />
+                    <Scene
+                        q={q}
+                        index={index}
+                        addPlan={handleAddPlan(index)}
+                        removePlan={handleDeletePlan(index)}
+                        addTitle={handleAddTitle(index)}
+                        removeTitle={handleDeleteTitle(index)}
+                        key={index}
+                    />
                 ))}
 
                 <Modal
