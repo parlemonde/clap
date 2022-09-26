@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import React from 'react';
 
-import MoveIcon from '@mui/icons-material/ControlCamera';
+import MoveIcon from '@mui/icons-material/DragIndicator';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 

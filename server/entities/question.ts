@@ -53,4 +53,7 @@ export class Question implements QuestionInterface {
     @OneToOne(() => Title, { onDelete: 'SET NULL' })
     @JoinColumn()
     public title: Title;
+
+    @Column()
+    public duration: number;
 }

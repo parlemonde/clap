@@ -71,6 +71,7 @@ export const locales = {
   //--- part4 ---
   part4_title: "Prémonter votre film !",
   part4_subtitle1: "Pour chaque séquence vous pouvez écrire et enregistrer une voix off",
+  part4_placeholder: "Vous devez éditer au moins un plan pour monter cette séquence",
   //--- part6 ---
   part6_title: "À votre <1>caméra</1> !",
   part6_subtitle1: "Téléchargez votre plan de tournage :",

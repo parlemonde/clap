@@ -68,6 +68,7 @@ const QuestionNew: React.FunctionComponent = () => {
                 description: '',
                 image: null,
                 url: null,
+                duration: 3000,
             },
         ];
         questions.push(newQ);

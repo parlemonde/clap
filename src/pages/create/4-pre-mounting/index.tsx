@@ -4,6 +4,7 @@ import VideocamIcon from '@mui/icons-material/Videocam';
 import Typography from '@mui/material/Typography';
 
 import { Inverted } from 'src/components/Inverted';
+import { SequenceDiaporama } from 'src/components/create/SequenceDiaporama';
 import { Steps } from 'src/components/create/Steps';
 import { ThemeLink } from 'src/components/create/ThemeLink';
 import { useTranslation } from 'src/i18n/useTranslation';
@@ -38,11 +39,21 @@ const PreMounting: React.FunctionComponent = () => {
                     {t('part4_subtitle1')}
                 </Typography>
 
-                {questions.map((q, index) => (
-                    <Typography color="primary" variant="h2">
-                        {index + 1}. {q.question}
-                    </Typography>
-                ))}
+                {questions.map((q, index) => {
+                    let hasBeenEdited = false;
+                    if (q.title != null) hasBeenEdited = true;
+                    q.plans.map((p) => {
+                        if (p.description !== '' || p.url != null) hasBeenEdited = true;
+                    });
+                    return (
+                        <div key={index}>
+                            <Typography color="primary" variant="h2">
+                                {index + 1}. {q.question}
+                            </Typography>
+                            <div>{hasBeenEdited ? <SequenceDiaporama questionIndex={index} /> : <p>{t('part4_placeholder')}</p>}</div>
+                        </div>
+                    );
+                })}
             </div>
         </div>
     );

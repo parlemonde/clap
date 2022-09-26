@@ -87,9 +87,9 @@ const PlanAll: React.FunctionComponent = () => {
             } else {
                 title = {
                     id: 0,
-                    text: '',
+                    text: questions[index].question,
                     style: '',
-                    duration: 0,
+                    duration: 3000,
                 };
             }
             if (title === null) {

@@ -61,6 +61,7 @@ const QuestionChoice: React.FunctionComponent = () => {
                     description: '',
                     image: null,
                     url: null,
+                    duration: 3000,
                 },
             ];
         }

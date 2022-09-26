@@ -266,10 +266,23 @@
   text-align: center;
   position: relative;
 }
-.title-card .title-card-placeholder span {
-  display: block;
+.title-card-placeholder {
   font-size: 60px;
   line-height: 60px;
+}
+.title-card .title-card-placeholder span {
+  display: block;
+  font-size: 14px;
+  line-height: 14px;
+  padding: 3px 5px 5px;
+  border-radius: 3px;
+}
+.title-card:hover .title-card-placeholder {
+  color: #6065fc;
+}
+.title-card:hover .title-card-placeholder span {
+  background-color: #6065fc;
+  color: #fff;
 }
 .title-card-text {
   position: absolute;
@@ -468,20 +481,21 @@
   top: -38px;
 }
 .titleEditor .toolbar button {
-  background-color: #fff;
-  border-radius: 2px;
-  padding: 4px;
+  background-color: transparent;
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #6065FC;
+  color: #fff;
   font-size: 10px;
   border-style: none;
   cursor: pointer;
   margin-right: 10px;
+  width: fit-content;
+  margin-right: 10px;
+  padding: 0;
 }
 .titleEditor .toolbar button svg {
-  height: 15px;
+  height: 24px;
 }
 .titleEditor .toolbar select {
   border: 0;
@@ -559,6 +573,84 @@
   -ms-grid-column: 1;
   grid-column: 1 / 1;
 }
+
+/* Diaporama card */
+.sequence-diaporama {
+  width: 240px;
+  height: 150px;
+  border: 1px solid #8E8E93;
+  border-radius: 10px;
+  margin: 10px 10px 30px 0;
+  position: relative;
+}
+.sequence-diaporama .diaporama-indicators {
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 10px;
+}
+.sequence-diaporama .diaporama-indicators div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.sequence-diaporama .diaporama-indicators .voiceOff {
+  padding: 3px;
+  margin-right: 5px;
+  border-radius: 3px;
+  background-color: #8E8E93;
+  color: #fff;
+}
+.sequence-diaporama .diaporama-indicators .voiceOff.active {
+  background-color: #4BBA8D;
+}
+.sequence-diaporama .diaporama-indicators .voiceOff svg {
+  height: 20px;
+}
+.sequence-diaporama .diaporama-indicators .time {
+  background: #6065FC;
+  color: #fff;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  padding: 3px;
+}
+.sequence-diaporama .diaporama-indicators .time svg {
+  height: 20px;
+  margin-right: 3px;
+}
+.sequence-plans {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+.sequence-title {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  font-weight: bold;
+  top: 0;
+  left: 0;
+  display: none;
+}
+.sequence-plan {
+  position: absolute;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  display: none;
+}
+
 
 .MuiTableSortLabel-root.MuiTableSortLabel-active {
   color: white !important;

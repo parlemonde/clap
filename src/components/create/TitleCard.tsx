@@ -34,14 +34,14 @@ export const TitleCard: React.FunctionComponent<TitleCardProps> = ({
                 <div className="plan title-card">
                     {question !== null && question.title == null ? (
                         <p className="title-card-placeholder">
-                            <span>T</span> Ajouter un titre
+                            T <span>Ajouter un titre</span>
                         </p>
                     ) : (
                         <p
                             className="title-card-text"
                             style={
-                                style === null
-                                    ? null
+                                style == null
+                                    ? {}
                                     : {
                                           fontFamily: style.fontFamily,
                                           left: `${style.left}%`,
@@ -52,23 +52,27 @@ export const TitleCard: React.FunctionComponent<TitleCardProps> = ({
                             {question?.title?.text}
                         </p>
                     )}
-                    <div className="edit">{t('edit')}</div>
-                    <div className="delete">
-                        <IconButton
-                            sx={{
-                                backgroundColor: (theme) => theme.palette.error.main,
-                                color: 'white',
-                                '&:hover': {
-                                    backgroundColor: (theme) => theme.palette.error.light,
-                                },
-                            }}
-                            aria-label={t('delete')}
-                            size="small"
-                            onClick={handleDelete}
-                        >
-                            <DeleteIcon />
-                        </IconButton>
-                    </div>
+                    {question !== null && question.title == null ? null : (
+                        <>
+                            <div className="edit">{t('edit')}</div>
+                            <div className="delete">
+                                <IconButton
+                                    sx={{
+                                        backgroundColor: (theme) => theme.palette.error.main,
+                                        color: 'white',
+                                        '&:hover': {
+                                            backgroundColor: (theme) => theme.palette.error.light,
+                                        },
+                                    }}
+                                    aria-label={t('delete')}
+                                    size="small"
+                                    onClick={handleDelete}
+                                >
+                                    <DeleteIcon />
+                                </IconButton>
+                            </div>
+                        </>
+                    )}
                 </div>
             </ButtonBase>
         </div>
