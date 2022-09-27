@@ -13,7 +13,8 @@
     "build:server": "swc ./server -d dist/server && swc ./types -d dist/types && yarn copy:templates && yarn copy:swagger",
     "build": "rm -rf dist && NODE_ENV=production yarn build:next && yarn build:server",
     "lint": "yarn eslint src && yarn eslint server",
-    "typescript": "yarn tsc -p . && yarn tsc --project server/tsconfig.json",
+    "typescript": "yarn tsc -p . && yarn typescript:server",
+    "typescript:server": "yarn tsc --project server/tsconfig.json",
     "start": "NODE_ENV=production node dist/server/app.js",
     "start-dev": "yarn build:server && node dist/server/app.js",
     "dev": "nodemon --watch server --ext ts,yaml,json,html,pug --exec yarn start-dev"

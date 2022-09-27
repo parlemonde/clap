@@ -5,23 +5,42 @@ name: ESLint & Typescript
 on: [push]
 
 jobs:
-  test:
+  typescript:
     runs-on: ubuntu-latest
     steps:
+      # [1] checkout repo.
       - uses: actions/checkout@v2
+
+      # [2] get node.
       - name: Use Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: "12.x"
-      - name: Cache Node.js modules
-        uses: actions/cache@v2
-        with:
-          path: ~/.yarn/cache
-          key: ${{ runner.OS }}-node-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.OS }}-node-
-            ${{ runner.OS }}-
+          node-version: '16.14.0'
+
+      # [3] install dependencies.
       - name: Install dependencies
         run: yarn
-      - name: Run tests
-        run: yarn test
+
+      # [4] test typescript.
+      - name: Run typescript
+        run: yarn typescript
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      # [1] checkout repo.
+      - uses: actions/checkout@v2
+
+      # [2] get node.
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '16.14.0'
+
+      # [3] install dependencies.
+      - name: Install dependencies
+        run: yarn
+
+      # [4] test.
+      - name: Run eslint
+        run: yarn lint
