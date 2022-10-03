@@ -14,7 +14,7 @@ export interface ImgCroppieRef {
 }
 
 const ImgCroppieComponent: React.ForwardRefRenderFunction<ImgCroppieRef, ImgCroppieProps> = (
-    { src, alt, imgWidth = 340, imgHeight = 340 }: ImgCroppieProps,
+    { src, alt, imgWidth = 340, imgHeight = 260 }: ImgCroppieProps,
     ref: React.Ref<ImgCroppieRef>,
 ) => {
     const croppie = React.useRef<Croppie | null>(null);

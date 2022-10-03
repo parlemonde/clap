@@ -4,6 +4,7 @@ import React from 'react';
 import TimeIcon from '@mui/icons-material/Alarm';
 import VoiceOffIcon from '@mui/icons-material/Chat';
 import VoiceOffSoundIcon from '@mui/icons-material/VolumeUp';
+import ButtonBase from '@mui/material/ButtonBase';
 
 import { ProjectServiceContext } from 'src/services/useProject';
 import { getQuestions } from 'src/util';
@@ -13,7 +14,6 @@ interface SequenceDiaporamaProps {
 }
 
 export const SequenceDiaporama: React.FunctionComponent<SequenceDiaporamaProps> = ({ questionIndex }: SequenceDiaporamaProps) => {
-    const router = useRouter();
     const { project, updateProject } = React.useContext(ProjectServiceContext);
     const questions = getQuestions(project);
     const question = questionIndex !== -1 ? questions[questionIndex] || null : null;
@@ -41,63 +41,63 @@ export const SequenceDiaporama: React.FunctionComponent<SequenceDiaporamaProps> 
         const interval = setInterval(() => {
             totalDuration += 100;
             const current = diaporamaRef.current.children[currentId];
-            if (questionIndex === 1) console.log(diaporamaRef.current.children);
             current.style.display = 'block';
             if (current.getAttribute('data-duration') <= totalDuration) {
                 totalDuration = 0;
                 current.style.display = 'none';
                 setCurrentId(currentId === diaporamaRef.current.children.length - 1 ? 0 : currentId + 1);
-                if (questionIndex === 1) console.log(currentId);
             }
         }, 100);
         return () => clearInterval(interval);
     }, [diaporamaRef, currentId]);
 
     return (
-        <div className="sequence-diaporama">
-            <div className="sequence-plans" ref={diaporamaRef}>
-                {question.title == null ? null : (
-                    <div
-                        className="sequence-title"
-                        data-duration={question.title.duration}
-                        style={
-                            style === {}
-                                ? {}
-                                : {
-                                      fontFamily: style.fontFamily,
-                                      left: `${style.left}%`,
-                                      top: `${style.top}%`,
-                                  }
-                        }
-                    >
-                        <p>{question.title.text}</p>
-                    </div>
-                )}
-                {question.plans?.map((p) => {
-                    return (
+        <div>
+            <ButtonBase className="sequence-diaporama" component="a" href={`/create/4-pre-mounting/edit?question=${questionIndex}`}>
+                <div className="sequence-plans" ref={diaporamaRef}>
+                    {question.title == null ? null : (
                         <div
-                            key={(Math.random() + 1).toString(36)}
-                            className="sequence-plan"
-                            style={{ backgroundImage: `url('${p.url}')` }}
-                            data-duration={p.duration}
-                        ></div>
-                    );
-                })}
-            </div>
-            <div className="diaporama-indicators">
-                <div>
-                    <div className="voiceOff">
-                        <VoiceOffIcon />
+                            className="sequence-title"
+                            data-duration={question.title.duration}
+                            style={
+                                style === {}
+                                    ? {}
+                                    : {
+                                          fontFamily: style.fontFamily,
+                                          left: `${style.left}%`,
+                                          top: `${style.top}%`,
+                                      }
+                            }
+                        >
+                            <p>{question.title.text}</p>
+                        </div>
+                    )}
+                    {question.plans?.map((p) => {
+                        return (
+                            <div
+                                key={(Math.random() + 1).toString(36)}
+                                className="sequence-plan"
+                                style={{ backgroundImage: `url('${p.url}')` }}
+                                data-duration={p.duration}
+                            ></div>
+                        );
+                    })}
+                </div>
+                <div className="diaporama-indicators">
+                    <div>
+                        <div className={`voiceOff ${question?.voiceOff == null ? '' : 'active'}`}>
+                            <VoiceOffIcon />
+                        </div>
+                        <div className="voiceOff">
+                            <VoiceOffSoundIcon />
+                        </div>
                     </div>
-                    <div className="voiceOff">
-                        <VoiceOffSoundIcon />
+                    <div className="time">
+                        <TimeIcon />
+                        {question?.duration / 1000} s
                     </div>
                 </div>
-                <div className="time">
-                    <TimeIcon />
-                    {question?.duration / 1000} s
-                </div>
-            </div>
+            </ButtonBase>
         </div>
     );
 };

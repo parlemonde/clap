@@ -16,4 +16,5 @@ export interface Question {
     voiceOffBeginTime: number | null;
     sound: Sound | null;
     duration: number;
+    url?: string | null;
 }

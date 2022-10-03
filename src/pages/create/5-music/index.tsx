@@ -14,8 +14,9 @@ import { useTranslation } from 'src/i18n/useTranslation';
 import { UserServiceContext } from 'src/services/UserService';
 import { ProjectServiceContext } from 'src/services/useProject';
 import { getQuestions } from 'src/util';
+import { DiaporamaPlayer } from 'src/components/create/DiaporamaPlayer';
 
-const PreMounting: React.FunctionComponent = () => {
+const Music: React.FunctionComponent = () => {
     const router = useRouter();
     const { t } = useTranslation();
     const { axiosLoggedRequest } = React.useContext(UserServiceContext);
@@ -30,39 +31,20 @@ const PreMounting: React.FunctionComponent = () => {
     return (
         <div>
             <ThemeLink />
-            <Steps activeStep={3} />
+            <Steps activeStep={4} />
             <div style={{ maxWidth: '1000px', margin: 'auto', paddingBottom: '2rem' }}>
                 <Typography color="primary" variant="h1">
-                    <Inverted round>4</Inverted> {t('part4_title')}
-                    <VideocamIcon
-                        fontSize="large"
-                        color="primary"
-                        style={{
-                            transform: 'translateY(0.5rem)',
-                            marginLeft: '1.5rem',
-                        }}
-                    />
+                    <Inverted round>5</Inverted> {t('part5_title')}
                 </Typography>
 
                 <Typography variant="h2" style={{ marginBottom: '1rem' }}>
-                    {t('part4_subtitle1')}
+                    {t('part5_subtitle1')}
                 </Typography>
 
-                {questions.map((q, index) => {
-                    let hasBeenEdited = false;
-                    if (q.title != null) hasBeenEdited = true;
-                    q.plans.map((p) => {
-                        if (p.description !== '' || p.url != null) hasBeenEdited = true;
-                    });
-                    return (
-                        <div key={index}>
-                            <Typography color="primary" variant="h2">
-                                {index + 1}. {q.question}
-                            </Typography>
-                            <div>{hasBeenEdited ? <SequenceDiaporama questionIndex={index} /> : <p>{t('part4_placeholder')}</p>}</div>
-                        </div>
-                    );
-                })}
+                <div>
+                    <DiaporamaPlayer questions={questions} mountingPlans={false} />
+                </div>
+
                 <Box sx={{ display: { xs: 'none', md: 'block' } }} style={{ width: '100%', textAlign: 'right', marginTop: '2rem' }}>
                     <Button
                         component="a"
@@ -91,4 +73,4 @@ const PreMounting: React.FunctionComponent = () => {
     );
 };
 
-export default PreMounting;
+export default Music;

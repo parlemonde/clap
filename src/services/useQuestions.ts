@@ -2,6 +2,7 @@ import React from 'react';
 import type { QueryFunction } from 'react-query';
 import { useQueryClient, useQuery } from 'react-query';
 
+import { ProjectServiceContext } from './useProject';
 import { UserServiceContext } from 'src/services/UserService';
 import { serializeToQueryUrl } from 'src/util';
 import type { Question } from 'types/models/question.type';
@@ -11,6 +12,7 @@ export const useQuestions = (
 ): { questions: Question[]; setQuestions(questions: Question[]): void } => {
     const { axiosLoggedRequest } = React.useContext(UserServiceContext);
     const queryClient = useQueryClient();
+
     const getQuestions: QueryFunction<Question[]> = React.useCallback(async () => {
         if (!args.scenarioId && args.scenarioId !== 0) {
             return [];
@@ -43,9 +45,13 @@ export const useQuestionRequests = (): {
     editQuestion(question: Question): Promise<void>;
     updateOrder(questions: Question[]): Promise<void>;
     deleteQuestion: (question: Question) => Promise<void>;
+    uploadSound: (soundBlob: Blob, questionId: number) => Promise<void>;
+    uploadQuestionSound: (soundBlob: Blob, questionId: number) => Promise<void>;
 } => {
     const queryClient = useQueryClient();
-    const { axiosLoggedRequest } = React.useContext(UserServiceContext);
+    const { axiosLoggedRequest, isLoggedIn } = React.useContext(UserServiceContext);
+    const { project, updateProject } = React.useContext(ProjectServiceContext);
+
     const getDefaultQuestions = React.useCallback(
         async (args: { isDefault?: boolean; scenarioId: string | number | null; languageCode?: string }): Promise<Question[]> => {
             if (args.scenarioId === null || typeof args.scenarioId === 'string') {
@@ -97,6 +103,77 @@ export const useQuestionRequests = (): {
         [axiosLoggedRequest],
     );
 
+    const uploadTemporarySound = React.useCallback(
+        async (soundBlob: Blob) => {
+            const bodyFormData = new FormData();
+            bodyFormData.append('sound', soundBlob);
+
+            try {
+                const response = await axiosLoggedRequest({
+                    method: 'POST',
+                    headers: { 'Content-Type': 'multipart/form-data' },
+                    url: '/questions/temp-sound',
+                    data: bodyFormData,
+                });
+                if (!response.error) {
+                    return response.data.path || null;
+                } else {
+                    return null;
+                }
+            } catch (e) {
+                return null;
+            }
+        },
+        [axiosLoggedRequest],
+    );
+
+    const uploadSound = React.useCallback(
+        async (soundBlob: Blob, questionId: number) => {
+            const questions = project.questions || [];
+            const question = questions[questionId] || null;
+            if (question === null) return;
+            const bodyFormData = new FormData();
+            bodyFormData.append('sound', soundBlob);
+
+            try {
+                const response = await axiosLoggedRequest({
+                    method: 'POST',
+                    headers: { 'Content-Type': 'multipart/form-data' },
+                    url: `/question/${questionId}/sound`,
+                    data: bodyFormData,
+                });
+                if (!response.error) {
+                    return response.data.url || null;
+                } else {
+                    return null;
+                }
+            } catch (e) {
+                return null;
+            }
+        },
+        [axiosLoggedRequest, project],
+    );
+
+    const uploadQuestionSound = React.useCallback(
+        async (questionIndex: number, soundBlob: Blob) => {
+            const questions = project.questions || [];
+            const question = questions[questionIndex] || null;
+            if (question === null) return;
+
+            if (isLoggedIn && project.id !== null && question.id !== null) {
+                question.url = await uploadSound(soundBlob, question.id);
+            } else {
+                question.url = await uploadTemporarySound(soundBlob);
+            }
+
+            questions[questionIndex] = question;
+            updateProject({
+                questions,
+            });
+        },
+        [isLoggedIn, project, updateProject, uploadSound, uploadTemporarySound],
+    );
+
     const updateOrder = React.useCallback(
         async (questions: Question[]) => {
             await axiosLoggedRequest({
@@ -123,5 +200,5 @@ export const useQuestionRequests = (): {
         [axiosLoggedRequest],
     );
 
-    return { getDefaultQuestions, addQuestion, editQuestion, updateOrder, deleteQuestion };
+    return { getDefaultQuestions, addQuestion, editQuestion, updateOrder, deleteQuestion, uploadSound, uploadQuestionSound };
 };

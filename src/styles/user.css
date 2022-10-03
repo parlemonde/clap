@@ -536,7 +536,7 @@
   left: 0;
   display: block;
   width: 100%;
-  height: 100%;
+  height: 320px;
 }
 .actions-buttons-container {
   width: 100%;
@@ -575,13 +575,15 @@
 }
 
 /* Diaporama card */
-.sequence-diaporama {
+a.sequence-diaporama {
   width: 240px;
   height: 150px;
   border: 1px solid #8E8E93;
   border-radius: 10px;
   margin: 10px 10px 30px 0;
   position: relative;
+  display: block;
+  overflow: hidden;
 }
 .sequence-diaporama .diaporama-indicators {
   position: absolute;
@@ -650,7 +652,195 @@
   left: 0;
   display: none;
 }
+.voice-off-icon {
+  width: 30px;
+  height: 30px;
+  background: #8E8E93;
+  border-radius: 3px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  margin-right: 10px;
+}
+.voice-off-icon.green {
+  background-color: #4BBA8D;
+}
+.voice-off-icon svg {
+  height: 20px;
+}
 
+/* Player */
+.diaporama-player-container {
+  width: 80%;
+  margin: auto;
+}
+.diaporama-player {
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 15px 20px;
+  margin-top: 30px;
+  position: relative;
+}
+.diaporama-play-btn {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  cursor: pointer;
+}
+.diaporama-play-btn .square-btn {
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 4px;
+  width: 110px;
+  height: 70px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+}
+.diaporama-play-btn:hover .square-btn {
+  background-color: #6065FCCC;
+}
+.diaporama-play-btn .square-btn svg {
+  height: 50px;
+  font-size: 50px;
+}
+.diaporama-plans {
+  height: 30vw;
+  background-color: #fff;
+  position: relative;
+}
+.diaporama-title, .diaporama-plan {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-position: size;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.diaporama-title p {
+  font-size: 4vw;
+  width: 80%;
+}
+.player-timer {
+  color: #fff;
+  text-align: center;
+  margin-top: 5px;
+}
+.diaporama-mounting-table {
+  margin-top: 10px;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 15px 20px;
+}
+.diaporama-mounting-table > div {
+  display: flex;
+}
+.diaporama-global-time {
+  justify-content: space-between;
+  color: #fff;
+  margin-bottom: 10px;
+}
+.diaporama-table-time {
+  border: solid #fff;
+  border-width: 0 2px;
+  flex: 1;
+  position: relative;
+}
+.diaporama-volume {
+  padding: 10px;
+}
+.diaporama-mounting-plans {
+  background: #00ADEF;
+  height: 80px;
+  padding: 5px;
+  margin-top: 30px;
+  display: flex;
+}
+.diaporama-mounting-plans > div {
+  padding-left: 10px;
+  position: relative;
+}
+.mounting-cursor {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: -5px;
+  height: 130%;
+  width: 2px;
+  background-color: #fff;
+}
+.mounting-cursor::before {
+  content: attr(data-duration);
+  position: absolute;
+  color: #fff;
+  top: -25px;
+  font-size: 12px;
+  left: -25px;
+}
+.mounting-cursor::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background-color: #fff;
+  border-radius: 50%;
+  left: -9px;
+  top: 50%;
+  cursor: pointer;
+  z-index: 1;
+}
+.diaporama-mounting-sounds {
+  background: #DEDFE3;
+  height: 80px;
+  padding: 5px;
+}
+.diaporama-mounting-sounds.green {
+  background-color: #D0F4D0;
+}
+.mounting-item-title, .mounting-item-plan {
+  position: relative;
+  background: #FFFFFF;
+  border: 1px solid #8E8E93;
+  border-radius: 10px;
+  height: 59px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  user-select: none;
+  max-width: 105px;
+  overflow: hidden;
+}
+.mounting-item-title p {
+  position: absolute;
+  width: 80%;
+  font-size: 8px;
+}
+.diaporama-time {
+  position: absolute;
+  height: calc(100% - 30px);
+  bottom: 0;
+  width: 2px;
+  background-color: #000;
+  z-index: 1;
+}
+.diaporama-time:before {
+  content: '';
+  position: absolute;
+  height: 0;
+  width: 2px;
+  border: 15px solid;
+  border-color: #000 transparent transparent;
+  left: -14px;
+  top: -10px;
+}
 
 .MuiTableSortLabel-root.MuiTableSortLabel-active {
   color: white !important;
