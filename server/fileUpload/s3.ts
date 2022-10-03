@@ -172,4 +172,32 @@ export class AwsS3 extends Provider {
             logger.error(`Error while uploading ${filename}.`);
         }
     }
+
+    public async uploadSound(filename: string, filePath: string): Promise<string> {
+        // local dir
+        const dir: string = path.join(__dirname, '..', filePath);
+        const fileStream = fs.createReadStream(`${dir}/${filename}.jpeg`);
+        let url = '';
+
+        // upload image on stockage server
+        try {
+            url = await this.uploadS3File(`sounds/${filename}.mp3`, fileStream);
+        } catch (e) {
+            logger.error(e);
+            logger.error(`File ${filename} could not be sent to aws !`);
+            return '';
+        }
+
+        // delete local file
+        try {
+            await fs.remove(`${dir}/${filename}.mp3`);
+        } catch (e) {
+            logger.error(`File ${filename} not found !`);
+        }
+
+        if (IS_MINIO) {
+            return url.replace('minio', 'localhost');
+        }
+        return url;
+    }
 }

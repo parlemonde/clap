@@ -70,4 +70,11 @@ export class LocalUtils extends Provider {
             logger.error(`Error while uploading ${filename}.`);
         }
     }
+
+    public async uploadSound(filename: string, filePath: string): Promise<string> {
+        if (STOCKAGE_PROVIDER !== 'local') {
+            return '';
+        }
+        return `${process.env.HOST_URL || 'http://localhost:5000'}/${filePath}/${filename}.mp3`;
+    }
 }

@@ -72,6 +72,17 @@ export const locales = {
   part4_title: "Prémonter votre film !",
   part4_subtitle1: "Pour chaque séquence vous pouvez écrire et enregistrer une voix off",
   part4_placeholder: "Vous devez éditer au moins un plan pour monter cette séquence",
+  pre_mount_title: "Écrire, ajouter une voix-off et ajuster la séquence n°",
+  pre_mount_title_desc: "À cette étape, vous pouvez écrire et ajouter une voix-off, modifier combien de temps apparaîssent vos plans, et la durée de votre séquence.",
+  part4_plan_desc_placeholder: "Vous pourrez enregistrer un élève ou plusieurs élèves lire cette voix-off avec un microphone, comme celui de votre smartphone.\nPensez à enregistrer cette voix-off dans un environnement sonore calme.\nSi vous utilisez votre smartphone, pensez à le mettre en mode avion.\nRendez-vous en bas de cette page pour ajouter votre fichier son à la séquence. ",
+  pre_mount_voice_off: "Écrivez ici le texte de la voix-off.\n Il s’agit du commentaire audio qui peut accompagner votre séquence.",
+  pre_mount_duration: "Ajustez ici la durée totale de la séquence, ainsi que la durée relative des plans.",
+  pre_mount_no_sound: "Mettez en ligne la voix-off que vous avez enregistrée.\n Vous pourrez ensuite l’ajuster à la séquence et régler son volume, dans la table de montage ci-dessus.",
+  pre_mount_sound: "Vous pouvez ajuster le volume de la piste sonore, ou bien importer un autre son.",
+  import_voice_off: "Importer un son",
+  //--- part 5---
+  part5_title: "Ajouter une musique en fond sonore",
+  part5_subtitle1: "À cette étape,  vous pouvez pré-visualiser votre diaporama sonore et y ajouter une musique. ",
   //--- part6 ---
   part6_title: "À votre <1>caméra</1> !",
   part6_subtitle1: "Téléchargez votre plan de tournage :",

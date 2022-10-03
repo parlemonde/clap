@@ -106,6 +106,7 @@ async function startApp() {
     });
     app.use(`/static/images`, express.static(path.join(__dirname, './static/images')));
     app.use(`/static/temp-images`, express.static(path.join(__dirname, './static/temp-images')));
+    app.use(`/static/temp-sounds`, express.static(path.join(__dirname, './static/temp-sounds')));
     app.use(`/static/pdf`, express.static(path.join(__dirname, './static/pdf')));
     app.use(express.static(path.join(__dirname, '../../public'))); // app.js is located at ./dist/server and public at ./public
     app.get('/_next/*', (req, res) => {

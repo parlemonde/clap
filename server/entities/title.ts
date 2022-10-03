@@ -8,7 +8,7 @@ export class Title implements TitleInterface {
     @PrimaryGeneratedColumn()
     public id: number;
 
-    @Column()
+    @Column({ default: 3000 })
     public duration: number;
 
     @Column()

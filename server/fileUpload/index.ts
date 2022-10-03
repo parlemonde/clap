@@ -39,3 +39,11 @@ export async function downloadFile(filename: string): Promise<Buffer | null> {
         return await providers[STOCKAGE_PROVIDER].getFile(filename);
     }
 }
+
+export async function uploadSound(filename: string, filePath: string): Promise<string | null> {
+    if (providers[STOCKAGE_PROVIDER] === undefined) {
+        return null;
+    } else {
+        return await providers[STOCKAGE_PROVIDER].uploadSound(filename, filePath);
+    }
+}

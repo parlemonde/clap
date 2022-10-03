@@ -6,7 +6,7 @@ import { Question } from '../entities/question';
 import { Scenario } from '../entities/scenario';
 import { Sound } from '../entities/sound';
 import { UserType } from '../entities/user';
-import { Controller, del, get, post, put } from './controller';
+import { Controller, del, get, post, put, oneSound, tempSound } from './controller';
 
 function getOptions(req: Request): { isDefault?: boolean; scenarioId?: number; languageCode?: string } {
     const isDefault: string | undefined = (req.query.isDefault as string | undefined) || undefined;
@@ -38,6 +38,36 @@ async function updateQuestionOrder(questionId: number, newOrder: number, userTyp
 export class QuestionController extends Controller {
     constructor() {
         super('questions');
+    }
+    
+    @tempSound({ path: '/temp-sound', tableName: 'question' })
+    public async uploadTempSound(req: Request, res: Response, next: NextFunction): Promise<void> {
+        if (req.sound === undefined) {
+            next();
+            return;
+        }
+        res.sendJSON(req.sound);
+    }
+
+    @oneSound({ path: '/:id/sound', userType: UserType.CLASS, tableName: 'question' })
+    public async uploadSound(req: Request, res: Response, next: NextFunction): Promise<void> {
+        if (req.user === undefined || req.sound === undefined) {
+            next();
+            return;
+        }
+
+        const id = parseInt(req.params.id || '', 10) || 0;
+        const question: Question | undefined = await getRepository(Question).findOne(id, { relations: ['sound'] });
+        if (question === undefined) {
+            next();
+            return;
+        }
+
+        question.sound = req.sound;
+        await getRepository(Question).save(question);
+
+        question.url = question.sound.path;
+        res.sendJSON(question);
     }
 
     @get()

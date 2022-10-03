@@ -8,6 +8,8 @@ import { handleErrors } from '../middlewares/handleErrors';
 import type { Ratio } from '../middlewares/saveImage';
 import { saveImage } from '../middlewares/saveImage';
 import { saveTemporaryImage } from '../middlewares/saveTemporaryImage';
+import { saveSound } from '../middlewares/saveSound';
+import { saveTemporarySound } from '../middlewares/saveTemporarySound';
 
 type decoratorParams = {
     path?: string;
@@ -27,6 +29,16 @@ type imageParams = {
 
 const defaultImageParams: imageParams = {
     name: 'image',
+    tableName: 'other',
+};
+
+type soundParams = {
+    name?: string;
+    tableName?: string;
+};
+
+const defaultSoundParams: soundParams = {
+    name: 'sound',
     tableName: 'other',
 };
 
@@ -148,6 +160,60 @@ export function oneImage(data: decoratorParams & imageParams = { ...defaultParam
             authenticate(data.userType),
             upload.single(data.name || 'image'),
             handleErrors(saveImage(data.tableName || '', data.ratio)),
+            handleErrors(method),
+        );
+        return propertyDesciptor;
+    };
+}
+
+/**
+ * TEMPORARY-SOUND decorator
+ *
+ * @param path: path for the put function
+ * @param name: name of the file from the request
+ * @param tableName: table name for the image
+ * @param userType: Authentication type for this request
+ */
+export function tempSound(data: decoratorParams & soundParams = { ...defaultParams, ...defaultSoundParams }) {
+    return function getDecorator(target: Controller, _: string, propertyDesciptor: PropertyDescriptor): PropertyDescriptor {
+        const method: RequestHandler = propertyDesciptor.value;
+        if (target.router === undefined) {
+            target.router = Router({ mergeParams: true });
+        }
+        const storage = multer.memoryStorage();
+        const upload = multer({ storage });
+        target.router.post(
+            data.path || '',
+            authenticate(data.userType),
+            upload.single(data.name || 'sound'),
+            handleErrors(saveTemporarySound(data.tableName || '')),
+            handleErrors(method),
+        );
+        return propertyDesciptor;
+    };
+}
+
+/**
+ * ONE-SOUND decorator
+ *
+ * @param path: path for the put function
+ * @param name: name of the file from the request
+ * @param tableName: table name for the image
+ * @param userType: Authentication type for this request
+ */
+export function oneSound(data: decoratorParams & soundParams = { ...defaultParams, ...defaultSoundParams }) {
+    return function getDecorator(target: Controller, _: string, propertyDesciptor: PropertyDescriptor): PropertyDescriptor {
+        const method: RequestHandler = propertyDesciptor.value;
+        if (target.router === undefined) {
+            target.router = Router({ mergeParams: true });
+        }
+        const storage = multer.memoryStorage();
+        const upload = multer({ storage });
+        target.router.post(
+            data.path || '',
+            authenticate(data.userType),
+            upload.single(data.name || 'sound'),
+            handleErrors(saveSound(data.tableName || '')),
             handleErrors(method),
         );
         return propertyDesciptor;

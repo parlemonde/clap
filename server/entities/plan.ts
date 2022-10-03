@@ -15,7 +15,7 @@ export class Plan implements PlanInterface {
     @Column()
     public index: number;
 
-    @Column()
+    @Column({ default: 3000 })
     public duration: number;
 
     @OneToOne(() => Image, { onDelete: 'SET NULL' })
