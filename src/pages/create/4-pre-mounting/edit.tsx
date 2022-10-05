@@ -60,23 +60,17 @@ const PlanTitle: React.FunctionComponent = () => {
         router.push(`/create/4-pre-mounting`);
     };
 
-    const uploadSound = async () => {
-        if (soundUrl == null) return;
-        const blobSound = await fetch(soundUrl).then((r) => r.blob());
+    const uploadSound = async (url) => {
+        const blobSound = await fetch(url).then((r) => r.blob());
 
         await uploadQuestionSound(questionIndex, blobSound);
-
-        if (question[0] && question[0].url) {
-            const audio = new Audio(question[0].url);
-            audio.play();
-        }
     };
 
     const handleInputchange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files !== null && event.target.files.length > 0) {
             const url = URL.createObjectURL(event.target.files[0]);
             setSoundUrl(url);
-            uploadSound();
+            uploadSound(url);
         } else {
             setSoundUrl(null);
         }
@@ -139,7 +133,6 @@ const PlanTitle: React.FunctionComponent = () => {
                         style={{ display: 'none' }}
                     />
                     <Button
-                        onClick={uploadSound}
                         variant="outlined"
                         color="secondary"
                         component="label"

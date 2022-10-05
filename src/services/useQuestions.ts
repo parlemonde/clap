@@ -116,7 +116,7 @@ export const useQuestionRequests = (): {
                     data: bodyFormData,
                 });
                 if (!response.error) {
-                    return response.data.path || null;
+                    return response.data || null;
                 } else {
                     return null;
                 }
@@ -143,7 +143,7 @@ export const useQuestionRequests = (): {
                     data: bodyFormData,
                 });
                 if (!response.error) {
-                    return response.data.url || null;
+                    return response.data || null;
                 } else {
                     return null;
                 }
@@ -161,10 +161,11 @@ export const useQuestionRequests = (): {
             if (question === null) return;
 
             if (isLoggedIn && project.id !== null && question.id !== null) {
-                question.url = await uploadSound(soundBlob, question.id);
+                question.sound = await uploadSound(soundBlob, question.id);
             } else {
-                question.url = await uploadTemporarySound(soundBlob);
+                question.sound = await uploadTemporarySound(soundBlob);
             }
+            question.voiceOffBeginTime = 0;
 
             questions[questionIndex] = question;
             updateProject({

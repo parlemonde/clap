@@ -1,6 +1,8 @@
 import React from 'react';
 
+import Camera from '@mui/icons-material/CameraAlt';
 import PlayArrow from '@mui/icons-material/PlayArrow';
+import Sound from '@mui/icons-material/VolumeUp';
 
 import { ProjectServiceContext } from 'src/services/useProject';
 import type { Question } from 'types/models/question.type';
@@ -11,7 +13,7 @@ interface DiaporamaPlayerProps {
 }
 
 export const DiaporamaPlayer: React.FunctionComponent<DiaporamaPlayerProps> = ({ questions, mountingPlans }: DiaporamaPlayerProps) => {
-    const { updateProject } = React.useContext(ProjectServiceContext);
+    const { updateProject, project } = React.useContext(ProjectServiceContext);
     const diaporamaRef = React.useRef(null);
     const mountingTableRef = React.useRef(null);
     const [currentId, setCurrentId] = React.useState(0);
@@ -19,19 +21,51 @@ export const DiaporamaPlayer: React.FunctionComponent<DiaporamaPlayerProps> = ({
     const [isPlaying, setPlaying] = React.useState(false);
     const [dragCursor, setDragCursor] = React.useState(false);
     const [dragIndex, setDragIndex] = React.useState(0);
-    const [audio, setAudio] = React.useState<Audio | null>(null);
+    const [audio, setAudio] = React.useState(null);
+    const [volume, setVolume] = React.useState(100);
+    const [dragSound, setDragSound] = React.useState(false);
+    const [startDragSound, setStartDragSound] = React.useState(0);
+    const [initialized, setInitialized] = React.useState<boolean>(false);
     const index = -1;
     let time = 0;
+
+    const getCurrentSound = () => {
+        if (mountingPlans) {
+            if (questions[0] != null && questions[0].sound != null) return questions[0].sound;
+        } else {
+            if (project.sound != null) return project.sound;
+        }
+        return {
+            id: 0,
+            path: null,
+            uuid: '',
+            localPath: null,
+            volume: 100,
+        };
+    };
+
+    const getBeginTime = () => {
+        if (mountingPlans) {
+            if (questions[0] == null) return 0;
+            return questions[0].voiceOffBeginTime;
+        } else {
+            if (plan == null) return 0;
+            return project.musicBeginTime;
+        }
+    };
 
     const setIsPlaying = (p) => {
         setPlaying(p);
         if (p) {
-            if (mountingPlans) {
-                if (questions[0] != null && questions[0].url != null && audio == null) {
-                    const a = new Audio(questions[0].url);
-                    setAudio(a);
-                }
-                if (audio != null) audio.play();
+            if (audio == null && getCurrentSound().path != '') {
+                const a = new Audio(getCurrentSound().path);
+                a.currentTime = (spentTime - getBeginTime()) / 1000;
+                a.play();
+                setAudio(a);
+            }
+            if (audio != null && (spentTime - getBeginTime()) / 1000 > 0) {
+                audio.play();
+                audio.currentTime = (spentTime - getBeginTime()) / 1000;
             }
         } else if (audio != null) {
             audio.pause();
@@ -57,10 +91,15 @@ export const DiaporamaPlayer: React.FunctionComponent<DiaporamaPlayerProps> = ({
             if (diaporamaRef === null) return;
             if (spentTime >= getTotalDuration()) {
                 setSpentTime(0);
-                if (audio != null) audio.currentTime = 0;
+                if (audio != null) audio.currentTime = 0 - getBeginTime();
                 return setIsPlaying(false);
             }
-            if (isPlaying) setSpentTime(spentTime + 10);
+            if (isPlaying) {
+                setSpentTime(spentTime + 10);
+                if ((spentTime - getBeginTime()) / 1000 > 0) {
+                    audio.play();
+                }
+            }
             const current = diaporamaRef.current.children[currentId];
             current.style.display = 'block';
             const plan = getCurrentPlan(spentTime);
@@ -72,10 +111,11 @@ export const DiaporamaPlayer: React.FunctionComponent<DiaporamaPlayerProps> = ({
         return () => clearInterval(interval);
     }, [diaporamaRef, currentId, spentTime, isPlaying]);
 
-    const getFormatedTime = (time) => {
-        const minutes = Math.floor(time / 60000);
-        const seconds = (time - minutes * 60000) / 1000;
-        return `${('0' + minutes).slice(-2)}:${('0' + Math.floor(seconds)).slice(-2)}:${('0' + time).slice(-2)}`;
+    const getFormatedTime = (t) => {
+        const minutes = Math.floor(t / 60000);
+        const seconds = (t - minutes * 60000) / 1000;
+        const centi = Math.floor(t / 10);
+        return `${('0' + minutes).slice(-2)}:${('0' + Math.floor(seconds)).slice(-2)}:${('0' + centi).slice(-2)}`;
     };
 
     const getTotalDuration = () => {
@@ -92,8 +132,10 @@ export const DiaporamaPlayer: React.FunctionComponent<DiaporamaPlayerProps> = ({
         let time = (x * getTotalDuration()) / rect.width;
         if (time < 0) time = 0;
         if (time > getTotalDuration()) time = getTotalDuration() - 10;
-        if (audio != null) audio.currentTime = time / 1000;
-        //setIsPlaying(false);
+        if (audio != null) {
+            if ((time - getBeginTime()) / 1000) audio.pause();
+            audio.currentTime = (time - getBeginTime()) / 1000;
+        }
         setSpentTime(time);
     };
 
@@ -135,6 +177,55 @@ export const DiaporamaPlayer: React.FunctionComponent<DiaporamaPlayerProps> = ({
                 if (j > dragIndex && p.duration - toAdd < getTotalDuration()) p.duration -= toAdd;
             });
         });
+        updateProject({ questions });
+    };
+
+    const getAudioDuration = () => {
+        if (audio == null || mountingTableRef.current == null) return 0;
+        return (audio.duration * 1000 * mountingTableRef.current.getBoundingClientRect().width) / getTotalDuration();
+    };
+
+    const getAudioPosition = () => {
+        if (audio == null) return 0;
+        let start = 0;
+        if (mountingPlans) {
+            if (questions[0] != null) start = questions[0].voiceOffBeginTime;
+        } else {
+            if (project != null) start = project.musicBeginTime;
+        }
+        return (start * mountingTableRef.current.getBoundingClientRect().width) / getTotalDuration();
+    };
+
+    const moveAudio = (e) => {
+        if (!dragSound) return;
+        const rect = mountingTableRef.current.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const time = ((x - startDragSound) * getTotalDuration()) / rect.width;
+        if (mountingPlans) {
+            questions[0].voiceOffBeginTime += time;
+        } else {
+            project.musicBeginTime += time;
+        }
+        setStartDragSound(x);
+        updateProject({ questions });
+        audio.currentTime = (spentTime - getBeginTime()) / 1000;
+    };
+
+    const addTotalTime = (qte) => {
+        if (questions[0].duration + qte <= 0) return;
+        questions[0]?.duration += qte;
+        const c = 2;
+        questions.map((q) => {
+            if (q.title != null) {
+                q.title.duration += qte / c;
+                //q.title.duration = 3000;
+            }
+            q.plans.map((p) => {
+                p.duration += qte / c;
+                //p.duration = 3000;
+            });
+        });
+        //questions[0]?.duration = 6000;
         updateProject({ questions });
     };
 
@@ -196,19 +287,31 @@ export const DiaporamaPlayer: React.FunctionComponent<DiaporamaPlayerProps> = ({
             </div>
             <div
                 className="diaporama-mounting-table"
-                onMouseDown={moveTimerCursor}
                 onMouseUp={() => {
                     setDragCursor(false);
                 }}
             >
                 <div className="diaporama-global-time">
                     <p>00:00:00</p>
-                    <p>{getFormatedTime(getTotalDuration())}</p>
+                    {mountingPlans ? (
+                        <div className="diaporama-time-edit">
+                            <button onClick={() => addTotalTime(-1000)}>-</button>
+                            <p className="diaporama-total-duration">{getFormatedTime(getTotalDuration())}</p>
+                            <button onClick={() => addTotalTime(1000)}>+</button>
+                        </div>
+                    ) : (
+                        <p>{getTotalDuration()}</p>
+                    )}
                 </div>
                 <div>
+                    <div className="diaporama-icons">
+                        <Camera />
+                        <Sound />
+                    </div>
                     <div
                         className="diaporama-table-time"
                         ref={mountingTableRef}
+                        onMouseDown={moveTimerCursor}
                         onMouseMove={handleMoveCursor}
                         onMouseLeave={() => {
                             setDragCursor(false);
@@ -291,13 +394,43 @@ export const DiaporamaPlayer: React.FunctionComponent<DiaporamaPlayerProps> = ({
                                 })}
                             </div>
                         ) : null}
-                        <div
-                            className={`diaporama-mounting-sounds ${
-                                mountingPlans && questions[0] != null && questions[0].url != null ? 'green' : ''
-                            }`}
-                        ></div>
+                        {getCurrentSound() == null ? (
+                            <div className="diaporama-mounting-sounds"></div>
+                        ) : (
+                            <div
+                                className="diaporama-mounting-sounds green"
+                                onMouseUp={() => {
+                                    setDragSound(false);
+                                }}
+                                onMouseOut={() => {
+                                    setDragSound(false);
+                                }}
+                                onMouseMove={moveAudio}
+                            >
+                                <div
+                                    onMouseDown={(e) => {
+                                        e.stopPropagation();
+                                        setDragSound(true);
+                                        setStartDragSound(e.clientX - mountingTableRef.current.getBoundingClientRect().left);
+                                    }}
+                                    className="diaporama-sound-file"
+                                    style={{ width: `${getAudioDuration()}px`, left: `${getAudioPosition()}px` }}
+                                ></div>
+                            </div>
+                        )}
                     </div>
-                    <div className="diaporama-volume"></div>
+                    <div className="diaporama-volume">
+                        <input
+                            type="range"
+                            min="0"
+                            max="100"
+                            value={volume}
+                            onChange={(e) => {
+                                setVolume(e.target.value);
+                                if (audio != null) audio.volume = e.target.value / 100;
+                            }}
+                        />
+                    </div>
                 </div>
             </div>
         </div>
