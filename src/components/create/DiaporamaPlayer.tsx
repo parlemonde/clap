@@ -5,7 +5,9 @@ import PlayArrow from '@mui/icons-material/PlayArrow';
 import Sound from '@mui/icons-material/VolumeUp';
 
 import { ProjectServiceContext } from 'src/services/useProject';
+import type { Plan } from 'types/models/plan.type';
 import type { Question } from 'types/models/question.type';
+import type { Title } from 'types/models/title.type';
 
 interface DiaporamaPlayerProps {
     questions: Question[];
@@ -21,15 +23,13 @@ export const DiaporamaPlayer: React.FunctionComponent<DiaporamaPlayerProps> = ({
     const [isPlaying, setPlaying] = React.useState(false);
     const [dragCursor, setDragCursor] = React.useState(false);
     const [dragIndex, setDragIndex] = React.useState(0);
-    const [audio, setAudio] = React.useState(null);
+    const [audio, setAudio] = React.useState<HTMLAudioElement | null>(null);
     const [volume, setVolume] = React.useState(100);
     const [dragSound, setDragSound] = React.useState(false);
     const [startDragSound, setStartDragSound] = React.useState(0);
-    const [initialized, setInitialized] = React.useState<boolean>(false);
-    const index = -1;
     let time = 0;
 
-    const getCurrentSound = () => {
+    const getCurrentSound = React.useCallback(() => {
         if (mountingPlans) {
             if (questions[0] != null && questions[0].sound != null) return questions[0].sound;
         } else {
@@ -37,54 +37,65 @@ export const DiaporamaPlayer: React.FunctionComponent<DiaporamaPlayerProps> = ({
         }
         return {
             id: 0,
-            path: null,
+            path: '',
             uuid: '',
             localPath: null,
             volume: 100,
         };
-    };
+    }, [mountingPlans, questions, project.sound]);
 
-    const getBeginTime = () => {
+    const getBeginTime = React.useCallback(() => {
         if (mountingPlans) {
             if (questions[0] == null) return 0;
             return questions[0].voiceOffBeginTime;
         } else {
-            if (plan == null) return 0;
+            if (project == null) return 0;
             return project.musicBeginTime;
         }
-    };
+    }, [mountingPlans, project, questions]);
 
-    const setIsPlaying = (p) => {
-        setPlaying(p);
-        if (p) {
-            if (audio == null && getCurrentSound().path != '') {
-                const a = new Audio(getCurrentSound().path);
-                a.currentTime = (spentTime - getBeginTime()) / 1000;
-                a.play();
-                setAudio(a);
+    const setIsPlaying = React.useCallback(
+        (p: boolean) => {
+            setPlaying(p);
+            if (p) {
+                if (audio == null && getCurrentSound().path != '') {
+                    const a = new Audio(getCurrentSound().path);
+                    a.currentTime = (spentTime - getBeginTime()) / 1000;
+                    a.play();
+                    setAudio(a);
+                }
+                if (audio != null && (spentTime - getBeginTime()) / 1000 > 0) {
+                    audio.play();
+                    audio.currentTime = (spentTime - getBeginTime()) / 1000;
+                }
+            } else if (audio != null) {
+                audio.pause();
             }
-            if (audio != null && (spentTime - getBeginTime()) / 1000 > 0) {
-                audio.play();
-                audio.currentTime = (spentTime - getBeginTime()) / 1000;
-            }
-        } else if (audio != null) {
-            audio.pause();
-        }
-    };
+        },
+        [audio, getBeginTime, getCurrentSound, spentTime],
+    );
 
-    const getCurrentPlan = (spent) => {
-        const time = 0;
-        const index = -1;
+    const getCurrentPlan = (spent: number) => {
+        let time = 0;
+        let index = -1;
         if (diaporamaRef.current != null) {
-            Array.from(diaporamaRef.current.children).map((q) => {
+            Array.from((diaporamaRef.current as HTMLElement).children).map((q) => {
                 if (time <= spent) {
                     index++;
-                    time += parseInt(q.getAttribute('data-duration'));
+                    time += parseInt(q.getAttribute('data-duration') as string);
                 }
             });
         }
         return index < 0 ? 0 : index;
     };
+
+    const getTotalDuration = React.useCallback(() => {
+        let time = 0;
+        questions.map((q) => {
+            time += q != null && q.duration != null ? q.duration : 0;
+        });
+        return time;
+    }, [questions]);
 
     React.useEffect(() => {
         const interval = setInterval(() => {
@@ -96,38 +107,33 @@ export const DiaporamaPlayer: React.FunctionComponent<DiaporamaPlayerProps> = ({
             }
             if (isPlaying) {
                 setSpentTime(spentTime + 10);
-                if ((spentTime - getBeginTime()) / 1000 > 0) {
+                if ((spentTime - getBeginTime()) / 1000 > 0 && audio != null) {
                     audio.play();
                 }
             }
-            const current = diaporamaRef.current.children[currentId];
-            current.style.display = 'block';
-            const plan = getCurrentPlan(spentTime);
-            if (plan !== currentId) {
-                current.style.display = 'none';
-                setCurrentId(plan);
+            if (diaporamaRef.current != null) {
+                const current = (diaporamaRef.current as HTMLDivElement).children[currentId] as HTMLDivElement;
+                current.style.display = 'block';
+                const plan = getCurrentPlan(spentTime);
+                if (plan !== currentId) {
+                    current.style.display = 'none';
+                    setCurrentId(plan);
+                }
             }
         }, 10);
         return () => clearInterval(interval);
-    }, [diaporamaRef, currentId, spentTime, isPlaying]);
+    }, [diaporamaRef, currentId, spentTime, isPlaying, audio, getBeginTime, getTotalDuration, setIsPlaying]);
 
-    const getFormatedTime = (t) => {
+    const getFormatedTime = (t: number) => {
         const minutes = Math.floor(t / 60000);
         const seconds = (t - minutes * 60000) / 1000;
         const centi = Math.floor(t / 10);
         return `${('0' + minutes).slice(-2)}:${('0' + Math.floor(seconds)).slice(-2)}:${('0' + centi).slice(-2)}`;
     };
 
-    const getTotalDuration = () => {
-        let time = 0;
-        questions.map((q) => {
-            time += q != null && q.duration != null ? q.duration : 0;
-        });
-        return time;
-    };
-
-    const moveTimerCursor = (e) => {
-        const rect = mountingTableRef.current.getBoundingClientRect();
+    const moveTimerCursor = (e: React.MouseEvent) => {
+        if (mountingTableRef.current == null) return;
+        const rect = (mountingTableRef.current as HTMLDivElement).getBoundingClientRect();
         const x = e.clientX - rect.left;
         let time = (x * getTotalDuration()) / rect.width;
         if (time < 0) time = 0;
@@ -139,16 +145,16 @@ export const DiaporamaPlayer: React.FunctionComponent<DiaporamaPlayerProps> = ({
         setSpentTime(time);
     };
 
-    const handleMoveCursor = (e) => {
-        if (!dragCursor) return;
-        const rect = mountingTableRef.current.getBoundingClientRect();
+    const handleMoveCursor = (e: React.MouseEvent) => {
+        if (!dragCursor || mountingTableRef.current == null) return;
+        const rect = (mountingTableRef.current as HTMLDivElement).getBoundingClientRect();
         const x = e.clientX - rect.left;
         let time = (x * getTotalDuration()) / rect.width;
         let i = 0;
         let j = 0;
         let timeBefore = 0;
         let nbElemAfter = 0;
-        let elem = null;
+        let elem: Title | Plan | null = null;
         questions.map((q) => {
             if (q.title != null) {
                 i++;
@@ -156,13 +162,15 @@ export const DiaporamaPlayer: React.FunctionComponent<DiaporamaPlayerProps> = ({
                 else if (elem === null) timeBefore += q.title.duration;
                 if (i > dragIndex) nbElemAfter++;
             }
+            if (q.plans == null) return;
             q.plans.map((p) => {
                 i++;
                 if (i == dragIndex) elem = p;
-                else if (elem === null) timeBefore += p.duration;
+                else if (elem === null && p.duration != null) timeBefore += p.duration;
                 if (i > dragIndex) nbElemAfter++;
             });
         });
+        if (elem == null) return;
         time -= timeBefore; // Get the new duration of the plan
         const diff = Math.floor(time - elem.duration); // Calculate the diff between before and after moving
         elem.duration = time; // We now set the new duration
@@ -172,6 +180,7 @@ export const DiaporamaPlayer: React.FunctionComponent<DiaporamaPlayerProps> = ({
                 j++; // We only add the time after the plan, only if it's inside the total duration
                 if (j > dragIndex && q.title.duration - toAdd < getTotalDuration()) q.title.duration -= toAdd;
             }
+            if (q.plans == null) return;
             q.plans.map((p) => {
                 j++;
                 if (j > dragIndex && p.duration - toAdd < getTotalDuration()) p.duration -= toAdd;
@@ -182,23 +191,24 @@ export const DiaporamaPlayer: React.FunctionComponent<DiaporamaPlayerProps> = ({
 
     const getAudioDuration = () => {
         if (audio == null || mountingTableRef.current == null) return 0;
-        return (audio.duration * 1000 * mountingTableRef.current.getBoundingClientRect().width) / getTotalDuration();
+        return (audio.duration * 1000 * (mountingTableRef.current as HTMLDivElement).getBoundingClientRect().width) / getTotalDuration();
     };
 
     const getAudioPosition = () => {
-        if (audio == null) return 0;
-        let start = 0;
+        if (audio == null || mountingTableRef.current == null) return 0;
+        let start: number | null = 0;
         if (mountingPlans) {
             if (questions[0] != null) start = questions[0].voiceOffBeginTime;
         } else {
             if (project != null) start = project.musicBeginTime;
         }
-        return (start * mountingTableRef.current.getBoundingClientRect().width) / getTotalDuration();
+        if (start == null) return 0;
+        return (start * (mountingTableRef.current as HTMLDivElement).getBoundingClientRect().width) / getTotalDuration();
     };
 
-    const moveAudio = (e) => {
-        if (!dragSound) return;
-        const rect = mountingTableRef.current.getBoundingClientRect();
+    const moveAudio = (e: React.MouseEvent) => {
+        if (!dragSound || mountingTableRef.current == null) return;
+        const rect = (mountingTableRef.current as HTMLDivElement).getBoundingClientRect();
         const x = e.clientX - rect.left;
         const time = ((x - startDragSound) * getTotalDuration()) / rect.width;
         if (mountingPlans) {
@@ -208,24 +218,23 @@ export const DiaporamaPlayer: React.FunctionComponent<DiaporamaPlayerProps> = ({
         }
         setStartDragSound(x);
         updateProject({ questions });
-        audio.currentTime = (spentTime - getBeginTime()) / 1000;
+        if (audio != null) audio.currentTime = (spentTime - getBeginTime()) / 1000;
     };
 
-    const addTotalTime = (qte) => {
-        if (questions[0].duration + qte <= 0) return;
-        questions[0]?.duration += qte;
+    const addTotalTime = (qte: number) => {
+        if (questions[0].duration + qte <= 0 || questions[0] == null) return;
+        questions[0].duration += qte;
         const c = 2;
         questions.map((q) => {
             if (q.title != null) {
                 q.title.duration += qte / c;
-                //q.title.duration = 3000;
             }
+            if (q.plans == null) return;
             q.plans.map((p) => {
+                if (p.duration == null) p.duration = 3000;
                 p.duration += qte / c;
-                //p.duration = 3000;
             });
         });
-        //questions[0]?.duration = 6000;
         updateProject({ questions });
     };
 
@@ -426,8 +435,9 @@ export const DiaporamaPlayer: React.FunctionComponent<DiaporamaPlayerProps> = ({
                             max="100"
                             value={volume}
                             onChange={(e) => {
-                                setVolume(e.target.value);
-                                if (audio != null) audio.volume = e.target.value / 100;
+                                const vol = parseInt(e.target.value);
+                                setVolume(vol);
+                                if (audio != null) audio.volume = vol / 100;
                             }}
                         />
                     </div>

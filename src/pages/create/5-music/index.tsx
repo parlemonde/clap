@@ -3,23 +3,19 @@ import React from 'react';
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import VideocamIcon from '@mui/icons-material/Videocam';
 import Typography from '@mui/material/Typography';
 
 import { Inverted } from 'src/components/Inverted';
-import { SequenceDiaporama } from 'src/components/create/SequenceDiaporama';
+import { DiaporamaPlayer } from 'src/components/create/DiaporamaPlayer';
 import { Steps } from 'src/components/create/Steps';
 import { ThemeLink } from 'src/components/create/ThemeLink';
 import { useTranslation } from 'src/i18n/useTranslation';
-import { UserServiceContext } from 'src/services/UserService';
 import { ProjectServiceContext } from 'src/services/useProject';
 import { getQuestions } from 'src/util';
-import { DiaporamaPlayer } from 'src/components/create/DiaporamaPlayer';
 
 const Music: React.FunctionComponent = () => {
     const router = useRouter();
     const { t } = useTranslation();
-    const { axiosLoggedRequest } = React.useContext(UserServiceContext);
     const { project } = React.useContext(ProjectServiceContext);
     const questions = getQuestions(project);
 

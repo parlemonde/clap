@@ -14,7 +14,7 @@ export class Project {
     @Column({ type: 'varchar', length: 200, nullable: true })
     public title: string;
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, default: 0 })
     public musicBeginTime: number;
 
     @CreateDateColumn()

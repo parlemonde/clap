@@ -7,8 +7,8 @@ import { authenticate } from '../middlewares/authenticate';
 import { handleErrors } from '../middlewares/handleErrors';
 import type { Ratio } from '../middlewares/saveImage';
 import { saveImage } from '../middlewares/saveImage';
-import { saveTemporaryImage } from '../middlewares/saveTemporaryImage';
 import { saveSound } from '../middlewares/saveSound';
+import { saveTemporaryImage } from '../middlewares/saveTemporaryImage';
 import { saveTemporarySound } from '../middlewares/saveTemporarySound';
 
 type decoratorParams = {

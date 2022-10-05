@@ -1,7 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn, OneToOne, JoinColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 import type { Title as TitleInterface } from '../../types/models/title.type';
-import { Question } from './question';
 
 @Entity()
 export class Title implements TitleInterface {

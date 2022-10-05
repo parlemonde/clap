@@ -1,7 +1,6 @@
 import type { NextFunction, Request, RequestHandler, Response } from 'express';
 import fs from 'fs-extra';
 import path from 'path';
-import sharp from 'sharp';
 import { getRepository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -39,7 +38,7 @@ export function saveSound(tableName: string): RequestHandler {
                 req.soundID = sound.id;
                 req.sound = sound;
             } catch (e) {
-                console.log(e);
+                //return e;
             }
         }
         next();

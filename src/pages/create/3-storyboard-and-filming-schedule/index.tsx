@@ -100,7 +100,7 @@ const PlanAll: React.FunctionComponent = () => {
         router.push(`/create/3-storyboard-and-filming-schedule/title?question=${index}`);
     };
 
-    const handleDeleteTitle = (questionIndex: number) => (planIndex: number) => async (event: React.MouseEvent) => {
+    const handleDeleteTitle = (questionIndex: number) => () => async (event: React.MouseEvent) => {
         event.preventDefault();
         event.stopPropagation();
         const title = questions[questionIndex].title || { id: null };

@@ -39,7 +39,7 @@ export class QuestionController extends Controller {
     constructor() {
         super('questions');
     }
-    
+
     @tempSound({ path: '/temp-sound', tableName: 'question' })
     public async uploadTempSound(req: Request, res: Response, next: NextFunction): Promise<void> {
         if (req.sound === undefined) {

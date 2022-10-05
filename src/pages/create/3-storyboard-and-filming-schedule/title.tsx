@@ -9,14 +9,12 @@ import { Inverted } from 'src/components/Inverted';
 import { Steps } from 'src/components/create/Steps';
 import { ThemeLink } from 'src/components/create/ThemeLink';
 import { useTranslation } from 'src/i18n/useTranslation';
-import { usePlanRequests } from 'src/services/usePlans';
 import { ProjectServiceContext } from 'src/services/useProject';
 import { getQuestions, getQueryString } from 'src/util';
 
 const PlanTitle: React.FunctionComponent = () => {
     const router = useRouter();
     const { t } = useTranslation();
-    const { uploadPlanImage } = usePlanRequests();
     const { project, updateProject } = React.useContext(ProjectServiceContext);
 
     const questions = getQuestions(project);
@@ -105,17 +103,17 @@ const PlanTitle: React.FunctionComponent = () => {
                         if (top < 6) top = 6;
                         setCoordinates({ x: left, y: top });
                     }}
-                    onMouseUp={(e) => {
+                    onMouseUp={() => {
                         setIsDragging(false);
                     }}
-                    onMouseLeave={(e) => {
+                    onMouseLeave={() => {
                         setIsDragging(false);
                     }}
                 >
                     <div className="title" style={{ left: `calc(${coordinates.x}% - 20px)`, top: `calc(${coordinates.y}% + 20px)` }}>
                         <div className="toolbar">
                             <button
-                                onMouseDown={(e) => {
+                                onMouseDown={() => {
                                     setIsDragging(true);
                                 }}
                             >

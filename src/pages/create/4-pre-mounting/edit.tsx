@@ -22,8 +22,6 @@ const PlanTitle: React.FunctionComponent = () => {
     const router = useRouter();
     const { t } = useTranslation();
     const { project, updateProject } = React.useContext(ProjectServiceContext);
-    const [soundUrl, setSoundUrl] = React.useState<string | null>(null);
-    const [isLoading, setIsLoading] = React.useState(false);
     const { uploadQuestionSound } = useQuestionRequests();
     const inputRef = React.useRef<HTMLInputElement | null>(null);
 
@@ -48,7 +46,7 @@ const PlanTitle: React.FunctionComponent = () => {
         question.voiceOff = (event.target.value || '').slice(0, 2000);
         updateQuestion(questionIndex, question);
     };
-    const handleVoiceOffBlur = async (event: React.FocusEvent<HTMLTextAreaElement>) => {
+    const handleVoiceOffBlur = async () => {
         if (question === null) return;
         updateQuestion(questionIndex, question);
     };
@@ -69,10 +67,7 @@ const PlanTitle: React.FunctionComponent = () => {
     const handleInputchange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files !== null && event.target.files.length > 0) {
             const url = URL.createObjectURL(event.target.files[0]);
-            setSoundUrl(url);
             uploadSound(url);
-        } else {
-            setSoundUrl(null);
         }
     };
 

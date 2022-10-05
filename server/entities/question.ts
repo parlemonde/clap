@@ -43,7 +43,7 @@ export class Question implements QuestionInterface {
     @Column({ type: 'varchar', length: 280 })
     public voiceOff: string;
 
-    @Column()
+    @Column({ default: 0 })
     public voiceOffBeginTime: number;
 
     @OneToOne(() => Sound, { onDelete: 'SET NULL' })

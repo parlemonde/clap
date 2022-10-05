@@ -12,6 +12,6 @@ export interface Project {
     theme: Theme | null;
     scenario: Scenario | null;
     questions: Question[] | null;
-    musicBeginTime: number | null;
+    musicBeginTime: number;
     sound: Sound | null;
 }

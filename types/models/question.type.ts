@@ -13,7 +13,7 @@ export interface Question {
     title?: Title | null;
     planStartIndex?: number;
     voiceOff: string | null;
-    voiceOffBeginTime: number | null;
+    voiceOffBeginTime: number;
     sound: Sound | null;
     duration: number;
     url?: string | null;

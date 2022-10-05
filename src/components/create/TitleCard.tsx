@@ -1,4 +1,3 @@
-import { useRouter } from 'next/router';
 import React from 'react';
 
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -21,7 +20,6 @@ export const TitleCard: React.FunctionComponent<TitleCardProps> = ({
     addTitle = () => {},
 }: TitleCardProps) => {
     const { t } = useTranslation();
-    const router = useRouter();
     const buttonStyle: React.CSSProperties = { width: '100%' };
     const { project } = React.useContext(ProjectServiceContext);
     const questions = getQuestions(project);
