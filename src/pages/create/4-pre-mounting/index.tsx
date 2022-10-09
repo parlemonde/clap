@@ -49,7 +49,7 @@ const PreMounting: React.FunctionComponent = () => {
                 {questions.map((q, index) => {
                     let hasBeenEdited = false;
                     if (q.title != null) hasBeenEdited = true;
-                    q.plans.map((p) => {
+                    (q.plans || []).map((p) => {
                         if (p.description !== '' || p.url != null) hasBeenEdited = true;
                     });
                     return (

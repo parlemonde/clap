@@ -56,4 +56,6 @@ export class Question implements QuestionInterface {
 
     @Column()
     public duration: number;
+
+    public url?: string;
 }

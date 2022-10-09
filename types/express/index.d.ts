@@ -8,6 +8,7 @@ declare namespace Express {
         isCsrfValid: boolean;
         imageID: number;
         image: import('../../server/entities/image').Image;
+        sound?: import('../../server/entities/sound').Sound;
     }
     interface Response {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

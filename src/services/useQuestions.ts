@@ -155,7 +155,7 @@ export const useQuestionRequests = (): {
     );
 
     const uploadQuestionSound = React.useCallback(
-        async (questionIndex: number, soundBlob: Blob) => {
+        async (soundBlob: Blob, questionIndex: number) => {
             const questions = project.questions || [];
             const question = questions[questionIndex] || null;
             if (question === null) return;

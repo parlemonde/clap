@@ -28,8 +28,9 @@ export function saveTemporarySound(tableName: string): RequestHandler {
             sound.uuid = uuid;
             sound.localPath = path.join('temp-sounds', tableName);
             sound.volume = 100;
+            sound.id = 0;
             req.sound = sound;
-            req.soundID = 0;
+            // req.soundID = 0;
         }
         next();
     };
