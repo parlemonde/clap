@@ -22,7 +22,7 @@ const PlanTitle: React.FunctionComponent = () => {
     const router = useRouter();
     const { t } = useTranslation();
     const { project, updateProject } = React.useContext(ProjectServiceContext);
-    const { uploadQuestionSound } = useQuestionRequests();
+    const { uploadQuestionSound, editQuestion } = useQuestionRequests();
     const inputRef = React.useRef<HTMLInputElement | null>(null);
 
     const questions = getQuestions(project);
@@ -55,13 +55,16 @@ const PlanTitle: React.FunctionComponent = () => {
         event.preventDefault();
 
         updateQuestion(questionIndex, question);
+        if (question != null && question.id != null && question.id != -1) {
+            await editQuestion(question);
+        }
         router.push(`/create/4-pre-mounting`);
     };
 
-    const uploadSound = async (url) => {
+    const uploadSound = async (url: string) => {
         const blobSound = await fetch(url).then((r) => r.blob());
 
-        await uploadQuestionSound(questionIndex, blobSound);
+        await uploadQuestionSound(blobSound, questionIndex);
     };
 
     const handleInputchange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -109,9 +112,7 @@ const PlanTitle: React.FunctionComponent = () => {
                     </div>
                     <span>{t('pre_mount_duration')}</span>
                 </div>
-                <div>
-                    <DiaporamaPlayer questions={[question]} mountingPlans={true} />
-                </div>
+                <div>{question == null ? null : <DiaporamaPlayer questions={[question]} mountingPlans={true} />}</div>
                 <div style={{ margin: '50px 0 20px', display: 'flex' }}>
                     <div className={`voice-off-icon ${question?.sound == null ? '' : 'green'}`}>
                         <VoiceOffSoundIcon />

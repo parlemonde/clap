@@ -165,7 +165,7 @@ export const usePlanRequests = (): PlanRequests => {
             }
             await axiosLoggedRequest({
                 method: 'PUT',
-                url: `/title/${title.id}`,
+                url: `/titles/${title.id}`,
                 data: {
                     style: title.style,
                     text: title.text,

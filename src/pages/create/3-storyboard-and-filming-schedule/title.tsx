@@ -9,6 +9,7 @@ import { Inverted } from 'src/components/Inverted';
 import { Steps } from 'src/components/create/Steps';
 import { ThemeLink } from 'src/components/create/ThemeLink';
 import { useTranslation } from 'src/i18n/useTranslation';
+import { usePlanRequests } from 'src/services/usePlans';
 import { ProjectServiceContext } from 'src/services/useProject';
 import { getQuestions, getQueryString } from 'src/util';
 
@@ -16,6 +17,7 @@ const PlanTitle: React.FunctionComponent = () => {
     const router = useRouter();
     const { t } = useTranslation();
     const { project, updateProject } = React.useContext(ProjectServiceContext);
+    const { updateTitle } = usePlanRequests();
 
     const questions = getQuestions(project);
     const questionIndex = parseInt(getQueryString(router.query.question) || '-1', 10);
@@ -70,6 +72,9 @@ const PlanTitle: React.FunctionComponent = () => {
             });
         }
         updateQuestion(questionIndex, question);
+        if (question !== null && question.id !== null && question.id !== -1) {
+            await updateTitle(question.title);
+        }
         router.push(`/create/3-storyboard-and-filming-schedule`);
     };
 

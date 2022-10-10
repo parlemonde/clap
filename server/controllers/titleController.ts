@@ -23,27 +23,28 @@ export class TitleController extends Controller {
     }
 
     @post({ userType: UserType.CLASS })
-    public async addTheme(req: Request, res: Response): Promise<void> {
-        const title: Title = new Title(); // create a new title
-        title.duration = 0;
-        title.style = '';
-        title.text = '';
-
-        if (req.body.text !== undefined) {
-            title.text = req.body.text;
+    public async addTheme(req: Request, res: Response, next: NextFunction): Promise<void> {
+        const question: Question | undefined = await getRepository(Question).findOne(req.body.questionId);
+        if (question === undefined) {
+            next(); // will send 404 error
+            return;
         }
+
+        const title: Title = new Title(); // create a new title
+        title.style = '';
+        title.text = question.question;
+
         if (req.body.style !== undefined) {
             title.style = req.body.style;
         }
         if (req.body.duration !== undefined) {
             title.duration = req.body.duration;
         }
-        if (req.body.questionId !== undefined) {
-            title.question = new Question();
-            title.question.id = req.body.questionId;
-        }
 
-        await getRepository(Title).save(title); // save new title
+        const r = await getRepository(Title).save(title); // save new title
+
+        question.title = r;
+        await getRepository(Question).save(question); // save question
         res.sendJSON(title); // send new title
     }
 

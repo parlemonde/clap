@@ -84,7 +84,7 @@ export const SequenceDiaporama: React.FunctionComponent<SequenceDiaporamaProps> 
                 </div>
                 <div className="diaporama-indicators">
                     <div>
-                        <div className={`voiceOff ${question?.voiceOff == null ? '' : 'active'}`}>
+                        <div className={`voiceOff ${question?.voiceOff == '' ? '' : 'active'}`}>
                             <VoiceOffIcon />
                         </div>
                         <div className="voiceOff">

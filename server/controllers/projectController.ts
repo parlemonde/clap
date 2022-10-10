@@ -1,4 +1,7 @@
 import type { Request, Response, NextFunction } from 'express';
+import MLT from 'mlt';
+import nodeHtmlToImage from 'node-html-to-image';
+import path from 'path';
 import { getRepository, getManager } from 'typeorm';
 
 import { Image } from '../entities/image';
@@ -92,6 +95,105 @@ export class ProjectController extends Controller {
         const pdfEntry = new PDFDownload();
         await getRepository(PDFDownload).save(pdfEntry);
         res.sendJSON({ url });
+    }
+
+    @post({ path: '/mlt' })
+    public async getProjectMLT(req: Request, res: Response): Promise<void> {
+        const project: Project | undefined = await getRepository(Project)
+            .createQueryBuilder('project')
+            .where('project.id = :id', { id: req.body.projectId })
+            .leftJoinAndSelect('project.questions', 'question')
+            .leftJoinAndSelect('question.plans', 'plans')
+            .leftJoinAndSelect('question.title', 'title')
+            .leftJoinAndSelect('question.sound', 'questionSound')
+            .leftJoinAndSelect('project.sound', 'sound')
+            .getOne();
+        if (project == null) {
+            throw new AppError('Invalid data', ErrorCode.INVALID_DATA);
+        }
+
+        console.log(project);
+
+        const mlt = new MLT();
+        const multitrack = new MLT.Multitrack();
+        const tractor = new MLT.Tractor();
+        const voicesOff = new MLT.Playlist();
+        let totalLength = 0;
+        totalLength++;
+
+        project.questions.map(async (q) => {
+            let duration = 0;
+
+            if (q.title != null) {
+                duration += q.title.duration;
+                const style =
+                    q.title.style === ''
+                        ? {
+                              fontFamily: 'serif',
+                              top: '10',
+                              left: '35',
+                          }
+                        : JSON.parse(q.title.style);
+                const html = `<html>
+                    <head>
+                    <style>
+                        body {
+                            width: 2480px;
+                            height: 3508px;
+                            font-family: ${style.fontFamily}
+                        }
+                    </style>
+                    </head>
+                    <body>
+                        <h1 style="position: absolute; top: ${style.top}%; left: ${style.left}%;">${q.title.text}</h1>
+                    </body>
+                </html>`;
+                await nodeHtmlToImage({
+                    output: path.join(__dirname, '../static/images/', 'title.png'),
+                    html,
+                });
+                console.log(path.join(__dirname, '../static/images/', 'title.png'));
+            }
+            q.plans.map((p) => {
+                const producer = new MLT.Producer.Image({ source: p.url });
+                const playlist = new MLT.Playlist();
+                playlist.entry({
+                    producer: producer,
+                    length: p.duration,
+                });
+                duration += p.duration;
+                mlt.push(playlist);
+                multitrack.addTrack(new MLT.Multitrack.Track(playlist));
+            });
+            if (q.sound != null) {
+                const voiceOff = new MLT.Producer.Audio({ source: q.sound.path });
+                mlt.push(voiceOff);
+                voicesOff.entry({
+                    producer: voiceOff,
+                    length: duration,
+                });
+            } else {
+                voicesOff.blank(duration);
+            }
+        });
+        mlt.push(voicesOff);
+        multitrack.addTrack(new MLT.Multitrack.Track(voicesOff));
+
+        if (project.sound != null) {
+            const bgMusic = new MLT.Producer.Audio({ source: project.sound });
+            mlt.push(bgMusic);
+            const music = new MLT.Playlist().entry({
+                producer: bgMusic,
+                length: totalLength,
+            });
+            mlt.push(music);
+            multitrack.addTrack(new MLT.Multitrack.Track(music));
+        }
+
+        mlt.push(tractor.push(multitrack));
+        console.log(mlt.toString());
+
+        res.sendJSON({ mlt });
     }
 
     @get({ userType: UserType.CLASS })

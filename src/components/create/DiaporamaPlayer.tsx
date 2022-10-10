@@ -403,7 +403,7 @@ export const DiaporamaPlayer: React.FunctionComponent<DiaporamaPlayerProps> = ({
                                 })}
                             </div>
                         ) : null}
-                        {getCurrentSound() == null ? (
+                        {getCurrentSound().path == '' ? (
                             <div className="diaporama-mounting-sounds"></div>
                         ) : (
                             <div

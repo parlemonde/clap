@@ -40,7 +40,7 @@ export class Question implements QuestionInterface {
         return this;
     }
 
-    @Column({ type: 'varchar', length: 280 })
+    @Column({ type: 'varchar', length: 280, default: '' })
     public voiceOff: string;
 
     @Column({ default: 0 })
@@ -54,6 +54,6 @@ export class Question implements QuestionInterface {
     @JoinColumn()
     public title: Title;
 
-    @Column()
+    @Column({ nullable: true })
     public duration: number;
 }

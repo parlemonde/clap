@@ -139,7 +139,7 @@ export const useQuestionRequests = (): {
                 const response = await axiosLoggedRequest({
                     method: 'POST',
                     headers: { 'Content-Type': 'multipart/form-data' },
-                    url: `/question/${questionId}/sound`,
+                    url: `/questions/${questionId}/sound`,
                     data: bodyFormData,
                 });
                 if (!response.error) {
@@ -155,13 +155,15 @@ export const useQuestionRequests = (): {
     );
 
     const uploadQuestionSound = React.useCallback(
-        async (questionIndex: number, soundBlob: Blob) => {
+        async (soundBlob: Blob, questionIndex: number) => {
             const questions = project.questions || [];
             const question = questions[questionIndex] || null;
             if (question === null) return;
 
             if (isLoggedIn && project.id !== null && question.id !== null) {
-                question.sound = await uploadSound(soundBlob, question.id);
+                const sound = await uploadSound(soundBlob, questionIndex);
+                console.log(sound);
+                question.sound = sound;
             } else {
                 question.sound = await uploadTemporarySound(soundBlob);
             }

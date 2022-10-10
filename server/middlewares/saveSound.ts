@@ -5,7 +5,7 @@ import { getRepository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 
 import { Sound } from '../entities/sound';
-import { uploadFile } from '../fileUpload';
+import { uploadSound } from '../fileUpload';
 
 export type Ratio = {
     width: number | null;
@@ -25,7 +25,7 @@ export function saveSound(tableName: string): RequestHandler {
         const uuid = uuidv4();
 
         // then send file to server
-        const filePath: string | null = await uploadFile(uuid, path.join('static/audio', tableName));
+        const filePath: string | null = await uploadSound(uuid, path.join('static/audio', tableName));
         if (filePath !== null) {
             // Next save it in the database
             const sound = new Sound();

@@ -66,8 +66,7 @@ export class QuestionController extends Controller {
         question.sound = req.sound;
         await getRepository(Question).save(question);
 
-        question.url = question.sound.path;
-        res.sendJSON(question);
+        res.sendJSON(req.sound);
     }
 
     @get()
@@ -117,6 +116,8 @@ export class QuestionController extends Controller {
         question.isDefault = req.body.isDefault !== undefined ? req.body.isDefault : false;
         question.question = q;
         question.index = req.body.index || 0;
+        question.voiceOff = '';
+        question.voiceOffBeginTime = 0;
 
         if (req.body.projectId !== undefined) {
             question.project = new Project();
