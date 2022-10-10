@@ -104,7 +104,7 @@ const PlanAll: React.FunctionComponent = () => {
         event.preventDefault();
         event.stopPropagation();
         const title = questions[questionIndex].title || { id: null };
-        if (title.id !== null) await deleteTitle(title.id);
+        if (title.id !== null) await deleteTitle(Number(title.id));
         questions[questionIndex].title = null;
         updateQuestion(questionIndex, questions[questionIndex]);
     };

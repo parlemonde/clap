@@ -17,6 +17,7 @@ import { useTranslation } from 'src/i18n/useTranslation';
 import { ProjectServiceContext } from 'src/services/useProject';
 import { useQuestionRequests } from 'src/services/useQuestions';
 import { getQuestions, getQueryString } from 'src/util';
+import type { Question } from 'types/models/question.type';
 
 const PlanTitle: React.FunctionComponent = () => {
     const router = useRouter();
@@ -53,15 +54,15 @@ const PlanTitle: React.FunctionComponent = () => {
 
     const handleConfirm = async (event: React.MouseEvent) => {
         event.preventDefault();
-
-        updateQuestion(questionIndex, question);
+        if (question !== null) {
+            updateQuestion(questionIndex, question);
+        }
         router.push(`/create/4-pre-mounting`);
     };
 
-    const uploadSound = async (url) => {
+    const uploadSound = async (url: string) => {
         const blobSound = await fetch(url).then((r) => r.blob());
-
-        await uploadQuestionSound(questionIndex, blobSound);
+        await uploadQuestionSound(blobSound, questionIndex);
     };
 
     const handleInputchange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,7 +78,7 @@ const PlanTitle: React.FunctionComponent = () => {
             <Steps activeStep={3} />
             <div style={{ maxWidth: '1000px', margin: 'auto', paddingBottom: '2rem' }}>
                 <Typography color="primary" variant="h1">
-                    <Inverted round>4</Inverted> {t('pre_mount_title')} {question?.index + 1}
+                    <Inverted round>4</Inverted> {t('pre_mount_title')} {(question?.index || 0) + 1}
                 </Typography>
                 <Typography>
                     <span>{t('pre_mount_title_desc')}</span>
@@ -110,7 +111,7 @@ const PlanTitle: React.FunctionComponent = () => {
                     <span>{t('pre_mount_duration')}</span>
                 </div>
                 <div>
-                    <DiaporamaPlayer questions={[question]} mountingPlans={true} />
+                    <DiaporamaPlayer questions={question ? [question] : []} mountingPlans={true} />
                 </div>
                 <div style={{ margin: '50px 0 20px', display: 'flex' }}>
                     <div className={`voice-off-icon ${question?.sound == null ? '' : 'green'}`}>

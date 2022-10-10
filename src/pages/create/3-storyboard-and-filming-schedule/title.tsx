@@ -11,6 +11,7 @@ import { ThemeLink } from 'src/components/create/ThemeLink';
 import { useTranslation } from 'src/i18n/useTranslation';
 import { ProjectServiceContext } from 'src/services/useProject';
 import { getQuestions, getQueryString } from 'src/util';
+import type { Question } from 'types/models/question.type';
 
 const PlanTitle: React.FunctionComponent = () => {
     const router = useRouter();
@@ -26,21 +27,25 @@ const PlanTitle: React.FunctionComponent = () => {
     const [text, setText] = React.useState<string>('');
     const [isDragging, setIsDragging] = React.useState<boolean>(false);
     const [initialized, setInitialized] = React.useState<boolean>(false);
-    const titleRef = React.useRef(null);
-    const textRef = React.useRef(null);
-    const selectRef = React.useRef(null);
+    const titleRef = React.useRef<HTMLDivElement | null>(null);
+    const textRef = React.useRef<HTMLTextAreaElement | null>(null);
+    const selectRef = React.useRef<HTMLSelectElement | null>(null);
 
     React.useLayoutEffect(() => {
         if (question !== null && !initialized) {
             const title = question.title;
-            if (title !== null) {
+            if (title) {
                 setText(title.text);
-                textRef.current.value = title.text;
+                if (textRef.current) {
+                    textRef.current.value = title.text;
+                }
                 const style = title.style === '' ? null : JSON.parse(title.style);
                 if (style !== null) {
                     setCoordinates({ x: style.left, y: style.top });
                     setFontFamily(style.fontFamily);
-                    selectRef.current.value = style.fontFamily;
+                    if (selectRef.current) {
+                        selectRef.current.value = style.fontFamily;
+                    }
                 }
             }
             setInitialized(true);
@@ -61,15 +66,15 @@ const PlanTitle: React.FunctionComponent = () => {
 
     const handleConfirm = async (event: React.MouseEvent) => {
         event.preventDefault();
-        if (question !== null) {
+        if (question !== null && question.title) {
             question.title.text = text;
-            question.title?.style = JSON.stringify({
+            question.title.style = JSON.stringify({
                 fontFamily,
                 left: coordinates.x,
                 top: coordinates.y,
             });
+            updateQuestion(questionIndex, question);
         }
-        updateQuestion(questionIndex, question);
         router.push(`/create/3-storyboard-and-filming-schedule`);
     };
 
@@ -79,7 +84,7 @@ const PlanTitle: React.FunctionComponent = () => {
             <Steps activeStep={2} />
             <div style={{ maxWidth: '1000px', margin: 'auto', paddingBottom: '2rem' }}>
                 <Typography color="primary" variant="h1">
-                    <Inverted round>3</Inverted> {t('edit_plan_title')} {question?.index + 1}
+                    <Inverted round>3</Inverted> {t('edit_plan_title')} {(question?.index || 0) + 1}
                 </Typography>
                 <Typography variant="h2">
                     <span>{t('part3_question')}</span> {question?.question}
@@ -92,13 +97,13 @@ const PlanTitle: React.FunctionComponent = () => {
                     className="titleEditor"
                     ref={titleRef}
                     onMouseMove={(e) => {
-                        if (!isDragging) return;
+                        if (!isDragging || !titleRef.current) return;
                         const parentPos = titleRef.current.getBoundingClientRect();
                         const parentWidth = titleRef.current.offsetWidth;
                         const parentHeight = titleRef.current.offsetHeight;
                         const mousePos = { x: e.clientX, y: e.clientY };
-                        const left = ((mousePos.x - parentPos.x) * 100) / parentWidth;
-                        const top = ((mousePos.y - parentPos.y) * 100) / parentHeight;
+                        let left = ((mousePos.x - parentPos.x) * 100) / parentWidth;
+                        let top = ((mousePos.y - parentPos.y) * 100) / parentHeight;
                         if (left < 0) left = 0;
                         if (top < 6) top = 6;
                         setCoordinates({ x: left, y: top });

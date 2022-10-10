@@ -15,6 +15,8 @@ const DEFAULT_PROJECT: Project = {
     theme: null,
     scenario: null,
     questions: null,
+    musicBeginTime: 0,
+    sound: null,
 };
 
 interface ProjectServiceContextValue {

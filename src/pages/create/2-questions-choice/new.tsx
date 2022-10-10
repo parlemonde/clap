@@ -52,6 +52,10 @@ const QuestionNew: React.FunctionComponent = () => {
             scenarioId: project.scenario?.id ?? 0,
             languageCode: project.scenario?.languageCode || 'fr',
             index: questions.length,
+            voiceOff: null,
+            voiceOffBeginTime: 0,
+            sound: null,
+            duration: 0,
         };
         if (project !== null && project.id !== null && project.id !== -1) {
             newQ = await addQuestion({ ...newQ, projectId: project.id });

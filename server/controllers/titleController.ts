@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from 'express';
 import { getRepository } from 'typeorm';
 
-import { Question } from '../entities/question';
+// import { Question } from '../entities/question';
 import { Title } from '../entities/title';
 import { UserType } from '../entities/user';
 import { Controller, del, get, post, put } from './controller';
@@ -38,10 +38,10 @@ export class TitleController extends Controller {
         if (req.body.duration !== undefined) {
             title.duration = req.body.duration;
         }
-        if (req.body.questionId !== undefined) {
-            title.question = new Question();
-            title.question.id = req.body.questionId;
-        }
+        // if (req.body.questionId !== undefined) {
+        //     title.question = new Question();
+        //     title.question.id = req.body.questionId;
+        // }
 
         await getRepository(Title).save(title); // save new title
         res.sendJSON(title); // send new title
