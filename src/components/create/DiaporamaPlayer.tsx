@@ -17,7 +17,7 @@ interface DiaporamaPlayerProps {
 export const DiaporamaPlayer: React.FunctionComponent<DiaporamaPlayerProps> = ({ questions, mountingPlans }: DiaporamaPlayerProps) => {
     const { updateProject, project } = React.useContext(ProjectServiceContext);
     const diaporamaRef = React.useRef(null);
-    const mountingTableRef = React.useRef(null);
+    const mountingTableRef = React.useRef<HTMLDivElement | null>(null);
     const [currentId, setCurrentId] = React.useState(0);
     const [spentTime, setSpentTime] = React.useState(0);
     const [isPlaying, setPlaying] = React.useState(false);
@@ -155,7 +155,7 @@ export const DiaporamaPlayer: React.FunctionComponent<DiaporamaPlayerProps> = ({
         let timeBefore = 0;
         let nbElemAfter = 0;
         let elem: Title | Plan | null = null;
-        questions.map((q) => {
+        for (const q of questions) {
             if (q.title != null) {
                 i++;
                 if (i == dragIndex) elem = q.title;
@@ -163,16 +163,18 @@ export const DiaporamaPlayer: React.FunctionComponent<DiaporamaPlayerProps> = ({
                 if (i > dragIndex) nbElemAfter++;
             }
             if (q.plans == null) return;
-            q.plans.map((p) => {
+            for (const p of q.plans) {
                 i++;
                 if (i == dragIndex) elem = p;
                 else if (elem === null && p.duration != null) timeBefore += p.duration;
                 if (i > dragIndex) nbElemAfter++;
-            });
-        });
-        if (elem == null) return;
+            }
+        }
+        if (elem == null) {
+            return;
+        }
         time -= timeBefore; // Get the new duration of the plan
-        const diff = Math.floor(time - elem.duration); // Calculate the diff between before and after moving
+        const diff = Math.floor(time - (elem.duration || 0)); // Calculate the diff between before and after moving
         elem.duration = time; // We now set the new duration
         const toAdd = Math.floor(diff / nbElemAfter); // Calculate how much to add on the other plans
         questions.map((q) => {
@@ -183,7 +185,7 @@ export const DiaporamaPlayer: React.FunctionComponent<DiaporamaPlayerProps> = ({
             if (q.plans == null) return;
             q.plans.map((p) => {
                 j++;
-                if (j > dragIndex && p.duration - toAdd < getTotalDuration()) p.duration -= toAdd;
+                if (j > dragIndex && p.duration !== null && p.duration - toAdd < getTotalDuration()) p.duration -= toAdd;
             });
         });
         updateProject({ questions });
@@ -361,13 +363,17 @@ export const DiaporamaPlayer: React.FunctionComponent<DiaporamaPlayerProps> = ({
                                                             {question.title.text}
                                                         </p>
                                                     </div>
-                                                    {question.plans?.length > 0 ? (
+                                                    {(question.plans || []).length > 0 ? (
                                                         <div
                                                             className="mounting-cursor"
                                                             onMouseDown={(e) => {
                                                                 e.stopPropagation();
                                                                 setDragCursor(true);
-                                                                setDragIndex(parseInt(e.target.parentElement.getAttribute('data-index')));
+                                                                setDragIndex(
+                                                                    parseInt(
+                                                                        (e.target as HTMLDivElement).parentElement?.getAttribute('data-index') || '',
+                                                                    ),
+                                                                );
                                                             }}
                                                             data-duration={`${getFormatedTime(time)}`}
                                                         ></div>
@@ -375,22 +381,27 @@ export const DiaporamaPlayer: React.FunctionComponent<DiaporamaPlayerProps> = ({
                                                 </div>
                                             )}
                                             {question.plans?.map((p, i) => {
-                                                time += p.duration;
+                                                time += p?.duration || 0;
                                                 index++;
                                                 return (
-                                                    <div style={{ flex: p.duration }} key={`${index}-${i}`} data-index={index}>
+                                                    <div style={{ flex: p.duration || 0 }} key={`${index}-${i}`} data-index={index}>
                                                         <div
                                                             className="mounting-item-plan"
                                                             style={{ backgroundImage: `url('${p.url}')` }}
                                                             data-duration={p.duration}
                                                         ></div>
-                                                        {i < question.plans?.length - 1 ? (
+                                                        {i < (question.plans || []).length - 1 ? (
                                                             <div
                                                                 className="mounting-cursor"
                                                                 onMouseDown={(e) => {
                                                                     e.stopPropagation();
                                                                     setDragCursor(true);
-                                                                    setDragIndex(parseInt(e.target.parentElement.getAttribute('data-index')));
+                                                                    setDragIndex(
+                                                                        parseInt(
+                                                                            (e.target as HTMLDivElement).parentElement?.getAttribute('data-index') ||
+                                                                                '',
+                                                                        ),
+                                                                    );
                                                                 }}
                                                                 data-duration={`${getFormatedTime(time)}`}
                                                             ></div>
@@ -420,7 +431,7 @@ export const DiaporamaPlayer: React.FunctionComponent<DiaporamaPlayerProps> = ({
                                     onMouseDown={(e) => {
                                         e.stopPropagation();
                                         setDragSound(true);
-                                        setStartDragSound(e.clientX - mountingTableRef.current.getBoundingClientRect().left);
+                                        setStartDragSound(e.clientX - (mountingTableRef.current?.getBoundingClientRect()?.left || 0));
                                     }}
                                     className="diaporama-sound-file"
                                     style={{ width: `${getAudioDuration()}px`, left: `${getAudioPosition()}px` }}

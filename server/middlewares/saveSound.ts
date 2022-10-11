@@ -35,7 +35,7 @@ export function saveSound(tableName: string): RequestHandler {
             sound.localPath = path.join('audio', tableName);
             try {
                 await getRepository(Sound).save(sound);
-                req.soundID = sound.id;
+                // req.soundID = sound.id;
                 req.sound = sound;
             } catch (e) {
                 //return e;

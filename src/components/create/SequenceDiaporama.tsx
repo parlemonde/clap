@@ -7,6 +7,7 @@ import ButtonBase from '@mui/material/ButtonBase';
 
 import { ProjectServiceContext } from 'src/services/useProject';
 import { getQuestions } from 'src/util';
+import type { Question } from 'types/models/question.type';
 
 interface SequenceDiaporamaProps {
     questionIndex: number;
@@ -25,23 +26,26 @@ export const SequenceDiaporama: React.FunctionComponent<SequenceDiaporamaProps> 
         updateProject({ questions });
     };
 
-    if (question?.duration == null) {
-        question?.duration = question?.plans?.length * 3000;
-        if (question.title != null) question?.duration += 3000;
+    if (question && question.duration === null) {
+        question.duration = (question.plans || []).length * 3000;
+        if (question.title !== null) question.duration += 3000;
         updateQuestion(questionIndex, question);
     }
 
-    const diaporamaRef = React.useRef(null);
+    const diaporamaRef = React.useRef<HTMLDivElement | null>(null);
     const [currentId, setCurrentId] = React.useState(0);
 
     React.useEffect(() => {
         let totalDuration = 0;
 
         const interval = setInterval(() => {
+            if (!diaporamaRef.current) {
+                return;
+            }
             totalDuration += 100;
-            const current = diaporamaRef.current.children[currentId];
+            const current = diaporamaRef.current.children[currentId] as HTMLDivElement;
             current.style.display = 'block';
-            if (current.getAttribute('data-duration') <= totalDuration) {
+            if (parseInt(current.getAttribute('data-duration') || '0') <= totalDuration) {
                 totalDuration = 0;
                 current.style.display = 'none';
                 setCurrentId(currentId === diaporamaRef.current.children.length - 1 ? 0 : currentId + 1);
@@ -54,7 +58,7 @@ export const SequenceDiaporama: React.FunctionComponent<SequenceDiaporamaProps> 
         <div>
             <ButtonBase className="sequence-diaporama" component="a" href={`/create/4-pre-mounting/edit?question=${questionIndex}`}>
                 <div className="sequence-plans" ref={diaporamaRef}>
-                    {question.title == null ? null : (
+                    {question && question.title ? (
                         <div
                             className="sequence-title"
                             data-duration={question.title.duration}
@@ -70,8 +74,8 @@ export const SequenceDiaporama: React.FunctionComponent<SequenceDiaporamaProps> 
                         >
                             <p>{question.title.text}</p>
                         </div>
-                    )}
-                    {question.plans?.map((p) => {
+                    ) : null}
+                    {(question?.plans || []).map((p) => {
                         return (
                             <div
                                 key={(Math.random() + 1).toString(36)}
@@ -93,7 +97,7 @@ export const SequenceDiaporama: React.FunctionComponent<SequenceDiaporamaProps> 
                     </div>
                     <div className="time">
                         <TimeIcon />
-                        {question?.duration / 1000} s
+                        {(question?.duration || 0) / 1000} s
                     </div>
                 </div>
             </ButtonBase>
