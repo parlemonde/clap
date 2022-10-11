@@ -77,9 +77,11 @@ const PlanTitle: React.FunctionComponent = () => {
             });
             updateQuestion(questionIndex, question);
         }
-        updateQuestion(questionIndex, question);
-        if (question !== null && question.id !== null && question.id !== -1) {
-            await updateTitle(question.title);
+        if (question != null) {
+            updateQuestion(questionIndex, question);
+            if (question.title != null) {
+                await updateTitle(question.title);
+            }
         }
         router.push(`/create/3-storyboard-and-filming-schedule`);
     };

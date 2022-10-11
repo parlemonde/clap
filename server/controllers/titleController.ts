@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from 'express';
 import { getRepository } from 'typeorm';
 
-// import { Question } from '../entities/question';
+import { Question } from '../entities/question';
 import { Title } from '../entities/title';
 import { UserType } from '../entities/user';
 import { Controller, del, get, post, put } from './controller';
