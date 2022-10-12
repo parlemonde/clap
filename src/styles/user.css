@@ -706,6 +706,9 @@ a.sequence-diaporama {
 .diaporama-play-btn:hover .square-btn {
   background-color: #6065FCCC;
 }
+.diaporama-play-btn.playing:not(:hover) .square-btn {
+  display: none;
+}
 .diaporama-play-btn .square-btn svg {
   height: 50px;
   font-size: 50px;
@@ -756,6 +759,7 @@ a.sequence-diaporama {
   position: relative;
   overflow-x: hidden;
   overflow-y: visible;
+  padding-top: 30px;
 }
 .diaporama-volume {
   padding: 10px;
@@ -764,7 +768,6 @@ a.sequence-diaporama {
   background: #00ADEF;
   height: 80px;
   padding: 5px;
-  margin-top: 30px;
   display: flex;
 }
 .diaporama-mounting-plans > div {
@@ -894,6 +897,13 @@ a.sequence-diaporama {
   margin: 0 5px;
   min-width: 85px;
   text-align: center;
+}
+.diaporama-total-duration input {
+  display: inline;
+  background: none;
+  border: 0;
+  width: 18px;
+  color: #FFF;
 }
 
 /* Volume slider */

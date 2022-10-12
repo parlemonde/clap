@@ -16,6 +16,7 @@ import { ThemeLink } from 'src/components/create/ThemeLink';
 import { useTranslation } from 'src/i18n/useTranslation';
 import { ProjectServiceContext } from 'src/services/useProject';
 import { useQuestionRequests } from 'src/services/useQuestions';
+import { useSoundRequests } from 'src/services/useSound';
 import { getQuestions, getQueryString } from 'src/util';
 import type { Question } from 'types/models/question.type';
 
@@ -24,6 +25,7 @@ const PlanTitle: React.FunctionComponent = () => {
     const { t } = useTranslation();
     const { project, updateProject } = React.useContext(ProjectServiceContext);
     const { uploadQuestionSound, editQuestion } = useQuestionRequests();
+    const { editSound } = useSoundRequests();
     const inputRef = React.useRef<HTMLInputElement | null>(null);
 
     const questions = getQuestions(project);
@@ -58,6 +60,9 @@ const PlanTitle: React.FunctionComponent = () => {
             updateQuestion(questionIndex, question);
             if (question.id != null && question.id != -1) {
                 await editQuestion(question);
+            }
+            if (question.sound != null) {
+                await editSound(question.sound);
             }
         }
         router.push(`/create/4-pre-mounting`);

@@ -12,15 +12,16 @@ import { Question } from '../entities/question';
 import { Scenario } from '../entities/scenario';
 import { Sound } from '../entities/sound';
 import { Theme } from '../entities/theme';
+import { Title } from '../entities/title';
 import { UserType } from '../entities/user';
 import { deleteImage } from '../fileUpload';
 import { AppError, ErrorCode } from '../middlewares/handleErrors';
 import { htmlToPDF, PDF } from '../pdf';
 import { logger } from '../utils/logger';
-import { Controller, post, put, get, del } from './controller';
+import { Controller, post, put, get, del, tempSound, oneSound } from './controller';
 
 type planFromBody = { id?: number | string; url?: string; description?: string };
-type QuestionFromBody = { question?: string; id?: number | string; plans?: Array<planFromBody> };
+type QuestionFromBody = { question?: string; id?: number | string; plans?: Array<planFromBody>; title?: Title };
 type QuestionsFromBody = Array<QuestionFromBody>;
 
 function getQuestionsFromBody(req: Request): Question[] {
@@ -35,6 +36,13 @@ function getQuestionsFromBody(req: Request): Question[] {
             plan.description = p.description || '';
             question.plans.push(plan);
         }
+        if (q.title != null) {
+            const title = new Title();
+            title.duration = q.title.duration;
+            title.style = q.title.style;
+            title.text = q.title.text;
+            question.title = title;
+        }
         questions.push(question);
     }
     return questions;
@@ -43,6 +51,35 @@ function getQuestionsFromBody(req: Request): Question[] {
 export class ProjectController extends Controller {
     constructor() {
         super('projects');
+    }
+
+    @tempSound({ path: '/temp-sound', tableName: 'question' })
+    public async uploadTempSound(req: Request, res: Response, next: NextFunction): Promise<void> {
+        if (req.sound === undefined) {
+            next();
+            return;
+        }
+        res.sendJSON(req.sound);
+    }
+
+    @oneSound({ path: '/:id/sound', userType: UserType.CLASS, tableName: 'project' })
+    public async uploadSound(req: Request, res: Response, next: NextFunction): Promise<void> {
+        if (req.user === undefined || req.sound === undefined) {
+            next();
+            return;
+        }
+
+        const id = parseInt(req.params.id || '', 10) || 0;
+        const project: Project | undefined = await getRepository(Project).findOne(id, { relations: ['sound'] });
+        if (project === undefined) {
+            next();
+            return;
+        }
+
+        project.sound = req.sound;
+        await getRepository(Project).save(project);
+
+        res.sendJSON(req.sound);
     }
 
     @post({ path: '/pdf' })
@@ -111,8 +148,6 @@ export class ProjectController extends Controller {
         if (project == null) {
             throw new AppError('Invalid data', ErrorCode.INVALID_DATA);
         }
-
-        console.log(project);
 
         const mlt = new MLT();
         const multitrack = new MLT.Multitrack();

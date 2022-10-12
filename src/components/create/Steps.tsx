@@ -31,15 +31,15 @@ const steps = [
     },
     {
         name: (t: tFunction) => t('step4'),
-        back: () => '/create',
+        back: () => '/create/4-pre-mounting',
     },
     {
         name: (t: tFunction) => t('step5'),
-        back: () => '/create',
+        back: () => '/create/5-music',
     },
     {
         name: (t: tFunction) => t('step6'),
-        back: () => '/create',
+        back: () => '/create/6-to-your-camera',
     },
 ];
 

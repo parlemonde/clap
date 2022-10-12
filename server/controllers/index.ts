@@ -8,3 +8,4 @@ export { PlanController } from './planController';
 export { ProjectController } from './projectController';
 export { StatsController } from './statsController';
 export { TitleController } from './titleController';
+export { SoundController } from './soundController';

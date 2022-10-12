@@ -1,9 +1,11 @@
 import React from 'react';
 
 import Camera from '@mui/icons-material/CameraAlt';
+import Pause from '@mui/icons-material/Pause';
 import PlayArrow from '@mui/icons-material/PlayArrow';
 import Sound from '@mui/icons-material/VolumeUp';
 
+import { TimeEdit } from 'src/components/create/TimeEdit';
 import { ProjectServiceContext } from 'src/services/useProject';
 import type { Plan } from 'types/models/plan.type';
 import type { Question } from 'types/models/question.type';
@@ -124,6 +126,15 @@ export const DiaporamaPlayer: React.FunctionComponent<DiaporamaPlayerProps> = ({
         return () => clearInterval(interval);
     }, [diaporamaRef, currentId, spentTime, isPlaying, audio, getBeginTime, getTotalDuration, setIsPlaying]);
 
+    React.useEffect(() => {
+        document.onkeydown = (e: KeyboardEvent) => {
+            if (e.keyCode === 32 && !(e.target != null && ['TEXTAREA'].includes((e.target as Element).tagName))) {
+                e.preventDefault();
+                setIsPlaying(!isPlaying);
+            }
+        };
+    }, [setIsPlaying, isPlaying]);
+
     const getFormatedTime = (t: number) => {
         const minutes = Math.floor(t / 60000);
         const seconds = (t - minutes * 60000) / 1000;
@@ -224,9 +235,9 @@ export const DiaporamaPlayer: React.FunctionComponent<DiaporamaPlayerProps> = ({
     };
 
     const addTotalTime = (qte: number) => {
-        if (questions[0].duration + qte <= 0 || questions[0] == null) return;
+        if (questions[0].duration + qte <= 0 || questions[0] == null || diaporamaRef.current == null) return;
         questions[0].duration += qte;
-        const c = 2;
+        const c = Array.from((diaporamaRef.current as HTMLElement).children).length;
         questions.map((q) => {
             if (q.title != null) {
                 q.title.duration += qte / c;
@@ -240,20 +251,24 @@ export const DiaporamaPlayer: React.FunctionComponent<DiaporamaPlayerProps> = ({
         updateProject({ questions });
     };
 
+    const updateVolume = (vol: number) => {
+        if (mountingPlans) {
+            if (questions[0].sound != null) questions[0].sound.volume = vol;
+        } else {
+            if (project.sound != null) project.sound.volume = vol;
+        }
+    };
+
     return (
         <div className="diaporama-player-container">
             <div className="diaporama-player">
                 <div
-                    className="diaporama-play-btn"
+                    className={`diaporama-play-btn ${isPlaying ? 'playing' : ''}`}
                     onClick={() => {
                         setIsPlaying(!isPlaying);
                     }}
                 >
-                    {isPlaying ? null : (
-                        <div className="square-btn">
-                            <PlayArrow />
-                        </div>
-                    )}
+                    <div className="square-btn">{isPlaying ? <Pause /> : <PlayArrow />}</div>
                 </div>
 
                 <div className="diaporama-plans" ref={diaporamaRef}>
@@ -307,16 +322,16 @@ export const DiaporamaPlayer: React.FunctionComponent<DiaporamaPlayerProps> = ({
                     {mountingPlans ? (
                         <div className="diaporama-time-edit">
                             <button onClick={() => addTotalTime(-1000)}>-</button>
-                            <p className="diaporama-total-duration">{getFormatedTime(getTotalDuration())}</p>
+                            <TimeEdit totalTime={getTotalDuration()} updateTime={addTotalTime} />
                             <button onClick={() => addTotalTime(1000)}>+</button>
                         </div>
                     ) : (
-                        <p>{getTotalDuration()}</p>
+                        <p>{getFormatedTime(getTotalDuration())}</p>
                     )}
                 </div>
                 <div>
                     <div className="diaporama-icons">
-                        <Camera />
+                        {mountingPlans ? <Camera /> : null}
                         <Sound />
                     </div>
                     <div
@@ -351,7 +366,7 @@ export const DiaporamaPlayer: React.FunctionComponent<DiaporamaPlayerProps> = ({
                                                     <div className="mounting-item-title" data-duration={question.title.duration}>
                                                         <p
                                                             style={
-                                                                style === {}
+                                                                style === null
                                                                     ? {}
                                                                     : {
                                                                           fontFamily: style.fontFamily,
@@ -448,6 +463,7 @@ export const DiaporamaPlayer: React.FunctionComponent<DiaporamaPlayerProps> = ({
                             onChange={(e) => {
                                 const vol = parseInt(e.target.value);
                                 setVolume(vol);
+                                updateVolume(vol);
                                 if (audio != null) audio.volume = vol / 100;
                             }}
                         />

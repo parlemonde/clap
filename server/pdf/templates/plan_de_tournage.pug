@@ -135,16 +135,25 @@ head
     .plans > .plan:first-child {
     margin-top: 0.5rem;
     }
-    .plan-image {
+    .plan-image, .title {
     padding: 0.5rem;
     width: 6.5cm;
-    height: 6.5cm;
+    height: 5cm;
     min-width: 6.5cm;
-    min-height: 6.5cm;
+    min-height: 5cm;
     border-right: 1px solid black;
     background-repeat: no-repeat;
     background-size: contain;
     background-position: center;
+    position: relative;
+    }
+    .title {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .title h4 {
+      position: absolute;
     }
     .plan-description {
     padding: 0.5rem;
@@ -216,6 +225,11 @@ main
       .content.scene
         h3 #{index + 1}. #{question.question}
         .plans
+          if question.title != null
+            .plan
+              .title
+                h4 #{question.title.text}
+              .plan-description
           each plan in question.plans
             - count += 1
             .plan

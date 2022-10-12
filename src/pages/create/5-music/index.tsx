@@ -21,7 +21,7 @@ const Music: React.FunctionComponent = () => {
 
     const handleNext = (event: React.MouseEvent) => {
         event.preventDefault();
-        router.push(`/create/5-music`);
+        router.push(`/create/6-to-your-camera`);
     };
 
     return (
@@ -44,7 +44,7 @@ const Music: React.FunctionComponent = () => {
                 <Box sx={{ display: { xs: 'none', md: 'block' } }} style={{ width: '100%', textAlign: 'right', marginTop: '2rem' }}>
                     <Button
                         component="a"
-                        href={`/create/5-music`}
+                        href={`/create/6-to-your-camera`}
                         color="secondary"
                         onClick={handleNext}
                         variant="contained"
@@ -56,7 +56,7 @@ const Music: React.FunctionComponent = () => {
                 <Button
                     sx={{ display: { xs: 'inline-flex', md: 'none' } }}
                     component="a"
-                    href={`/create/5-music`}
+                    href={`/create/6-to-your-camera`}
                     color="secondary"
                     onClick={handleNext}
                     variant="contained"

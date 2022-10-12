@@ -26,7 +26,7 @@ export const SequenceDiaporama: React.FunctionComponent<SequenceDiaporamaProps> 
         updateProject({ questions });
     };
 
-    if (question && question.duration === null) {
+    if (question && (question.duration === null || question.duration === 0)) {
         question.duration = (question.plans || []).length * 3000;
         if (question.title !== null) question.duration += 3000;
         updateQuestion(questionIndex, question);
@@ -63,7 +63,7 @@ export const SequenceDiaporama: React.FunctionComponent<SequenceDiaporamaProps> 
                             className="sequence-title"
                             data-duration={question.title.duration}
                             style={
-                                style === {}
+                                style === null
                                     ? {}
                                     : {
                                           fontFamily: style.fontFamily,
