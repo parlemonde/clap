@@ -129,12 +129,8 @@ export const useQuestionRequests = (): {
 
     const uploadSound = React.useCallback(
         async (soundBlob: Blob, questionId: number) => {
-            const questions = project.questions || [];
-            const question = questions[questionId] || null;
-            if (question === null) return;
             const bodyFormData = new FormData();
             bodyFormData.append('sound', soundBlob);
-
             try {
                 const response = await axiosLoggedRequest({
                     method: 'POST',
@@ -161,8 +157,7 @@ export const useQuestionRequests = (): {
             if (question === null) return;
 
             if (isLoggedIn && project.id !== null && question.id !== null) {
-                const sound = await uploadSound(soundBlob, questionIndex);
-                console.log(sound);
+                const sound = await uploadSound(soundBlob, question.id);
                 question.sound = sound;
             } else {
                 question.sound = await uploadTemporarySound(soundBlob);

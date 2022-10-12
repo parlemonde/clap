@@ -61,6 +61,7 @@ export const DiaporamaPlayer: React.FunctionComponent<DiaporamaPlayerProps> = ({
             setPlaying(p);
             if (p) {
                 if (audio == null && getCurrentSound().path != '') {
+                    console.log(getCurrentSound());
                     const a = new Audio(getCurrentSound().path);
                     a.currentTime = (spentTime - getBeginTime()) / 1000;
                     a.play();

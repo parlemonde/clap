@@ -105,6 +105,7 @@ async function startApp() {
         res.redirect('/admin/themes');
     });
     app.use(`/static/images`, express.static(path.join(__dirname, './static/images')));
+    app.use(`/static/audio`, express.static(path.join(__dirname, './static/audio')));
     app.use(`/static/temp-images`, express.static(path.join(__dirname, './static/temp-images')));
     app.use(`/static/temp-sounds`, express.static(path.join(__dirname, './static/temp-sounds')));
     app.use(`/static/pdf`, express.static(path.join(__dirname, './static/pdf')));

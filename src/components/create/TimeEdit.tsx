@@ -26,7 +26,7 @@ export const TimeEdit: React.FunctionComponent<TimeEditProps> = ({ totalTime, up
         }
     };
 
-    const handleInputchange = (e: React.ChangeEvent<HTMLInputElement>, type: number) => {
+    const handleInputchange = (type: number) => {
         if (minuteRef.current == null || secondRef.current == null || deciRef.current == null) return;
         const minute = parseInt((minuteRef.current as HTMLInputElement).value);
         const second = parseInt((secondRef.current as HTMLInputElement).value);
@@ -55,9 +55,9 @@ export const TimeEdit: React.FunctionComponent<TimeEditProps> = ({ totalTime, up
 
     return (
         <div className="diaporama-total-duration">
-            <input defaultValue={getTime(0)} ref={minuteRef} onBlur={(e) => handleInputchange(e, 0)} />:
-            <input defaultValue={getTime(1)} ref={secondRef} onBlur={(e) => handleInputchange(e, 1)} />:
-            <input defaultValue={getTime(2)} ref={deciRef} onBlur={(e) => handleInputchange(e, 2)} />
+            <input defaultValue={getTime(0)} ref={minuteRef} onBlur={() => handleInputchange(0)} />:
+            <input defaultValue={getTime(1)} ref={secondRef} onBlur={() => handleInputchange(1)} />:
+            <input defaultValue={getTime(2)} ref={deciRef} onBlur={() => handleInputchange(2)} />
         </div>
     );
 };

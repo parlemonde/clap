@@ -189,11 +189,11 @@ export class AwsS3 extends Provider {
         }
 
         // delete local file
-        try {
+        /*try {
             await fs.remove(`${dir}/${filename}.mp3`);
         } catch (e) {
             logger.error(`File ${filename} not found !`);
-        }
+        }*/
 
         if (IS_MINIO) {
             return url.replace('minio', 'localhost');
