@@ -58,6 +58,7 @@ export const ProjectServiceProvider: React.FunctionComponent<ProjectServiceProvi
                 path.slice(0, 26) === '/create/2-questions-choice' ||
                 path.slice(0, 41) === '/create/3-storyboard-and-filming-schedule' ||
                 path.slice(0, 22) === '/create/4-pre-mounting' ||
+                path.slice(0, 22) === '/create/5-music' ||
                 path.slice(0, 24) === '/create/6-to-your-camera'
             ) {
                 try {

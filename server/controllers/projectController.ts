@@ -53,7 +53,7 @@ export class ProjectController extends Controller {
         super('projects');
     }
 
-    @tempSound({ path: '/temp-sound', tableName: 'question' })
+    @tempSound({ path: '/temp-sound', tableName: 'project' })
     public async uploadTempSound(req: Request, res: Response, next: NextFunction): Promise<void> {
         if (req.sound === undefined) {
             next();

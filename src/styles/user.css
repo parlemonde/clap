@@ -744,6 +744,7 @@ a.sequence-diaporama {
   margin-top: 10px;
   background-color: rgba(0, 0, 0, 0.7);
   padding: 15px 20px;
+  min-height: 240px;
 }
 .diaporama-mounting-table > div {
   display: flex;

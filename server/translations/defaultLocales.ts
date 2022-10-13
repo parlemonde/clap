@@ -80,14 +80,18 @@ export const locales = {
   pre_mount_no_sound: "Mettez en ligne la voix-off que vous avez enregistrée.\n Vous pourrez ensuite l’ajuster à la séquence et régler son volume, dans la table de montage ci-dessus.",
   pre_mount_sound: "Vous pouvez ajuster le volume de la piste sonore, ou bien importer un autre son.",
   import_voice_off: "Importer un son",
+  import_music: "Importer un son",
+  import_music_desc: "Si votre diaporama sonore contient déjà des voix-offs, préférez une musique de fond sans parole.",
   //--- part 5---
   part5_title: "Ajouter une musique en fond sonore",
   part5_subtitle1: "À cette étape,  vous pouvez pré-visualiser votre diaporama sonore et y ajouter une musique. ",
   //--- part6 ---
   part6_title: "À votre <1>caméra</1> !",
-  part6_subtitle1: "Téléchargez votre plan de tournage :",
-  part6_pdf_button: "Plan de tournage",
-  part6_subtitle2: "Flashez ce code QR pour accéder directement à l'application et commencer à filmer !",
+  part6_subtitle1: "À cette étape,  vous pouvez pré-visualiser votre diaporama sonore achevé.",
+  part6_pdf_button: "Télécharger le storyboard",
+  part6_mlt_button: "Télécharger le fichier de montage",
+  part6_mp4_button: "Télécharger le diaporama sonore",
+  part6_subtitle2: "Vous pouvez également télécharger ce diaporama sonore comme film, télécharger le storyboard ainsi qu’un fichier de montage pour y intégrer vos plans vidéos.",
   //--- project ---
   project: "Projet :",
   project_name: "Nom du projet",

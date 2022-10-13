@@ -119,7 +119,7 @@ const PlanTitle: React.FunctionComponent = () => {
                     <span>{t('pre_mount_duration')}</span>
                 </div>
                 <div>
-                    <DiaporamaPlayer questions={question ? [question] : []} mountingPlans={true} />
+                    <DiaporamaPlayer questions={question ? [question] : []} mountingPlans={true} questionIndex={questionIndex} videoOnly={false} />
                 </div>
                 <div style={{ margin: '50px 0 20px', display: 'flex' }}>
                     <div className={`voice-off-icon ${question?.sound == null ? '' : 'green'}`}>

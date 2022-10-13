@@ -1,26 +1,47 @@
 import QRCode from 'qrcode';
 import React from 'react';
 
+import PictureAsPdf from '@mui/icons-material/PictureAsPdf';
+import SmartDisplay from '@mui/icons-material/SmartDisplay';
+import VideoFile from '@mui/icons-material/VideoFile';
 import VideocamIcon from '@mui/icons-material/Videocam';
-import Backdrop from '@mui/material/Backdrop';
-import Button from '@mui/material/Button';
-import CircularProgress from '@mui/material/CircularProgress';
-import Typography from '@mui/material/Typography';
+import { Box, Backdrop, Button, CircularProgress, Typography } from '@mui/material';
+import type { Theme as MaterialTheme } from '@mui/material/styles';
 
 import { Inverted } from 'src/components/Inverted';
 import { Trans } from 'src/components/Trans';
+import { DiaporamaPlayer } from 'src/components/create/DiaporamaPlayer';
 import { Steps } from 'src/components/create/Steps';
 import { ThemeLink } from 'src/components/create/ThemeLink';
 import { useTranslation } from 'src/i18n/useTranslation';
 import { UserServiceContext } from 'src/services/UserService';
 import { ProjectServiceContext } from 'src/services/useProject';
+import { getQuestions } from 'src/util';
+
+const styles = {
+    verticalLine: {
+        backgroundColor: (theme: MaterialTheme) => theme.palette.secondary.main,
+        flex: 1,
+        width: '1px',
+        margin: '0.2rem 0',
+    },
+    horizontalLine: {
+        backgroundColor: (theme: MaterialTheme) => theme.palette.secondary.main,
+        flex: 1,
+        height: '1px',
+        margin: '2rem 1rem',
+    },
+    secondaryColor: {
+        color: (theme: MaterialTheme) => theme.palette.secondary.main,
+    },
+};
 
 const ToCamera: React.FunctionComponent = () => {
     const { t, currentLocale } = useTranslation();
     const { axiosLoggedRequest } = React.useContext(UserServiceContext);
     const { project } = React.useContext(ProjectServiceContext);
-    const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
     const [isLoading, setIsLoading] = React.useState<boolean>(false);
+    const questions = getQuestions(project);
 
     const generatePDF = async () => {
         if (project === null || project.theme === null || project.scenario === null) {
@@ -46,17 +67,8 @@ const ToCamera: React.FunctionComponent = () => {
             window.open(`/static/pdf/${response.data.url}`);
         }
     };
-
-    // generate qr-code
-    React.useEffect(() => {
-        if (canvasRef.current === null || project.id === null) {
-            return;
-        }
-        const url = `${process.env.NEXT_PUBLIC_HOST_URL}/create/3-storyboard-and-filming-schedule?project=${project.id}`;
-        QRCode.toCanvas(canvasRef.current, url, (error?: Error) => {
-            if (error) console.error(error);
-        });
-    }, [project.id]);
+    const generateMLT = async () => {};
+    const generateMP4 = async () => {};
 
     return (
         <div>
@@ -91,22 +103,42 @@ const ToCamera: React.FunctionComponent = () => {
                 <Typography variant="h2" style={{ marginBottom: '1rem' }}>
                     {t('part6_subtitle1')}
                 </Typography>
-                <div className="text-center">
-                    <Button className="mobile-full-width" variant="contained" color="secondary" onClick={generatePDF}>
-                        {t('part6_pdf_button')}
-                    </Button>
+
+                <div>
+                    <DiaporamaPlayer questions={questions} mountingPlans={false} questionIndex={0} videoOnly={true} />
                 </div>
 
-                {project.id !== null && (
-                    <>
-                        <Typography variant="h2" style={{ margin: '1rem 0' }}>
-                            {t('part6_subtitle2')}
-                        </Typography>
-                        <div className="text-center">
-                            <canvas ref={canvasRef} />
-                        </div>
-                    </>
-                )}
+                <Typography variant="h2" style={{ marginBottom: '1rem', marginTop: '50px' }}>
+                    {t('part6_subtitle2')}
+                </Typography>
+                <div className="text-center" style={{ maxWidth: '400px', margin: 'auto', display: 'flex', flexDirection: 'column' }}>
+                    <Button className="full-width" variant="contained" color="secondary" onClick={generateMP4}>
+                        <SmartDisplay style={{ marginRight: '10px' }} />
+                        {t('part6_mp4_button')}
+                    </Button>
+                    <div className="or-horizontal-divider">
+                        <Box sx={styles.verticalLine} />
+                        <Box component="span" sx={styles.secondaryColor}>
+                            {t('or').toUpperCase()}
+                        </Box>
+                        <Box sx={styles.verticalLine} />
+                    </div>
+                    <Button className="full-width" variant="contained" color="secondary" onClick={generatePDF}>
+                        <PictureAsPdf style={{ marginRight: '10px' }} />
+                        {t('part6_pdf_button')}
+                    </Button>
+                    <div className="or-horizontal-divider">
+                        <Box sx={styles.verticalLine} />
+                        <Box component="span" sx={styles.secondaryColor}>
+                            {t('or').toUpperCase()}
+                        </Box>
+                        <Box sx={styles.verticalLine} />
+                    </div>
+                    <Button className="full-width" variant="contained" color="secondary" onClick={generateMLT}>
+                        <VideoFile style={{ marginRight: '10px' }} />
+                        {t('part6_mlt_button')}
+                    </Button>
+                </div>
             </div>
         </div>
     );
