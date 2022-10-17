@@ -49,13 +49,14 @@ export function getDefaultDirectives(): { [directiveName: string]: Iterable<stri
         'block-all-mixed-content': [],
         'font-src': ["'self'"],
         'frame-ancestors': ["'self'"],
+        'frame-src': ['https:'],
         'connect-src': ["'self'", 'http:', 'https:', 'data:', 'blob:'],
         'img-src': ["'self'", 'http:', 'https:', 'data:', 'blob:'],
         'object-src': ["'none'"],
-        'script-src': ["'self'"],
+        'script-src': ["'self'", 'https:', 'blob:'],
         'script-src-attr': ["'none'"],
         'style-src': ["'self'", "'unsafe-inline'"],
-        'media-src': ['*', 'data:'],
+        'media-src': ['*', 'data:', 'https:', 'blob:'],
         'upgrade-insecure-requests': [],
     };
 }
