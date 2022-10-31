@@ -5477,11 +5477,13 @@ __metadata:
     helmet: ^5.0.2
     json-stable-stringify: ^1.0.1
     jsonwebtoken: ^8.5.1
+    mlt: ^1.1.0
     morgan: ^1.10.0
     multer: ^1.4.4
     mysql2: ^2.3.3
     next: ^12.1.0
     next-pwa: ^5.4.4
+    node-html-to-image: ^3.2.4
     nodemailer: ^6.7.2
     nodemon: 2.0.15
     notistack: ^2.0.3
@@ -6208,6 +6210,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"debug@npm:4.3.4, debug@npm:^4.3.3":
+  version: 4.3.4
+  resolution: "debug@npm:4.3.4"
+  dependencies:
+    ms: 2.1.2
+  peerDependenciesMeta:
+    supports-color:
+      optional: true
+  checksum: 3dbad3f94ea64f34431a9cbf0bafb61853eda57bff2880036153438f50fb5a84f27683ba0d8e5426bf41a8c6ff03879488120cf5b3a761e77953169c0600a708
+  languageName: node
+  linkType: hard
+
 "debug@npm:^3.2.7":
   version: 3.2.7
   resolution: "debug@npm:3.2.7"
@@ -6405,6 +6419,13 @@ __metadata:
   version: 0.0.960912
   resolution: "devtools-protocol@npm:0.0.960912"
   checksum: e14bb94e2d64a4279b53789f6526e7ae1f03e2a0f5650450d97735b91f12aa501bed185b9b97c902063ac9b74e78df25ed973c12c7968ed8163f438d2dec9944
+  languageName: node
+  linkType: hard
+
+"devtools-protocol@npm:0.0.981744":
+  version: 0.0.981744
+  resolution: "devtools-protocol@npm:0.0.981744"
+  checksum: 609901bff551f5fbe98e272bdda7269de527e28fab138de371ffd7e9a06fa68ca2eec2e961bd1cd6fd98223ccee562c55b7ce3235d4e37cc8d85d6681bc45593
   languageName: node
   linkType: hard
 
@@ -7904,6 +7925,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"handlebars@npm:^4.5.3":
+  version: 4.7.7
+  resolution: "handlebars@npm:4.7.7"
+  dependencies:
+    minimist: ^1.2.5
+    neo-async: ^2.6.0
+    source-map: ^0.6.1
+    uglify-js: ^3.1.4
+    wordwrap: ^1.0.0
+  dependenciesMeta:
+    uglify-js:
+      optional: true
+  bin:
+    handlebars: bin/handlebars
+  checksum: 1e79a43f5e18d15742977cb987923eab3e2a8f44f2d9d340982bcb69e1735ed049226e534d7c1074eaddaf37e4fb4f471a8adb71cddd5bc8cf3f894241df5cee
+  languageName: node
+  linkType: hard
+
 "has-bigints@npm:^1.0.1":
   version: 1.0.1
   resolution: "has-bigints@npm:1.0.1"
@@ -8089,6 +8128,16 @@ __metadata:
     agent-base: 6
     debug: 4
   checksum: 165bfb090bd26d47693597661298006841ab733d0c7383a8cb2f17373387a94c903a3ac687090aa739de05e379ab6f868bae84ab4eac288ad85c328cd1ec9e53
+  languageName: node
+  linkType: hard
+
+"https-proxy-agent@npm:5.0.1":
+  version: 5.0.1
+  resolution: "https-proxy-agent@npm:5.0.1"
+  dependencies:
+    agent-base: 6
+    debug: 4
+  checksum: 571fccdf38184f05943e12d37d6ce38197becdd69e58d03f43637f7fa1269cf303a7d228aa27e5b27bbd3af8f09fd938e1c91dcfefff2df7ba77c20ed8dfc765
   languageName: node
   linkType: hard
 
@@ -9716,6 +9765,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"mlt@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "mlt@npm:1.1.0"
+  dependencies:
+    node-uuid: 1.3.x
+    underscore: 1.3.x
+    xmlbuilder: 0.3.x
+  checksum: 7ceb35076c71dae00e6b21cc26999056d13e2761c86150857541f69a04d98dc2ac96c6dc20d3f69523a04108e21907fc4b8b4a434fe321b83a4144e29dd45b48
+  languageName: node
+  linkType: hard
+
 "morgan@npm:^1.10.0":
   version: 1.10.0
   resolution: "morgan@npm:1.10.0"
@@ -9886,6 +9946,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"neo-async@npm:^2.6.0":
+  version: 2.6.2
+  resolution: "neo-async@npm:2.6.2"
+  checksum: deac9f8d00eda7b2e5cd1b2549e26e10a0faa70adaa6fdadca701cc55f49ee9018e427f424bac0c790b7c7e2d3068db97f3093f1093975f2acb8f8818b936ed9
+  languageName: node
+  linkType: hard
+
 "next-pwa@npm:^5.4.4":
   version: 5.4.4
   resolution: "next-pwa@npm:5.4.4"
@@ -10025,6 +10092,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"node-html-to-image@npm:^3.2.4":
+  version: 3.2.4
+  resolution: "node-html-to-image@npm:3.2.4"
+  dependencies:
+    handlebars: ^4.5.3
+    puppeteer: ^13.1.1
+    puppeteer-cluster: ^0.23.0
+  checksum: 4e47cc609b6b9b7f62f1f7e208e1d96105db934514026b125e0cd81cecd75dbc03c1b78f4ee34e1f842444c6e23f88453b8c5ae55a540f4a785ac9ae14726f6a
+  languageName: node
+  linkType: hard
+
 "node-releases@npm:^2.0.1":
   version: 2.0.1
   resolution: "node-releases@npm:2.0.1"
@@ -10036,6 +10114,13 @@ __metadata:
   version: 2.0.2
   resolution: "node-releases@npm:2.0.2"
   checksum: da858bf86b4d512842379749f5a5e4196ddab05ba18ffcf29f05bf460beceaca927f070f4430bb5046efec18941ddbc85e4c5fdbb83afc28a38dd6069a2f255e
+  languageName: node
+  linkType: hard
+
+"node-uuid@npm:1.3.x":
+  version: 1.3.3
+  resolution: "node-uuid@npm:1.3.3"
+  checksum: eee63ef5a6894b1657f8b005df71bbd6fcb5330a0c15ffcc1e92fe977609edecc7df2cbf1f12e77f9ac894a46eff18076f5f0cfb31fc29a01ce06adc1da40eed
   languageName: node
   linkType: hard
 
@@ -11058,6 +11143,37 @@ __metadata:
   dependencies:
     escape-goat: ^2.0.0
   checksum: 49529e50372ffdb0cccf0efa0f3b3cb0a2c77805d0d9cc2725bd2a0f6bb414631e61c93a38561b26be1259550b7bb6c2cb92315aa09c8bf93f3bdcb49f2b2fb7
+  languageName: node
+  linkType: hard
+
+"puppeteer-cluster@npm:^0.23.0":
+  version: 0.23.0
+  resolution: "puppeteer-cluster@npm:0.23.0"
+  dependencies:
+    debug: ^4.3.3
+  peerDependencies:
+    puppeteer: ">=1.5.0"
+  checksum: 6ce1faca1f98d22a01c1bf3f0b749e1e72a00700a1a6c3340e17f2170a2239f6ffcc04a93ca538bc9aeb7a179fc9736431f8131934cfbaa07611bb5b1736c8f6
+  languageName: node
+  linkType: hard
+
+"puppeteer@npm:^13.1.1":
+  version: 13.7.0
+  resolution: "puppeteer@npm:13.7.0"
+  dependencies:
+    cross-fetch: 3.1.5
+    debug: 4.3.4
+    devtools-protocol: 0.0.981744
+    extract-zip: 2.0.1
+    https-proxy-agent: 5.0.1
+    pkg-dir: 4.2.0
+    progress: 2.0.3
+    proxy-from-env: 1.1.0
+    rimraf: 3.0.2
+    tar-fs: 2.1.1
+    unbzip2-stream: 1.4.3
+    ws: 8.5.0
+  checksum: 4062b3ac3330e70d58095c1e0c5a46cada39a3fc5608e0e0e204448a400aef4d785a3b21d9e7733b2b2dc8cf686a476abf016f05d2e9108b3753dd41d62b9d1c
   languageName: node
   linkType: hard
 
@@ -13153,6 +13269,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"uglify-js@npm:^3.1.4":
+  version: 3.17.3
+  resolution: "uglify-js@npm:3.17.3"
+  bin:
+    uglifyjs: bin/uglifyjs
+  checksum: 2650b2e0385fe6bf68bc0b7746028fd004bbe839447c28a59f8a9e458187e897a5057900cb715b3be4cf7cf3f1d10217198210c5c23c0bffcb20feca2de5bb17
+  languageName: node
+  linkType: hard
+
 "uid-safe@npm:2.1.5":
   version: 2.1.5
   resolution: "uid-safe@npm:2.1.5"
@@ -13188,6 +13313,13 @@ __metadata:
   version: 2.0.5
   resolution: "undefsafe@npm:2.0.5"
   checksum: f42ab3b5770fedd4ada175fc1b2eb775b78f609156f7c389106aafd231bfc210813ee49f54483d7191d7b76e483bc7f537b5d92d19ded27156baf57592eb02cc
+  languageName: node
+  linkType: hard
+
+"underscore@npm:1.3.x":
+  version: 1.3.3
+  resolution: "underscore@npm:1.3.3"
+  checksum: b77b5a24c72a573cb7a9ecd517b80cd2abcc583a54ce8867d28364bf32e8f6591845f09ac3ee14236558e2577da1c04bd5992f1db1d6bf893d61e17f71c29010
   languageName: node
   linkType: hard
 
@@ -13579,6 +13711,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"wordwrap@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "wordwrap@npm:1.0.0"
+  checksum: 2a44b2788165d0a3de71fd517d4880a8e20ea3a82c080ce46e294f0b68b69a2e49cff5f99c600e275c698a90d12c5ea32aff06c311f0db2eb3f1201f3e7b2a04
+  languageName: node
+  linkType: hard
+
 "workbox-background-sync@npm:6.4.2":
   version: 6.4.2
   resolution: "workbox-background-sync@npm:6.4.2"
@@ -13866,6 +14005,13 @@ __metadata:
     sax: ">=0.6.0"
     xmlbuilder: ~11.0.0
   checksum: ca0cf2dfbf6deeaae878a891c8fbc0db6fd04398087084edf143cdc83d0509ad0fe199b890f62f39c4415cf60268a27a6aed0d343f0658f8779bd7add690fa98
+  languageName: node
+  linkType: hard
+
+"xmlbuilder@npm:0.3.x":
+  version: 0.3.11
+  resolution: "xmlbuilder@npm:0.3.11"
+  checksum: c9d696247b01cf213e995ad1e24d486e1a62571c2557fd2d1be12e2fb7a8aca0b5931756d884cf261648117c66f5d79e0067799aee2b8baf1769f26a8057a626
   languageName: node
   linkType: hard
 
