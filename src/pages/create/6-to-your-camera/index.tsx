@@ -1,4 +1,3 @@
-import QRCode from 'qrcode';
 import React from 'react';
 
 import PictureAsPdf from '@mui/icons-material/PictureAsPdf';
@@ -43,6 +42,24 @@ const ToCamera: React.FunctionComponent = () => {
     const [isLoading, setIsLoading] = React.useState<boolean>(false);
     const questions = getQuestions(project);
 
+    const getData = () => {
+        if (project === null || project.theme === null || project.scenario === null) {
+            return;
+        }
+        return {
+            projectId: project.id,
+            themeId: project.theme.id,
+            themeName: project.theme.names[currentLocale] || project.theme.names.fr || '',
+            scenarioId: project.scenario.id,
+            scenarioName: project.scenario.name,
+            scenarioDescription: '',
+            questions: project.questions,
+            languageCode: currentLocale,
+            sound: project.sound,
+            musicBeginTime: project.musicBeginTime,
+        };
+    };
+
     const generatePDF = async () => {
         if (project === null || project.theme === null || project.scenario === null) {
             return;
@@ -51,23 +68,26 @@ const ToCamera: React.FunctionComponent = () => {
         const response = await axiosLoggedRequest({
             method: 'POST',
             url: '/projects/pdf',
-            data: {
-                projectId: project.id,
-                themeId: project.theme.id,
-                themeName: project.theme.names[currentLocale] || project.theme.names.fr || '',
-                scenarioId: project.scenario.id,
-                scenarioName: project.scenario.name,
-                scenarioDescription: '',
-                questions: project.questions,
-                languageCode: currentLocale,
-            },
+            data: getData(),
         });
         setIsLoading(false);
         if (!response.error) {
             window.open(`/static/pdf/${response.data.url}`);
         }
     };
-    const generateMLT = async () => {};
+    const generateMLT = async () => {
+        if (project === null || project.theme === null || project.scenario === null) {
+            return;
+        }
+        setIsLoading(true);
+        const response = await axiosLoggedRequest({
+            method: 'POST',
+            url: '/projects/mlt',
+            data: getData(),
+        });
+        setIsLoading(false);
+        console.log(response);
+    };
     const generateMP4 = async () => {};
 
     return (

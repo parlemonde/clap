@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from 'express';
 import MLT from 'mlt';
-import nodeHtmlToImage from 'node-html-to-image';
 import path from 'path';
+import puppeteer from 'puppeteer';
 import { getRepository, getManager } from 'typeorm';
 
 import { Image } from '../entities/image';
@@ -20,8 +20,8 @@ import { htmlToPDF, PDF } from '../pdf';
 import { logger } from '../utils/logger';
 import { Controller, post, put, get, del, tempSound, oneSound } from './controller';
 
-type planFromBody = { id?: number | string; url?: string; description?: string };
-type QuestionFromBody = { question?: string; id?: number | string; plans?: Array<planFromBody>; title?: Title };
+type planFromBody = { id?: number | string; url?: string; description?: string; duration: number };
+type QuestionFromBody = { question?: string; id?: number | string; plans?: Array<planFromBody>; title?: Title; sound?: Sound };
 type QuestionsFromBody = Array<QuestionFromBody>;
 
 function getQuestionsFromBody(req: Request): Question[] {
@@ -34,6 +34,7 @@ function getQuestionsFromBody(req: Request): Question[] {
             const plan = new Plan();
             plan.url = p.url || '';
             plan.description = p.description || '';
+            plan.duration = p.duration;
             question.plans.push(plan);
         }
         if (q.title != null) {
@@ -42,6 +43,12 @@ function getQuestionsFromBody(req: Request): Question[] {
             title.style = q.title.style;
             title.text = q.title.text;
             question.title = title;
+        }
+        if (q.sound != null) {
+            const sound = new Sound();
+            sound.path = q.sound.path;
+            sound.volume = q.sound.volume;
+            question.sound = sound;
         }
         questions.push(question);
     }
@@ -136,18 +143,7 @@ export class ProjectController extends Controller {
 
     @post({ path: '/mlt' })
     public async getProjectMLT(req: Request, res: Response): Promise<void> {
-        const project: Project | undefined = await getRepository(Project)
-            .createQueryBuilder('project')
-            .where('project.id = :id', { id: req.body.projectId })
-            .leftJoinAndSelect('project.questions', 'question')
-            .leftJoinAndSelect('question.plans', 'plans')
-            .leftJoinAndSelect('question.title', 'title')
-            .leftJoinAndSelect('question.sound', 'questionSound')
-            .leftJoinAndSelect('project.sound', 'sound')
-            .getOne();
-        if (project == null) {
-            throw new AppError('Invalid data', ErrorCode.INVALID_DATA);
-        }
+        const questions: Question[] = getQuestionsFromBody(req);
 
         const mlt = new MLT();
         const multitrack = new MLT.Multitrack();
@@ -156,7 +152,7 @@ export class ProjectController extends Controller {
         let totalLength = 0;
         totalLength++;
 
-        project.questions.map(async (q) => {
+        questions.map(async (q) => {
             let duration = 0;
 
             if (q.title != null) {
@@ -169,28 +165,28 @@ export class ProjectController extends Controller {
                               left: '35',
                           }
                         : JSON.parse(q.title.style);
-                const html = `<html>
-                    <head>
-                    <style>
-                        body {
-                            width: 2480px;
-                            height: 3508px;
-                            font-family: ${style.fontFamily}
-                        }
-                    </style>
-                    </head>
-                    <body>
-                        <h1 style="position: absolute; top: ${style.top}%; left: ${style.left}%;">${q.title.text}</h1>
-                    </body>
-                </html>`;
-                await nodeHtmlToImage({
-                    output: path.join(__dirname, '../static/images/', 'title.png'),
-                    html,
+                const text = new MLT.Producer.Text({
+                    text: q.title.text,
+                    color: '0x000000',
+                    background: '0xFFFFFF',
+                    family: style.fontFamily,
+                    size: '30',
                 });
-                console.log(path.join(__dirname, '../static/images/', 'title.png'));
+                mlt.push(text);
+                const playlist = new MLT.Playlist();
+                playlist.entry({
+                    producer: text,
+                    length: q.title.duration,
+                });
+                duration += q.title.duration;
+                mlt.push(playlist);
+                multitrack.addTrack(new MLT.Multitrack.Track(playlist));
             }
+            console.log('hey');
             q.plans.map((p) => {
+                console.log('ho');
                 const producer = new MLT.Producer.Image({ source: p.url });
+                mlt.push(producer);
                 const playlist = new MLT.Playlist();
                 playlist.entry({
                     producer: producer,
@@ -214,8 +210,8 @@ export class ProjectController extends Controller {
         mlt.push(voicesOff);
         multitrack.addTrack(new MLT.Multitrack.Track(voicesOff));
 
-        if (project.sound != null) {
-            const bgMusic = new MLT.Producer.Audio({ source: project.sound });
+        if (req.body.sound != null) {
+            const bgMusic = new MLT.Producer.Audio({ source: req.body.sound.path });
             mlt.push(bgMusic);
             const music = new MLT.Playlist().entry({
                 producer: bgMusic,
@@ -228,7 +224,7 @@ export class ProjectController extends Controller {
         mlt.push(tractor.push(multitrack));
         console.log(mlt.toString());
 
-        res.sendJSON({ mlt });
+        res.sendJSON({ mlt: mlt.toString() });
     }
 
     @get({ userType: UserType.CLASS })
