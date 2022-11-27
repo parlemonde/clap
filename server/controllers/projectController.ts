@@ -1,7 +1,4 @@
 import type { Request, Response, NextFunction } from 'express';
-import MLT from 'mlt';
-import path from 'path';
-import puppeteer from 'puppeteer';
 import { getRepository, getManager } from 'typeorm';
 
 import { Image } from '../entities/image';
@@ -18,6 +15,7 @@ import { deleteImage } from '../fileUpload';
 import { AppError, ErrorCode } from '../middlewares/handleErrors';
 import { htmlToPDF, PDF } from '../pdf';
 import { logger } from '../utils/logger';
+import { objToXml } from '../xml';
 import { Controller, post, put, get, del, tempSound, oneSound } from './controller';
 
 type planFromBody = { id?: number | string; url?: string; description?: string; duration: number };
@@ -145,86 +143,9 @@ export class ProjectController extends Controller {
     public async getProjectMLT(req: Request, res: Response): Promise<void> {
         const questions: Question[] = getQuestionsFromBody(req);
 
-        const mlt = new MLT();
-        const multitrack = new MLT.Multitrack();
-        const tractor = new MLT.Tractor();
-        const voicesOff = new MLT.Playlist();
-        let totalLength = 0;
-        totalLength++;
+        const mlt = objToXml(questions);
 
-        questions.map(async (q) => {
-            let duration = 0;
-
-            if (q.title != null) {
-                duration += q.title.duration;
-                const style =
-                    q.title.style === ''
-                        ? {
-                              fontFamily: 'serif',
-                              top: '10',
-                              left: '35',
-                          }
-                        : JSON.parse(q.title.style);
-                const text = new MLT.Producer.Text({
-                    text: q.title.text,
-                    color: '0x000000',
-                    background: '0xFFFFFF',
-                    family: style.fontFamily,
-                    size: '30',
-                });
-                mlt.push(text);
-                const playlist = new MLT.Playlist();
-                playlist.entry({
-                    producer: text,
-                    length: q.title.duration,
-                });
-                duration += q.title.duration;
-                mlt.push(playlist);
-                multitrack.addTrack(new MLT.Multitrack.Track(playlist));
-            }
-            console.log('hey');
-            q.plans.map((p) => {
-                console.log('ho');
-                const producer = new MLT.Producer.Image({ source: p.url });
-                mlt.push(producer);
-                const playlist = new MLT.Playlist();
-                playlist.entry({
-                    producer: producer,
-                    length: p.duration,
-                });
-                duration += p.duration;
-                mlt.push(playlist);
-                multitrack.addTrack(new MLT.Multitrack.Track(playlist));
-            });
-            if (q.sound != null) {
-                const voiceOff = new MLT.Producer.Audio({ source: q.sound.path });
-                mlt.push(voiceOff);
-                voicesOff.entry({
-                    producer: voiceOff,
-                    length: duration,
-                });
-            } else {
-                voicesOff.blank(duration);
-            }
-        });
-        mlt.push(voicesOff);
-        multitrack.addTrack(new MLT.Multitrack.Track(voicesOff));
-
-        if (req.body.sound != null) {
-            const bgMusic = new MLT.Producer.Audio({ source: req.body.sound.path });
-            mlt.push(bgMusic);
-            const music = new MLT.Playlist().entry({
-                producer: bgMusic,
-                length: totalLength,
-            });
-            mlt.push(music);
-            multitrack.addTrack(new MLT.Multitrack.Track(music));
-        }
-
-        mlt.push(tractor.push(multitrack));
-        console.log(mlt.toString());
-
-        res.sendJSON({ mlt: mlt.toString() });
+        res.sendJSON({ mlt });
     }
 
     @get({ userType: UserType.CLASS })

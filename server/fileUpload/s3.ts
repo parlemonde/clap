@@ -117,6 +117,7 @@ export class AwsS3 extends Provider {
         });
 
         this.addPublicReadPolicy('images');
+        this.addPublicReadPolicy('files');
     }
 
     public async uploadImage(filename: string, filePath: string): Promise<string> {

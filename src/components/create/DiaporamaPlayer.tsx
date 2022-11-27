@@ -102,8 +102,17 @@ export const DiaporamaPlayer: React.FunctionComponent<DiaporamaPlayerProps> = ({
                 }
             }
         },
-        [audio, getBeginTime, getCurrentSound, spentTime],
+        [audio, getBeginTime, getCurrentSound, spentTime, voiceOffAudio],
     );
+
+    React.useEffect(() => {
+        const sound = getCurrentSound();
+        if (sound != null && audio == null && sound.path != '') {
+            const a = new Audio(sound.path);
+            a.currentTime = (spentTime - getBeginTime()) / 1000;
+            setAudio(a);
+        }
+    }, [getCurrentSound, setAudio, getBeginTime, spentTime, audio]);
 
     const getCurrentPlan = (spent: number) => {
         let time = 0;
@@ -285,7 +294,7 @@ export const DiaporamaPlayer: React.FunctionComponent<DiaporamaPlayerProps> = ({
     };
 
     const getAudioDuration = () => {
-        if (audio == null || mountingTableRef.current == null) return 0;
+        if (audio == null || mountingTableRef.current == null) return 1000;
         return (audio.duration * 1000 * (mountingTableRef.current as HTMLDivElement).getBoundingClientRect().width) / getTotalDuration();
     };
 

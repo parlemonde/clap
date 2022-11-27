@@ -99,7 +99,7 @@ const PlanTitle: React.FunctionComponent = () => {
                 </div>
                 <div>
                     <TextField
-                        value={question?.voiceOff}
+                        value={question?.voiceOff ? question?.voiceOff : ''}
                         onChange={handleVoiceOffChange}
                         onBlur={handleVoiceOffBlur}
                         required
