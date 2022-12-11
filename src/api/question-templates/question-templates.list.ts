@@ -24,7 +24,7 @@ export const getQuestionTemplates = async ({ scenarioId, languageCode }: GETPara
 };
 
 const getQuestionTemplatesForQuery: QueryFunction<QuestionTemplate[], GETQueryKey> = ({ queryKey }) => {
-    const [_, params] = queryKey;
+    const [, params] = queryKey;
     return getQuestionTemplates(params);
 };
 

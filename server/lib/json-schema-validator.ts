@@ -11,7 +11,6 @@ const sendInvalidDataError = (validateFunction: ValidateFunction<unknown>): void
     const errors = validateFunction.errors as DefinedError[];
     const errorMsgs = [];
     for (const error of errors) {
-        console.log(error);
         errorMsgs.push(error.schemaPath + ' ' + (error.message || ''));
     }
     throw new AppError('badRequest', errorMsgs);
