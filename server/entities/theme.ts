@@ -1,7 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToOne, JoinColumn, OneToMany } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn, DeleteDateColumn, OneToMany } from 'typeorm';
 
 import type { Theme as ThemeInterface } from '../../types/models/theme.type';
-import { Image } from './image';
 import { Scenario } from './scenario';
 import { User } from './user';
 
@@ -16,19 +15,22 @@ export class Theme implements ThemeInterface {
     @Column({ default: false })
     public isDefault: boolean;
 
-    @Column({ default: false })
-    public isArchived: boolean;
+    @Column({ type: 'varchar', length: 4000, nullable: true, default: null })
+    public imageUrl: string | null;
 
-    @OneToOne(() => Image, { onDelete: 'SET NULL' })
-    @JoinColumn()
-    public image: Image;
+    @ManyToOne(() => User, { onDelete: 'CASCADE' })
+    @JoinColumn({ name: 'userId' })
+    public user?: User;
 
-    @ManyToOne(() => User)
-    public user: User | null;
+    @Column({ nullable: true })
+    public userId: number | null;
 
     @Column({ type: 'json' })
-    public names: { [key: string]: string };
+    public names: Record<string, string>;
 
     @OneToMany(() => Scenario, (scenario: Scenario) => scenario.theme)
-    public scenarios: Scenario[];
+    public scenarios?: Scenario[];
+
+    @DeleteDateColumn({ select: false })
+    public deleteDate?: Date;
 }

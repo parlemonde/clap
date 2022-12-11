@@ -1,17 +1,23 @@
 import type { Question } from './question.type';
 import type { Scenario } from './scenario.type';
-import type { Sound } from './sound.type';
 import type { Theme } from './theme.type';
 import type { User } from './user.type';
 
 export interface Project {
     id: number;
     title: string;
-    date: Date;
-    user: User | null;
-    theme: Theme | null;
-    scenario: Scenario | null;
-    questions: Question[] | null;
+    createDate: string; // iso date string
+    updateDate: string; // iso date string
+    languageCode: string;
+    userId: number | null;
+    user?: User;
+    themeId: number | string;
+    theme?: Theme;
+    scenarioId: number | string;
+    scenario?: Scenario;
+    questions?: Question[];
+    // --- slideshow attributes ---
     musicBeginTime: number;
-    sound: Sound | null;
+    soundUrl: string | null;
+    soundVolume: number | null;
 }

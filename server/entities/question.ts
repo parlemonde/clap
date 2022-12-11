@@ -1,10 +1,9 @@
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany, getRepository, OneToOne, JoinColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 import type { Question as QuestionInterface } from '../../types/models/question.type';
+import type { Title } from '../../types/models/title.type';
 import { Plan } from './plan';
 import { Project } from './project';
-import { Sound } from './sound';
-import { Title } from './title';
 
 @Entity()
 export class Question implements QuestionInterface {
@@ -14,48 +13,31 @@ export class Question implements QuestionInterface {
     @Column({ type: 'varchar', length: 280 })
     public question: string;
 
-    @Column({ default: false })
-    public isDefault: boolean;
-
-    @Column()
-    public scenarioId: number;
-
-    @Column({ type: 'varchar', length: 2 })
-    public languageCode: string;
-
     @Column({ default: 0 })
     public index: number;
 
-    @OneToMany(() => Plan, (plan) => plan.question)
+    @ManyToOne(() => Project, { onDelete: 'CASCADE' })
+    @JoinColumn({ name: 'projectId' })
+    public project?: Project;
+
+    @Column({ nullable: false })
+    public projectId: number;
+
+    @OneToMany(() => Plan, (plan) => plan.question, { cascade: true })
     public plans: Plan[];
 
-    @ManyToOne(() => Project, (project) => project.questions, { onDelete: 'CASCADE' })
-    public project: Project;
+    @Column({ type: 'json', nullable: true })
+    public title: Title | null;
 
-    public async getPlans(): Promise<Question> {
-        this.plans = await getRepository(Plan).find({ where: { question: { id: this.id } }, order: { index: 'ASC' }, relations: ['image'] });
-        for (const plan of this.plans) {
-            plan.url = plan.image ? plan.image.path : null;
-        }
-        return this;
-    }
+    @Column({ type: 'text', nullable: true })
+    public voiceOff: string | null;
 
-    @Column({ type: 'varchar', length: 280, default: '' })
-    public voiceOff: string;
-
-    @Column({ default: 0 })
+    @Column({ nullable: false, default: 0 })
     public voiceOffBeginTime: number;
 
-    @OneToOne(() => Sound, { onDelete: 'SET NULL' })
-    @JoinColumn()
-    public sound: Sound | null;
+    @Column({ type: 'varchar', length: 200, nullable: true })
+    public soundUrl: string | null;
 
-    @OneToOne(() => Title, { onDelete: 'SET NULL' })
-    @JoinColumn()
-    public title: Title;
-
-    @Column({ nullable: true })
-    public duration: number;
-
-    public url?: string;
+    @Column({ type: 'integer', nullable: true })
+    public soundVolume: number | null;
 }

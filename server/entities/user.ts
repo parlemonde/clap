@@ -10,34 +10,25 @@ export class User implements UserInterface {
     @PrimaryGeneratedColumn()
     public id: number;
 
-    @Column({ type: 'varchar', length: 2 })
-    public languageCode: string;
-
-    // @Column({ type: "varchar", length: 50, default: "" })
-    // public managerLastName: string;
-
-    // @Column({ type: "varchar", length: 50, default: "" })
-    // public managerFirstName: string;
-
     @Column({ type: 'varchar', length: 150, unique: true })
     public email: string;
 
-    @Column({ type: 'varchar', length: 50, default: '' })
-    public level: string;
-
     @Column({ type: 'varchar', length: 50, unique: true })
     public pseudo: string;
+
+    @Column({ type: 'varchar', length: 2 })
+    public languageCode: string;
 
     @Column({ type: 'varchar', length: 200, default: '' })
     public school: string;
 
     @Column({ default: 0 })
-    public accountRegistration: number;
+    public accountRegistration: number; // 0 to 3 -> Ok, 4 -> Account blocked, 10 -> Account use PLM SSO
 
-    @Column({ type: 'varchar', length: 95 })
+    @Column({ type: 'varchar', length: 95, select: false })
     public passwordHash?: string;
 
-    @Column({ type: 'varchar', length: 95, default: '' })
+    @Column({ type: 'varchar', length: 95, default: '', select: false })
     public verificationHash?: string;
 
     @Column({
@@ -46,10 +37,4 @@ export class User implements UserInterface {
         default: 0,
     })
     type: UserType;
-
-    public userWithoutPassword(): User {
-        delete this.passwordHash;
-        delete this.verificationHash;
-        return this;
-    }
 }

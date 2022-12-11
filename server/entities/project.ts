@@ -1,38 +1,75 @@
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany, CreateDateColumn, OneToOne, JoinColumn } from 'typeorm';
+import {
+    Column,
+    Entity,
+    PrimaryGeneratedColumn,
+    ManyToOne,
+    OneToMany,
+    JoinColumn,
+    CreateDateColumn,
+    UpdateDateColumn,
+    DeleteDateColumn,
+} from 'typeorm';
 
+import type { Project as ProjectInterface } from '../../types/models/project.type';
 import { Question } from './question';
 import { Scenario } from './scenario';
-import { Sound } from './sound';
 import { Theme } from './theme';
 import { User } from './user';
 
 @Entity()
-export class Project {
+export class Project implements ProjectInterface {
     @PrimaryGeneratedColumn()
     public id: number;
 
-    @Column({ type: 'varchar', length: 200, nullable: true })
+    @Column({ type: 'varchar', length: 200, nullable: false })
     public title: string;
 
-    @Column({ nullable: true, default: 0 })
-    public musicBeginTime: number;
+    @Column({ type: 'varchar', length: 2 })
+    public languageCode: string;
 
     @CreateDateColumn()
-    public date: Date;
+    public createDate: string;
 
-    @ManyToOne(() => Theme)
-    public theme: Theme;
+    @UpdateDateColumn()
+    public updateDate: string;
 
-    @ManyToOne(() => Scenario)
+    @DeleteDateColumn({ select: false })
+    public deleteDate?: Date;
+
+    @Column({ type: 'varchar', length: 200, nullable: true })
+    public soundUrl: string | null;
+
+    @Column({ type: 'integer', nullable: true })
+    public soundVolume: number | null;
+
+    @Column({ default: 0, nullable: false })
+    public musicBeginTime: number;
+
+    // -- theme --
+    @ManyToOne(() => Theme, { onDelete: 'CASCADE' })
+    @JoinColumn({ name: 'themeId' })
+    public theme?: Theme;
+
+    @Column({ nullable: false })
+    public themeId: number;
+
+    // -- scenario --
+    @ManyToOne(() => Scenario, { onDelete: 'CASCADE' })
+    @JoinColumn({ name: 'scenarioId' })
     public scenario: Scenario;
 
-    @ManyToOne(() => User)
+    @Column({ nullable: false })
+    public scenarioId: number;
+
+    // -- user --
+    @ManyToOne(() => User, { onDelete: 'CASCADE' })
+    @JoinColumn({ name: 'userId' })
     public user: User;
 
-    @OneToMany(() => Question, (question) => question.project)
-    public questions: Question[];
+    @Column({ nullable: false })
+    public userId: number;
 
-    @OneToOne(() => Sound, { onDelete: 'SET NULL' })
-    @JoinColumn()
-    public sound: Sound | null;
+    // -- questions --
+    @OneToMany(() => Question, (question) => question.project, { cascade: true })
+    public questions?: Question[];
 }

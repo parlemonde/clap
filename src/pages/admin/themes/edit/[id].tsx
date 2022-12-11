@@ -1,14 +1,11 @@
 import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
 import React from 'react';
-import { useQueryClient } from 'react-query';
 
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import Backdrop from '@mui/material/Backdrop';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Button from '@mui/material/Button';
-import CircularProgress from '@mui/material/CircularProgress';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import Link from '@mui/material/Link';
@@ -16,45 +13,45 @@ import NoSsr from '@mui/material/NoSsr';
 import Select from '@mui/material/Select';
 import Typography from '@mui/material/Typography';
 
+import { useDeleteImageMutation } from 'src/api/images/images.delete';
+import { useCreateImageMutation } from 'src/api/images/images.post';
+import { useLanguages } from 'src/api/languages/languages.list';
+import { useTheme } from 'src/api/themes/themes.get';
+import { useUpdateThemeMutation } from 'src/api/themes/themes.put';
 import type { ImgCroppieRef } from 'src/components/ImgCroppie';
 import { ImgCroppie } from 'src/components/ImgCroppie';
-import { Modal } from 'src/components/Modal';
 import { AdminTile } from 'src/components/admin/AdminTile';
 import { NameInput } from 'src/components/admin/themes/NameInput';
-import { UserServiceContext } from 'src/services/UserService';
-import { useLanguages } from 'src/services/useLanguages';
-import { getQueryString } from 'src/util';
+import { Loader } from 'src/components/layout/Loader';
+import Modal from 'src/components/ui/Modal';
+import { useTranslation } from 'src/i18n/useTranslation';
+import { getQueryString } from 'src/utils/get-query-string';
 import type { Language } from 'types/models/language.type';
 import type { Theme } from 'types/models/theme.type';
 
-const AdminEditTheme: React.FunctionComponent = () => {
+const AdminEditTheme = () => {
     const router = useRouter();
+    const { t } = useTranslation();
     const { enqueueSnackbar } = useSnackbar();
-    const queryClient = useQueryClient();
-    const themeId = React.useMemo(() => parseInt(getQueryString(router.query.id), 10) || 0, [router]);
-    const { languages, isLoading } = useLanguages();
+
+    const themeId = React.useMemo(() => Number(getQueryString(router.query.id)) || 0, [router]);
+    const { theme } = useTheme(themeId, { enabled: themeId !== 0 });
+    const { languages } = useLanguages();
     const languagesMap = React.useMemo(
         () => languages.reduce((acc: { [key: string]: number }, language: Language, index: number) => ({ ...acc, [language.value]: index }), {}),
         [languages],
     );
-    const { axiosLoggedRequest } = React.useContext(UserServiceContext);
+
     const croppieRef = React.useRef<ImgCroppieRef | null>(null);
     const inputRef = React.useRef<HTMLInputElement>(null);
-    const [theme, setTheme] = React.useState<Theme>({
-        id: 0,
-        names: {
-            fr: '',
-        },
-        isDefault: true,
-        image: null,
-        order: 0,
+    const [themeNames, setThemeNames] = React.useState<Theme['names']>({
+        fr: '',
     });
     const [showModal, setShowModal] = React.useState<boolean>(false);
     const [languageToAdd, setLanguageToAdd] = React.useState<number>(0);
     const [selectedLanguages, setSelectedLanguages] = React.useState<number[]>([]);
     const [imageUrl, setImageUrl] = React.useState<string | null>(null);
-    const [imageBlob, setImageBlob] = React.useState<Blob | null>(null);
-    const [loading, setLoading] = React.useState<boolean>(false);
+    const [imageBlob, setImageBlob] = React.useState<Blob | null | undefined>(undefined); // undefined: no set. null: deleted.
     const availableLanguages = languages.filter((l, index) => l.value !== 'fr' && !selectedLanguages.includes(index));
 
     const goToPath = (path: string) => (event: React.MouseEvent) => {
@@ -62,29 +59,11 @@ const AdminEditTheme: React.FunctionComponent = () => {
         router.push(path);
     };
 
-    const getTheme = React.useCallback(async () => {
-        if (isLoading) {
-            return;
-        }
-        const response = await axiosLoggedRequest({
-            method: 'GET',
-            url: `/themes/${themeId}`,
-        });
-        if (response.error) {
-            router.push('/admin/themes');
-        } else {
-            setTheme(response.data);
-            setSelectedLanguages(
-                Object.keys(response.data.names)
-                    .filter((key) => key !== 'fr')
-                    .map((languageValue) => languagesMap[languageValue] || 0),
-            );
-        }
-    }, [axiosLoggedRequest, router, themeId, isLoading, languagesMap]);
-
     React.useEffect(() => {
-        getTheme().catch((e) => console.error(e));
-    }, [getTheme]);
+        if (theme) {
+            setThemeNames(theme.names);
+        }
+    }, [theme]);
 
     const onAddLanguage = () => {
         setShowModal(false);
@@ -96,15 +75,18 @@ const AdminEditTheme: React.FunctionComponent = () => {
         const s = [...selectedLanguages];
         s.splice(deleteIndex, 1);
         setSelectedLanguages(s);
-        const newTheme = { ...theme };
-        delete newTheme.names[language.value];
-        setTheme(newTheme);
+        setThemeNames((prev) => {
+            const newNames = { ...prev };
+            delete newNames[language.value];
+            return newNames;
+        });
     };
 
     const onNameInputChange = (languageValue: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
-        const newTheme = { ...theme };
-        newTheme.names[languageValue] = event.target.value;
-        setTheme(newTheme);
+        setThemeNames((prev) => ({
+            ...prev,
+            [languageValue]: event.target.value,
+        }));
     };
 
     const onImageInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -123,76 +105,73 @@ const AdminEditTheme: React.FunctionComponent = () => {
     };
     const onSetImageBlob = async () => {
         if (croppieRef.current) {
-            setTheme({ ...theme, image: null });
             setImageBlob(await croppieRef.current.getBlob());
         }
         onImageUrlClear();
     };
 
+    const createImageMutation = useCreateImageMutation();
+    const deleteImageMutation = useDeleteImageMutation();
+    const updateThemeMutation = useUpdateThemeMutation();
+    const isLoading = createImageMutation.isLoading || deleteImageMutation.isLoading || updateThemeMutation.isLoading;
+
     const onSubmit = async () => {
-        if (!theme.names.fr) {
+        if (!theme) {
+            enqueueSnackbar("Ce thème n'existe pas...", {
+                variant: 'error',
+            });
+            router.push('/admin/themes');
+            return;
+        }
+        if (!themeNames.fr) {
             enqueueSnackbar("Le thème 'fr' ne peut pas être vide.", {
                 variant: 'error',
             });
             return;
         }
-        setLoading(true);
+
+        // [1] delete previous image if any.
+        if (imageBlob !== undefined && theme.imageUrl && theme.imageUrl.startsWith('/api/images')) {
+            try {
+                await deleteImageMutation.mutateAsync({ imageUrl: theme.imageUrl });
+            } catch (err) {
+                // ignore delete error
+                console.error(err);
+            }
+        }
+
         try {
-            const response = await axiosLoggedRequest({
-                method: 'PUT',
-                url: `/themes/${themeId}`,
-                data: {
-                    ...theme,
-                },
+            // 1. Upload image.
+            let imageUrl: string | undefined = undefined;
+            if (imageBlob === null) {
+                imageUrl = '';
+            } else if (imageBlob !== undefined) {
+                const imageResponse = await createImageMutation.mutateAsync({ image: imageBlob });
+                imageUrl = imageResponse.url;
+            }
+
+            // 2. Update theme.
+            await updateThemeMutation.mutateAsync({
+                themeId,
+                names: themeNames,
+                imageUrl,
             });
-            if (response.error) {
-                enqueueSnackbar('Une erreur inconnue est survenue...', {
-                    variant: 'error',
-                });
-                console.error(response.error);
-                return;
-            }
-            const newTheme = response.data;
-            // replace image
-            if (imageBlob !== null) {
-                const bodyFormData = new FormData();
-                bodyFormData.append('image', imageBlob);
-                const resp2 = await axiosLoggedRequest({
-                    method: 'POST',
-                    url: `/themes/${newTheme.id}/image`,
-                    headers: { 'Content-Type': 'multipart/form-data' },
-                    data: bodyFormData,
-                });
-                if (resp2.error) {
-                    console.error(resp2.error);
-                }
-                // or delete the image
-            } else if (theme.image === null) {
-                const resp2 = await axiosLoggedRequest({
-                    method: 'DELETE',
-                    url: `/themes/${newTheme.id}/image`,
-                });
-                if (resp2.error) {
-                    console.error(resp2.error);
-                }
-            }
+
             enqueueSnackbar('Thème mis à jour avec succès!', {
                 variant: 'success',
             });
-            queryClient.invalidateQueries('themes');
             router.push('/admin/themes');
-        } catch (e) {
-            enqueueSnackbar('Une erreur inconnue est survenue...', {
+        } catch (err) {
+            console.error(err);
+            enqueueSnackbar(t('unknown_error'), {
                 variant: 'error',
             });
-            console.error(e);
         }
-        setLoading(false);
     };
 
     const imageSrc = React.useMemo(
-        () => (theme.image ? theme.image.path : imageBlob !== null ? window.URL.createObjectURL(imageBlob) : null),
-        [theme.image, imageBlob],
+        () => (imageBlob === null ? null : imageBlob !== undefined ? window.URL.createObjectURL(imageBlob) : theme?.imageUrl ?? null),
+        [theme, imageBlob],
     );
 
     return (
@@ -204,7 +183,7 @@ const AdminEditTheme: React.FunctionComponent = () => {
                     </Typography>
                 </Link>
                 <Typography variant="h1" color="textPrimary">
-                    {theme.names.fr}
+                    {themeNames.fr}
                 </Typography>
             </Breadcrumbs>
             <NoSsr>
@@ -213,11 +192,11 @@ const AdminEditTheme: React.FunctionComponent = () => {
                         <Typography variant="h3" color="textPrimary">
                             Noms du thème :
                         </Typography>
-                        <NameInput value={theme.names.fr || ''} onChange={onNameInputChange('fr')} />
+                        <NameInput value={themeNames.fr || ''} onChange={onNameInputChange('fr')} />
                         {selectedLanguages.map((languageIndex, index) => (
                             <NameInput
                                 key={languages[languageIndex].value}
-                                value={theme.names[languages[languageIndex].value] || ''}
+                                value={themeNames[languages[languageIndex].value] || ''}
                                 language={languages[languageIndex]}
                                 onDelete={onDeleteLanguage(index)}
                                 onChange={onNameInputChange(languages[languageIndex].value)}
@@ -257,7 +236,6 @@ const AdminEditTheme: React.FunctionComponent = () => {
                                 style={{ marginTop: '0.5rem', marginLeft: '0.5rem' }}
                                 onClick={() => {
                                     setImageBlob(null);
-                                    setTheme({ ...theme, image: null });
                                 }}
                             >
                                 {"Supprimer l'image"}
@@ -273,19 +251,10 @@ const AdminEditTheme: React.FunctionComponent = () => {
                 <Button variant="outlined" style={{ marginTop: '1rem' }} onClick={goToPath('/admin/themes')}>
                     Retour
                 </Button>
-                <Backdrop
-                    sx={{
-                        zIndex: (theme) => theme.zIndex.drawer + 1,
-                        color: '#fff',
-                    }}
-                    open={loading}
-                >
-                    <CircularProgress color="inherit" />
-                </Backdrop>
 
                 {/* language modal */}
                 <Modal
-                    open={showModal}
+                    isOpen={showModal}
                     onClose={() => {
                         setShowModal(false);
                     }}
@@ -323,7 +292,7 @@ const AdminEditTheme: React.FunctionComponent = () => {
 
                 {/* image modal */}
                 <Modal
-                    open={imageUrl !== null}
+                    isOpen={imageUrl !== null}
                     onClose={onImageUrlClear}
                     onConfirm={onSetImageBlob}
                     confirmLabel="Valider"
@@ -341,6 +310,7 @@ const AdminEditTheme: React.FunctionComponent = () => {
                     )}
                 </Modal>
             </NoSsr>
+            <Loader isLoading={isLoading} />
         </div>
     );
 };

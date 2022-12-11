@@ -1,32 +1,35 @@
+import { useSnackbar } from 'notistack';
 import React from 'react';
 
-import { Modal } from 'src/components/Modal';
+import { getUsersInvite } from 'src/api/users/users.invite';
 import { SharedLink } from 'src/components/SharedLink';
-import { UserServiceContext } from 'src/services/UserService';
+import Modal from 'src/components/ui/Modal';
+import { useFollowingRef } from 'src/hooks/useFollowingRef';
 
 interface InviteUserModalProps {
     open?: boolean;
     onClose?(): void;
 }
 
-export const InviteUserModal: React.FunctionComponent<InviteUserModalProps> = ({ open = false, onClose = () => {} }: InviteUserModalProps) => {
-    const { axiosLoggedRequest } = React.useContext(UserServiceContext);
+export const InviteUserModal = ({ open = false, onClose = () => {} }: InviteUserModalProps) => {
+    const { enqueueSnackbar } = useSnackbar();
     const [inviteCode, setInviteCode] = React.useState<string>('');
 
+    const onCLoseRef = useFollowingRef(onClose);
     const getInviteCode = React.useCallback(async () => {
         if (!open) {
             return;
         }
-        const response = await axiosLoggedRequest({
-            method: 'GET',
-            url: `/users/invite`,
-        });
-        if (response.error) {
-            onClose();
+        const { inviteCode } = await getUsersInvite();
+        if (inviteCode === null) {
+            onCLoseRef.current();
+            enqueueSnackbar('Une erreur inconnue est survenue...', {
+                variant: 'error',
+            });
             return;
         }
-        setInviteCode(response.data.inviteCode || '');
-    }, [axiosLoggedRequest, onClose, open]);
+        setInviteCode(inviteCode);
+    }, [enqueueSnackbar, onCLoseRef, open]);
 
     React.useEffect(() => {
         getInviteCode().catch();
@@ -34,13 +37,13 @@ export const InviteUserModal: React.FunctionComponent<InviteUserModalProps> = ({
 
     return (
         <Modal
-            open={open}
+            isOpen={open}
             onClose={onClose}
             cancelLabel="Retour"
             title="Inviter un utilisateur"
             ariaLabelledBy="add-dialog-title"
             ariaDescribedBy="add-dialog-description"
-            fullWidth
+            isFullWidth
         >
             <div id="add-dialog-description">
                 <div>

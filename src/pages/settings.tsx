@@ -6,9 +6,9 @@ import type { SelectChangeEvent } from '@mui/material/Select';
 import Select from '@mui/material/Select';
 import Typography from '@mui/material/Typography';
 
+import { useLanguages } from 'src/api/languages/languages.list';
 import { useTranslation } from 'src/i18n/useTranslation';
-import { useLanguages } from 'src/services/useLanguages';
-import { setCookie } from 'src/util/cookies';
+import { setCookie } from 'src/utils/cookies';
 
 const Settings: React.FunctionComponent = () => {
     const { t, currentLocale } = useTranslation();

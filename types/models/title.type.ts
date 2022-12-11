@@ -1,8 +1,5 @@
-// import type { Question } from './question.type';
-
-export interface Title {
-    id: number | string;
+export type Title = {
     style: string;
     text: string;
     duration: number;
-}
+};

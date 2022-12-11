@@ -59,7 +59,6 @@ export async function createPLMUserToDB(plmUser: PLM_User): Promise<User> {
     const user = new User();
     user.email = plmUser.user_email;
     user.pseudo = isPseudoAvailable ? plmUser.user_login : `user_${plmUser.user_login}`;
-    user.level = '';
     user.school = getMetaValue(plmUser, 'Nom de votre école');
     user.languageCode = 'fr';
     user.type = userType;
@@ -68,5 +67,5 @@ export async function createPLMUserToDB(plmUser: PLM_User): Promise<User> {
     user.accountRegistration = 10;
     await getRepository(User).save(user);
 
-    return user.userWithoutPassword();
+    return user;
 }

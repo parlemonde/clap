@@ -1,9 +1,11 @@
-import type { Image } from './image.type';
+import type { Scenario } from './scenario.type';
 
 export interface Theme {
-    id: number | string;
+    id: number | string; // string for local themes.
     order: number;
     isDefault: boolean;
-    names: { [key: string]: string };
-    image: Image | null;
+    names: Record<string, string>;
+    imageUrl: string | null;
+    userId: number | null;
+    scenarios?: Scenario[];
 }

@@ -1,11 +1,10 @@
+import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
 import React from 'react';
 
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import Alert from '@mui/material/Alert';
-import Backdrop from '@mui/material/Backdrop';
 import Button from '@mui/material/Button';
-import CircularProgress from '@mui/material/CircularProgress';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
@@ -13,14 +12,17 @@ import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
-import { Modal } from 'src/components/Modal';
-import { Trans } from 'src/components/Trans';
+import { useDeleteUserMutation } from 'src/api/users/users.delete';
+import type { PUTParams as UpdateUserArgs } from 'src/api/users/users.put';
+import { useUpdateUserMutation } from 'src/api/users/users.put';
+import Modal from 'src/components/ui/Modal';
+import { Trans } from 'src/components/ui/Trans';
+import { userContext } from 'src/contexts/userContext';
 import { useTranslation } from 'src/i18n/useTranslation';
-import { UserServiceContext } from 'src/services/UserService';
-import { axiosRequest } from 'src/util/axiosRequest';
+import { axiosRequest } from 'src/utils/axiosRequest';
 import type { User } from 'types/models/user.type';
 
-type UpdatedUser = Partial<User> & { oldPassword?: string };
+type UpdatedUser = Partial<User> & { password?: string; passwordConfirm?: string; oldPassword?: string };
 
 const emailRegex =
     /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/i;
@@ -33,27 +35,28 @@ const checks = {
   passwordConfirm: (value: string, user: UpdatedUser) => value === user.password, // eslint-disable-next-line
   school: (_v: string, _u: UpdatedUser) => true,
 };
+
 const isPseudoAvailable = async (userPseudo: string, pseudo: string): Promise<boolean> => {
     if (userPseudo === pseudo) {
         return true;
     }
-    const response = await axiosRequest({
+    const response = await axiosRequest<{ available: boolean }>({
         method: 'GET',
         url: `/users/test-pseudo/${pseudo}`,
     });
-    if (response.error) {
-        return false;
+    if (response.success) {
+        return response.data.available;
     }
-    return response.data.available;
+    return false;
 };
 
-const Account: React.FunctionComponent = () => {
+const AccountPage = () => {
+    const router = useRouter();
     const { t } = useTranslation();
     const { enqueueSnackbar } = useSnackbar();
-    const { user, logout, axiosLoggedRequest, setUser, deleteAccount } = React.useContext(UserServiceContext);
+    const { user, setUser } = React.useContext(userContext);
     const [updatedUser, setUpdatedUser] = React.useState<UpdatedUser | null>(null);
     const [showPassword, setShowPassword] = React.useState<boolean>(false);
-    const [loading, setLoading] = React.useState<boolean>(false);
     const [showModal, setShowModal] = React.useState<number>(-1);
     const [errors, setErrors] = React.useState({
         email: false,
@@ -73,13 +76,8 @@ const Account: React.FunctionComponent = () => {
         setShowModal(n);
     };
 
-    if (user === null) {
-        return null;
-    }
-
     const onUserChange =
-        (userKey: 'email' | 'pseudo' | 'school' | 'level' | 'password' | 'passwordConfirm' | 'oldPassword') =>
-        (event: React.ChangeEvent<HTMLInputElement>) => {
+        (userKey: 'email' | 'pseudo' | 'password' | 'passwordConfirm' | 'oldPassword') => (event: React.ChangeEvent<HTMLInputElement>) => {
             setUpdatedUser({ ...updatedUser, [userKey]: event?.target?.value || '' });
             setErrors((e) => ({ ...e, [userKey]: false, global: false }));
         };
@@ -99,19 +97,13 @@ const Account: React.FunctionComponent = () => {
         }
     };
 
-    const onSubmit = (userKey: 'email' | 'pseudo' | 'school' | 'password') => async () => {
-        if (updatedUser === null) {
+    const upadeUserMutation = useUpdateUserMutation();
+    const isLoading = upadeUserMutation.isLoading;
+    const onSubmit = (userKey: 'email' | 'pseudo' | 'password') => async () => {
+        if (user === null || updatedUser === null) {
             return;
         }
-        const data = {
-            [userKey]: updatedUser[userKey],
-        };
-        if (userKey === 'school') {
-            data.level = updatedUser.level;
-        }
-        if (userKey === 'password') {
-            data.oldPassword = updatedUser.oldPassword;
-        }
+
         const value = updatedUser[userKey];
         if (value === undefined || !checks[userKey](value, updatedUser)) {
             setErrors((e) => ({ ...e, [userKey]: true }));
@@ -121,41 +113,67 @@ const Account: React.FunctionComponent = () => {
             setErrors((e) => ({ ...e, pseudoNotAvailable: true }));
             return;
         }
-        setLoading(true);
-        const response = await axiosLoggedRequest({
-            method: 'PUT',
-            url: `/users/${user.id}`,
-            data,
-        });
-        setLoading(false);
-        if (response.error) {
-            enqueueSnackbar(t('unknown_error'), {
-                variant: 'error',
-            });
-        } else {
+
+        const data: UpdateUserArgs = {
+            userId: user.id,
+        };
+        if (userKey === 'password') {
+            data.oldPassword = updatedUser.oldPassword;
+            data.password = updatedUser.password;
+        } else if (userKey === 'email') {
+            data.email = updatedUser.email;
+        } else if (userKey === 'pseudo') {
+            data.pseudo = updatedUser.pseudo;
+        }
+
+        try {
+            const { user: newUser } = await upadeUserMutation.mutateAsync(data);
             enqueueSnackbar(t('account_updated'), {
                 variant: 'success',
             });
-            setUser({ ...user, ...data });
-        }
-        setShowModal(-1);
-    };
-
-    const onDeleteAccount = async () => {
-        setLoading(true);
-        const success = await deleteAccount();
-        setLoading(false);
-        if (!success) {
+            setUser(newUser);
+            setShowModal(-1);
+        } catch (err) {
+            console.error(err);
             enqueueSnackbar(t('unknown_error'), {
                 variant: 'error',
             });
-            setShowModal(-1);
-        } else {
+        }
+    };
+
+    const deleteUserMutation = useDeleteUserMutation();
+    const onDeleteAccount = async () => {
+        if (user === null) {
+            return;
+        }
+        try {
+            await deleteUserMutation.mutateAsync({
+                userId: user.id,
+            });
             enqueueSnackbar(t('account_deleted'), {
                 variant: 'success',
             });
+            setShowModal(-1);
+        } catch (err) {
+            console.error(err);
+            enqueueSnackbar(t('unknown_error'), {
+                variant: 'error',
+            });
         }
     };
+
+    const logout = async () => {
+        await axiosRequest({
+            method: 'POST',
+            url: '/logout',
+        });
+        setUser(null);
+        router.push('/create');
+    };
+
+    if (user === null) {
+        return null;
+    }
 
     return (
         <div>
@@ -199,30 +217,6 @@ const Account: React.FunctionComponent = () => {
                         <Divider style={{ margin: '1rem 0 1.5rem' }} />
                     </>
                 )}
-                <Typography variant="h2">{t('account_school_title')}</Typography>
-                <div style={{ marginTop: '0.5rem' }}>
-                    <label>
-                        <strong>{t('signup_school')} : </strong>
-                    </label>
-                    {user.school || t('account_unknown_school')}
-                </div>
-                <div>
-                    <label>
-                        <strong>{t('signup_level')} : </strong>
-                    </label>
-                    {user.level || t('account_unknown_level')}
-                </div>
-                <Button
-                    style={{ marginTop: '0.8rem' }}
-                    className="mobile-full-width"
-                    onClick={openModal(4)}
-                    variant="contained"
-                    color="secondary"
-                    size="small"
-                >
-                    {t('edit')}
-                </Button>
-                <Divider style={{ margin: '1rem 0 1.5rem' }} />
                 <Typography variant="h2">{t('logout_button')}</Typography>
                 <Button
                     sx={{ color: (theme) => theme.palette.error.main, borderColor: (theme) => theme.palette.error.main }}
@@ -258,7 +252,8 @@ const Account: React.FunctionComponent = () => {
                 </Button>
 
                 <Modal
-                    open={showModal === 1 && updatedUser !== null}
+                    isOpen={showModal === 1 && updatedUser !== null}
+                    isLoading={isLoading}
                     onClose={() => setShowModal(-1)}
                     onConfirm={onSubmit('pseudo')}
                     confirmLabel={t('edit')}
@@ -266,7 +261,7 @@ const Account: React.FunctionComponent = () => {
                     title={t('Changer de pseudo')}
                     ariaLabelledBy="pseudo-dialog-title"
                     ariaDescribedBy="pseudo-dialog-description"
-                    fullWidth
+                    isFullWidth
                 >
                     <div id="pseudo-dialog-description">
                         <Alert severity="info" style={{ marginBottom: '1rem' }}>
@@ -289,7 +284,8 @@ const Account: React.FunctionComponent = () => {
                     </div>
                 </Modal>
                 <Modal
-                    open={showModal === 2 && updatedUser !== null}
+                    isOpen={showModal === 2 && updatedUser !== null}
+                    isLoading={isLoading}
                     onClose={() => setShowModal(-1)}
                     onConfirm={onSubmit('email')}
                     confirmLabel={t('edit')}
@@ -297,7 +293,7 @@ const Account: React.FunctionComponent = () => {
                     title={t('account_change_email')}
                     ariaLabelledBy="email-dialog-title"
                     ariaDescribedBy="email-dialog-description"
-                    fullWidth
+                    isFullWidth
                 >
                     <div id="email-dialog-description">
                         <Alert severity="info" style={{ marginBottom: '1rem' }}>
@@ -317,7 +313,8 @@ const Account: React.FunctionComponent = () => {
                     </div>
                 </Modal>
                 <Modal
-                    open={showModal === 3 && updatedUser !== null}
+                    isOpen={showModal === 3 && updatedUser !== null}
+                    isLoading={isLoading}
                     onClose={() => setShowModal(-1)}
                     onConfirm={onSubmit('password')}
                     confirmLabel={t('edit')}
@@ -325,7 +322,7 @@ const Account: React.FunctionComponent = () => {
                     title={t('account_change_password')}
                     ariaLabelledBy="mdp-dialog-title"
                     ariaDescribedBy="mdp-dialog-description"
-                    fullWidth
+                    isFullWidth
                 >
                     <div id="mdp-dialog-description">
                         <TextField
@@ -417,56 +414,18 @@ const Account: React.FunctionComponent = () => {
                     </div>
                 </Modal>
                 <Modal
-                    open={showModal === 4 && updatedUser !== null}
-                    onClose={() => setShowModal(-1)}
-                    onConfirm={onSubmit('school')}
-                    confirmLabel={t('edit')}
-                    cancelLabel={t('cancel')}
-                    title={t('account_change_school')}
-                    ariaLabelledBy="school-dialog-title"
-                    ariaDescribedBy="school-dialog-description"
-                    fullWidth
-                >
-                    <div id="school-dialog-description">
-                        <TextField
-                            fullWidth
-                            variant="outlined"
-                            value={updatedUser?.school || ''}
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                            placeholder={t('account_unknown_school')}
-                            label={t('signup_school')}
-                            onChange={onUserChange('school')}
-                            color="secondary"
-                        />
-                        <TextField
-                            fullWidth
-                            variant="outlined"
-                            value={updatedUser?.level || ''}
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                            placeholder={t('account_unknown_level')}
-                            label={t('signup_level')}
-                            onChange={onUserChange('level')}
-                            color="secondary"
-                            style={{ marginTop: '1rem' }}
-                        />
-                    </div>
-                </Modal>
-                <Modal
-                    open={showModal === 5 && updatedUser !== null}
+                    isOpen={showModal === 5 && updatedUser !== null}
+                    isLoading={deleteUserMutation.isLoading}
                     onClose={() => setShowModal(-1)}
                     onConfirm={onDeleteAccount}
                     confirmLabel={t('delete')}
+                    confirmLevel="error"
                     cancelLabel={t('cancel')}
                     title={t('account_delete_button')}
                     ariaLabelledBy="delete-dialog-title"
                     ariaDescribedBy="delete-dialog-description"
-                    disabled={deleteText.toLowerCase() !== t('account_delete_confirm').toLowerCase()}
-                    fullWidth
-                    error
+                    isConfirmDisabled={deleteText.toLowerCase() !== t('account_delete_confirm').toLowerCase()}
+                    isFullWidth
                 >
                     <div id="delete-dialog-description">
                         <Alert severity="error" style={{ marginBottom: '1rem' }}>
@@ -496,17 +455,8 @@ const Account: React.FunctionComponent = () => {
                     </div>
                 </Modal>
             </div>
-            <Backdrop
-                sx={{
-                    zIndex: (theme) => theme.zIndex.drawer + 1,
-                    color: '#fff',
-                }}
-                open={loading}
-            >
-                <CircularProgress color="inherit" />
-            </Backdrop>
         </div>
     );
 };
 
-export default Account;
+export default AccountPage;

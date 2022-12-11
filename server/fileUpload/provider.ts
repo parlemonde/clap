@@ -1,7 +1,10 @@
-export abstract class Provider {
-    public abstract uploadImage(filename: string, filePath: string, hasMultipleSizes?: boolean): Promise<string>;
-    public abstract deleteImage(filename: string, filePath: string): Promise<void>;
-    public abstract getFile(filename: string): Promise<Buffer | null>;
-    public abstract uploadFile(filename: string, filedata: Buffer): Promise<void>;
-    public abstract uploadSound(filename: string, filePath: string): Promise<string>;
+import type { Readable } from 'stream';
+
+export type FileData = { AcceptRanges: string; LastModified: Date; ContentLength: number; ContentType: string };
+
+export interface FileStorageProvider {
+    getFileData(fileUrl: string): Promise<FileData | null>;
+    getFile(fileUrl: string, range?: string): Promise<Readable | null>;
+    uploadFile(fileUrl: string, filedata: Buffer): Promise<void>;
+    deleteFile(fileUrl: string): Promise<void>;
 }

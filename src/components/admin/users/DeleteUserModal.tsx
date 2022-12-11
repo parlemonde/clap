@@ -1,9 +1,8 @@
 import { useSnackbar } from 'notistack';
 import React from 'react';
-import { useQueryClient } from 'react-query';
 
-import { Modal } from 'src/components/Modal';
-import { UserServiceContext } from 'src/services/UserService';
+import { useDeleteUserMutation } from 'src/api/users/users.delete';
+import Modal from 'src/components/ui/Modal';
 import type { User } from 'types/models/user.type';
 
 interface DeleteUserModalProps {
@@ -11,45 +10,43 @@ interface DeleteUserModalProps {
     onClose?(): void;
 }
 
-export const DeleteUserModal: React.FunctionComponent<DeleteUserModalProps> = ({ user = null, onClose = () => {} }: DeleteUserModalProps) => {
+export const DeleteUserModal = ({ user = null, onClose = () => {} }: DeleteUserModalProps) => {
     const { enqueueSnackbar } = useSnackbar();
-    const queryClient = useQueryClient();
-    const { axiosLoggedRequest } = React.useContext(UserServiceContext);
 
+    const deleteUserMutation = useDeleteUserMutation();
     const onSubmit = async () => {
         if (user === null) {
             return;
         }
-        const response = await axiosLoggedRequest({
-            method: 'DELETE',
-            url: `/users/${user.id}`,
-        });
-        if (response.error) {
+        try {
+            await deleteUserMutation.mutateAsync({
+                userId: user.id,
+            });
+            enqueueSnackbar('Utilisateur supprimé avec succès!', {
+                variant: 'success',
+            });
+            onClose();
+        } catch (err) {
+            console.error(err);
             enqueueSnackbar('Une erreur inconnue est survenue...', {
                 variant: 'error',
             });
-            onClose();
-            return;
         }
-        queryClient.invalidateQueries('users');
-        enqueueSnackbar('Utilisateur supprimé avec succès!', {
-            variant: 'success',
-        });
-        onClose();
     };
 
     return (
         <Modal
-            open={user !== null}
+            isOpen={user !== null}
+            isLoading={deleteUserMutation.isLoading}
             onClose={onClose}
             onConfirm={onSubmit}
             confirmLabel="Supprimer"
-            error
+            confirmLevel="error"
             cancelLabel="Annuler"
             title="Supprimer l'utilisateur ?"
             ariaLabelledBy="delete-dialog-title"
             ariaDescribedBy="delete-dialog-description"
-            fullWidth
+            isFullWidth
         >
             <div id="delete-dialog-description">
                 {"Voulez-vous vraiment supprimer l'utilisateur "}

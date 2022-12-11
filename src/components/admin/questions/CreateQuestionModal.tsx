@@ -4,29 +4,19 @@ import React from 'react';
 import FormHelperText from '@mui/material/FormHelperText';
 import TextField from '@mui/material/TextField';
 
-import { Modal } from 'src/components/Modal';
-import { UserServiceContext } from 'src/services/UserService';
-import type { Question } from 'types/models/question.type';
+import { useCreateQuestionTemplate } from 'src/api/question-templates/question-templates.post';
+import Modal from 'src/components/ui/Modal';
 
 interface CreateQuestionModalProps {
-    scenarioId: number | string | null;
+    scenarioId: number;
     languageCode: string;
     open?: boolean;
     onClose?(): void;
     order?: number;
-    setQuestions?(f: (questions: Question[]) => Question[]): void;
 }
 
-export const CreateQuestionModal: React.FunctionComponent<CreateQuestionModalProps> = ({
-    scenarioId,
-    languageCode,
-    open = false,
-    onClose = () => {},
-    order = 0,
-    setQuestions = () => {},
-}: CreateQuestionModalProps) => {
+export const CreateQuestionModal = ({ scenarioId, languageCode, open = false, onClose = () => {}, order = 0 }: CreateQuestionModalProps) => {
     const { enqueueSnackbar } = useSnackbar();
-    const { axiosLoggedRequest } = React.useContext(UserServiceContext);
     const [question, setQuestion] = React.useState<string>('');
     const [hasError, setHasError] = React.useState<boolean>(false);
 
@@ -34,53 +24,54 @@ export const CreateQuestionModal: React.FunctionComponent<CreateQuestionModalPro
         setQuestion(event.target.value.slice(0, 280));
         setHasError(false);
     };
+
+    const createQuestionTemplate = useCreateQuestionTemplate();
     const onSubmit = async () => {
+        if (scenarioId === -1) {
+            setQuestion('');
+            onClose();
+            return;
+        }
         if (question.length === 0) {
             setHasError(true);
             return;
         }
-        const response = await axiosLoggedRequest({
-            method: 'POST',
-            url: '/questions',
-            data: {
-                isDefault: true,
+
+        try {
+            await createQuestionTemplate.mutateAsync({
                 question,
                 scenarioId,
                 languageCode,
                 index: order,
-            },
-        });
-        setQuestion('');
-        if (response.error) {
+            });
+            enqueueSnackbar('Question ajoutée avec succès!', {
+                variant: 'success',
+            });
+            setQuestion('');
+            onClose();
+        } catch (err) {
+            console.error(err);
             enqueueSnackbar('Une erreur inconnue est survenue...', {
                 variant: 'error',
             });
-            onClose();
-            return;
         }
-        setQuestions((q) => {
-            return [...q, response.data];
-        });
-        enqueueSnackbar('Question ajoutée avec succès!', {
-            variant: 'success',
-        });
-        onClose();
     };
 
-    if (scenarioId === null) {
+    if (scenarioId === -1) {
         return null;
     }
     return (
         <Modal
-            open={open}
+            isOpen={open}
             onClose={onClose}
+            isLoading={createQuestionTemplate.isLoading}
             onConfirm={onSubmit}
             confirmLabel="Créer"
             cancelLabel="Annuler"
             title="Ajouter une question"
             ariaLabelledBy="create-dialog-title"
             ariaDescribedBy="create-dialog-description"
-            fullWidth
+            isFullWidth
         >
             <div id="create-dialog-description">
                 <TextField

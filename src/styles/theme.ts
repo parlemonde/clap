@@ -1,19 +1,22 @@
 import { frFR } from '@mui/material/locale';
 import { createTheme } from '@mui/material/styles';
 
+export const PrimaryColor = '#6065fc';
+export const SecondaryColor = '#79C3A5';
+
 const theme = createTheme(
     {
         palette: {
             primary: {
                 // light: will be calculated from palette.primary.main,
-                main: '#6065fc',
+                main: PrimaryColor,
                 // dark: will be calculated from palette.primary.main,
                 // contrastText: will be calculated to contrast with palette.primary.main
                 contrastText: '#ffffff',
             },
             secondary: {
                 // light: will be calculated from palette.secondary.main,
-                main: '#4BBA8D',
+                main: SecondaryColor,
                 // dark: will be calculated from palette.secondary.main,
                 contrastText: '#ffffff',
             },

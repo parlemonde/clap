@@ -19,7 +19,7 @@ export const ProjectCard: React.FunctionComponent<ProjectCardProps> = ({
     title = '',
     themeName = '',
     onClick = () => {},
-    onClickEdit = () => {},
+    onClickEdit,
 }: ProjectCardProps) => {
     const { t } = useTranslation();
 
@@ -34,20 +34,22 @@ export const ProjectCard: React.FunctionComponent<ProjectCardProps> = ({
                         <label>{t('my_videos_themes')}</label> {themeName}
                     </div>
                 )}
-                <div className="edit">
-                    <IconButton
-                        color="primary"
-                        aria-label={t('delete')}
-                        size="small"
-                        onClick={(event) => {
-                            event.stopPropagation();
-                            onClickEdit(event);
-                        }}
-                        style={{ border: '1px solid #6065fc' }}
-                    >
-                        <EditIcon />
-                    </IconButton>
-                </div>
+                {onClickEdit !== undefined && (
+                    <div className="edit">
+                        <IconButton
+                            color="primary"
+                            aria-label={t('delete')}
+                            size="small"
+                            onClick={(event) => {
+                                event.stopPropagation();
+                                onClickEdit(event);
+                            }}
+                            style={{ border: '1px solid #6065fc' }}
+                        >
+                            <EditIcon />
+                        </IconButton>
+                    </div>
+                )}
             </div>
         </ButtonBase>
     );

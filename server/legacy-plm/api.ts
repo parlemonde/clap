@@ -3,7 +3,7 @@ import axios from 'axios';
 import { getRepository } from 'typeorm';
 
 import { User } from '../entities/user';
-import { logger } from '../utils/logger';
+import { logger } from '../lib/logger';
 import type { PLM_User } from './user';
 import { createPLMUserToDB } from './user';
 

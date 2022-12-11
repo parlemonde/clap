@@ -1,38 +1,39 @@
-import { Column, Entity, ManyToOne, PrimaryColumn, JoinColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, JoinColumn, DeleteDateColumn } from 'typeorm';
 
 import type { Scenario as ScenarioInterface } from '../../types/models/scenario.type';
-import type { Question } from './question';
 import { Theme } from './theme';
 import { User } from './user';
 
 @Entity()
 export class Scenario implements ScenarioInterface {
-    @PrimaryColumn()
+    @PrimaryGeneratedColumn()
     public id: number;
-
-    @PrimaryColumn({ type: 'varchar', length: 2 })
-    public languageCode: string;
-
-    @Column({ type: 'varchar', length: 50 })
-    public name: string;
 
     @Column({ default: false })
     public isDefault: boolean;
 
-    @ManyToOne(() => Theme, (theme: Theme) => theme.scenarios)
+    @Column({ type: 'json' })
+    public names: Record<string, string>;
+
+    @Column({ type: 'json' })
+    public descriptions: Record<string, string>;
+
+    @ManyToOne(() => Theme, (theme: Theme) => theme.scenarios, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'themeId' })
-    public theme: Theme;
+    public theme?: Theme;
 
     @Column({ nullable: false })
     public themeId: number;
 
-    @Column({ type: 'varchar', length: 280 })
-    public description: string;
+    @ManyToOne(() => User, { onDelete: 'CASCADE' })
+    @JoinColumn({ name: 'userId' })
+    public user?: User;
 
-    @ManyToOne(() => User)
-    public user: User;
+    @Column({ nullable: true })
+    public userId: number | null;
 
-    public questions: Question[];
+    @DeleteDateColumn({ select: false })
+    public deleteDate?: Date;
 
-    public questionsCount: number;
+    public questionsCount: Record<string, number> = {};
 }

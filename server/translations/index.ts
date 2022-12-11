@@ -1,19 +1,19 @@
 import fs from 'fs-extra';
 import * as path from 'path';
 
+import { logger } from '../lib/logger';
 import { getLocales } from './getLocales';
+import { PO_PLURALS } from './getPlurals';
 import compile from './json2po';
 import { parse } from './po2json';
 import type { tFunction } from './translateFunction';
-import { Translator } from './translateFunction';
+import { getTranslateFunction } from './translateFunction';
 import type { translationObject, SingleTranslation } from './util';
 
 export async function getI18n(language: string): Promise<tFunction | null> {
     try {
         const locales = await getLocales(language);
-        const translator = new Translator();
-        translator.init(language, locales);
-        return translator.translate;
+        return getTranslateFunction(language, locales);
     } catch (e) {
         return null;
     }
@@ -22,15 +22,16 @@ export async function getI18n(language: string): Promise<tFunction | null> {
 export type LocaleFile = { [key: string]: string };
 
 export async function translationsToFile(language: string): Promise<string> {
+    logger.info(`GENERATE PO FILE FOR LANGUAGE: ${language}`);
     const object: translationObject = {
         charset: 'utf-8',
         headers: {
-            'Project-Id-Version': 'par-le-monde-1',
+            'Project-Id-Version': 'clap',
             'Report-Msgid-Bugs-To': '',
             'POT-Creation-Date': new Date().toISOString(),
             'PO-Revision-Date': new Date().toISOString(),
             'Language-Team': 'French',
-            'Plural-Forms': 'nplurals=2; plural=(n != 1);',
+            'Plural-Forms': PO_PLURALS[language] || 'nplurals=2; plural=(n != 1);',
             'MIME-Version': '1.0',
             'Content-Type': 'text/plain; charset=UTF-8',
             'Content-Transfer-Encoding': '8bit',

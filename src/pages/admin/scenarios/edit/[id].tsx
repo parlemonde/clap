@@ -1,18 +1,14 @@
-import type { AxiosRequestConfig } from 'axios';
 import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
 import React from 'react';
-import { useQueryClient } from 'react-query';
 
 import Close from '@mui/icons-material/Close';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import Backdrop from '@mui/material/Backdrop';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
-import CircularProgress from '@mui/material/CircularProgress';
 import FormControl from '@mui/material/FormControl';
 import IconButton from '@mui/material/IconButton';
 import InputLabel from '@mui/material/InputLabel';
@@ -22,70 +18,48 @@ import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
-import { Modal } from 'src/components/Modal';
+import { useLanguages } from 'src/api/languages/languages.list';
+import { useScenario } from 'src/api/scenarios/scenarios.get';
+import { useUpdateScenarioMutation } from 'src/api/scenarios/scenarios.put';
 import { AdminTile } from 'src/components/admin/AdminTile';
-import { UserServiceContext } from 'src/services/UserService';
-import { useLanguages } from 'src/services/useLanguages';
-import { getQueryString } from 'src/util';
-import type { AxiosReturnType } from 'src/util/axiosRequest';
-import { groupScenarios } from 'src/util/groupScenarios';
-import type { GroupedScenario } from 'src/util/groupScenarios';
+import { Loader } from 'src/components/layout/Loader';
+import Modal from 'src/components/ui/Modal';
+import { getQueryString } from 'src/utils/get-query-string';
 import type { Language } from 'types/models/language.type';
+import type { Scenario } from 'types/models/scenario.type';
 
-const getUpdateRequest = (scenario: GroupedScenario, language: string): AxiosRequestConfig => ({
-    method: 'PUT',
-    url: `/scenarios/${scenario.id}_${language}`,
-    data: {
-        name: scenario.names[language] || '',
-        description: scenario.descriptions[language] || '',
-    },
-});
-const getAddRequest = (scenario: GroupedScenario, language: string): AxiosRequestConfig => ({
-    method: 'POST',
-    url: `/scenarios`,
-    data: {
-        id: scenario.id,
-        languageCode: language,
-        themeId: scenario.themeId,
-        isDefault: true,
-        name: scenario.names[language] || '',
-        description: scenario.descriptions[language] || '',
-    },
-});
-const getDeleteRequest = (scenario: GroupedScenario, language: string): AxiosRequestConfig => ({
-    method: 'DELETE',
-    url: `/scenarios/${scenario.id}_${language}`,
-});
-
-const AdminEditScenario: React.FunctionComponent = () => {
+const AdminEditScenario = () => {
     const router = useRouter();
     const { enqueueSnackbar } = useSnackbar();
-    const scenarioId = React.useMemo(() => parseInt(getQueryString(router.query.id), 10) || 0, [router]);
-    const queryClient = useQueryClient();
-    const { axiosLoggedRequest } = React.useContext(UserServiceContext);
-    const { languages, isLoading } = useLanguages();
+    const scenarioId = React.useMemo(() => Number(getQueryString(router.query.id)) || 0, [router]);
+
+    const { scenario } = useScenario(scenarioId, { enabled: scenarioId !== 0 });
+    const { languages } = useLanguages();
     const languagesMap = React.useMemo(
         () => languages.reduce((acc: { [key: string]: number }, language: Language, index: number) => ({ ...acc, [language.value]: index }), {}),
         [languages],
     );
-    const [scenario, setScenario] = React.useState<GroupedScenario>({
-        id: -1,
-        themeId: -1,
-        names: {},
-        descriptions: {},
-        isDefault: true,
-    });
-    const [initialLanguages, setInitialLanguages] = React.useState<string[]>([]);
+
+    const [scenarioNames, setScenarioNames] = React.useState<Scenario['names']>({});
+    const [scenarioDescriptions, setScenarioDescriptions] = React.useState<Scenario['descriptions']>({});
     const [showModal, setShowModal] = React.useState<boolean>(false);
     const [languageToAdd, setLanguageToAdd] = React.useState<number>(0);
     const [selectedLanguages, setSelectedLanguages] = React.useState<number[]>([]);
-    const [loading, setLoading] = React.useState<boolean>(false);
     const availableLanguages = languages.filter((_l, index) => !selectedLanguages.includes(index));
+
+    React.useEffect(() => {
+        if (scenario) {
+            setScenarioNames(scenario.names);
+            setScenarioDescriptions(scenario.descriptions);
+            setSelectedLanguages([...new Set(Object.keys(scenario.names).map((l) => languagesMap[l]))]);
+        }
+    }, [scenario, languagesMap]);
 
     const goToPath = (path: string) => (event: React.MouseEvent) => {
         event.preventDefault();
         router.push(path);
     };
+
     const onAddLanguage = () => {
         setShowModal(false);
         setSelectedLanguages([...selectedLanguages, languagesMap[availableLanguages[languageToAdd].value]]);
@@ -96,80 +70,66 @@ const AdminEditScenario: React.FunctionComponent = () => {
         const s = [...selectedLanguages];
         s.splice(deleteIndex, 1);
         setSelectedLanguages(s);
-        const newScenario = { ...scenario };
-        delete newScenario.names[language.value];
-        delete newScenario.descriptions[language.value];
-        setScenario(newScenario);
-    };
-
-    const getScenario = React.useCallback(async () => {
-        if (isLoading) {
-            return;
-        }
-        const response = await axiosLoggedRequest({
-            method: 'GET',
-            url: `/scenarios/${scenarioId}`,
+        setScenarioNames((prev) => {
+            const newNames = { ...prev };
+            delete newNames[language.value];
+            return newNames;
         });
-        if (response.error) {
-            router.push('/admin/scenarios');
-        } else {
-            const groupedScenarios = groupScenarios(response.data);
-            setScenario(groupedScenarios[0]);
-            setSelectedLanguages(
-                Object.keys(groupedScenarios[0].names)
-                    .filter((key) => key !== 'default')
-                    .map((languageValue) => languagesMap[languageValue] || 0),
-            );
-            setInitialLanguages(Object.keys(groupedScenarios[0].names).filter((key) => key !== 'default'));
-        }
-    }, [axiosLoggedRequest, router, scenarioId, isLoading, languagesMap]);
-
-    React.useEffect(() => {
-        getScenario().catch((e) => console.error(e));
-    }, [getScenario]);
+        setScenarioDescriptions((prev) => {
+            const newDesc = { ...prev };
+            delete newDesc[language.value];
+            return newDesc;
+        });
+    };
 
     const onNameInputChange = (languageValue: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
-        const newScenario = { ...scenario };
-        newScenario.names[languageValue] = event.target.value;
-        setScenario(newScenario);
+        setScenarioNames((prev) => ({
+            ...prev,
+            [languageValue]: event.target.value,
+        }));
     };
     const onDescInputChange = (languageValue: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
-        const newScenario = { ...scenario };
-        newScenario.descriptions[languageValue] = event.target.value;
-        setScenario(newScenario);
+        setScenarioDescriptions((prev) => ({
+            ...prev,
+            [languageValue]: event.target.value,
+        }));
     };
 
+    const updateScenarioMutation = useUpdateScenarioMutation();
+    const isLoading = updateScenarioMutation.isLoading;
     const onSubmit = async () => {
-        const usedLanguages = Object.keys(scenario.names).filter((key) => key !== 'default');
-        if (scenario.id === -1 || usedLanguages.length === 0) {
+        if (!scenario) {
+            enqueueSnackbar("Ce scénario n'existe pas...", {
+                variant: 'error',
+            });
+            router.push('/admin/scenarios');
+            return;
+        }
+
+        const usedLanguages = Object.keys(scenarioNames);
+        if (usedLanguages.length === 0) {
             enqueueSnackbar('Le nom du scénario ne peut pas être vide.', {
                 variant: 'error',
             });
             return;
         }
-        setLoading(true);
-        const responses: Promise<AxiosReturnType>[] = [];
-        for (let i = 0, n = usedLanguages.length; i < n; i++) {
-            responses.push(
-                axiosLoggedRequest(
-                    initialLanguages.includes(usedLanguages[i])
-                        ? getUpdateRequest(scenario, usedLanguages[i])
-                        : getAddRequest(scenario, usedLanguages[i]),
-                ),
-            );
+
+        try {
+            await updateScenarioMutation.mutateAsync({
+                scenarioId,
+                names: scenarioNames,
+                descriptions: scenarioDescriptions,
+            });
+            enqueueSnackbar('Scénario mis à jour avec succès!', {
+                variant: 'success',
+            });
+            router.push('/admin/scenarios');
+        } catch (err) {
+            console.error(err);
+            enqueueSnackbar('Une erreur inconnue est survenue...', {
+                variant: 'error',
+            });
         }
-        for (const l of initialLanguages) {
-            if (!usedLanguages.includes(l)) {
-                responses.push(axiosLoggedRequest(getDeleteRequest(scenario, l)));
-            }
-        }
-        await Promise.all(responses);
-        setLoading(false);
-        enqueueSnackbar('Scénario modifié avec succès!', {
-            variant: 'success',
-        });
-        queryClient.invalidateQueries('scenarios');
-        router.push('/admin/scenarios');
     };
 
     return (
@@ -181,7 +141,7 @@ const AdminEditScenario: React.FunctionComponent = () => {
                     </Typography>
                 </Link>
                 <Typography variant="h1" color="textPrimary">
-                    {scenario.names.default || 'Modifier un scenario'}
+                    Modifier un scenario
                 </Typography>
             </Breadcrumbs>
             <NoSsr>
@@ -204,7 +164,7 @@ const AdminEditScenario: React.FunctionComponent = () => {
                                     <TextField
                                         variant="standard"
                                         label="Nom"
-                                        value={scenario.names[languages[languageIndex].value] || ''}
+                                        value={scenarioNames[languages[languageIndex].value] || ''}
                                         onChange={onNameInputChange(languages[languageIndex].value)}
                                         color="secondary"
                                         fullWidth
@@ -213,7 +173,7 @@ const AdminEditScenario: React.FunctionComponent = () => {
                                         variant="standard"
                                         style={{ marginTop: '8px' }}
                                         label="Description"
-                                        value={scenario.descriptions[languages[languageIndex].value] || ''}
+                                        value={scenarioDescriptions[languages[languageIndex].value] || ''}
                                         onChange={onDescInputChange(languages[languageIndex].value)}
                                         color="secondary"
                                         multiline
@@ -243,19 +203,10 @@ const AdminEditScenario: React.FunctionComponent = () => {
                 <Button variant="outlined" style={{ marginTop: '1rem' }} onClick={goToPath('/admin/scenarios')}>
                     Retour
                 </Button>
-                <Backdrop
-                    sx={{
-                        zIndex: (theme) => theme.zIndex.drawer + 1,
-                        color: '#fff',
-                    }}
-                    open={loading}
-                >
-                    <CircularProgress color="inherit" />
-                </Backdrop>
 
                 {/* language modal */}
                 <Modal
-                    open={showModal}
+                    isOpen={showModal}
                     onClose={() => {
                         setShowModal(false);
                     }}
@@ -291,6 +242,7 @@ const AdminEditScenario: React.FunctionComponent = () => {
                     )}
                 </Modal>
             </NoSsr>
+            <Loader isLoading={isLoading} />
         </div>
     );
 };

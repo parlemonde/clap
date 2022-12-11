@@ -8,52 +8,39 @@ import type { SelectChangeEvent } from '@mui/material/Select';
 import Select from '@mui/material/Select';
 
 import allLanguages from './iso_languages.json';
-import { Modal } from 'src/components/Modal';
-import { UserServiceContext } from 'src/services/UserService';
-import type { Language } from 'types/models/language.type';
+import { useCreateLanguageMutation } from 'src/api/languages/languages.post';
+import Modal from 'src/components/ui/Modal';
 
 interface AddLanguageModalProps {
     open?: boolean;
     onClose?(): void;
-    setLanguages?(f: (languages: Language[]) => Language[]): void;
 }
 
-export const AddLanguageModal: React.FunctionComponent<AddLanguageModalProps> = ({
-    open = false,
-    onClose = () => {},
-    setLanguages = () => {},
-}: AddLanguageModalProps) => {
+export const AddLanguageModal = ({ open = false, onClose = () => {} }: AddLanguageModalProps) => {
     const { enqueueSnackbar } = useSnackbar();
-    const { axiosLoggedRequest } = React.useContext(UserServiceContext);
     const [selectedLanguageIndex, setSelectedLanguageIndex] = React.useState<number>(-1);
 
+    const createLanguageMutation = useCreateLanguageMutation();
     const onSubmit = async () => {
         if (selectedLanguageIndex === -1) {
             return;
         }
-        const newLanguage = {
-            value: allLanguages[selectedLanguageIndex].code,
-            label: allLanguages[selectedLanguageIndex].englishName,
-        };
-        const response = await axiosLoggedRequest({
-            method: 'POST',
-            url: `/languages`,
-            data: newLanguage,
-        });
-        if (response.error) {
-            enqueueSnackbar('Une erreur inconnue est survenue...', {
-                variant: 'error',
+        try {
+            await createLanguageMutation.mutateAsync({
+                value: allLanguages[selectedLanguageIndex].code,
+                label: allLanguages[selectedLanguageIndex].englishName,
+            });
+            enqueueSnackbar('Langue ajoutée avec succès!', {
+                variant: 'success',
             });
             setSelectedLanguageIndex(-1);
             onClose();
-            return;
+        } catch (err) {
+            console.error(err);
+            enqueueSnackbar('Une erreur inconnue est survenue...', {
+                variant: 'error',
+            });
         }
-        setLanguages((languages) => [...languages, newLanguage]);
-        enqueueSnackbar('Langue ajoutée avec succès!', {
-            variant: 'success',
-        });
-        setSelectedLanguageIndex(-1);
-        onClose();
     };
 
     const onSelectLanguage = (event: SelectChangeEvent<string | number>) => {
@@ -62,7 +49,8 @@ export const AddLanguageModal: React.FunctionComponent<AddLanguageModalProps> = 
 
     return (
         <Modal
-            open={open}
+            isOpen={open}
+            isLoading={createLanguageMutation.isLoading}
             onClose={() => {
                 setSelectedLanguageIndex(-1);
                 onClose();
@@ -73,7 +61,7 @@ export const AddLanguageModal: React.FunctionComponent<AddLanguageModalProps> = 
             title="Ajouter une langue"
             ariaLabelledBy="new-dialog-title"
             ariaDescribedBy="new-dialog-description"
-            fullWidth
+            isFullWidth
         >
             <div id="new-dialog-description">
                 <FormControl fullWidth color="secondary">

@@ -1,20 +1,24 @@
 import type { Plan } from './plan.type';
-import type { Sound } from './sound.type';
 import type { Title } from './title.type';
 
 export interface Question {
     id: number;
     question: string;
-    isDefault: boolean;
-    scenarioId: number | string;
-    languageCode: string;
     index: number;
-    plans?: Plan[] | null;
-    title?: Title | null;
-    planStartIndex?: number;
+    projectId: number;
+    plans?: Plan[];
+    // --- slideshow attributes ---
+    title: Title | null;
     voiceOff: string | null;
     voiceOffBeginTime: number;
-    sound: Sound | null;
-    duration: number;
-    url?: string | null;
+    soundUrl: string | null;
+    soundVolume: number | null;
+}
+
+export interface QuestionTemplate {
+    id: number;
+    question: string;
+    index: number;
+    languageCode: string;
+    scenarioId: number;
 }

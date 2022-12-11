@@ -3,8 +3,8 @@ import type Mail from 'nodemailer/lib/mailer';
 import path from 'path';
 import pug from 'pug';
 
+import { logger } from '../lib/logger';
 import { getI18n } from '../translations';
-import { logger } from '../utils/logger';
 import { getNodeMailer } from './nodemailer';
 import { renderFile } from './renderFile';
 

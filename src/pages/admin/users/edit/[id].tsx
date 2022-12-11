@@ -1,13 +1,10 @@
 import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
 import React from 'react';
-import { useQueryClient } from 'react-query';
 
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import Backdrop from '@mui/material/Backdrop';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Button from '@mui/material/Button';
-import CircularProgress from '@mui/material/CircularProgress';
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Link from '@mui/material/Link';
@@ -17,22 +14,28 @@ import RadioGroup from '@mui/material/RadioGroup';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
-import { Modal } from 'src/components/Modal';
+import { useUser } from 'src/api/users/users.get';
+import { useUpdateUserMutation } from 'src/api/users/users.put';
 import { AdminTile } from 'src/components/admin/AdminTile';
-import { UserServiceContext } from 'src/services/UserService';
-import { getQueryString } from 'src/util';
+import { Loader } from 'src/components/layout/Loader';
+import Modal from 'src/components/ui/Modal';
+import { getQueryString } from 'src/utils/get-query-string';
 import type { User } from 'types/models/user.type';
 
-const AdminEditUser: React.FunctionComponent = () => {
+const AdminEditUser = () => {
     const router = useRouter();
     const { enqueueSnackbar } = useSnackbar();
-    const queryClient = useQueryClient();
-    const userId = React.useMemo(() => parseInt(getQueryString(router.query.id), 10) || 0, [router]);
-    const { axiosLoggedRequest } = React.useContext(UserServiceContext);
-    const [user, setUser] = React.useState<User | null>(null);
-    const [loading, setLoading] = React.useState<boolean>(false);
+
+    const userId = React.useMemo(() => Number(getQueryString(router.query.id)) || 0, [router]);
+    const { user: fetchedUser } = useUser(userId, { enabled: userId !== 0 });
+
+    const [user, setUser] = React.useState<User | null>(fetchedUser || null);
     const [isBlocked, setIsBlocked] = React.useState<boolean>(true);
     const [isBlockedModalOpen, setIsBlockedModalOpen] = React.useState<boolean>(false);
+
+    React.useEffect(() => {
+        setUser(fetchedUser || null);
+    }, [fetchedUser]);
 
     const goToPath = (path: string) => (event: React.MouseEvent) => {
         event.preventDefault();
@@ -50,51 +53,34 @@ const AdminEditUser: React.FunctionComponent = () => {
         );
     };
 
-    const getUser = React.useCallback(async () => {
-        const response = await axiosLoggedRequest({
-            method: 'GET',
-            url: `/users/${userId}`,
-        });
-        if (response.error) {
-            router.push('/admin/users');
-        } else {
-            const u = response.data;
-            delete u.languageCode;
-            setUser(u);
-        }
-    }, [axiosLoggedRequest, router, userId]);
-    React.useEffect(() => {
-        getUser().catch((e) => console.error(e));
-    }, [getUser]);
-
+    const updateUserMutation = useUpdateUserMutation();
+    const isLoading = updateUserMutation.isLoading;
     const submit = async () => {
         if (user === null || !user.pseudo || !user.email) {
-            // todo use validations
             return;
         }
-        setLoading(true);
-        const updatedUser: Partial<User> = { ...user };
-        if (isBlocked) {
-            delete updatedUser.email;
-            delete updatedUser.pseudo;
-        }
-        const response = await axiosLoggedRequest({
-            method: 'PUT',
-            url: `/users/${userId}`,
-            data: updatedUser,
-        });
-        setLoading(false);
-        if (response.error) {
+        try {
+            const updatedUser: { pseudo?: string; email?: string; type: number } = {
+                type: user.type,
+            };
+            if (!isBlocked) {
+                updatedUser.email = user.email;
+                updatedUser.pseudo = user.pseudo;
+            }
+            await updateUserMutation.mutateAsync({
+                userId: user.id,
+                ...updatedUser,
+            });
+            enqueueSnackbar('Utilisateur modifié avec succès!', {
+                variant: 'success',
+            });
+            router.push('/admin/users');
+        } catch (err) {
+            console.error(err);
             enqueueSnackbar('Une erreur est survenue...', {
                 variant: 'error',
             });
-            return;
         }
-        enqueueSnackbar('Utilisateur modifié avec succès!', {
-            variant: 'success',
-        });
-        queryClient.invalidateQueries('users');
-        router.push('/admin/users');
     };
 
     return (
@@ -148,34 +134,6 @@ const AdminEditUser: React.FunctionComponent = () => {
                                     </Button>
                                 )}
                             </div>
-                            <Typography variant="h3">École</Typography>
-                            <div style={{ margin: '0.5rem 0 2rem 0' }}>
-                                <TextField
-                                    variant="standard"
-                                    label="École"
-                                    value={user.school || ''}
-                                    placeholder="Non renseignée"
-                                    color="secondary"
-                                    fullWidth
-                                    onChange={onChangeValue('school')}
-                                    InputLabelProps={{
-                                        shrink: true,
-                                    }}
-                                />
-                                <TextField
-                                    variant="standard"
-                                    style={{ marginTop: '0.5rem' }}
-                                    label="Niveau de la classe"
-                                    value={user.level || ''}
-                                    placeholder="Non renseigné"
-                                    color="secondary"
-                                    fullWidth
-                                    onChange={onChangeValue('level')}
-                                    InputLabelProps={{
-                                        shrink: true,
-                                    }}
-                                />
-                            </div>
                             <Typography variant="h3">Type de compte</Typography>
                             <div style={{ margin: '0.5rem 0 2rem 0' }}>
                                 <FormControl component="fieldset">
@@ -193,7 +151,7 @@ const AdminEditUser: React.FunctionComponent = () => {
                             </div>
                         </div>
                         <Modal
-                            open={isBlockedModalOpen}
+                            isOpen={isBlockedModalOpen}
                             onClose={() => {
                                 setIsBlockedModalOpen(false);
                             }}
@@ -206,7 +164,7 @@ const AdminEditUser: React.FunctionComponent = () => {
                             title="Modifier les identifiants"
                             ariaLabelledBy="up-dialog-title"
                             ariaDescribedBy="up-dialog-description"
-                            fullWidth
+                            isFullWidth
                         >
                             <div>Attention, les identifiants sont nécessaires à la connection ! Êtes vous sur de vouloir les changer ?</div>
                         </Modal>
@@ -216,15 +174,7 @@ const AdminEditUser: React.FunctionComponent = () => {
             <Button variant="outlined" style={{ marginTop: '1rem' }} onClick={goToPath('/admin/users')}>
                 Retour
             </Button>
-            <Backdrop
-                sx={{
-                    zIndex: (theme) => theme.zIndex.drawer + 1,
-                    color: '#fff',
-                }}
-                open={loading}
-            >
-                <CircularProgress color="inherit" />
-            </Backdrop>
+            <Loader isLoading={isLoading} />
         </div>
     );
 };

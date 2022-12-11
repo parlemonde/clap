@@ -5,9 +5,10 @@ import puppeteer from 'puppeteer';
 import { v4 as uuidv4 } from 'uuid';
 
 import type { Question } from '../entities/question';
+import { logger } from '../lib/logger';
 import { getI18n } from '../translations';
-import { logger } from '../utils/logger';
-import { getBase64File, getQRCodeURL } from '../utils/utils';
+import { getBase64File } from '../utils/get-base64-file';
+import { getQRCodeURL } from '../utils/get-qrcode';
 
 const logoFont = getBase64File(path.join(__dirname, 'templates/littledays.woff'));
 const userLogo = getBase64File(path.join(__dirname, 'templates/face.png'));

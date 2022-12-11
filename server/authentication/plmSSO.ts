@@ -2,8 +2,8 @@ import type { JSONSchemaType } from 'ajv';
 import type { NextFunction, Request, Response } from 'express';
 
 import { getUserFromPLM } from '../legacy-plm/api';
-import { AppError, ErrorCode } from '../middlewares/handleErrors';
-import { ajv, sendInvalidDataError } from '../utils/jsonSchemaValidator';
+import { ajv, sendInvalidDataError } from '../lib/json-schema-validator';
+import { AppError } from '../middlewares/handle-errors';
 import { getAccessToken } from './lib/tokens';
 
 const APP_SECRET: string = process.env.APP_SECRET || '';
@@ -34,13 +34,25 @@ export async function loginWithPlmSSO(req: Request, res: Response, next: NextFun
 
     const user = await getUserFromPLM(data.code);
     if (user === null) {
-        throw new AppError('Could not connect with SSO', ErrorCode.UNKNOWN);
+        throw new AppError('forbidden', ['Could not connect with SSO']);
     }
     if (user.accountRegistration !== 10) {
-        throw new AppError('Please use normal login', ErrorCode.DONT_USO_SSO);
+        throw new AppError('forbidden', ['Please use normal login'], 6);
     }
     const { accessToken, refreshToken } = await getAccessToken(user.id, true);
-    res.cookie('access-token', accessToken, { maxAge: 4 * 60 * 60000, expires: new Date(Date.now() + 4 * 60 * 60000), httpOnly: true });
-    res.cookie('refresh-token', refreshToken, { maxAge: 7 * 24 * 60 * 60000, expires: new Date(Date.now() + 7 * 24 * 60 * 60000), httpOnly: true });
+    res.cookie('access-token', accessToken, {
+        maxAge: 4 * 60 * 60000,
+        expires: new Date(Date.now() + 4 * 60 * 60000),
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict',
+    });
+    res.cookie('refresh-token', refreshToken, {
+        maxAge: 7 * 24 * 60 * 60000,
+        expires: new Date(Date.now() + 7 * 24 * 60 * 60000),
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict',
+    });
     res.sendJSON({ user, accessToken, refreshToken: refreshToken });
 }

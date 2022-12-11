@@ -1,9 +1,11 @@
+/* eslint-disable camelcase */
+import type { MLT } from 'mlt-xml';
 import { mltToXml } from 'mlt-xml';
 
 import type { Question } from '../entities/question';
 
 export function objToXml(questions: Question[]) {
-    const mlt = {
+    const mlt: MLT = {
         title: 'watermarkOnVideo',
         producers: [
             {
@@ -64,8 +66,9 @@ export function objToXml(questions: Question[]) {
         if (q.title != null) {
             producerId += 1;
             duration += q.title.duration;
-            const titleDuration = parseInt((q.title.duration / 1000) * 25);
+            const titleDuration = Number((q.title.duration / 1000) * 25);
 
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const style =
                 q.title.style === ''
                     ? {
@@ -75,7 +78,7 @@ export function objToXml(questions: Question[]) {
                       }
                     : JSON.parse(q.title.style);
 
-            mlt.producers.push({
+            mlt.producers?.push({
                 id: `producer${producerId}`,
                 in: `${spentDuration}`,
                 out: `${spentDuration + titleDuration}`,
@@ -85,6 +88,7 @@ export function objToXml(questions: Question[]) {
                 length: `${titleDuration}`,
                 filters: [
                     {
+                        id: `filterForProducer${producerId}`,
                         argument: q.title.text,
                         geometry: '466 389 1029 184 1',
                         size: '144',
@@ -100,7 +104,7 @@ export function objToXml(questions: Question[]) {
                 ],
             });
 
-            mlt.playlists[1].entries.push({
+            mlt.playlists?.[1]?.entries?.push({
                 producer: `producer${producerId}`,
                 in: `${spentDuration}`,
                 out: `${spentDuration + titleDuration}`,
@@ -110,19 +114,19 @@ export function objToXml(questions: Question[]) {
         }
         q.plans.map((p) => {
             producerId += 1;
-            duration += p.duration;
-            const planDuration = parseInt((p.duration / 1000) * 25);
+            duration += p.duration || 0;
+            const planDuration = Number(((p.duration || 0) / 1000) * 25);
 
-            mlt.producers.push({
+            mlt.producers?.push({
                 id: `producer${producerId}`,
                 in: `${spentDuration}`,
                 out: `${spentDuration + planDuration}`,
-                resource: `${p.url}`,
+                resource: `${p.imageUrl}`,
                 mlt_service: 'qimage',
                 length: `${planDuration}`,
             });
 
-            mlt.playlists[1].entries.push({
+            mlt.playlists?.[1]?.entries?.push({
                 producer: `producer${producerId}`,
                 in: `${spentDuration}`,
                 out: `${spentDuration + planDuration}`,
@@ -130,30 +134,31 @@ export function objToXml(questions: Question[]) {
 
             spentDuration += planDuration;
         });
-        if (q.sound != null) {
+        if (q.soundUrl != null) {
             producerId += 1;
-            mlt.producers.push({
+            mlt.producers?.push({
                 id: `producer${producerId}`,
                 in: `0`,
                 out: `${(duration / 1000) * 25}`,
-                resource: `${q.sound.path}`,
+                resource: q.soundUrl,
                 mlt_service: 'qimage',
                 length: `${(duration / 1000) * 25}`,
             });
 
-            mlt.playlists[2].entries.push({
+            mlt.playlists?.[2]?.entries?.push({
                 producer: `producer${producerId}`,
                 in: `${0}`,
                 out: `${spentDuration + (duration / 1000) * 25}`,
             });
         } else {
-            mlt.playlists[2].blanks?.push({
+            mlt.playlists?.[2]?.blanks?.push({
                 length: `${(duration / 1000) * 25}`,
             });
         }
     });
 
     const mltStr = mltToXml(mlt);
+    // eslint-disable-next-line no-console
     console.log(mltStr);
 
     return mltStr;

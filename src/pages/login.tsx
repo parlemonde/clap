@@ -1,22 +1,29 @@
+import Link from 'next/link';
 import { useRouter } from 'next/router';
-import qs from 'query-string';
 import React from 'react';
 
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { NoSsr, Backdrop, CircularProgress } from '@mui/material';
-import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import IconButton from '@mui/material/IconButton';
-import InputAdornment from '@mui/material/InputAdornment';
-import Link from '@mui/material/Link';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
+import {
+    Typography,
+    TextField,
+    InputAdornment,
+    IconButton,
+    FormControlLabel,
+    Checkbox,
+    Button,
+    Link as MaterialLink,
+    Backdrop,
+    CircularProgress,
+} from '@mui/material';
 
+import { userContext } from 'src/contexts/userContext';
 import { useTranslation } from 'src/i18n/useTranslation';
-import { UserServiceContext } from 'src/services/UserService';
-import { ssoHost, ssoHostName, clientId, generateTemporaryToken } from 'src/util';
+import { axiosRequest } from 'src/utils/axiosRequest';
+import { getQueryString } from 'src/utils/get-query-string';
+import type { User } from 'types/models/user.type';
+
+const ssoHostName = 'foo'; // TODO
 
 const errorMessages = {
     0: 'login_unknown_error',
@@ -27,119 +34,49 @@ const errorMessages = {
     6: 'Veuillez utiliser le login par email/mot de passe pour votre compte',
 };
 
-const isRedirectValid = (redirect: string): boolean => {
-    // inner redirection.
-    if (redirect.startsWith('/')) {
-        return true;
-    }
-    // external, allow only same domain.
-    try {
-        const url = new URL(redirect);
-        return url.hostname.slice(-15) === '.parlemonde.org';
-    } catch {
-        return false;
-    }
+type LoginMutationRequest = {
+    username: string;
+    password: string;
+    getRefreshToken?: boolean;
 };
 
-const Login: React.FunctionComponent = () => {
-    const { t } = useTranslation();
-    const { login, loginWithSso } = React.useContext(UserServiceContext);
+const LoginPage = () => {
     const router = useRouter();
-    const [isLoading, setIsLoading] = React.useState(false);
+    const { t } = useTranslation();
+    const { user, setUser } = React.useContext(userContext);
 
     const [showPassword, setShowPassword] = React.useState(false);
-    const [user, setUser] = React.useState({
+    const [login, setLogin] = React.useState<LoginMutationRequest>({
         username: '',
         password: '',
-        remember: false,
+        getRefreshToken: false,
     });
     const [errorCode, setErrorCode] = React.useState(-1);
-    const redirect = React.useRef<string>('/create');
+    const [isLoading, setIsLoading] = React.useState(false);
 
-    const firstCall = React.useRef(false);
-    const loginSSO = React.useCallback(
-        async (code: string) => {
-            if (firstCall.current === false) {
-                firstCall.current = true;
-                setIsLoading(true);
-                const response = await loginWithSso(code);
-                if (response.success) {
-                    router.push(isRedirectValid(redirect.current) ? redirect.current : '/');
-                } else {
-                    setErrorCode(response.errorCode || 0);
-                }
-                setIsLoading(false);
-            }
-        },
-        [loginWithSso, router],
-    );
+    const redirect = React.useMemo(() => {
+        return getQueryString(router.query.redirect) || '/create';
+    }, [router]);
 
-    React.useEffect(() => {
-        const urlQueryParams = qs.parse(window.location.search);
-        try {
-            redirect.current = decodeURI((urlQueryParams.redirect as string) || '/create');
-        } catch (e) {
-            redirect.current = '/create';
-        }
-        if (urlQueryParams.state && urlQueryParams.code) {
-            const state = window.sessionStorage.getItem('oauth-state') || '';
-            if (state === decodeURI(urlQueryParams.state as string)) {
-                loginSSO(decodeURI(urlQueryParams.code as string)).catch();
-            } else {
-                setErrorCode(0);
-            }
-        }
-    }, [loginSSO]);
+    if (user !== null) {
+        return <div></div>;
+    }
 
-    const handleUserNameInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setUser({ ...user, username: event.target.value });
-        if (errorCode === 1) {
-            setErrorCode(-1);
-        }
-    };
-
-    const handlePasswordInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setUser({ ...user, password: event.target.value });
-        if (errorCode === 2) {
-            setErrorCode(-1);
-        }
-    };
-
-    const handleToggleLocalSave = () => {
-        setUser({ ...user, remember: !user.remember });
-    };
-
-    const handleToggleShowPassword = () => {
-        setShowPassword(!showPassword);
-    };
-
-    const submit = async (event: React.MouseEvent) => {
+    const onLogin = async (event: React.MouseEvent) => {
         event.preventDefault();
-        setErrorCode(-1);
-        const response = await login(user.username, user.password, user.remember);
-        if (response.success) {
-            router.push(isRedirectValid(redirect.current) ? redirect.current : '/create');
-        } else {
-            setErrorCode(response.errorCode || 0);
-        }
-    };
-
-    const loginSso = () => {
-        if (!clientId || !ssoHost) {
-            return;
-        }
         setIsLoading(true);
-        const state = generateTemporaryToken();
-        window.sessionStorage.setItem('oauth-state', state);
-        const url = `${ssoHost}/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${
-            window.location.href.split('?')[0]
-        }&state=${state}`;
-        window.location.replace(url);
-    };
-
-    const handleLinkClick = (path: string) => (event: React.MouseEvent) => {
-        event.preventDefault();
-        router.push(path);
+        const response = await axiosRequest<{ user: User }>({
+            method: 'POST',
+            url: `/login`,
+            data: login,
+        });
+        if (response.success) {
+            setUser(response.data.user);
+            router.push(redirect);
+        } else {
+            setErrorCode(response.errorCode);
+        }
+        setIsLoading(false);
     };
 
     return (
@@ -153,28 +90,18 @@ const Login: React.FunctionComponent = () => {
                         {t(errorMessages[errorCode as 0] || errorMessages[0])}
                     </Typography>
                 )}
-                <NoSsr>
-                    {ssoHost.length && clientId ? (
-                        <>
-                            <Button variant="contained" color="secondary" onClick={loginSso} style={{ margin: '1.5rem 0' }}>
-                                Se connecter avec {ssoHostName}
-                            </Button>
-                            <div className="login__divider">
-                                <div className="login__or">
-                                    <span style={{ fontSize: '1.2rem', padding: '0.25rem', backgroundColor: 'white' }}>OU</span>
-                                </div>
-                            </div>
-                        </>
-                    ) : null}
-                </NoSsr>
+                {/* TODO PLMO LOGIN */}
                 <TextField
                     id="username"
                     name="username"
                     type="text"
                     color="secondary"
                     label={t('login_username')}
-                    value={user.username}
-                    onChange={handleUserNameInputChange}
+                    value={login.username}
+                    onChange={(event) => {
+                        setLogin({ ...login, username: event.target.value });
+                        setErrorCode(-1);
+                    }}
                     variant="outlined"
                     fullWidth
                     error={errorCode === 1}
@@ -186,13 +113,22 @@ const Login: React.FunctionComponent = () => {
                     id="password"
                     name="password"
                     label={t('login_password')}
-                    value={user.password}
-                    onChange={handlePasswordInputChange}
+                    value={login.password}
+                    onChange={(event) => {
+                        setLogin({ ...login, password: event.target.value });
+                        setErrorCode(-1);
+                    }}
                     variant="outlined"
                     InputProps={{
                         endAdornment: (
                             <InputAdornment position="end">
-                                <IconButton aria-label="toggle password visibility" onClick={handleToggleShowPassword} edge="end">
+                                <IconButton
+                                    aria-label="toggle password visibility"
+                                    onClick={() => {
+                                        setShowPassword(!showPassword);
+                                    }}
+                                    edge="end"
+                                >
                                     {showPassword ? <Visibility /> : <VisibilityOff />}
                                 </IconButton>
                             </InputAdornment>
@@ -204,22 +140,30 @@ const Login: React.FunctionComponent = () => {
                 />
                 <div>
                     <FormControlLabel
-                        control={<Checkbox checked={user.remember} onChange={handleToggleLocalSave} value={user.remember} />}
+                        control={
+                            <Checkbox
+                                checked={login.getRefreshToken}
+                                onChange={() => {
+                                    setLogin({ ...login, getRefreshToken: !login.getRefreshToken });
+                                }}
+                                value={login.getRefreshToken}
+                            />
+                        }
                         label={t('login_remember_me')}
                     />
                 </div>
-                <Button variant="contained" color="secondary" type="submit" value="Submit" onClick={submit}>
+                <Button variant="contained" color="secondary" type="submit" value="Submit" onClick={onLogin}>
                     {t('login_connect')}
                 </Button>
                 <div className="text-center">
-                    <Link href="/reset-password" onClick={handleLinkClick('/reset-password')}>
-                        {t('login_forgot_password')}
+                    <Link href="/reset-password" passHref>
+                        <MaterialLink>{t('login_forgot_password')}</MaterialLink>
                     </Link>
                 </div>
                 <div className="text-center">
                     {t('login_new')}{' '}
-                    <Link href="/signup" onClick={handleLinkClick('/sign-up')}>
-                        {t('login_signup')}
+                    <Link href="/sign-up" passHref>
+                        <MaterialLink>{t('login_signup')}</MaterialLink>
                     </Link>
                 </div>
             </form>
@@ -230,4 +174,4 @@ const Login: React.FunctionComponent = () => {
     );
 };
 
-export default Login;
+export default LoginPage;

@@ -4,7 +4,7 @@ import React from 'react';
 import { Button, Link, TextField, Typography, Backdrop, CircularProgress } from '@mui/material';
 
 import { useTranslation } from 'src/i18n/useTranslation';
-import { axiosRequest } from 'src/util/axiosRequest';
+import { axiosRequest } from 'src/utils/axiosRequest';
 
 const errorMessages = {
     0: 'login_unknown_error',
@@ -13,7 +13,7 @@ const errorMessages = {
 
 const ResetPassword: React.FunctionComponent = () => {
     const router = useRouter();
-    const { t, currentLocale } = useTranslation();
+    const { t } = useTranslation();
     const [email, setEmail] = React.useState<string>('');
     const [errorCode, setErrorCode] = React.useState<number>(-1);
     const [successMsg, setSuccessMsg] = React.useState<string>('');
@@ -33,14 +33,13 @@ const ResetPassword: React.FunctionComponent = () => {
             url: '/login/reset-password',
             data: {
                 email,
-                languageCode: currentLocale,
             },
         });
         setLoading(false);
-        if (response.error) {
-            setErrorCode(response.data.errorCode);
-        } else {
+        if (response.success) {
             setSuccessMsg('forgot_password_success');
+        } else {
+            setErrorCode(response.status === 400 ? 1 : response.errorCode);
         }
     };
 

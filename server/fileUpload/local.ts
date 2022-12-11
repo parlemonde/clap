@@ -1,80 +1,42 @@
 import fs from 'fs-extra';
+import mime from 'mime-types';
 import path from 'path';
+import type { Readable } from 'stream';
 
-import { logger } from '../utils/logger';
-import { Provider } from './provider';
+import { logger } from '../lib/logger';
+import type { FileStorageProvider, FileData } from './provider';
 
-const STOCKAGE_PROVIDER = process.env.STOCKAGE_PROVIDER_NAME || 'local';
+const getFilePath = (fileUrl: string) => path.join(__dirname, '../..', 'files', fileUrl);
 
-export class LocalUtils extends Provider {
-    constructor() {
-        super();
-    }
-
-    public async deleteImage(filename: string, filePath: string): Promise<void> {
-        if (STOCKAGE_PROVIDER !== 'local') {
-            return;
-        }
-
-        const dir: string = path.join(__dirname, '../..', 'dist', filePath);
-
+export const localStorageProvider: FileStorageProvider = {
+    getFileData: async function (fileUrl: string): Promise<FileData | null> {
         try {
-            await fs.remove(`${dir}/${filename}.jpeg`);
+            const stats = fs.statSync(getFilePath(fileUrl));
+            return {
+                AcceptRanges: 'none',
+                ContentLength: stats.size,
+                ContentType: mime.lookup(fileUrl) || '',
+                LastModified: stats.mtime,
+            };
         } catch (e) {
-            logger.error(`File ${filename} not found !`);
+            return null;
         }
-
-        return;
-    }
-
-    public async uploadImage(filename: string, filePath: string): Promise<string> {
-        if (STOCKAGE_PROVIDER !== 'local') {
-            return '';
-        }
-        return `${process.env.HOST_URL || 'http://localhost:5000'}/${filePath}/${filename}.jpeg`;
-    }
-
-    public async getFile(filename: string): Promise<Buffer | null> {
-        let fileBuffer: Buffer | null = null;
+    },
+    getFile: async function (fileUrl: string): Promise<Readable | null> {
         try {
-            fileBuffer = await new Promise((resolve, reject) => {
-                fs.readFile(path.join(__dirname, '../..', 'dist/files', filename), (err, data) => {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve(data);
-                    }
-                });
-            });
+            return fs.createReadStream(getFilePath(fileUrl));
         } catch (e) {
-            logger.error(`File ${filename} not found !`);
+            logger.error(`File ${fileUrl} not found !`);
         }
-        return fileBuffer;
-    }
-
-    public async uploadFile(filename: string, filedata: Buffer): Promise<void> {
-        try {
-            const directory = path.join(__dirname, '../..', 'dist/files', filename.split('/').slice(0, -1).join('/'));
-            await fs.mkdirs(directory);
-            await new Promise((resolve, reject) => {
-                fs.writeFile(path.join(__dirname, '../..', 'dist/files', filename), filedata, (err) => {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve(undefined);
-                    }
-                });
-            });
-        } catch (e) {
-            console.error(e);
-            logger.error(`Error while uploading ${filename}.`);
-        }
-    }
-
-    public async uploadSound(filename: string, filePath: string): Promise<string> {
-        if (STOCKAGE_PROVIDER !== 'local') {
-            return '';
-        }
-        return `${process.env.HOST_URL || 'http://localhost:5000'}/${filePath}/${filename}.mp3`;
-    }
-}
+        return null;
+    },
+    uploadFile: async function (fileUrl: string, filedata: Buffer): Promise<void> {
+        const previousFolders = fileUrl.split('/').slice(0, -1).join('/');
+        const directory = path.join(__dirname, '../..', 'files', previousFolders);
+        await fs.mkdirs(directory);
+        await fs.writeFile(getFilePath(fileUrl), filedata);
+    },
+    deleteFile: async function (fileUrl: string): Promise<void> {
+        await fs.remove(getFilePath(fileUrl));
+    },
+};

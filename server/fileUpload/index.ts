@@ -1,49 +1,41 @@
-import type { Image } from '../entities/image';
-import { LocalUtils } from './local';
-import type { Provider } from './provider';
-import { AwsS3 } from './s3';
+import type { Readable } from 'stream';
 
-const STOCKAGE_PROVIDER: string = process.env.STOCKAGE_PROVIDER_NAME || 'local';
+import { localStorageProvider } from './local';
+import type { FileData } from './provider';
+import { s3StorageProvider } from './s3';
 
-const providers: { [p: string]: Provider } = {
-    local: new LocalUtils(),
-    s3: new AwsS3(),
-};
+const STOCKAGE_PROVIDER_NAME = (process.env.STOCKAGE_PROVIDER_NAME || 'local').toLowerCase();
+const USE_S3 = STOCKAGE_PROVIDER_NAME === 's3' || STOCKAGE_PROVIDER_NAME === 'minio';
 
-export async function uploadImage(filename: string, filePath: string): Promise<string | null> {
-    if (providers[STOCKAGE_PROVIDER] === undefined) {
-        return null;
+export async function uploadFile(fileName: string, fileData: Buffer): Promise<string> {
+    if (USE_S3) {
+        await s3StorageProvider.uploadFile(fileName, fileData);
     } else {
-        return await providers[STOCKAGE_PROVIDER].uploadImage(filename, filePath);
+        await localStorageProvider.uploadFile(fileName, fileData);
+    }
+    return `/api/${fileName}`;
+}
+
+export function getFileData(fileUrl: string): Promise<FileData | null> {
+    if (USE_S3) {
+        return s3StorageProvider.getFileData(fileUrl);
+    } else {
+        return localStorageProvider.getFileData(fileUrl);
     }
 }
 
-export async function deleteImage(image: Image): Promise<void> {
-    if (providers[STOCKAGE_PROVIDER] !== undefined) {
-        return await providers[STOCKAGE_PROVIDER].deleteImage(image.uuid, image.localPath);
+export function getFile(fileUrl: string, range?: string): Promise<Readable | null> {
+    if (USE_S3) {
+        return s3StorageProvider.getFile(fileUrl, range);
+    } else {
+        return localStorageProvider.getFile(fileUrl, range);
     }
 }
 
-export async function uploadFile(filename: string, filedata: Buffer): Promise<void> {
-    if (providers[STOCKAGE_PROVIDER] === undefined) {
-        return;
+export function deleteFile(fileUrl: string): Promise<void> {
+    if (USE_S3) {
+        return s3StorageProvider.deleteFile(fileUrl);
     } else {
-        return await providers[STOCKAGE_PROVIDER].uploadFile(filename, filedata);
-    }
-}
-
-export async function downloadFile(filename: string): Promise<Buffer | null> {
-    if (providers[STOCKAGE_PROVIDER] === undefined) {
-        return null;
-    } else {
-        return await providers[STOCKAGE_PROVIDER].getFile(filename);
-    }
-}
-
-export async function uploadSound(filename: string, filePath: string): Promise<string | null> {
-    if (providers[STOCKAGE_PROVIDER] === undefined) {
-        return null;
-    } else {
-        return await providers[STOCKAGE_PROVIDER].uploadSound(filename, filePath);
+        return localStorageProvider.deleteFile(fileUrl);
     }
 }

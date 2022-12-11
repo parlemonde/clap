@@ -1,178 +1,268 @@
 import { useRouter } from 'next/router';
+import { useSnackbar } from 'notistack';
 import React from 'react';
 
-import TimeIcon from '@mui/icons-material/Alarm';
-import VoiceOffIcon from '@mui/icons-material/Chat';
+import ChatIcon from '@mui/icons-material/Chat';
+import TimerIcon from '@mui/icons-material/Timer';
 import CloudUploadIcon from '@mui/icons-material/Upload';
-import VoiceOffSoundIcon from '@mui/icons-material/VolumeUp';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
+import VolumeUpIcon from '@mui/icons-material/VolumeUp';
+import { Typography, TextField, Button } from '@mui/material';
 
-import { Inverted } from 'src/components/Inverted';
-import { DiaporamaPlayer } from 'src/components/create/DiaporamaPlayer';
-import { Steps } from 'src/components/create/Steps';
-import { ThemeLink } from 'src/components/create/ThemeLink';
+import { useDeleteSoundMutation } from 'src/api/audios/audios.delete';
+import { useCreateSoundMutation } from 'src/api/audios/audios.post';
+import { useUpdatePlanMutation } from 'src/api/plans/plans.put';
+import { useUpdateQuestionMutation } from 'src/api/questions/questions.put';
+import { useScenario } from 'src/api/scenarios/scenarios.get';
+import { useTheme } from 'src/api/themes/themes.get';
+import { DiaporamaPlayer } from 'src/components/DiaporamaPlayer';
+import { Flex } from 'src/components/layout/Flex';
+import { FlexItem } from 'src/components/layout/FlexItem';
+import { Loader } from 'src/components/layout/Loader';
+import { NextButton } from 'src/components/navigation/NextButton';
+import { Steps } from 'src/components/navigation/Steps';
+import { ThemeBreadcrumbs } from 'src/components/navigation/ThemeBreadcrumbs';
+import { Inverted } from 'src/components/ui/Inverted';
+import { projectContext } from 'src/contexts/projectContext';
 import { useTranslation } from 'src/i18n/useTranslation';
-import { ProjectServiceContext } from 'src/services/useProject';
-import { useQuestionRequests } from 'src/services/useQuestions';
-import { useSoundRequests } from 'src/services/useSound';
-import { getQuestions, getQueryString } from 'src/util';
+import { isString } from 'src/utils/type-guards/is-string';
+import { useQueryNumber } from 'src/utils/useQueryId';
 import type { Question } from 'types/models/question.type';
 
-const PlanTitle: React.FunctionComponent = () => {
+const DEFAULT_SEQUENCE: Question = {
+    id: 0,
+    question: '',
+    index: 0,
+    projectId: 0,
+    plans: [],
+    title: null,
+    voiceOff: null,
+    voiceOffBeginTime: 0,
+    soundUrl: null,
+    soundVolume: 100,
+};
+
+const PreMountSequence = () => {
     const router = useRouter();
-    const { t } = useTranslation();
-    const { project, updateProject } = React.useContext(ProjectServiceContext);
-    const { uploadQuestionSound, editQuestion } = useQuestionRequests();
-    const { editSound } = useSoundRequests();
-    const inputRef = React.useRef<HTMLInputElement | null>(null);
+    const { enqueueSnackbar } = useSnackbar();
+    const { t, currentLocale } = useTranslation();
+    const { project, questions, isLoading: isProjectLoading, updateProject } = React.useContext(projectContext);
+    const { theme, isLoading: isThemeLoading } = useTheme(project ? project.themeId : 0, {
+        enabled: !isProjectLoading && project !== undefined,
+    });
+    const { scenario } = useScenario(project ? project.scenarioId : 0, {
+        enabled: !isProjectLoading && project !== undefined,
+    });
 
-    const questions = getQuestions(project);
-    const questionIndex = parseInt(getQueryString(router.query.question) || '-1', 10);
-    const question = questionIndex !== -1 ? questions[questionIndex] || null : null;
+    const questionIndex = useQueryNumber('question') ?? -1;
+    const currentSequence = React.useMemo(() => (questionIndex !== -1 ? questions[questionIndex] : undefined), [questions, questionIndex]);
+    const backUrl = '/create/4-pre-mounting';
 
-    const handleBack = (event: React.MouseEvent) => {
-        event.preventDefault();
-        router.push(`/create/4-pre-mounting`);
-    };
-
-    const updateQuestion = (index: number, newQuestion: Partial<Question>) => {
-        const questions = project.questions || [];
-        const prevQuestion = questions[index];
-        questions[index] = { ...prevQuestion, ...newQuestion };
-        updateProject({ questions });
-    };
-
-    const handleVoiceOffChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-        if (question === null) return;
-        question.voiceOff = (event.target.value || '').slice(0, 2000);
-        updateQuestion(questionIndex, question);
-    };
-    const handleVoiceOffBlur = async () => {
-        if (question === null) return;
-        updateQuestion(questionIndex, question);
-    };
-
-    const handleConfirm = async (event: React.MouseEvent) => {
-        event.preventDefault();
-        if (question !== null) {
-            updateQuestion(questionIndex, question);
-            if (question.id != null && question.id != -1) {
-                await editQuestion(question);
-            }
-            if (question.sound != null) {
-                await editSound(question.sound);
-            }
+    // --- new values ---
+    const [sequence, setSequence] = React.useState<Question>(currentSequence || DEFAULT_SEQUENCE);
+    const [voiceText, setVoiceText] = React.useState(currentSequence?.voiceOff || '');
+    const [soundBlob, setSoundBlob] = React.useState<Blob | null>(null);
+    const [volume, setVolume] = React.useState<number>(currentSequence?.soundVolume ?? 100);
+    const [soundBeginTime, setSoundBeginTime] = React.useState<number>(currentSequence?.voiceOffBeginTime || 0);
+    const soundUrl = React.useMemo(() => {
+        if (soundBlob !== null) {
+            return URL.createObjectURL(soundBlob);
         }
-        router.push(`/create/4-pre-mounting`);
-    };
+        return sequence.soundUrl || '';
+    }, [soundBlob, sequence.soundUrl]);
 
-    const uploadSound = async (url: string) => {
-        const blobSound = await fetch(url).then((r) => r.blob());
-        await uploadQuestionSound(blobSound, questionIndex);
-    };
+    // On external change, update the sequence.
+    React.useEffect(() => {
+        setSequence(currentSequence || DEFAULT_SEQUENCE);
+        setVoiceText(currentSequence?.voiceOff || '');
+        setVolume(currentSequence?.soundVolume ?? 100);
+        setSoundBeginTime(currentSequence?.voiceOffBeginTime || 0);
+    }, [currentSequence]);
 
-    const handleInputchange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const onInputUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files !== null && event.target.files.length > 0) {
-            const url = URL.createObjectURL(event.target.files[0]);
-            uploadSound(url);
+            setSoundBlob(event.target.files[0]);
+        }
+        event.target.value = ''; // clear input
+    };
+
+    // --- Update sequence and plans ---
+    const deleteSoundMutation = useDeleteSoundMutation();
+    const createSoundMutation = useCreateSoundMutation();
+    const updatePlanMutation = useUpdatePlanMutation();
+    const updateSequenceMutation = useUpdateQuestionMutation();
+    const isLoading =
+        deleteSoundMutation.isLoading || createSoundMutation.isLoading || updatePlanMutation.isLoading || updateSequenceMutation.isLoading;
+
+    const onSubmit = async () => {
+        if (!project || !currentSequence) {
+            return;
+        }
+
+        // [1] delete previous sound if any.
+        if (
+            soundBlob !== null &&
+            currentSequence.soundUrl &&
+            isString(currentSequence.soundUrl) &&
+            currentSequence.soundUrl.startsWith('/api/sounds')
+        ) {
+            try {
+                await deleteSoundMutation.mutateAsync({ soundUrl: currentSequence.soundUrl });
+            } catch (err) {
+                // ignore delete error
+                console.error(err);
+            }
+        }
+
+        try {
+            // [2] upload new sound if any.
+            let newSoundUrl: string | null = currentSequence.soundUrl;
+            if (soundBlob !== null) {
+                const soundResponse = await createSoundMutation.mutateAsync({ sound: soundBlob });
+                newSoundUrl = soundResponse.url;
+            }
+
+            // [3] update sequence data.
+            if (project.id !== 0) {
+                await updateSequenceMutation.mutateAsync({
+                    questionId: currentSequence.id,
+                    title: sequence.title,
+                    voiceOff: voiceText,
+                    voiceOffBeginTime: soundBeginTime,
+                    soundUrl: newSoundUrl,
+                    soundVolume: volume,
+                });
+
+                for (const plan of sequence.plans || []) {
+                    if (plan.duration !== null) {
+                        await updatePlanMutation.mutateAsync({
+                            planId: plan.id,
+                            duration: plan.duration,
+                        });
+                    }
+                }
+            }
+
+            // [4] update project.
+            const newQuestions = [...questions];
+            newQuestions[questionIndex] = {
+                ...sequence,
+                voiceOff: voiceText,
+                voiceOffBeginTime: soundBeginTime,
+                soundUrl: newSoundUrl,
+                soundVolume: volume,
+            };
+            updateProject({
+                questions: newQuestions,
+            });
+            router.push(backUrl);
+        } catch (err) {
+            console.error(err);
+            enqueueSnackbar(t('unknown_error'), {
+                variant: 'error',
+            });
         }
     };
+
+    const diaporamaSequences = React.useMemo(() => (sequence ? [sequence] : []), [sequence]);
 
     return (
         <div>
-            <ThemeLink />
-            <Steps activeStep={3} />
+            <ThemeBreadcrumbs theme={theme} isLoading={isThemeLoading}></ThemeBreadcrumbs>
+            <Steps
+                activeStep={3}
+                themeId={project ? project.themeId : undefined}
+                scenarioName={scenario?.names?.[currentLocale] || undefined}
+                backHref={backUrl}
+            ></Steps>
             <div style={{ maxWidth: '1000px', margin: 'auto', paddingBottom: '2rem' }}>
                 <Typography color="primary" variant="h1">
-                    <Inverted round>4</Inverted> {t('pre_mount_title')} {(question?.index || 0) + 1}
+                    <Inverted round>4</Inverted>
+                    {t('pre_mount_title', { number: questionIndex + 1 })}
                 </Typography>
-                <Typography>
-                    <span>{t('pre_mount_title_desc')}</span>
-                </Typography>
-                <div style={{ marginTop: '20px', display: 'flex' }}>
-                    <div className={`voice-off-icon ${question?.voiceOff == '' ? '' : 'green'}`}>
-                        <VoiceOffIcon />
+                <Typography variant="h2">{t('pre_mount_title_desc')}</Typography>
+
+                {/* Voice text */}
+                <Flex isFullWidth flexDirection="row" alignItems="center" justifyContent="flex-start" style={{ marginTop: '1rem' }}>
+                    <div className={`bolt ${voiceText ? 'green' : ''}`} style={{ marginRight: '10px' }}>
+                        <ChatIcon sx={{ fontSize: '1.25rem', margin: '2px 0' }} />
                     </div>
-                    <span>{t('pre_mount_voice_off')}</span>
-                </div>
-                <div>
-                    <TextField
-                        value={question?.voiceOff ? question?.voiceOff : ''}
-                        onChange={handleVoiceOffChange}
-                        onBlur={handleVoiceOffBlur}
-                        required
-                        multiline
-                        placeholder={t('part4_plan_desc_placeholder')}
-                        fullWidth
-                        style={{ marginTop: '0.5rem' }}
-                        variant="outlined"
-                        color="secondary"
-                        autoComplete="off"
+                    <FlexItem flexGrow={1} flexBasis={0}>
+                        <Typography color="inherit" variant="h2" style={{ margin: '1rem 0' }}>
+                            {t('pre_mount_voice_off')}
+                        </Typography>
+                    </FlexItem>
+                </Flex>
+                <TextField
+                    value={voiceText}
+                    onChange={(event) => {
+                        setVoiceText(event.target.value);
+                    }}
+                    required
+                    multiline
+                    placeholder={t('part4_plan_desc_placeholder')}
+                    fullWidth
+                    minRows={4}
+                    variant="outlined"
+                    color="secondary"
+                    autoComplete="off"
+                />
+
+                {/* Durations */}
+                <Flex isFullWidth flexDirection="row" alignItems="center" justifyContent="flex-start" style={{ marginTop: '2rem' }}>
+                    <div className={`bolt green`} style={{ marginRight: '10px' }}>
+                        <TimerIcon sx={{ fontSize: '1.25rem', margin: '2px 0' }} />
+                    </div>
+                    <FlexItem flexGrow={1} flexBasis={0}>
+                        <Typography color="inherit" variant="h2" style={{ margin: '1rem 0' }}>
+                            {t('pre_mount_duration')}
+                        </Typography>
+                    </FlexItem>
+                </Flex>
+
+                {diaporamaSequences.length > 0 && (
+                    <DiaporamaPlayer
+                        canEdit
+                        canEditPlans
+                        questions={diaporamaSequences}
+                        setQuestion={setSequence}
+                        soundUrl={soundUrl}
+                        volume={volume}
+                        setVolume={setVolume}
+                        soundBeginTime={soundBeginTime}
+                        setSoundBeginTime={setSoundBeginTime}
                     />
-                </div>
-                <div style={{ marginTop: '20px', display: 'flex' }}>
-                    <div className="time-icon">
-                        <TimeIcon />
+                )}
+
+                {/* Sound */}
+                <Flex isFullWidth flexDirection="row" alignItems="center" justifyContent="flex-start" style={{ marginTop: '2rem' }}>
+                    <div className={`bolt ${soundUrl ? 'green' : ''}`} style={{ marginRight: '10px' }}>
+                        <VolumeUpIcon sx={{ fontSize: '1.25rem', margin: '2px 0' }} />
                     </div>
-                    <span>{t('pre_mount_duration')}</span>
-                </div>
-                <div>
-                    <DiaporamaPlayer questions={question ? [question] : []} mountingPlans={true} questionIndex={questionIndex} videoOnly={false} />
-                </div>
-                <div style={{ margin: '50px 0 20px', display: 'flex' }}>
-                    <div className={`voice-off-icon ${question?.sound == null ? '' : 'green'}`}>
-                        <VoiceOffSoundIcon />
-                    </div>
-                    <span>{question?.sound == null ? t('pre_mount_no_sound') : t('pre_mount_sound')}</span>
-                </div>
-                <div style={{ textAlign: 'center' }}>
-                    <input
-                        id="plan-img-upload"
-                        type="file"
-                        accept="audio/mp3"
-                        onChange={handleInputchange}
-                        ref={inputRef}
-                        style={{ display: 'none' }}
-                    />
+                    <FlexItem flexGrow={1} flexBasis={0}>
+                        <Typography color="inherit" variant="h2" style={{ margin: '1rem 0' }}>
+                            {t('pre_mount_no_sound')}
+                        </Typography>
+                    </FlexItem>
+                </Flex>
+                <div className="text-center">
                     <Button
                         variant="outlined"
                         color="secondary"
                         component="label"
-                        htmlFor="plan-img-upload"
+                        htmlFor={'sequence-sound-upload'}
                         style={{ textTransform: 'none' }}
                         startIcon={<CloudUploadIcon />}
                     >
                         {t('import_voice_off')}
                     </Button>
                 </div>
+                <input id="sequence-sound-upload" type="file" accept="audio/*" onChange={onInputUpload} style={{ display: 'none' }} />
 
-                <div style={{ width: '100%', textAlign: 'right', margin: '2rem 0' }}>
-                    <Button
-                        component="a"
-                        variant="outlined"
-                        color="secondary"
-                        style={{ marginRight: '1rem' }}
-                        href="/create/3-storyboard-and-filming-schedule"
-                        onClick={handleBack}
-                    >
-                        {t('cancel')}
-                    </Button>
-                    <Button
-                        component="a"
-                        variant="contained"
-                        color="secondary"
-                        style={{ marginRight: '1rem' }}
-                        href={`/create/3-storyboard-and-filming-schedule/edit?question=${questionIndex}`}
-                        onClick={handleConfirm}
-                    >
-                        {t('save')}
-                    </Button>
-                </div>
+                <NextButton backHref={backUrl} label={t('continue')} onNext={onSubmit} />
             </div>
+            <Loader isLoading={isLoading} />
         </div>
     );
 };
 
-export default PlanTitle;
+export default PreMountSequence;

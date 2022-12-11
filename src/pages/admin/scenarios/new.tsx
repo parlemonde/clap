@@ -1,17 +1,14 @@
 import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
 import React from 'react';
-import { useQueryClient } from 'react-query';
 
 import Close from '@mui/icons-material/Close';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import Backdrop from '@mui/material/Backdrop';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
-import CircularProgress from '@mui/material/CircularProgress';
 import FormControl from '@mui/material/FormControl';
 import IconButton from '@mui/material/IconButton';
 import InputLabel from '@mui/material/InputLabel';
@@ -22,39 +19,35 @@ import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
-import { Modal } from 'src/components/Modal';
+import { useLanguages } from 'src/api/languages/languages.list';
+import { useCreateScenarioMutation } from 'src/api/scenarios/scenarios.post';
+import { useThemes } from 'src/api/themes/themes.list';
 import { AdminTile } from 'src/components/admin/AdminTile';
-import { UserServiceContext } from 'src/services/UserService';
-import { useLanguages } from 'src/services/useLanguages';
-import { useThemeNames } from 'src/services/useThemes';
-import { getQueryString } from 'src/util';
-import type { AxiosReturnType } from 'src/util/axiosRequest';
-import type { GroupedScenario } from 'src/util/groupScenarios';
+import { Loader } from 'src/components/layout/Loader';
+import Modal from 'src/components/ui/Modal';
+import { useQueryNumber } from 'src/utils/useQueryId';
 import type { Language } from 'types/models/language.type';
 import type { Scenario } from 'types/models/scenario.type';
 
-const AdminNewScenario: React.FunctionComponent = () => {
+const AdminNewScenario = () => {
     const router = useRouter();
-    const queryClient = useQueryClient();
     const { enqueueSnackbar } = useSnackbar();
-    const { axiosLoggedRequest } = React.useContext(UserServiceContext);
+
+    const queryThemeId = useQueryNumber('themeId');
+    const { themes } = useThemes({ isDefault: true });
     const { languages } = useLanguages();
     const languagesMap = React.useMemo(
         () => languages.reduce((acc: { [key: string]: number }, language: Language, index: number) => ({ ...acc, [language.value]: index }), {}),
         [languages],
     );
-    const { themeNames } = useThemeNames();
-    const [scenario, setScenario] = React.useState<GroupedScenario>({
-        id: 0,
-        themeId: -1,
-        names: {},
-        descriptions: {},
-        isDefault: true,
-    });
+
+    const [themeId, setThemeId] = React.useState(queryThemeId || -1);
+    const [scenarioNames, setScenarioNames] = React.useState<Scenario['names']>({});
+    const [scenarioDescriptions, setScenarioDescriptions] = React.useState<Scenario['descriptions']>({});
+
     const [showModal, setShowModal] = React.useState<boolean>(false);
     const [languageToAdd, setLanguageToAdd] = React.useState<number>(0);
     const [selectedLanguages, setSelectedLanguages] = React.useState<number[]>([]);
-    const [loading, setLoading] = React.useState<boolean>(false);
     const availableLanguages = languages.filter((_l, index) => !selectedLanguages.includes(index));
 
     const goToPath = (path: string) => (event: React.MouseEvent) => {
@@ -62,20 +55,6 @@ const AdminNewScenario: React.FunctionComponent = () => {
         router.push(path);
     };
 
-    React.useEffect(() => {
-        if (router.query.themeId !== undefined) {
-            const themeId = parseInt(getQueryString(router.query.themeId), 10);
-            if (themeNames[themeId] !== undefined) {
-                setScenario((s) => ({ ...s, themeId }));
-            }
-        }
-    }, [router, themeNames]);
-
-    React.useEffect(() => {
-        if (languagesMap.fr !== undefined && selectedLanguages.length === 0) {
-            setSelectedLanguages([languagesMap.fr]);
-        }
-    }, [selectedLanguages, languagesMap]);
     const onAddLanguage = () => {
         setShowModal(false);
         setSelectedLanguages([...selectedLanguages, languagesMap[availableLanguages[languageToAdd].value]]);
@@ -86,99 +65,63 @@ const AdminNewScenario: React.FunctionComponent = () => {
         const s = [...selectedLanguages];
         s.splice(deleteIndex, 1);
         setSelectedLanguages(s);
-        const newScenario = { ...scenario };
-        delete newScenario.names[language.value];
-        delete newScenario.descriptions[language.value];
-        setScenario(newScenario);
+        setScenarioNames((prev) => {
+            const newNames = { ...prev };
+            delete newNames[language.value];
+            return newNames;
+        });
+        setScenarioDescriptions((prev) => {
+            const newDesc = { ...prev };
+            delete newDesc[language.value];
+            return newDesc;
+        });
     };
 
     const onNameInputChange = (languageValue: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
-        const newScenario = { ...scenario };
-        newScenario.names[languageValue] = event.target.value;
-        setScenario(newScenario);
+        setScenarioNames((prev) => ({
+            ...prev,
+            [languageValue]: event.target.value,
+        }));
     };
     const onDescInputChange = (languageValue: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
-        const newScenario = { ...scenario };
-        newScenario.descriptions[languageValue] = event.target.value;
-        setScenario(newScenario);
+        setScenarioDescriptions((prev) => ({
+            ...prev,
+            [languageValue]: event.target.value,
+        }));
     };
 
     const onThemeSelect = (event: SelectChangeEvent<string | number>) => {
-        const newScenario = { ...scenario };
-        newScenario.themeId = typeof event.target.value === 'number' ? event.target.value : parseInt(event.target.value, 10);
-        setScenario(newScenario);
+        setThemeId(typeof event.target.value === 'number' ? event.target.value : parseInt(event.target.value, 10));
     };
 
+    const createScenarioMutation = useCreateScenarioMutation();
+    const isLoading = createScenarioMutation.isLoading;
     const onSubmit = async () => {
-        const usedLanguages = Object.keys(scenario.names).filter((key) => key !== 'default');
-        if (scenario.themeId === -1 || usedLanguages.length === 0) {
-            enqueueSnackbar(scenario.themeId === -1 ? "Le thème n'est pas choisit!" : 'Le nom du scénario ne peut pas être vide.', {
+        const usedLanguages = Object.keys(scenarioNames);
+        if (themeId === -1 || usedLanguages.length === 0) {
+            enqueueSnackbar(themeId === -1 ? "Le thème n'est pas choisit!" : 'Le nom du scénario ne peut pas être vide.', {
                 variant: 'error',
             });
             return;
         }
-        const firstScenario: Scenario = {
-            id: 0,
-            languageCode: usedLanguages[0],
-            name: scenario.names[usedLanguages[0]],
-            isDefault: true,
-            description: scenario.descriptions[usedLanguages[0]],
-            themeId: scenario.themeId,
-            user: null,
-            questionsCount: 0,
-        };
-        if (!firstScenario.name) {
-            enqueueSnackbar('Le nom du scénario ne peut pas être vide.', {
-                variant: 'error',
+
+        try {
+            await createScenarioMutation.mutateAsync({
+                themeId,
+                names: scenarioNames,
+                descriptions: scenarioDescriptions,
+                isDefault: true,
             });
-            return;
-        }
-        setLoading(true);
-        const response = await axiosLoggedRequest({
-            method: 'POST',
-            url: '/scenarios',
-            data: firstScenario,
-        });
-        if (response.error) {
-            enqueueSnackbar('Une erreur inconnue est survenue...', {
-                variant: 'error',
-            });
-            setLoading(false);
-            return;
-        }
-        if (usedLanguages.length === 1) {
-            setLoading(false);
-            queryClient.invalidateQueries('scenarios');
             enqueueSnackbar('Scénario créé avec succès!', {
                 variant: 'success',
             });
             router.push('/admin/scenarios');
-            return;
+        } catch (err) {
+            console.error(err);
+            enqueueSnackbar('Une erreur inconnue est survenue...', {
+                variant: 'error',
+            });
         }
-        const scenarioId = response.data.id;
-        const responses: Promise<AxiosReturnType>[] = [];
-        for (let i = 1, n = usedLanguages.length; i < n; i++) {
-            responses.push(
-                axiosLoggedRequest({
-                    method: 'POST',
-                    url: '/scenarios',
-                    data: {
-                        ...firstScenario,
-                        id: scenarioId,
-                        languageCode: usedLanguages[i],
-                        name: scenario.names[usedLanguages[i]],
-                        description: scenario.descriptions[usedLanguages[i]],
-                    },
-                }),
-            );
-        }
-        await Promise.all(responses);
-        setLoading(false);
-        enqueueSnackbar('Scénario créé avec succès!', {
-            variant: 'success',
-        });
-        queryClient.invalidateQueries('scenarios');
-        router.push('/admin/scenarios');
     };
 
     return (
@@ -205,12 +148,12 @@ const AdminNewScenario: React.FunctionComponent = () => {
                                 variant="standard"
                                 labelId="demo-simple-select-label"
                                 id="demo-simple-select"
-                                value={scenario.themeId === -1 ? '' : scenario.themeId}
+                                value={themeId === -1 ? '' : themeId}
                                 onChange={onThemeSelect}
                             >
-                                {Object.keys(themeNames).map((themeId) => (
-                                    <MenuItem value={themeId} key={themeId}>
-                                        {themeNames[parseInt(themeId, 10)].fr}
+                                {themes.map((theme) => (
+                                    <MenuItem value={theme.id} key={theme.id}>
+                                        {theme.names.fr}
                                     </MenuItem>
                                 ))}
                             </Select>
@@ -234,7 +177,7 @@ const AdminNewScenario: React.FunctionComponent = () => {
                                 <TextField
                                     variant="standard"
                                     label="Nom"
-                                    value={scenario.names[languages[languageIndex].value] || ''}
+                                    value={scenarioNames[languages[languageIndex].value] || ''}
                                     onChange={onNameInputChange(languages[languageIndex].value)}
                                     color="secondary"
                                     fullWidth
@@ -243,7 +186,7 @@ const AdminNewScenario: React.FunctionComponent = () => {
                                     variant="standard"
                                     style={{ marginTop: '8px' }}
                                     label="Description"
-                                    value={scenario.descriptions[languages[languageIndex].value] || ''}
+                                    value={scenarioDescriptions[languages[languageIndex].value] || ''}
                                     onChange={onDescInputChange(languages[languageIndex].value)}
                                     color="secondary"
                                     multiline
@@ -273,13 +216,10 @@ const AdminNewScenario: React.FunctionComponent = () => {
             <Button variant="outlined" style={{ marginTop: '1rem' }} onClick={goToPath('/admin/scenarios')}>
                 Retour
             </Button>
-            <Backdrop sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, color: '#fff' }} open={loading}>
-                <CircularProgress color="inherit" />
-            </Backdrop>
 
             {/* language modal */}
             <Modal
-                open={showModal}
+                isOpen={showModal}
                 onClose={() => {
                     setShowModal(false);
                 }}
@@ -314,6 +254,7 @@ const AdminNewScenario: React.FunctionComponent = () => {
                     </FormControl>
                 )}
             </Modal>
+            <Loader isLoading={isLoading} />
         </div>
     );
 };
