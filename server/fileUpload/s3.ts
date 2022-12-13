@@ -15,6 +15,9 @@ const S3_CONFIG: S3ClientConfig = {
     endpoint: STOCKAGE_PROVIDER_NAME === 'minio' ? 'http://localhost:9000' : undefined,
     forcePathStyle: true,
 };
+if (STOCKAGE_PROVIDER_NAME !== 'minio') {
+    S3_CONFIG.region = process.env.S3_REGION || 'eu-west-3';
+}
 const S3_CLIENT = new S3Client(S3_CONFIG);
 
 export const s3StorageProvider: FileStorageProvider = {
