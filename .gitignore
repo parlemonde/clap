@@ -63,6 +63,7 @@ public/workbox-*.js
 
 clap-stag.parlemonde.org
 dump
+migrate
 
 test.js
 test.html

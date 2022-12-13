@@ -14,7 +14,7 @@ export class Plan implements PlanInterface {
     @Column()
     public index: number;
 
-    @JoinColumn()
+    @Column({ type: 'varchar', length: 4000, nullable: true, default: null })
     public imageUrl: string | null;
 
     @ManyToOne(() => Question, (question) => question.plans, { onDelete: 'CASCADE' })

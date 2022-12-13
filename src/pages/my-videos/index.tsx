@@ -16,7 +16,7 @@ const VideosPage = () => {
 
     const handleWipProjectClick = (projectId: number) => (event: React.MouseEvent) => {
         event.preventDefault();
-        router.push(`/create/3-storyboard-and-filming-schedule?project=${projectId}`);
+        router.push(`/create/3-storyboard?projectId=${projectId}`);
     };
 
     const handleWipProjectClickEdit = (projectId: number) => () => {
