@@ -1,10 +1,16 @@
 import { mltToXml } from 'mlt-xml';
 
 import type { Question } from '../entities/question';
+import type { Sound } from '../entities/sound';
 
-export function objToXml(questions: Question[]) {
+type Project = {
+    scenarioName: string;
+    sound: Sound;
+};
+
+export function objToXml(questions: Question[], project: Project) {
     const mlt = {
-        title: 'watermarkOnVideo',
+        title: project.scenarioName,
         producers: [
             {
                 id: 'black',
@@ -35,6 +41,10 @@ export function objToXml(questions: Question[]) {
                 entries: [],
                 blanks: [],
             },
+            {
+                id: 'playlist2',
+                entries: [],
+            },
         ],
         tractors: [
             {
@@ -49,6 +59,14 @@ export function objToXml(questions: Question[]) {
                     {
                         producer: 'playlist0',
                         hide: 'audio',
+                    },
+                    {
+                        producer: 'playlist1',
+                        hide: 'video',
+                    },
+                    {
+                        producer: 'playlist2',
+                        hide: 'video',
                     },
                 ],
             },
@@ -77,8 +95,8 @@ export function objToXml(questions: Question[]) {
 
             mlt.producers.push({
                 id: `producer${producerId}`,
-                in: `${spentDuration}`,
-                out: `${spentDuration + titleDuration}`,
+                in: '0',
+                out: `${titleDuration}`,
                 resource: '#FF000000',
                 mlt_service: 'color',
                 mlt_image_format: 'rgba',
@@ -96,14 +114,15 @@ export function objToXml(questions: Question[]) {
                         halign: 'center',
                         valign: 'middle',
                         mlt_service: 'dynamictext',
+                        family: style.fontFamily,
                     },
                 ],
             });
 
             mlt.playlists[1].entries.push({
                 producer: `producer${producerId}`,
-                in: `${spentDuration}`,
-                out: `${spentDuration + titleDuration}`,
+                in: '0',
+                out: `${titleDuration}`,
             });
 
             spentDuration += titleDuration;
@@ -115,8 +134,8 @@ export function objToXml(questions: Question[]) {
 
             mlt.producers.push({
                 id: `producer${producerId}`,
-                in: `${spentDuration}`,
-                out: `${spentDuration + planDuration}`,
+                in: '0',
+                out: `${planDuration}`,
                 resource: `${p.url}`,
                 mlt_service: 'qimage',
                 length: `${planDuration}`,
@@ -124,8 +143,8 @@ export function objToXml(questions: Question[]) {
 
             mlt.playlists[1].entries.push({
                 producer: `producer${producerId}`,
-                in: `${spentDuration}`,
-                out: `${spentDuration + planDuration}`,
+                in: '0',
+                out: `${planDuration}`,
             });
 
             spentDuration += planDuration;
@@ -137,14 +156,13 @@ export function objToXml(questions: Question[]) {
                 in: `0`,
                 out: `${(duration / 1000) * 25}`,
                 resource: `${q.sound.path}`,
-                mlt_service: 'qimage',
                 length: `${(duration / 1000) * 25}`,
             });
 
             mlt.playlists[2].entries.push({
                 producer: `producer${producerId}`,
                 in: `${0}`,
-                out: `${spentDuration + (duration / 1000) * 25}`,
+                out: `${(duration / 1000) * 25}`,
             });
         } else {
             mlt.playlists[2].blanks?.push({
@@ -152,6 +170,23 @@ export function objToXml(questions: Question[]) {
             });
         }
     });
+
+    if (project.sound != null) {
+        producerId += 1;
+        mlt.producers.push({
+            id: `producer${producerId}`,
+            in: '0',
+            out: `${spentDuration}`,
+            resource: `${project.sound.path}`,
+            length: `${spentDuration}`,
+        });
+
+        mlt.playlists[3].entries.push({
+            producer: `producer${producerId}`,
+            in: '0',
+            out: `${spentDuration}`,
+        });
+    }
 
     const mltStr = mltToXml(mlt);
     console.log(mltStr);

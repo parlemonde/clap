@@ -142,8 +142,9 @@ export class ProjectController extends Controller {
     @post({ path: '/mlt' })
     public async getProjectMLT(req: Request, res: Response): Promise<void> {
         const questions: Question[] = getQuestionsFromBody(req);
+        const project: Project = req.body;
 
-        const mlt = objToXml(questions);
+        const mlt = objToXml(questions, project);
 
         res.sendJSON({ mlt });
     }
