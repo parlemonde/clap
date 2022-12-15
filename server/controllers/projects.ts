@@ -427,6 +427,8 @@ projectController.post({ path: '/pdf' }, async (req, res) => {
 });
 
 type PostProjectMLTData = {
+    projectTitle: string;
+    scenarioName: string;
     questions: QuestionsFromBody;
     soundUrl?: string | null;
     soundVolume?: number | null;
@@ -435,6 +437,12 @@ type PostProjectMLTData = {
 const POST_PROJECT_MLT_SCHEMA: JSONSchemaType<PostProjectMLTData> = {
     type: 'object',
     properties: {
+        projectTitle: {
+            type: 'string',
+        },
+        scenarioName: {
+            type: 'string',
+        },
         questions: QUESTION_FROM_BODY_SCHEMA,
         soundUrl: {
             type: 'string',
@@ -451,7 +459,7 @@ const POST_PROJECT_MLT_SCHEMA: JSONSchemaType<PostProjectMLTData> = {
             nullable: true,
         },
     },
-    required: ['questions'],
+    required: ['projectTitle', 'scenarioName', 'questions'],
     additionalProperties: true,
 };
 const postProjectMltValidator = ajv.compile(POST_PROJECT_MLT_SCHEMA);
@@ -462,7 +470,7 @@ projectController.post({ path: '/mlt' }, async (req, res) => {
         return;
     }
     const questions: Question[] = getQuestionsFromBody(data.questions);
-    const mlt = objToXml(questions);
+    const mlt = objToXml(questions, data);
     const id: string = uuidv4();
     const directory: string = path.join(__dirname, '..', 'static/mlt', id);
     await fs.mkdirs(directory);
