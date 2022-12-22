@@ -90,8 +90,8 @@ const ResultPage = () => {
         const url = await getProjectMlt(data);
         if (url) {
             const link = document.createElement('a');
-            link.href = `/static/mlt/${url}`;
-            link.download = 'Montage.xml';
+            link.href = `/static/xml/${url}`;
+            link.download = 'Montage.zip';
             link.click();
         }
     };

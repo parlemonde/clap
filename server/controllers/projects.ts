@@ -1,5 +1,7 @@
 import type { JSONSchemaType } from 'ajv';
+import archiver from 'archiver';
 import fs from 'fs-extra';
+import http from 'http';
 import * as path from 'path';
 import { getRepository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
@@ -29,6 +31,7 @@ type QuestionsFromBody = Array<{
         duration: number | null;
     }>;
 }>;
+
 const QUESTION_FROM_BODY_SCHEMA: JSONSchemaType<QuestionsFromBody> = {
     type: 'array',
     items: {
@@ -61,7 +64,6 @@ const QUESTION_FROM_BODY_SCHEMA: JSONSchemaType<QuestionsFromBody> = {
             voiceOffBeginTime: {
                 type: 'number',
                 nullable: true,
-                minimum: 0,
             },
             soundUrl: {
                 type: 'string',
@@ -470,12 +472,44 @@ projectController.post({ path: '/mlt' }, async (req, res) => {
         return;
     }
     const questions: Question[] = getQuestionsFromBody(data.questions);
-    const mlt = objToXml(questions, data);
+    const { mlt, files } = objToXml(questions, data);
     const id: string = uuidv4();
-    const directory: string = path.join(__dirname, '..', 'static/mlt', id);
+    const directory: string = path.join(__dirname, '..', 'static/xml', id);
     await fs.mkdirs(directory);
-    await fs.writeFile(path.join(directory, 'Montage.xml'), mlt);
-    res.sendJSON({ url: `${id}/Montage.xml` });
+    await fs.writeFile(path.join(directory, 'Montage.mlt'), mlt);
+
+    for (const f of files) {
+        const s = f.split('/');
+        const name = s[s.length - 1];
+        const filePath = path.join(
+            process.env.STOCKAGE_PROVIDER_NAME === 's3' ? '' : req.protocol + '://' + req.host + (process.env.PORT || ':5000'),
+            f,
+        );
+        const file = fs.createWriteStream(path.join(directory, name));
+        http.get(filePath, (response) => {
+            response.pipe(file);
+            file.on('finish', () => {
+                file.close();
+            });
+        });
+    }
+
+    const output = fs.createWriteStream(path.join(directory, '..', `${id}.zip`));
+    const archive = archiver('zip');
+    let finalized = false;
+    output.on('close', function () {
+        if (!finalized) {
+            finalized = true;
+        } else {
+            res.sendJSON({ url: `${id}.zip` });
+        }
+    });
+
+    archive.pipe(output);
+    archive.directory(directory, false);
+    archive.finalize();
+    if (finalized) res.sendJSON({ url: `${id}.zip` });
+    finalized = true;
 });
 
 projectController.delete({ path: '/:id', userType: UserType.CLASS }, async (req, res) => {

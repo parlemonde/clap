@@ -1,5 +1,4 @@
 /* eslint-disable camelcase */
-import type { MLT } from 'mlt-xml';
 import { mltToXml } from 'mlt-xml';
 
 import type { Question } from '../entities/question';
@@ -77,6 +76,7 @@ export function objToXml(questions: Question[], project: Project) {
 
     let producerId = 0;
     let spentDuration = 0;
+    const files: Array<string> = [];
 
     questions.map(async (q) => {
         let duration = 0;
@@ -91,10 +91,14 @@ export function objToXml(questions: Question[], project: Project) {
                 q.title.style === ''
                     ? {
                           fontFamily: 'serif',
-                          top: '10',
-                          left: '35',
+                          y: '10',
+                          x: '35',
+                          width: '50',
                       }
                     : JSON.parse(q.title.style);
+
+            if (style.width == null) style.width = 50;
+            const width = Math.floor((1920 * style.width) / 100);
 
             mlt.producers?.push({
                 id: `producer${producerId}`,
@@ -108,8 +112,8 @@ export function objToXml(questions: Question[], project: Project) {
                     {
                         id: `filterForProducer${producerId}`,
                         argument: q.title.text,
-                        geometry: '466 389 1029 184 1',
-                        size: '144',
+                        geometry: `${Math.floor((1920 * style.x) / 100)} ${Math.floor((1080 * style.y) / 100)} ${width} 200 1`,
+                        size: '120',
                         weight: '500',
                         style: 'normal',
                         fgcolour: '#ffffffff',
@@ -118,7 +122,10 @@ export function objToXml(questions: Question[], project: Project) {
                         halign: 'center',
                         valign: 'middle',
                         mlt_service: 'dynamictext',
-                        family: style.fontFamily,
+                        family: style.fontFamily === 'sans-serif' ? 'Arial' : 'Times New Roman',
+                        'shotcut:filter': 'dynamicText',
+                        'shotcut:usePointSize': '1',
+                        'shotcut:pointSize': '120',
                     },
                 ],
             });
@@ -135,12 +142,13 @@ export function objToXml(questions: Question[], project: Project) {
             producerId += 1;
             duration += p.duration || 0;
             const planDuration = Number(((p.duration || 0) / 1000) * 25);
+            if (p.imageUrl != null) files.push(p.imageUrl);
 
             mlt.producers?.push({
                 id: `producer${producerId}`,
                 in: '0',
                 out: `${planDuration}`,
-                resource: `${p.imageUrl}`,
+                resource: `${p.imageUrl == null ? '' : p.imageUrl.replace('/api/images/', '')}`,
                 mlt_service: 'qimage',
                 length: `${planDuration}`,
             });
@@ -154,12 +162,13 @@ export function objToXml(questions: Question[], project: Project) {
             spentDuration += planDuration;
         });
         if (q.soundUrl != null) {
+            files.push(q.soundUrl);
             producerId += 1;
             mlt.producers?.push({
                 id: `producer${producerId}`,
                 in: `0`,
                 out: `${(duration / 1000) * 25}`,
-                resource: q.soundUrl,
+                resource: q.soundUrl.replace('/api/audios/', ''),
                 length: `${(duration / 1000) * 25}`,
             });
 
@@ -177,11 +186,12 @@ export function objToXml(questions: Question[], project: Project) {
 
     if (project.soundUrl) {
         producerId += 1;
+        files.push(project.soundUrl);
         mlt.producers?.push({
             id: `producer${producerId}`,
             in: '0',
             out: `${spentDuration}`,
-            resource: `${project.soundUrl}`,
+            resource: `${project.soundUrl.replace('/api/audios/', '')}`,
             length: `${spentDuration}`,
         });
 
@@ -196,5 +206,8 @@ export function objToXml(questions: Question[], project: Project) {
     // eslint-disable-next-line no-console
     console.log(mltStr);
 
-    return mltStr;
+    return {
+        mlt: mltStr,
+        files,
+    };
 }

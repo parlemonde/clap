@@ -87,7 +87,7 @@ async function startApp() {
         res.redirect('/admin/themes');
     });
     app.use(`/static/pdf`, express.static(path.join(__dirname, './static/pdf')));
-    app.use(`/static/mlt`, express.static(path.join(__dirname, './static/mlt')));
+    app.use(`/static/xml`, express.static(path.join(__dirname, './static/xml')));
     app.use(express.static(path.join(__dirname, '../../public'))); // app.js is located at ./dist/server and public at ./public
     app.get('/_next/*', (req, res) => {
         handle(req, res).catch((e) => console.error(e));
