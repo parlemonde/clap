@@ -482,7 +482,7 @@ projectController.post({ path: '/mlt' }, async (req, res) => {
         const s = f.split('/');
         const name = s[s.length - 1];
         const filePath = path.join(
-            process.env.STOCKAGE_PROVIDER_NAME === 's3' ? '' : req.protocol + '://' + req.host + (process.env.PORT || ':5000'),
+            process.env.STOCKAGE_PROVIDER_NAME === 's3' ? '' : req.protocol + '://' + req.hostname + (process.env.PORT || ':5000'),
             f,
         );
         const file = fs.createWriteStream(path.join(directory, name));

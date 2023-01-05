@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+import type { MLT } from 'mlt-xml';
 import { mltToXml } from 'mlt-xml';
 
 import type { Question } from '../entities/question';
