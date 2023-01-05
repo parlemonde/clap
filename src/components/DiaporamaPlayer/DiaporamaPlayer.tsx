@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import Image from 'next/image';
 import React from 'react';
 
 import AddIcon from '@mui/icons-material/Add';
@@ -357,11 +358,7 @@ export const DiaporamaPlayer = ({
                                             </>
                                         )}
                                         <div className="diaporama-mounting-plan-frame">
-                                            {plan.imageUrl ? (
-                                                <img height={52} width="auto" src={plan.imageUrl} />
-                                            ) : (
-                                                <div style={{ width: '96px', height: '100%' }}></div>
-                                            )}
+                                            {plan.imageUrl && <Image unoptimized layout="fill" objectFit="contain" src={plan.imageUrl} />}
                                         </div>
                                     </div>
                                 ))}
