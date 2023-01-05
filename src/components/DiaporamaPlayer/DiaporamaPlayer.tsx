@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import Image from 'next/image';
+import { useSnackbar } from 'notistack';
 import React from 'react';
 
 import AddIcon from '@mui/icons-material/Add';
@@ -10,7 +11,7 @@ import PlayArrow from '@mui/icons-material/PlayArrow';
 import RemoveIcon from '@mui/icons-material/Remove';
 import VolumeDown from '@mui/icons-material/VolumeDown';
 import VolumeUp from '@mui/icons-material/VolumeUp';
-import { IconButton, Slider } from '@mui/material';
+import { IconButton, Slider, TextField } from '@mui/material';
 
 import { Frame } from './Frame';
 import { WaveForm } from './WaveForm';
@@ -45,6 +46,7 @@ export const DiaporamaPlayer = ({
     setSoundBeginTime,
     setVolume,
 }: DiaporamaPlayerProps) => {
+    const { enqueueSnackbar } = useSnackbar();
     const [isPlaying, setIsPlaying] = React.useState(false);
     const [time, setTime] = React.useState<number>(0);
     const { onPlay: onPlayAudio, onStop: onStopAudio, onUpdateVolume, onUpdateCurrentTime } = useAudio(soundUrl, volume);
@@ -53,6 +55,12 @@ export const DiaporamaPlayer = ({
     const animationFrameRef = React.useRef<number | null>(null);
     const previousTimeRef = React.useRef<number | null>(null);
     const duration = React.useMemo(() => getProjectDuration(questions), [questions]);
+
+    // Edit global time
+    const [globalTime, setGlobalTime] = React.useState(getFormatedTime(duration));
+    React.useEffect(() => {
+        setGlobalTime(getFormatedTime(duration));
+    }, [duration]);
 
     const beginTimeRef = useFollowingRef(soundBeginTime);
     const animate = (time: number) => {
@@ -223,6 +231,25 @@ export const DiaporamaPlayer = ({
         },
     });
 
+    // Use onPlay following ref to avoid dependency change on function change.
+    const onPlayRef = useFollowingRef(onPlay);
+    React.useEffect(() => {
+        const onKeyPress = (event: KeyboardEvent) => {
+            if (event.key === ' ' || event.key === 'Spacebar') {
+                event.preventDefault();
+                if (!isPlaying) {
+                    onPlayRef.current();
+                } else {
+                    onStop();
+                }
+            }
+        };
+        window.addEventListener('keypress', onKeyPress);
+        return () => {
+            window.removeEventListener('keypress', onKeyPress);
+        };
+    }, [isPlaying, onPlayRef, onStop]);
+
     return (
         <>
             <Head>
@@ -271,7 +298,71 @@ export const DiaporamaPlayer = ({
                                 <RemoveIcon fontSize="inherit" />
                             </IconButton>
                         )}
-                        <p style={{ margin: '0 5px' }}>{getFormatedTime(duration)}</p>
+                        {canEditPlans ? (
+                            <TextField
+                                value={globalTime}
+                                variant="outlined"
+                                size="small"
+                                sx={{
+                                    width: '74px',
+                                    margin: '0 3px',
+                                    input: {
+                                        padding: '2px 4px',
+                                        color: 'white',
+                                    },
+                                }}
+                                onChange={(event) => {
+                                    if (/^[\d|:]*$/.test(event.target.value)) {
+                                        setGlobalTime(event.target.value);
+                                    }
+                                }}
+                                onKeyPress={(event) => {
+                                    if (event.key === 'Enter' && document && document.activeElement && 'blur' in document.activeElement) {
+                                        (document.activeElement as HTMLInputElement).blur();
+                                    }
+                                }}
+                                onBlur={(event) => {
+                                    const question = questions[0];
+                                    const times = event.target.value.split(':');
+                                    const newDuration =
+                                        60000 * Math.min(99, Number(times[0]) || 0) +
+                                        1000 * Math.min(99, Number(times[1]) || 0) +
+                                        10 * Math.min(99, Number(times[2]) || 0);
+                                    const count = (question.title ? 1 : 0) + (question.plans || []).length;
+                                    if (!question || newDuration === duration || newDuration < count * 1000) {
+                                        setGlobalTime(getFormatedTime(duration));
+                                        if (question && newDuration !== duration && newDuration < count * 1000) {
+                                            enqueueSnackbar(`Time can't be below: ${getFormatedTime(count * 1000)}`, {
+                                                variant: 'error',
+                                            });
+                                        }
+                                        return;
+                                    } else {
+                                        const delta = newDuration - duration;
+                                        const count = (question.title ? 1 : 0) + (question.plans || []).length;
+                                        if (Math.abs(delta) < 1000 * count) {
+                                            updateLastDuration(delta);
+                                        } else {
+                                            const dt = delta / count;
+                                            const plans = question.plans || [];
+                                            const newTitle = question.title;
+                                            if (newTitle) {
+                                                newTitle.duration += dt;
+                                            }
+                                            const newPlans = plans.map((plan) => ({ ...plan, duration: (plan.duration || 0) + dt }));
+                                            const newQuestion = {
+                                                ...questions[0],
+                                                plans: newPlans,
+                                                title: newTitle,
+                                            };
+                                            setQuestion(newQuestion);
+                                        }
+                                    }
+                                }}
+                            />
+                        ) : (
+                            <p style={{ margin: '0 5px' }}>{getFormatedTime(duration)}</p>
+                        )}
                         {canEditPlans && (
                             <IconButton
                                 sx={{
