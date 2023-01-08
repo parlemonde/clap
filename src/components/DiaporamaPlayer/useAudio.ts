@@ -1,55 +1,117 @@
 import React from 'react';
 
+import type { Sound } from './lib/get-sounds';
 import { useFollowingRef } from 'src/hooks/useFollowingRef';
 
-export const useAudio = (soundUrl: string, volume: number) => {
+export const useAudio = (soundUrl: string, initialVolume: number, sounds: Sound[]) => {
+    const audioContextRef = React.useRef<AudioContext | null>(null);
+    const gainNodeRef = React.useRef<GainNode | null>(null);
     const audioRef = React.useRef<HTMLAudioElement | null>(null);
+    const audioRefs = React.useRef<HTMLAudioElement[]>([]);
 
-    // Initialize audioRef on soundUrl change. (Ignore volume with a ref.)
-    const volumeRef = useFollowingRef(volume);
+    const volumeRef = useFollowingRef(initialVolume);
     React.useEffect(() => {
+        const audioContext = new AudioContext();
+        audioContextRef.current = audioContext;
+
         if (soundUrl) {
             audioRef.current = new Audio(soundUrl);
-            audioRef.current.volume = volumeRef.current / 100;
-        } else {
-            audioRef.current = null;
+            audioRef.current.volume = 1;
+            const track = new MediaElementAudioSourceNode(audioContext, {
+                mediaElement: audioRef.current,
+            });
+            const gainNode = new GainNode(audioContext);
+            gainNode.gain.value = volumeRef.current / 100;
+            gainNodeRef.current = gainNode;
+            track.connect(gainNode).connect(audioContext.destination);
         }
-    }, [soundUrl, volumeRef]);
+
+        audioRefs.current = [];
+        for (const sound of sounds) {
+            const audio = new Audio(sound.soundUrl);
+            audio.volume = 1;
+            const track = new MediaElementAudioSourceNode(audioContext, {
+                mediaElement: audio,
+            });
+            const gainNode = new GainNode(audioContext);
+            gainNode.gain.value = sound.volume / 100;
+            track.connect(gainNode).connect(audioContext.destination);
+            audioRefs.current.push(audio);
+        }
+
+        return () => {
+            audioContext.close().catch(console.error);
+        };
+    }, [soundUrl, volumeRef, sounds]);
 
     const onUpdateVolume = React.useCallback((newVolume: number) => {
-        if (audioRef.current) {
-            audioRef.current.volume = newVolume / 100;
+        if (gainNodeRef.current) {
+            gainNodeRef.current.gain.value = newVolume / 100;
         }
     }, []);
 
-    const onPlay = React.useCallback(() => {
-        if (
-            audioRef.current &&
-            audioRef.current.paused &&
-            (Number.isNaN(audioRef.current.duration) || audioRef.current.currentTime < (audioRef.current.duration || 0))
-        ) {
-            audioRef.current.play();
+    const onPlay = (time: number, beginTime: number) => {
+        if (audioContextRef.current === null) {
+            return;
         }
-    }, []);
+
+        if (audioContextRef.current.state === 'suspended') {
+            audioContextRef.current.resume().catch(console.error);
+        }
+
+        if (audioRef.current && audioRef.current.paused && time >= beginTime && time - beginTime < (audioRef.current.duration * 1000 || 0)) {
+            audioRef.current.currentTime = (time - beginTime) / 1000;
+            audioRef.current.play();
+        } else if (
+            audioRef.current &&
+            !audioRef.current.paused &&
+            (time < beginTime || time - beginTime >= (audioRef.current.duration * 1000 || 0))
+        ) {
+            audioRef.current.pause();
+        }
+
+        for (let i = 0; i < sounds.length; i++) {
+            const audio = audioRefs.current[i];
+            const sound = sounds[i];
+            if (!audio || !sound) {
+                continue;
+            }
+            if (audio.paused && time >= sound.beginTime && time - sound.beginTime < Math.min((audio.duration || 0) * 1000, sound.maxDuration)) {
+                audio.currentTime = (time - sound.beginTime) / 1000;
+                audio.play();
+            } else if (
+                !audio.paused &&
+                (time < sound.beginTime || time - sound.beginTime >= Math.min((audio.duration || 0) * 1000, sound.maxDuration))
+            ) {
+                audio.pause();
+            }
+        }
+    };
 
     const onStop = React.useCallback(() => {
         if (audioRef.current) {
             audioRef.current.pause();
         }
+        for (const audio of audioRefs.current) {
+            audio.pause();
+        }
     }, []);
 
     const onUpdateCurrentTime = React.useCallback(
         (time: number, beginTime: number) => {
-            const newCurrentTime = (time - beginTime) / 1000;
-            // Update audio time
-            if (audioRef.current && newCurrentTime >= 0) {
-                audioRef.current.currentTime = newCurrentTime;
-            } else if (audioRef.current) {
-                audioRef.current.currentTime = 0;
+            if (audioRef.current) {
+                audioRef.current.currentTime = Math.max(0, (time - beginTime) / 1000);
             }
-            onStop();
+            for (let i = 0; i < sounds.length; i++) {
+                const audio = audioRefs.current[i];
+                const sound = sounds[i];
+                if (!audio || !sound) {
+                    continue;
+                }
+                audio.currentTime = Math.max(0, (time - sound.beginTime) / 1000);
+            }
         },
-        [onStop],
+        [sounds],
     );
 
     return { onPlay, onStop, onUpdateVolume, onUpdateCurrentTime };

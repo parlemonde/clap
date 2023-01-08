@@ -12,6 +12,7 @@ import { getProjectPdf } from 'src/api/projects/projects.pdf';
 import { useScenario } from 'src/api/scenarios/scenarios.get';
 import { useTheme } from 'src/api/themes/themes.get';
 import { DiaporamaPlayer } from 'src/components/DiaporamaPlayer';
+import { getSounds } from 'src/components/DiaporamaPlayer/lib/get-sounds';
 import { Flex } from 'src/components/layout/Flex';
 import { Loader } from 'src/components/layout/Loader';
 import { Steps } from 'src/components/navigation/Steps';
@@ -48,6 +49,7 @@ const ResultPage = () => {
     const { scenario } = useScenario(project ? project.scenarioId : 0, {
         enabled: !isProjectLoading && project !== undefined,
     });
+    const sounds = React.useMemo(() => getSounds(questions), [questions]);
 
     const getData = (): GetPDFParams | undefined => {
         if (!project) {
@@ -128,6 +130,7 @@ const ResultPage = () => {
                             setVolume={() => {}}
                             soundBeginTime={project.musicBeginTime || 0}
                             setSoundBeginTime={() => {}}
+                            sounds={sounds}
                         />
                     )}
                 </div>

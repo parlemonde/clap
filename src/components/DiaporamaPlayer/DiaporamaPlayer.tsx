@@ -17,6 +17,7 @@ import { Frame } from './Frame';
 import { WaveForm } from './WaveForm';
 import { getFormatedTime } from './lib/get-formatted-time';
 import { getProjectDuration } from './lib/get-project-duration';
+import type { Sound } from './lib/get-sounds';
 import { useAudio } from './useAudio';
 import { KeepRatio } from 'src/components/layout/KeepRatio';
 import { useDragHandler } from 'src/hooks/useDragHandler';
@@ -26,6 +27,7 @@ import type { Question } from 'types/models/question.type';
 
 type DiaporamaPlayerProps = {
     questions: Question[];
+    sounds: Sound[];
     volume: number;
     soundUrl: string;
     soundBeginTime: number;
@@ -37,6 +39,7 @@ type DiaporamaPlayerProps = {
 };
 export const DiaporamaPlayer = ({
     questions,
+    sounds,
     soundUrl,
     soundBeginTime,
     volume,
@@ -49,7 +52,7 @@ export const DiaporamaPlayer = ({
     const { enqueueSnackbar } = useSnackbar();
     const [isPlaying, setIsPlaying] = React.useState(false);
     const [time, setTime] = React.useState<number>(0);
-    const { onPlay: onPlayAudio, onStop: onStopAudio, onUpdateVolume, onUpdateCurrentTime } = useAudio(soundUrl, volume);
+    const { onPlay: onPlayAudio, onStop: onStopAudio, onUpdateVolume, onUpdateCurrentTime } = useAudio(soundUrl, volume, sounds);
     const [mountingTableRef, { width: mountingTableWidth }] = useResizeObserver<HTMLDivElement>();
     const mountingPlansWidth = mountingTableWidth - 4; // 2 borders of 2px.
     const animationFrameRef = React.useRef<number | null>(null);
@@ -70,9 +73,7 @@ export const DiaporamaPlayer = ({
             const newTime = Math.max(0, Math.min(duration, prevTime + deltaTime));
             if (newTime < duration) {
                 animationFrameRef.current = requestAnimationFrame(animate);
-                if (newTime >= beginTimeRef.current) {
-                    onPlayAudio();
-                }
+                onPlayAudio(newTime, beginTimeRef.current);
                 return newTime;
             } else {
                 setIsPlaying(false);
@@ -84,7 +85,6 @@ export const DiaporamaPlayer = ({
     const onPlay = () => {
         previousTimeRef.current = null;
         animationFrameRef.current = requestAnimationFrame(animate);
-        onUpdateCurrentTime(time, soundBeginTime);
         setIsPlaying(true);
     };
     const onStop = React.useCallback(() => {
@@ -524,7 +524,7 @@ export const DiaporamaPlayer = ({
                                         setVolume(newValue);
                                         onUpdateVolume(newValue);
                                     }}
-                                    max={100}
+                                    max={200}
                                     min={0}
                                     sx={{
                                         margin: '8px 0',

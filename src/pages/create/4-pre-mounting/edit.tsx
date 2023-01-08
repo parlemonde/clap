@@ -15,6 +15,7 @@ import { useUpdateQuestionMutation } from 'src/api/questions/questions.put';
 import { useScenario } from 'src/api/scenarios/scenarios.get';
 import { useTheme } from 'src/api/themes/themes.get';
 import { DiaporamaPlayer } from 'src/components/DiaporamaPlayer';
+import type { Sound } from 'src/components/DiaporamaPlayer/lib/get-sounds';
 import { Flex } from 'src/components/layout/Flex';
 import { FlexItem } from 'src/components/layout/FlexItem';
 import { Loader } from 'src/components/layout/Loader';
@@ -69,6 +70,7 @@ const PreMountSequence = () => {
         }
         return sequence.soundUrl || '';
     }, [soundBlob, sequence.soundUrl]);
+    const sounds = React.useMemo<Sound[]>(() => [], []);
 
     // On external change, update the sequence.
     React.useEffect(() => {
@@ -230,6 +232,7 @@ const PreMountSequence = () => {
                         setVolume={setVolume}
                         soundBeginTime={soundBeginTime}
                         setSoundBeginTime={setSoundBeginTime}
+                        sounds={sounds}
                     />
                 )}
 
