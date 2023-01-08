@@ -523,6 +523,7 @@ p {
     background-color: rgba(0, 0, 0, 0.7);
     padding: 15px;
     width: 100%;
+    user-select: none;
 }
 .diaporama-global-time {
     display: flex;
@@ -694,6 +695,7 @@ p {
     border-color: #000 transparent transparent;
     left: -14px;
     top: -15px;
+    cursor: ew-resize;
 }
 
 .full-width {

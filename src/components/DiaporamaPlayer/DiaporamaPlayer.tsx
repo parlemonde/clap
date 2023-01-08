@@ -94,7 +94,7 @@ export const DiaporamaPlayer = ({
         onStopAudio();
         setIsPlaying(false);
     }, [onStopAudio]);
-    // On component unmout, stop animation
+    // On component unmount, stop animation
     React.useEffect(() => {
         return onStop;
     }, [onStop]);
@@ -228,6 +228,30 @@ export const DiaporamaPlayer = ({
             setSoundBeginTime(soundBeginTime + dt);
             setDeltaSoundX(0);
             onUpdateCurrentTime(timeRef.current, soundBeginTime + dt);
+        },
+    });
+
+    const initialTimeRef = React.useRef(0);
+    const { onMouseDown: onTimeMouseDown } = useDragHandler({
+        onDragStart(event) {
+            mouseDelta.current = event.clientX;
+            initialTimeRef.current = time;
+            onStop();
+            return mountingPlansWidth !== 0;
+        },
+        onDrag(event) {
+            if (mountingPlansWidth === 0) {
+                return;
+            }
+            const dt = ((event.clientX - mouseDelta.current) * duration) / mountingPlansWidth;
+            setTime(Math.max(0, Math.min(duration, initialTimeRef.current + dt)));
+        },
+        onDragEnd(event) {
+            if (mountingPlansWidth === 0) {
+                return;
+            }
+            const dt = ((event.clientX - mouseDelta.current) * duration) / mountingPlansWidth;
+            setTime(Math.max(0, Math.min(duration, initialTimeRef.current + dt)));
         },
     });
 
@@ -482,7 +506,9 @@ export const DiaporamaPlayer = ({
                                 </>
                             )}
                         </div>
-                        {duration > 0 && <div className="diaporama-time" style={{ left: `${(time / duration) * 100}%` }} />}
+                        {duration > 0 && (
+                            <div className="diaporama-time" onMouseDown={onTimeMouseDown} style={{ left: `${(time / duration) * 100}%` }} />
+                        )}
                     </div>
 
                     <div className="diaporama-volume">
