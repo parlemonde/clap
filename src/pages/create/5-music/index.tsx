@@ -89,7 +89,7 @@ const MusicPage = () => {
             if (project.id !== 0) {
                 await updateProjectMutation.mutateAsync({
                     projectId: project.id,
-                    musicBeginTime: soundBeginTime,
+                    musicBeginTime: Math.round(soundBeginTime),
                     soundUrl: newSoundUrl,
                     soundVolume: volume,
                 });

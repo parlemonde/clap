@@ -26,6 +26,11 @@ questionController.get({ path: '', userType: UserType.CLASS }, async (req, res) 
         order: { index: 'ASC' },
         relations: includes.has('plans') ? ['plans'] : undefined,
     });
+    if (includes.has('plans')) {
+        questions.forEach((question) => {
+            question.plans = question.plans.sort((a, b) => a.index - b.index);
+        });
+    }
     res.sendJSON(questions);
 });
 
@@ -96,7 +101,7 @@ const POST_QUESTION_SCHEMA: JSONSchemaType<PostQuestionData> = {
             type: 'number',
             nullable: true,
             minimum: 0,
-            maximum: 100,
+            maximum: 200,
         },
     },
     required: ['question', 'projectId'],
@@ -209,7 +214,7 @@ const PUT_QUESTION_SCHEMA: JSONSchemaType<PutQuestionData> = {
             type: 'number',
             nullable: true,
             minimum: 0,
-            maximum: 100,
+            maximum: 200,
         },
     },
     required: [],

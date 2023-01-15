@@ -73,7 +73,7 @@ const QUESTION_FROM_BODY_SCHEMA: JSONSchemaType<QuestionsFromBody> = {
                 type: 'number',
                 nullable: true,
                 minimum: 0,
-                maximum: 100,
+                maximum: 200,
             },
             plans: {
                 type: 'array',
@@ -170,7 +170,11 @@ projectController.get({ path: '/:id', userType: UserType.CLASS }, async (req, re
     if (includes.has('questions')) {
         project.questions = await getRepository(Question).find({
             where: { projectId: id },
+            order: { index: 'ASC' },
             relations: includes.has('plans') ? ['plans'] : undefined,
+        });
+        project.questions.forEach((question) => {
+            question.plans = question.plans.sort((a, b) => a.index - b.index);
         });
     }
     res.sendJSON(project);
@@ -180,13 +184,7 @@ type PostProjectData = {
     title: string;
     themeId: number;
     scenarioId: number;
-    questions: Array<{
-        question: string;
-        plans: Array<{
-            description: string;
-            imageUrl?: string;
-        }>;
-    }>;
+    questions: QuestionsFromBody;
     soundUrl?: string | null;
     soundVolume?: number | null;
     musicBeginTime?: number;
@@ -204,34 +202,7 @@ const POST_PROJECT_SCHEMA: JSONSchemaType<PostProjectData> = {
         scenarioId: {
             type: 'number',
         },
-        questions: {
-            type: 'array',
-            items: {
-                type: 'object',
-                properties: {
-                    question: {
-                        type: 'string',
-                    },
-                    plans: {
-                        type: 'array',
-                        items: {
-                            type: 'object',
-                            properties: {
-                                description: {
-                                    type: 'string',
-                                },
-                                imageUrl: {
-                                    type: 'string',
-                                    nullable: true,
-                                },
-                            },
-                            required: ['description'],
-                        },
-                    },
-                },
-                required: ['plans', 'question'],
-            },
-        },
+        questions: QUESTION_FROM_BODY_SCHEMA,
         soundUrl: {
             type: 'string',
             nullable: true,
@@ -240,7 +211,7 @@ const POST_PROJECT_SCHEMA: JSONSchemaType<PostProjectData> = {
             type: 'number',
             nullable: true,
             minimum: 0,
-            maximum: 100,
+            maximum: 200,
         },
         musicBeginTime: {
             type: 'number',
@@ -279,11 +250,17 @@ projectController.post({ path: '/', userType: UserType.CLASS }, async (req, res,
         const newQuestion = new Question();
         newQuestion.question = data.questions[questionIndex].question;
         newQuestion.index = questionIndex;
+        newQuestion.title = data.questions[questionIndex].title || null;
+        newQuestion.voiceOff = data.questions[questionIndex].voiceOff || null;
+        newQuestion.voiceOffBeginTime = data.questions[questionIndex].voiceOffBeginTime || 0;
+        newQuestion.soundUrl = data.questions[questionIndex].soundUrl || null;
+        newQuestion.soundVolume = data.questions[questionIndex].soundVolume || null;
         const newPlans: Plan[] = [];
         for (let planIndex = 0; planIndex < data.questions[questionIndex].plans.length; planIndex++) {
             const newPlan = new Plan();
             newPlan.description = data.questions[questionIndex].plans[planIndex].description;
             newPlan.imageUrl = data.questions[questionIndex].plans[planIndex].imageUrl ?? null;
+            newPlan.duration = data.questions[questionIndex].plans[planIndex].duration ?? null;
             newPlan.index = planIndex;
             newPlans.push(newPlan);
         }
@@ -317,7 +294,7 @@ const PUT_PROJECT_SCHEMA: JSONSchemaType<PutProjectData> = {
             type: 'number',
             nullable: true,
             minimum: 0,
-            maximum: 100,
+            maximum: 200,
         },
         musicBeginTime: {
             type: 'number',
@@ -394,7 +371,7 @@ const POST_PROJECT_PDF_SCHEMA: JSONSchemaType<PostProjectPDFData> = {
             type: 'number',
             nullable: true,
             minimum: 0,
-            maximum: 100,
+            maximum: 200,
         },
         musicBeginTime: {
             type: 'number',
@@ -454,7 +431,7 @@ const POST_PROJECT_MLT_SCHEMA: JSONSchemaType<PostProjectMLTData> = {
             type: 'number',
             nullable: true,
             minimum: 0,
-            maximum: 100,
+            maximum: 200,
         },
         musicBeginTime: {
             type: 'number',

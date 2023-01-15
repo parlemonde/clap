@@ -127,9 +127,9 @@ const PreMountSequence = () => {
             if (project.id !== 0) {
                 await updateSequenceMutation.mutateAsync({
                     questionId: currentSequence.id,
-                    title: sequence.title,
+                    title: sequence.title ? { ...sequence.title, duration: Math.round(sequence.title.duration) } : null,
                     voiceOff: voiceText,
-                    voiceOffBeginTime: soundBeginTime,
+                    voiceOffBeginTime: Math.round(soundBeginTime),
                     soundUrl: newSoundUrl,
                     soundVolume: volume,
                 });
@@ -138,7 +138,7 @@ const PreMountSequence = () => {
                     if (plan.duration !== null) {
                         await updatePlanMutation.mutateAsync({
                             planId: plan.id,
-                            duration: plan.duration,
+                            duration: Math.round(plan.duration),
                         });
                     }
                 }
@@ -149,7 +149,7 @@ const PreMountSequence = () => {
             newQuestions[questionIndex] = {
                 ...sequence,
                 voiceOff: voiceText,
-                voiceOffBeginTime: soundBeginTime,
+                voiceOffBeginTime: Math.round(soundBeginTime),
                 soundUrl: newSoundUrl,
                 soundVolume: volume,
             };

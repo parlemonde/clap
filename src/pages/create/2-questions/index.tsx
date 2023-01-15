@@ -12,6 +12,7 @@ import { useDeleteQuestionMutation } from 'src/api/questions/questions.delete';
 import { useReorderQuestionsMutation } from 'src/api/questions/questions.order';
 import { useScenario } from 'src/api/scenarios/scenarios.get';
 import { useTheme } from 'src/api/themes/themes.get';
+import { SaveProjectModal } from 'src/components/SaveProjectModal';
 import { NextButton } from 'src/components/navigation/NextButton';
 import { Steps } from 'src/components/navigation/Steps';
 import { ThemeBreadcrumbs } from 'src/components/navigation/ThemeBreadcrumbs';
@@ -20,6 +21,7 @@ import Modal from 'src/components/ui/Modal';
 import { Sortable } from 'src/components/ui/Sortable';
 import { Trans } from 'src/components/ui/Trans';
 import { projectContext } from 'src/contexts/projectContext';
+import { userContext } from 'src/contexts/userContext';
 import { useTranslation } from 'src/i18n/useTranslation';
 import { serializeToQueryUrl } from 'src/utils/serializeToQueryUrl';
 
@@ -69,6 +71,7 @@ const QuestionsPage = () => {
     const router = useRouter();
     const { enqueueSnackbar } = useSnackbar();
     const { t, currentLocale } = useTranslation();
+    const { user } = React.useContext(userContext);
     const { project, questions, isLoading: isProjectLoading, updateProject } = React.useContext(projectContext);
     const { theme, isLoading: isThemeLoading } = useTheme(project ? project.themeId : 0, {
         enabled: !isProjectLoading && project !== undefined,
@@ -77,6 +80,7 @@ const QuestionsPage = () => {
         enabled: !isProjectLoading && project !== undefined,
     });
     const [deleteQuestionIndex, setDeleteQuestionIndex] = React.useState(-1);
+    const [showSaveProjectModal, setShowSaveProjectModal] = React.useState(false);
 
     React.useEffect(() => {
         if (!project && !isProjectLoading) {
@@ -177,7 +181,11 @@ const QuestionsPage = () => {
                 )}
                 <NextButton
                     onNext={() => {
-                        router.push('/create/3-storyboard');
+                        if (project !== undefined && project.id === 0 && user !== null) {
+                            setShowSaveProjectModal(true);
+                        } else {
+                            router.push('/create/3-storyboard');
+                        }
                     }}
                 />
                 <Modal
@@ -195,6 +203,13 @@ const QuestionsPage = () => {
                 >
                     Voulez vous vraiment supprimer la question: {questions[deleteQuestionIndex]?.question || ''} ?
                 </Modal>
+                <SaveProjectModal
+                    isOpen={showSaveProjectModal}
+                    onClose={() => {
+                        setShowSaveProjectModal(false);
+                        router.push('/create/3-storyboard');
+                    }}
+                />
             </div>
         </div>
     );

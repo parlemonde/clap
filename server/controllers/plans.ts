@@ -132,7 +132,7 @@ planController.put({ path: '/:id', userType: UserType.ADMIN }, async (req, res, 
     plan.description = data.description ?? plan.description;
     plan.index = data.index ?? plan.index;
     plan.imageUrl = data.imageUrl !== undefined ? data.imageUrl : plan.imageUrl;
-    plan.duration = plan.duration ?? null;
+    plan.duration = data.duration !== undefined ? data.duration : plan.duration;
     await getRepository(Plan).save(plan);
     res.sendJSON(plan);
 });
