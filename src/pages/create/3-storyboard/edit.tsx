@@ -18,6 +18,8 @@ import { useUpdatePlanMutation } from 'src/api/plans/plans.put';
 import { useScenario } from 'src/api/scenarios/scenarios.get';
 import { useTheme } from 'src/api/themes/themes.get';
 import { Canvas } from 'src/components/Canvas';
+import type { ImgCroppieRef } from 'src/components/ImgCroppie';
+import { ImgCroppie } from 'src/components/ImgCroppie';
 import { Flex } from 'src/components/layout/Flex';
 import { FlexItem } from 'src/components/layout/FlexItem';
 import { KeepRatio } from 'src/components/layout/KeepRatio';
@@ -124,12 +126,14 @@ const EditPlan = () => {
 
     // --- local image variables ---
     const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
+    const croppieRef = React.useRef<ImgCroppieRef | null>(null);
     const [isCreatingBlob, setIsCreatingBlob] = React.useState(false);
     const [showChangeModal, setShowChangeModal] = React.useState(false);
     const [showCameraModal, setShowCameraModal] = React.useState(false);
     const [showDrawModal, setShowDrawModal] = React.useState(false);
     const [description, setDescription] = React.useState(plan?.description || '');
     const [imageBlob, setImageBlob] = React.useState<Blob | null>(null);
+    const [temporaryImageUrl, setTemporaryImageUrl] = React.useState<string | null>(null);
     const imageUrl = React.useMemo(() => {
         if (imageBlob !== null) {
             return URL.createObjectURL(imageBlob);
@@ -146,7 +150,7 @@ const EditPlan = () => {
 
     const onInputUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files !== null && event.target.files.length > 0) {
-            setImageBlob(event.target.files[0]);
+            setTemporaryImageUrl(URL.createObjectURL(event.target.files[0]));
         }
         event.target.value = ''; // clear input
         setShowChangeModal(false);
@@ -347,7 +351,6 @@ const EditPlan = () => {
                         )}
                         <Modal
                             isOpen={showCameraModal}
-                            isLoading={isCreatingBlob}
                             onClose={() => {
                                 setShowCameraModal(false);
                             }}
@@ -360,22 +363,8 @@ const EditPlan = () => {
                                 <Camera
                                     idealResolution={{ width: 1920, height: 1080 }}
                                     onTakePhoto={(picture: string) => {
-                                        setIsCreatingBlob(true);
-                                        fetch(picture)
-                                            .then((response) => response.blob())
-                                            .then((blob) => {
-                                                setImageBlob(blob);
-                                            })
-                                            .catch((err) => {
-                                                console.error(err);
-                                                enqueueSnackbar(t('unknown_error'), {
-                                                    variant: 'error',
-                                                });
-                                            })
-                                            .finally(() => {
-                                                setIsCreatingBlob(false);
-                                                setShowCameraModal(false);
-                                            });
+                                        setShowCameraModal(false);
+                                        setTemporaryImageUrl(picture);
                                     }}
                                     isSilentMode={true}
                                 />
@@ -427,6 +416,37 @@ const EditPlan = () => {
                             isFullWidth
                         >
                             <Canvas ref={canvasRef} />
+                        </Modal>
+
+                        {/* image modal */}
+                        <Modal
+                            isOpen={temporaryImageUrl !== null}
+                            onClose={() => {
+                                setTemporaryImageUrl(null);
+                            }}
+                            onConfirm={async () => {
+                                setIsCreatingBlob(true);
+                                if (croppieRef.current) {
+                                    setImageBlob(await croppieRef.current.getBlob());
+                                }
+                                setTemporaryImageUrl(null);
+                                setIsCreatingBlob(false);
+                            }}
+                            isLoading={isCreatingBlob}
+                            confirmLabel="Valider"
+                            cancelLabel="Annuler"
+                            title="Redimensionner l'image"
+                            ariaLabelledBy="add-dialog"
+                            ariaDescribedBy="add-dialog-desc"
+                            isFullWidth
+                        >
+                            {temporaryImageUrl !== null && (
+                                <div className="text-center">
+                                    <div style={{ display: 'inline-block', width: '640px', height: '360px', marginBottom: '2rem' }}>
+                                        <ImgCroppie src={temporaryImageUrl} alt="Plan image" ref={croppieRef} imgWidth={560} imgHeight={315} />
+                                    </div>
+                                </div>
+                            )}
                         </Modal>
                     </>
                 )}
