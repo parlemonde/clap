@@ -55,7 +55,7 @@ export const SaveProjectModal = ({ isOpen, onClose }: SaveProjectModalProps) => 
                 soundVolume: project.soundVolume,
                 musicBeginTime: Math.round(project.musicBeginTime),
             });
-            updateProject({ id: newProject.id });
+            updateProject({ id: newProject.id, title });
             enqueueSnackbar('Project saved successfully!', {
                 variant: 'success',
             });

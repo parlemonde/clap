@@ -140,7 +140,7 @@ const ResultPage = () => {
                 </Typography>
 
                 <Flex flexDirection="column" alignItems="center" style={{ maxWidth: '400px', margin: '0 auto 2rem auto' }}>
-                    <Button className="full-width" variant="contained" color="secondary" onClick={generateMP4}>
+                    {/* <Button className="full-width" variant="contained" color="secondary" onClick={generateMP4}>
                         <SmartDisplay style={{ marginRight: '10px' }} />
                         {t('part6_mp4_button')}
                     </Button>
@@ -150,7 +150,7 @@ const ResultPage = () => {
                             {t('or').toUpperCase()}
                         </Box>
                         <Box sx={styles.verticalLine} />
-                    </div>
+                    </div> */}
                     <Button className="full-width" variant="contained" color="secondary" onClick={generatePDF}>
                         <PictureAsPdf style={{ marginRight: '10px' }} />
                         {t('part6_pdf_button')}

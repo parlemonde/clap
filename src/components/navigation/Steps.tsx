@@ -3,6 +3,7 @@ import React from 'react';
 
 import { Box, MobileStepper, Step, StepLabel, Stepper } from '@mui/material';
 
+import { ProjectTitle } from 'src/components/ProjectTitle';
 import { BackButton } from 'src/components/navigation/BackButton';
 import { projectContext } from 'src/contexts/projectContext';
 import { useTranslation } from 'src/i18n/useTranslation';
@@ -55,6 +56,7 @@ export const Steps = ({ activeStep, themeId, scenarioName, backHref }: StepsProp
     return (
         <div>
             <Box sx={{ display: { xs: 'none', md: 'block' } }}>
+                {activeStep > 0 && <ProjectTitle />}
                 <Stepper sx={{ padding: '24px 0' }} activeStep={activeStep} alternativeLabel>
                     {STEPS.map((step, index) => (
                         <Step

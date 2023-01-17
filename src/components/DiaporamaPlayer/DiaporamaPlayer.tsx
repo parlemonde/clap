@@ -256,8 +256,13 @@ export const DiaporamaPlayer = ({
     });
 
     // Use onPlay following ref to avoid dependency change on function change.
+    const [isHovered, setIsHovered] = React.useState(false);
     const onPlayRef = useFollowingRef(onPlay);
     React.useEffect(() => {
+        if (!isHovered) {
+            return () => {};
+        }
+
         const onKeyPress = (event: KeyboardEvent) => {
             if (event.key === ' ' || event.key === 'Spacebar') {
                 event.preventDefault();
@@ -272,10 +277,17 @@ export const DiaporamaPlayer = ({
         return () => {
             window.removeEventListener('keypress', onKeyPress);
         };
-    }, [isPlaying, onPlayRef, onStop]);
+    }, [isHovered, isPlaying, onPlayRef, onStop]);
 
     return (
-        <>
+        <div
+            onMouseEnter={() => {
+                setIsHovered(true);
+            }}
+            onMouseLeave={() => {
+                setIsHovered(false);
+            }}
+        >
             <Head>
                 {images.map((image, index) => (
                     <link key={index} rel="preload" as="image" href={image}></link>
@@ -550,6 +562,6 @@ export const DiaporamaPlayer = ({
                     </div>
                 </div>
             </div>
-        </>
+        </div>
     );
 };

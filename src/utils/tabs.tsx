@@ -78,7 +78,7 @@ export const getTabs = (
             {
                 label: 'admin',
                 path: '/admin/themes',
-                icon: <SettingsLogo />,
+                icon: <SettingsLogo style={{ fill: 'currentcolor' }} />,
             },
         ];
     }

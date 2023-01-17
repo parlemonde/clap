@@ -129,7 +129,7 @@ export const ProjectContextProvider = ({ children }: { children: React.ReactNode
         } else if (
             themeId !== undefined &&
             scenarioId !== undefined &&
-            (localProject === undefined || localProject.themeId !== themeId || localProject.scenarioId !== scenarioId)
+            (localProject === undefined || localProject.id !== 0 || localProject.themeId !== themeId || localProject.scenarioId !== scenarioId)
         ) {
             createProject().catch();
         } else {
@@ -145,7 +145,9 @@ export const ProjectContextProvider = ({ children }: { children: React.ReactNode
             // Will load if current project is different from query params.
             return (
                 (projectId !== undefined && project.id !== projectId) ||
-                (themeId !== undefined && scenarioId !== undefined && (project.themeId !== themeId || project.scenarioId !== scenarioId))
+                (themeId !== undefined &&
+                    scenarioId !== undefined &&
+                    (project.themeId !== themeId || project.scenarioId !== scenarioId || project.id !== 0))
             );
         }
         // Or will load if project is undefined and query params are defined.
