@@ -233,8 +233,8 @@ main
           each plan in question.plans
             - count += 1
             .plan
-              if plan.url
-                .plan-image(style=`background-image: url(${plan.url})`)
+              if plan.imageUrl
+                .plan-image(style=`background-image: url(${plan.imageUrl})`)
                   .plan-number #{count}
               else
                 .plan-image

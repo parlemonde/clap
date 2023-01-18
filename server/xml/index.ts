@@ -204,9 +204,6 @@ export function objToXml(questions: Question[], project: Project) {
     }
 
     const mltStr = mltToXml(mlt);
-    // eslint-disable-next-line no-console
-    console.log(mltStr);
-
     return {
         mlt: mltStr,
         files,

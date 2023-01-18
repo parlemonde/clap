@@ -16,6 +16,7 @@ import { normalizePort, onError } from './lib/server';
 import { authenticate } from './middlewares/authenticate';
 import { crsfProtection } from './middlewares/csrf-check';
 import { handleErrors } from './middlewares/handle-errors';
+import { jsonify } from './middlewares/jsonify';
 import { removeTrailingSlash } from './middlewares/remove-trailing-slash';
 import { routes } from './routes';
 import { getLocales } from './translations/getLocales';
@@ -65,6 +66,7 @@ async function startApp() {
     app.use(bodyParser.json());
     app.use(cookieParser());
     app.use(crsfProtection());
+    app.use(jsonify);
 
     // --- BACKEND ---
     const backRouter = Router();

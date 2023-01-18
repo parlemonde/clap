@@ -1,7 +1,6 @@
 import { Router } from 'express';
 
 import { handleErrors } from '../middlewares/handle-errors';
-import { jsonify } from '../middlewares/jsonify';
 import { login } from './login';
 import { logout } from './logout';
 import { resetPassword, updatePassword, verifyEmail } from './password';
@@ -9,7 +8,6 @@ import { loginWithPlmSSO } from './plmSSO';
 import { refreshToken, rejectAccessToken } from './refreshToken';
 
 const authRouter = Router();
-authRouter.use(jsonify);
 authRouter.post('/token', handleErrors(refreshToken));
 authRouter.post('/token/reject', handleErrors(rejectAccessToken));
 authRouter.post('/login', handleErrors(login));
