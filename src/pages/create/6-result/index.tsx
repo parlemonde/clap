@@ -1,7 +1,7 @@
 import React from 'react';
 
 import PictureAsPdf from '@mui/icons-material/PictureAsPdf';
-import SmartDisplay from '@mui/icons-material/SmartDisplay';
+// import SmartDisplay from '@mui/icons-material/SmartDisplay';
 import VideoFile from '@mui/icons-material/VideoFile';
 import { Box, Button, Typography } from '@mui/material';
 import type { Theme as MaterialTheme } from '@mui/material/styles';
@@ -98,9 +98,9 @@ const ResultPage = () => {
         }
     };
 
-    const generateMP4 = () => {
-        // todo
-    };
+    // const generateMP4 = () => {
+    //     // todo
+    // };
 
     return (
         <div>
