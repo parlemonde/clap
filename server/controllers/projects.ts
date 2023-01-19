@@ -1,7 +1,7 @@
 import type { JSONSchemaType } from 'ajv';
 import archiver from 'archiver';
 import fs from 'fs-extra';
-import http from 'http';
+// import http from 'http';
 import * as path from 'path';
 import { getRepository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
@@ -13,6 +13,7 @@ import { Question } from '../entities/question';
 import { UserType } from '../entities/user';
 import { getFile } from '../fileUpload';
 import { ajv, sendInvalidDataError } from '../lib/json-schema-validator';
+import { logger } from '../lib/logger';
 import { AppError } from '../middlewares/handle-errors';
 import { htmlToPDF, PDF } from '../pdf';
 import { getQueryString } from '../utils/get-query-string';
@@ -468,14 +469,16 @@ projectController.post({ path: '/mlt' }, async (req, res) => {
     archive.append(mlt, { name: 'Montage.mlt' });
     for (const file of files) {
         if (file.startsWith('/api')) {
+            logger.info(`[MLT] get file from s3: ${file}`);
             const fileStream = await getFile(file.slice(4));
             if (fileStream !== null) {
                 archive.append(fileStream, { name: file.split('/').slice(-1)[0] });
             }
         } else {
-            http.get(file, (response) => {
-                archive.append(response, { name: file });
-            });
+            logger.info(`[MLT] Should fetch http file: ${file}`);
+            // http.get(file, (response) => {
+            //     archive.append(response, { name: file });
+            // });
         }
     }
 
