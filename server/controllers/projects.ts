@@ -1,7 +1,7 @@
 import type { JSONSchemaType } from 'ajv';
 import archiver from 'archiver';
 import fs from 'fs-extra';
-// import http from 'http';
+import http from 'http';
 import * as path from 'path';
 import { getRepository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
@@ -467,18 +467,22 @@ projectController.post({ path: '/mlt' }, async (req, res) => {
 
     // Add files to the archive.
     archive.append(mlt, { name: 'Montage.mlt' });
-    for (const file of files) {
+    for (const file of files.filter((file) => file !== undefined && file !== null && file.length > 0)) {
         if (file.startsWith('/api')) {
             logger.info(`[MLT] get file from s3: ${file}`);
-            const fileStream = await getFile(file.slice(4));
+            const fileStream = await getFile(file.slice(5));
             if (fileStream !== null) {
                 archive.append(fileStream, { name: file.split('/').slice(-1)[0] });
             }
         } else {
-            logger.info(`[MLT] Should fetch http file: ${file}`);
-            // http.get(file, (response) => {
-            //     archive.append(response, { name: file });
-            // });
+            logger.info(`[MLT] fetch http file: ${file}`);
+            try {
+                http.get(file, (response) => {
+                    archive.append(response, { name: file });
+                });
+            } catch (err) {
+                // ignore
+            }
         }
     }
 
