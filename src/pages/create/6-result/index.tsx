@@ -49,6 +49,7 @@ const ResultPage = () => {
     const { scenario } = useScenario(project ? project.scenarioId : 0, {
         enabled: !isProjectLoading && project !== undefined,
     });
+    const [isLoading, setIsLoading] = React.useState(false);
     const sounds = React.useMemo(() => getSounds(questions), [questions]);
 
     const getData = (): GetPDFParams | undefined => {
@@ -78,7 +79,9 @@ const ResultPage = () => {
         if (!data) {
             return;
         }
+        setIsLoading(true);
         const url = await getProjectPdf(data);
+        setIsLoading(false);
         if (url) {
             window.open(`/static/pdf/${url}`);
         }
@@ -89,7 +92,9 @@ const ResultPage = () => {
         if (!data) {
             return;
         }
+        setIsLoading(true);
         const url = await getProjectMlt(data);
+        setIsLoading(false);
         if (url) {
             const link = document.createElement('a');
             link.href = `/static/xml/${url}`;
@@ -168,7 +173,7 @@ const ResultPage = () => {
                     </Button>
                 </Flex>
             </div>
-            <Loader isLoading={false} />
+            <Loader isLoading={isLoading} />
         </div>
     );
 };

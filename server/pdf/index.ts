@@ -13,6 +13,7 @@ import { getQRCodeURL } from '../utils/get-qrcode';
 const logoFont = getBase64File(path.join(__dirname, 'templates/littledays.woff'));
 const userLogo = getBase64File(path.join(__dirname, 'templates/face.png'));
 const IS_DOCKER = Boolean(process.env.DOCKER);
+const HOST_URL = process.env.HOST_URL || 'http://localhost:5000';
 
 export enum PDF {
     PLAN_DE_TOURNAGE,
@@ -62,7 +63,13 @@ export async function htmlToPDF<P extends PDF>(pdf: P, options: PDFOptions<P>, l
         return undefined;
     }
     const filename: string = templateData.filename;
-    const html = pug.renderFile(path.join(__dirname, 'templates', templateData.pugFile), { ...templateData.args, logoFont, userLogo, t });
+    const html = pug.renderFile(path.join(__dirname, 'templates', templateData.pugFile), {
+        ...templateData.args,
+        logoFont,
+        userLogo,
+        hostUrl: HOST_URL,
+        t,
+    });
 
     const id: string = uuidv4();
     const directory: string = path.join(__dirname, '..', 'static/pdf', id);

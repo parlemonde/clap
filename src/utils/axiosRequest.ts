@@ -30,6 +30,10 @@ const axiosRequest = async <T>(req: AxiosRequestConfig): Promise<AxiosReturnType
         };
     } catch (error) {
         if (axios.isAxiosError(error)) {
+            if ((error.response || {}).status === 401 || (error.response || {}).status === 403) {
+                window.location.replace('/login');
+            }
+
             if (error.response) {
                 // The request was made and the server responded with a status code
                 // that falls out of the range of 2xx

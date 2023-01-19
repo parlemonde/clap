@@ -54,18 +54,18 @@ export function authenticate(userType: UserType | undefined = undefined): Reques
         }
 
         // authenticate
-        const decoded: string | { userId: number; iat: number; exp: number } = jwt.verify(token, APP_SECRET) as
-            | string
-            | { userId: number; iat: number; exp: number };
         let data: { userId: number; iat: number; exp: number };
-        if (typeof decoded === 'string') {
-            try {
+        try {
+            const decoded: string | { userId: number; iat: number; exp: number } = jwt.verify(token, APP_SECRET) as
+                | string
+                | { userId: number; iat: number; exp: number };
+            if (typeof decoded === 'string') {
                 data = JSON.parse(decoded);
-            } catch (e) {
-                throw new AppError('forbidden');
+            } else {
+                data = decoded;
             }
-        } else {
-            data = decoded;
+        } catch (e) {
+            throw new AppError('forbidden');
         }
         const user = await getRepository(User).findOne({ where: { id: data.userId } });
         if (userType !== undefined && (user === undefined || user.type < userType)) {
