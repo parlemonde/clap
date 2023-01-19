@@ -11,6 +11,7 @@ import { Plan } from '../entities/plan';
 import { Project } from '../entities/project';
 import { Question } from '../entities/question';
 import { UserType } from '../entities/user';
+import { getFile } from '../fileUpload';
 import { ajv, sendInvalidDataError } from '../lib/json-schema-validator';
 import { AppError } from '../middlewares/handle-errors';
 import { htmlToPDF, PDF } from '../pdf';
@@ -450,43 +451,39 @@ projectController.post({ path: '/mlt' }, async (req, res) => {
     }
     const questions: Question[] = getQuestionsFromBody(data.questions);
     const { mlt, files } = objToXml(questions, data);
+
     const id: string = uuidv4();
     const directory: string = path.join(__dirname, '..', 'static/xml', id);
     await fs.mkdirs(directory);
-    await fs.writeFile(path.join(directory, 'Montage.mlt'), mlt);
 
-    for (const f of files) {
-        const s = f.split('/');
-        const name = s[s.length - 1];
-        const filePath = path.join(
-            process.env.STOCKAGE_PROVIDER_NAME === 's3' ? '' : req.protocol + '://' + req.hostname + (process.env.PORT || ':5000'),
-            f,
-        );
-        const file = fs.createWriteStream(path.join(directory, name));
-        http.get(filePath, (response) => {
-            response.pipe(file);
-            file.on('finish', () => {
-                file.close();
-            });
-        });
-    }
-
-    const output = fs.createWriteStream(path.join(directory, '..', `${id}.zip`));
+    // Create output zip file-stream.
+    const output = fs.createWriteStream(path.join(directory, `Montage.zip`));
     const archive = archiver('zip');
-    let finalized = false;
+    archive.pipe(output);
     output.on('close', function () {
-        if (!finalized) {
-            finalized = true;
-        } else {
-            res.sendJSON({ url: `${id}.zip` });
-        }
+        res.sendJSON({ url: `${id}/Montage.zip` });
     });
 
-    archive.pipe(output);
-    archive.directory(directory, false);
+    // Add files to the archive.
+    archive.append(mlt, { name: 'Montage.mlt' });
+    for (const file of files) {
+        if (file.startsWith('/api')) {
+            const fileStream = await getFile(file.slice(4));
+            if (fileStream !== null) {
+                archive.append(fileStream, { name: file.split('/').slice(-1)[0] });
+            }
+        } else {
+            http.get(file, (response) => {
+                archive.append(response, { name: file });
+            });
+        }
+    }
+
+    // good practice to catch this error explicitly
+    archive.on('error', function (err) {
+        throw err;
+    });
     archive.finalize();
-    if (finalized) res.sendJSON({ url: `${id}.zip` });
-    finalized = true;
 });
 
 projectController.delete({ path: '/:id', userType: UserType.CLASS }, async (req, res) => {
