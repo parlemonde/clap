@@ -168,14 +168,14 @@ const Scenario = ({ projectId, isSavedProject, sequence, sequenceIndex, planStar
                         setDeletePlanIndex(-1);
                     }}
                     onConfirm={onDeletePlan}
-                    title="Supprimer le plan ?"
-                    confirmLabel="Supprimer"
+                    title={t('part3_delete_plan_question')}
+                    confirmLabel={t('delete')}
                     confirmLevel="error"
                     ariaLabelledBy="delete_plan_confirm"
                     ariaDescribedBy="delete_plan_confirm_description"
                     isLoading={deletePlanMutation.isLoading}
                 >
-                    Voulez vous vraiment supprimer le plan n°{planStartIndex + deletePlanIndex} ?
+                    {t('part3_delete_plan_desc', { planNumber: planStartIndex + deletePlanIndex })}
                 </Modal>
                 <Modal
                     isOpen={showDeleteTitle}
@@ -183,14 +183,14 @@ const Scenario = ({ projectId, isSavedProject, sequence, sequenceIndex, planStar
                         setShowDeleteTitle(false);
                     }}
                     onConfirm={onDeleteTitle}
-                    title="Supprimer le titre du plan ?"
-                    confirmLabel="Supprimer"
+                    title={t('part3_delete_plan_title')}
+                    confirmLabel={t('delete')}
                     confirmLevel="error"
                     ariaLabelledBy="delete_title_confirm"
                     ariaDescribedBy="delete_title_confirm_description"
                     isLoading={updateQuestionMutation.isLoading}
                 >
-                    Voulez vous vraiment supprimer le titre du plan ?
+                    {t('part3_delete_plan_title_desc')}
                 </Modal>
             </div>
         </>

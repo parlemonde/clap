@@ -62,12 +62,12 @@ const EditProject: React.FC = () => {
             if (localProject && localProject.id === projectId) {
                 updateProject({ title: projectTitle });
             }
-            enqueueSnackbar('Projet modifié !', {
+            enqueueSnackbar(t('project_saved'), {
                 variant: 'success',
             });
         } catch (err) {
             console.error(err);
-            enqueueSnackbar('Une erreur inconnue est survenue...', {
+            enqueueSnackbar(t('unknown_error'), {
                 variant: 'error',
             });
         }
@@ -78,13 +78,13 @@ const EditProject: React.FC = () => {
     const onDeleteProject = async () => {
         try {
             await deleteProjectMutation.mutateAsync({ projectId });
-            enqueueSnackbar('Projet supprimé !', {
+            enqueueSnackbar(t('project_deleted'), {
                 variant: 'success',
             });
             router.push('/my-videos');
         } catch (err) {
             console.error(err);
-            enqueueSnackbar('Une erreur inconnue est survenue...', {
+            enqueueSnackbar(t('unknown_error'), {
                 variant: 'error',
             });
         }

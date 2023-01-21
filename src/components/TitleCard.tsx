@@ -56,7 +56,7 @@ export const TitleCard = ({ projectId, questionIndex, title, onDelete = () => {}
                             </p>
                         ) : (
                             <p className="title-card-placeholder">
-                                T <span>Ajouter un titre</span>
+                                T <span>{t('part3_add_title')}</span>
                             </p>
                         )}
                         {title && (

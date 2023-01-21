@@ -196,20 +196,20 @@ const QuestionsPage = () => {
                         setDeleteQuestionIndex(-1);
                     }}
                     onConfirm={onDeleteQuestion}
-                    title="Supprimer la question?"
-                    confirmLabel="Supprimer"
+                    title={t('part2_delete_question_title')}
+                    confirmLabel={t('delete')}
                     confirmLevel="error"
                     ariaLabelledBy="delete_question_confirm"
                     ariaDescribedBy="delete_question_confirm_description"
                     isLoading={deleteQuestionMutation.isLoading}
                 >
-                    Voulez vous vraiment supprimer la question: {questions[deleteQuestionIndex]?.question || ''} ?
+                    {t('part2_delete_question_desc')} {questions[deleteQuestionIndex]?.question || ''} ?
                 </Modal>
                 <SaveProjectModal
                     isOpen={showSaveProjectModal}
-                    onClose={() => {
+                    onClose={(newProjectId?: number) => {
                         setShowSaveProjectModal(false);
-                        router.push(`/create/3-storyboard${serializeToQueryUrl({ projectId: project?.id || null })}`);
+                        router.push(`/create/3-storyboard${serializeToQueryUrl({ projectId: newProjectId || null })}`);
                     }}
                 />
             </div>

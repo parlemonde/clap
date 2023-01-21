@@ -6,6 +6,7 @@ import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import { KeepRatio } from 'src/components/layout/KeepRatio';
 import { useDragHandler } from 'src/hooks/useDragHandler';
 import { useResizeObserver } from 'src/hooks/useResizeObserver';
+import { useTranslation } from 'src/i18n/useTranslation';
 import { PrimaryColor } from 'src/styles/theme';
 import type { Title } from 'types/models/title.type';
 
@@ -22,6 +23,7 @@ type TitleCanvasProps = {
     onChange: React.Dispatch<React.SetStateAction<Title>>;
 };
 export function TitleCanvas({ title, onChange }: TitleCanvasProps) {
+    const { t } = useTranslation();
     const style = React.useMemo(() => getStyle(title.style), [title]);
 
     // --- Title variables ---
@@ -200,9 +202,9 @@ export function TitleCanvas({ title, onChange }: TitleCanvasProps) {
                                 cursor: 'pointer',
                             }}
                         >
-                            <option value={6}>petit</option>
-                            <option value={8}>moyen</option>
-                            <option value={10}>grand</option>
+                            <option value={6}>{t('small')}</option>
+                            <option value={8}>{t('medium')}</option>
+                            <option value={10}>{t('big')}</option>
                         </select>
                     </div>
                     <textarea

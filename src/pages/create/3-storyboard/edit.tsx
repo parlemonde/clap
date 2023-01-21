@@ -434,9 +434,9 @@ const EditPlan = () => {
                                 setIsCreatingBlob(false);
                             }}
                             isLoading={isCreatingBlob}
-                            confirmLabel="Valider"
-                            cancelLabel="Annuler"
-                            title="Redimensionner l'image"
+                            confirmLabel={t('validate')}
+                            cancelLabel={t('cancel')}
+                            title={t('part3_resize_image')}
                             ariaLabelledBy="add-dialog"
                             ariaDescribedBy="add-dialog-desc"
                             isFullWidth

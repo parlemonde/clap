@@ -11,7 +11,7 @@ import { useTranslation } from 'src/i18n/useTranslation';
 
 type SaveProjectModalProps = {
     isOpen: boolean;
-    onClose: () => void;
+    onClose: (projectId?: number) => void;
 };
 export const SaveProjectModal = ({ isOpen, onClose }: SaveProjectModalProps) => {
     const router = useRouter();
@@ -55,12 +55,10 @@ export const SaveProjectModal = ({ isOpen, onClose }: SaveProjectModalProps) => 
                 soundVolume: project.soundVolume,
                 musicBeginTime: Math.round(project.musicBeginTime),
             });
-            // TODO: update project id in url.
-            setProject(newProject);
-            enqueueSnackbar('Project saved successfully!', {
+            enqueueSnackbar(t('project_saved'), {
                 variant: 'success',
             });
-            onClose();
+            onClose(newProject.id);
         } catch (err) {
             console.error(err);
             enqueueSnackbar(t('unknown_error'), {

@@ -46,6 +46,7 @@ export const BottomNavBar = () => {
                     bottom: 0,
                     left: 0,
                     right: 0,
+                    zIndex: 1000,
                     borderRadius: 0,
                     backgroundColor: '#fafafa',
                     borderTop: '1px solid rgba(128, 128, 128, 0.7)',

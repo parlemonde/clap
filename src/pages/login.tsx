@@ -62,7 +62,7 @@ const LoginPage = () => {
         return <div></div>;
     }
 
-    const onLogin = async (event: React.MouseEvent) => {
+    const onLogin = async (event: React.FormEvent) => {
         event.preventDefault();
         setIsLoading(true);
         const response = await axiosRequest<{ user: User }>({
