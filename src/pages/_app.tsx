@@ -23,7 +23,6 @@ import { AdminDrawer } from 'src/components/admin/AdminDrawer';
 import { Flex } from 'src/components/layout/Flex';
 import { BottomNavBar } from 'src/components/navigation/BottomNavBar';
 import { TopNavBar } from 'src/components/navigation/TopNavBar';
-import { ProjectContextProvider } from 'src/contexts/projectContext';
 import { UserContextProvider } from 'src/contexts/userContext';
 import { TranslationContextProvider } from 'src/i18n/useTranslation';
 import createEmotionCache from 'src/styles/createEmotionCache';
@@ -112,13 +111,13 @@ const MyApp: React.FunctionComponent<MyAppProps> & {
                                         </Flex>
                                     </div>
                                 ) : (
-                                    <ProjectContextProvider>
+                                    <>
                                         <TopNavBar />
                                         <Container component={'main'} maxWidth="lg">
                                             <Component {...pageProps} />
                                         </Container>
                                         <BottomNavBar />
-                                    </ProjectContextProvider>
+                                    </>
                                 )}
                             </QueryClientProvider>
                         </SnackbarProvider>

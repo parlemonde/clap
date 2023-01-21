@@ -20,18 +20,19 @@ import { Inverted } from 'src/components/ui/Inverted';
 import Modal from 'src/components/ui/Modal';
 import { Sortable } from 'src/components/ui/Sortable';
 import { Trans } from 'src/components/ui/Trans';
-import { projectContext } from 'src/contexts/projectContext';
 import { userContext } from 'src/contexts/userContext';
+import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import { useTranslation } from 'src/i18n/useTranslation';
 import { serializeToQueryUrl } from 'src/utils/serializeToQueryUrl';
 
 type QuestionCardProps = {
+    projectId: number | null;
     question: string;
     index?: number;
     onDelete?(): void;
 };
 
-const QuestionCard = ({ question, index = 0, onDelete }: QuestionCardProps) => {
+const QuestionCard = ({ projectId, question, index = 0, onDelete }: QuestionCardProps) => {
     return (
         <Box sx={{ border: '1px solid', borderColor: (theme) => theme.palette.secondary.main }} className="question-container">
             <Box sx={{ backgroundColor: (theme) => theme.palette.secondary.main }} className="question-index">
@@ -42,7 +43,7 @@ const QuestionCard = ({ question, index = 0, onDelete }: QuestionCardProps) => {
                 <p>{question}</p>
             </div>
             <div className="question-actions">
-                <Link href={`/create/2-questions/edit${serializeToQueryUrl({ question: index })}`} passHref>
+                <Link href={`/create/2-questions/edit${serializeToQueryUrl({ question: index, projectId })}`} passHref>
                     <IconButton
                         sx={{ border: '1px solid', borderColor: (theme) => theme.palette.secondary.main }}
                         aria-label="edit"
@@ -72,7 +73,7 @@ const QuestionsPage = () => {
     const { enqueueSnackbar } = useSnackbar();
     const { t, currentLocale } = useTranslation();
     const { user } = React.useContext(userContext);
-    const { project, questions, isLoading: isProjectLoading, updateProject } = React.useContext(projectContext);
+    const { project, questions, isLoading: isProjectLoading, updateProject } = useCurrentProject();
     const { theme, isLoading: isThemeLoading } = useTheme(project ? project.themeId : 0, {
         enabled: !isProjectLoading && project !== undefined,
     });
@@ -146,7 +147,7 @@ const QuestionsPage = () => {
                 <Typography color="inherit" variant="h2">
                     {t('part2_desc')}
                 </Typography>
-                <Link href={`/create/2-questions/new`} passHref>
+                <Link href={`/create/2-questions/new${serializeToQueryUrl({ projectId: project?.id || null })}`} passHref>
                     <Button
                         component="a"
                         variant="outlined"
@@ -170,6 +171,7 @@ const QuestionsPage = () => {
                         {questions.map((q, index) => (
                             <QuestionCard
                                 key={q.id}
+                                projectId={project?.id || null}
                                 question={q.question}
                                 index={index}
                                 onDelete={() => {
@@ -184,7 +186,7 @@ const QuestionsPage = () => {
                         if (project !== undefined && project.id === 0 && user !== null) {
                             setShowSaveProjectModal(true);
                         } else {
-                            router.push('/create/3-storyboard');
+                            router.push(`/create/3-storyboard${serializeToQueryUrl({ projectId: project?.id || null })}`);
                         }
                     }}
                 />
@@ -207,7 +209,7 @@ const QuestionsPage = () => {
                     isOpen={showSaveProjectModal}
                     onClose={() => {
                         setShowSaveProjectModal(false);
-                        router.push('/create/3-storyboard');
+                        router.push(`/create/3-storyboard${serializeToQueryUrl({ projectId: project?.id || null })}`);
                     }}
                 />
             </div>

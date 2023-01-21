@@ -9,13 +9,15 @@ import ButtonBase from '@mui/material/ButtonBase';
 import { useResizeObserver } from 'src/hooks/useResizeObserver';
 import { useTranslation } from 'src/i18n/useTranslation';
 import { getSequenceDuration } from 'src/lib/get-sequence-duration';
+import { serializeToQueryUrl } from 'src/utils/serializeToQueryUrl';
 import type { Question } from 'types/models/question.type';
 
 type SequenceDiaporamaProps = {
+    projectId: number | null;
     questionIndex: number;
     sequence: Question;
 };
-export const SequenceDiaporama = ({ questionIndex, sequence }: SequenceDiaporamaProps) => {
+export const SequenceDiaporama = ({ projectId, questionIndex, sequence }: SequenceDiaporamaProps) => {
     const { t } = useTranslation();
     const [frameIndex, setFrameIndex] = React.useState<'title' | number>(sequence.title !== null ? 'title' : 0);
     const intervalRef = React.useRef<number | null>(null);
@@ -71,7 +73,7 @@ export const SequenceDiaporama = ({ questionIndex, sequence }: SequenceDiaporama
     }, [updateFrameIndex]);
 
     return (
-        <Link href={`/create/4-pre-mounting/edit?question=${questionIndex}`} passHref>
+        <Link href={`/create/4-pre-mounting/edit${serializeToQueryUrl({ question: questionIndex, projectId })}`} passHref>
             <ButtonBase component="a" style={{ width: '100%', height: '100%', ...buttonStyle }}>
                 <div className="plan" ref={canvasRef}>
                     <div className="edit">{t('edit')}</div>

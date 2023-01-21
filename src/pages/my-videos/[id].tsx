@@ -17,17 +17,18 @@ import { useScenario } from 'src/api/scenarios/scenarios.get';
 import { useTheme } from 'src/api/themes/themes.get';
 import Modal from 'src/components/ui/Modal';
 import { Trans } from 'src/components/ui/Trans';
-import { projectContext } from 'src/contexts/projectContext';
 import { userContext } from 'src/contexts/userContext';
+import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import { useTranslation } from 'src/i18n/useTranslation';
 import { getQueryString } from 'src/utils/get-query-string';
+import { serializeToQueryUrl } from 'src/utils/serializeToQueryUrl';
 
 const EditProject: React.FC = () => {
     const router = useRouter();
     const { t, currentLocale } = useTranslation();
     const { enqueueSnackbar } = useSnackbar();
     const { user } = React.useContext(userContext);
-    const { project: localProject, updateProject } = React.useContext(projectContext);
+    const { project: localProject, updateProject } = useCurrentProject();
 
     const projectId = React.useMemo(() => Number(getQueryString(router.query.id)) || 0, [router]);
     const { project, isLoading: isProjectLoading } = useProject(projectId);
@@ -153,7 +154,7 @@ const EditProject: React.FC = () => {
                         </div>
                     </>
                 )}
-                <NextLink href={`/create/3-storyboard?project=${projectId}`} passHref>
+                <NextLink href={`/create/3-storyboard${serializeToQueryUrl({ projectId: project?.id || null })}`} passHref>
                     <Button
                         component="a"
                         style={{ marginTop: '0.8rem' }}

@@ -6,7 +6,7 @@ import { TextField } from '@mui/material';
 
 import Modal from './ui/Modal';
 import { useCreateProjectMutation } from 'src/api/projects/projects.post';
-import { projectContext } from 'src/contexts/projectContext';
+import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import { useTranslation } from 'src/i18n/useTranslation';
 
 type SaveProjectModalProps = {
@@ -17,7 +17,7 @@ export const SaveProjectModal = ({ isOpen, onClose }: SaveProjectModalProps) => 
     const router = useRouter();
     const { enqueueSnackbar } = useSnackbar();
     const { t } = useTranslation();
-    const { project, questions, setProject } = React.useContext(projectContext);
+    const { project, questions, setProject } = useCurrentProject();
 
     const [title, setTitle] = React.useState('');
     const createProjectMutation = useCreateProjectMutation();
@@ -55,6 +55,7 @@ export const SaveProjectModal = ({ isOpen, onClose }: SaveProjectModalProps) => 
                 soundVolume: project.soundVolume,
                 musicBeginTime: Math.round(project.musicBeginTime),
             });
+            // TODO: update project id in url.
             setProject(newProject);
             enqueueSnackbar('Project saved successfully!', {
                 variant: 'success',

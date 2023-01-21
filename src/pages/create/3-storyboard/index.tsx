@@ -18,19 +18,21 @@ import { ThemeBreadcrumbs } from 'src/components/navigation/ThemeBreadcrumbs';
 import { Inverted } from 'src/components/ui/Inverted';
 import Modal from 'src/components/ui/Modal';
 import { Trans } from 'src/components/ui/Trans';
-import { projectContext } from 'src/contexts/projectContext';
+import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import { useTranslation } from 'src/i18n/useTranslation';
+import { serializeToQueryUrl } from 'src/utils/serializeToQueryUrl';
 import type { Plan } from 'types/models/plan.type';
 import type { Question } from 'types/models/question.type';
 
 type SequenceProps = {
+    projectId: number | null;
     isSavedProject?: boolean;
     sequence: Question;
     sequenceIndex: number;
     planStartIndex: number;
     onUpdateSequence(newSequence: Partial<Question>): void;
 };
-const Scenario = ({ isSavedProject, sequence, sequenceIndex, planStartIndex, onUpdateSequence }: SequenceProps) => {
+const Scenario = ({ projectId, isSavedProject, sequence, sequenceIndex, planStartIndex, onUpdateSequence }: SequenceProps) => {
     const { enqueueSnackbar } = useSnackbar();
     const { t } = useTranslation();
     const [deletePlanIndex, setDeletePlanIndex] = React.useState(-1);
@@ -117,6 +119,7 @@ const Scenario = ({ isSavedProject, sequence, sequenceIndex, planStartIndex, onU
             </Typography>
             <div className="plans">
                 <TitleCard
+                    projectId={projectId}
                     questionIndex={sequenceIndex}
                     title={sequence.title}
                     onDelete={() => {
@@ -125,6 +128,7 @@ const Scenario = ({ isSavedProject, sequence, sequenceIndex, planStartIndex, onU
                 />
                 {plans.map((plan, planIndex) => (
                     <PlanCard
+                        projectId={projectId}
                         key={`${sequenceIndex}_${planIndex}`}
                         plan={plan}
                         questionIndex={sequenceIndex}
@@ -196,7 +200,7 @@ const Scenario = ({ isSavedProject, sequence, sequenceIndex, planStartIndex, onU
 const StoryboardPage = () => {
     const router = useRouter();
     const { t, currentLocale } = useTranslation();
-    const { project, questions, isLoading: isProjectLoading, updateProject } = React.useContext(projectContext);
+    const { project, questions, isLoading: isProjectLoading, updateProject } = useCurrentProject();
     const { theme, isLoading: isThemeLoading } = useTheme(project ? project.themeId : 0, {
         enabled: !isProjectLoading && project !== undefined,
     });
@@ -233,6 +237,7 @@ const StoryboardPage = () => {
                 </Typography>
                 {questions.map((question, index) => (
                     <Scenario
+                        projectId={project?.id || null}
                         isSavedProject={project && project.id !== 0}
                         key={question.id}
                         sequence={question}
@@ -250,7 +255,7 @@ const StoryboardPage = () => {
                 ))}
                 <NextButton
                     onNext={() => {
-                        router.push('/create/4-pre-mounting');
+                        router.push(`/create/4-pre-mounting${serializeToQueryUrl({ projectId: project?.id || null })}`);
                     }}
                 />
             </div>

@@ -7,9 +7,11 @@ import ButtonBase from '@mui/material/ButtonBase';
 import IconButton from '@mui/material/IconButton';
 
 import { useTranslation } from 'src/i18n/useTranslation';
+import { serializeToQueryUrl } from 'src/utils/serializeToQueryUrl';
 import type { Plan } from 'types/models/plan.type';
 
 type PlanCardProps = {
+    projectId: number | null;
     plan: Plan;
     questionIndex: number;
     planIndex: number;
@@ -18,7 +20,7 @@ type PlanCardProps = {
     onDelete?(): void;
 };
 
-export const PlanCard = ({ plan, questionIndex, planIndex, showNumber, canDelete = false, onDelete = () => {} }: PlanCardProps) => {
+export const PlanCard = ({ projectId, plan, questionIndex, planIndex, showNumber, canDelete = false, onDelete = () => {} }: PlanCardProps) => {
     const { t } = useTranslation();
     const buttonStyle: React.CSSProperties = { width: '100%', height: '100%' };
     if (plan.imageUrl) {
@@ -30,7 +32,14 @@ export const PlanCard = ({ plan, questionIndex, planIndex, showNumber, canDelete
     }
 
     return (
-        <Link href={`/create/3-storyboard/edit?question=${questionIndex}&plan=${planIndex}`} passHref>
+        <Link
+            href={`/create/3-storyboard/edit${serializeToQueryUrl({
+                projectId,
+                question: questionIndex,
+                plan: planIndex,
+            })}`}
+            passHref
+        >
             <ButtonBase component="a" style={buttonStyle}>
                 <div className="plan">
                     <div className={`plan-number ${plan.imageUrl ? 'purple' : ''}`}>{showNumber}</div>

@@ -13,8 +13,9 @@ import { NextButton } from 'src/components/navigation/NextButton';
 import { Steps } from 'src/components/navigation/Steps';
 import { ThemeBreadcrumbs } from 'src/components/navigation/ThemeBreadcrumbs';
 import { Inverted } from 'src/components/ui/Inverted';
-import { projectContext } from 'src/contexts/projectContext';
+import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import { useTranslation } from 'src/i18n/useTranslation';
+import { serializeToQueryUrl } from 'src/utils/serializeToQueryUrl';
 import { useQueryNumber } from 'src/utils/useQueryId';
 import type { Title } from 'types/models/title.type';
 
@@ -28,7 +29,7 @@ const TitlePlan = () => {
     const router = useRouter();
     const { enqueueSnackbar } = useSnackbar();
     const { t, currentLocale } = useTranslation();
-    const { project, questions, isLoading: isProjectLoading, updateProject } = React.useContext(projectContext);
+    const { project, questions, isLoading: isProjectLoading, updateProject } = useCurrentProject();
     const { theme, isLoading: isThemeLoading } = useTheme(project ? project.themeId : 0, {
         enabled: !isProjectLoading && project !== undefined,
     });
@@ -53,7 +54,7 @@ const TitlePlan = () => {
         );
     }, [sequence]);
 
-    const backUrl = '/create/3-storyboard';
+    const backUrl = `/create/3-storyboard${serializeToQueryUrl({ projectId: project?.id || null })}`;
     const updateQuestionMutation = useUpdateQuestionMutation();
     const onUpdateQuestion = async () => {
         if (project === undefined || questionIndex === -1) {

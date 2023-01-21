@@ -5,13 +5,13 @@ import { Box, MobileStepper, Step, StepLabel, Stepper } from '@mui/material';
 
 import { ProjectTitle } from 'src/components/ProjectTitle';
 import { BackButton } from 'src/components/navigation/BackButton';
-import { projectContext } from 'src/contexts/projectContext';
+import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import { useTranslation } from 'src/i18n/useTranslation';
 import { serializeToQueryUrl } from 'src/utils/serializeToQueryUrl';
 
 type StepData = {
     name: string;
-    href: (args: { themeId?: string | number; projectId?: string | number }) => string;
+    href: (args: { themeId?: string | number; projectId?: number | null }) => string;
 };
 
 const STEPS: StepData[] = [
@@ -50,7 +50,7 @@ type StepsProps = {
 export const Steps = ({ activeStep, themeId, scenarioName, backHref }: StepsProps) => {
     const router = useRouter();
     const { t } = useTranslation();
-    const { project } = React.useContext(projectContext);
+    const { project } = useCurrentProject();
     const projectId = project ? project.id : undefined;
 
     return (
@@ -62,12 +62,21 @@ export const Steps = ({ activeStep, themeId, scenarioName, backHref }: StepsProp
                         <Step
                             key={step.name}
                             style={{ cursor: 'pointer' }}
+                            sx={
+                                activeStep > 0
+                                    ? {
+                                          '.Mui-disabled': {
+                                              cursor: 'unset',
+                                          },
+                                      }
+                                    : undefined
+                            }
                             onClick={() => {
                                 if (index === activeStep && backHref) {
                                     router.push(backHref);
                                 }
-                                if (index < activeStep) {
-                                    router.push(step.href({ themeId, projectId }));
+                                if (activeStep !== 0) {
+                                    router.push(step.href({ themeId, projectId: projectId || null }));
                                 }
                             }}
                         >
@@ -98,7 +107,13 @@ export const Steps = ({ activeStep, themeId, scenarioName, backHref }: StepsProp
                     activeStep={activeStep}
                     backButton={
                         <BackButton
-                            href={backHref ? backHref : activeStep === 0 ? '/create' : STEPS[activeStep - 1].href({ themeId, projectId })}
+                            href={
+                                backHref
+                                    ? backHref
+                                    : activeStep === 0
+                                    ? '/create'
+                                    : STEPS[activeStep - 1].href({ themeId, projectId: projectId || null })
+                            }
                             style={{ position: 'absolute', margin: 0, left: 0 }}
                         />
                     }

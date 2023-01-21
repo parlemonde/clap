@@ -13,7 +13,7 @@ import { Steps } from 'src/components/navigation/Steps';
 import { ThemeBreadcrumbs } from 'src/components/navigation/ThemeBreadcrumbs';
 import { Inverted } from 'src/components/ui/Inverted';
 import { Trans } from 'src/components/ui/Trans';
-import { projectContext } from 'src/contexts/projectContext';
+import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import { useTranslation } from 'src/i18n/useTranslation';
 import { serializeToQueryUrl } from 'src/utils/serializeToQueryUrl';
 import { useQueryNumber } from 'src/utils/useQueryId';
@@ -22,7 +22,7 @@ const EditQuestion = () => {
     const router = useRouter();
     const { enqueueSnackbar } = useSnackbar();
     const { t, currentLocale } = useTranslation();
-    const { project, questions, isLoading: isProjectLoading, updateProject } = React.useContext(projectContext);
+    const { project, questions, isLoading: isProjectLoading, updateProject } = useCurrentProject();
     const { theme, isLoading: isThemeLoading } = useTheme(project ? project.themeId : 0, {
         enabled: !isProjectLoading,
     });
@@ -47,8 +47,7 @@ const EditQuestion = () => {
     const updateQuestionMutation = useUpdateQuestionMutation();
 
     const backUrl = `/create/2-questions${serializeToQueryUrl({
-        themeId: project ? project.themeId : undefined,
-        scenarioId: project ? project.scenarioId : undefined,
+        projectId: project?.id || null,
     })}`;
 
     const onUpdateQuestion = async () => {

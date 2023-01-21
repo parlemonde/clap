@@ -8,6 +8,7 @@ import { ProjectCard } from 'src/components/ProjectCard';
 import { Inverted } from 'src/components/ui/Inverted';
 import { Trans } from 'src/components/ui/Trans';
 import { useTranslation } from 'src/i18n/useTranslation';
+import { serializeToQueryUrl } from 'src/utils/serializeToQueryUrl';
 
 const VideosPage = () => {
     const { t, currentLocale } = useTranslation();
@@ -16,7 +17,7 @@ const VideosPage = () => {
 
     const handleWipProjectClick = (projectId: number) => (event: React.MouseEvent) => {
         event.preventDefault();
-        router.push(`/create/3-storyboard?projectId=${projectId}`);
+        router.push(`/create/3-storyboard${serializeToQueryUrl({ projectId: projectId || null })}`);
     };
 
     const handleWipProjectClickEdit = (projectId: number) => () => {

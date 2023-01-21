@@ -11,21 +11,22 @@ import { useUpdateProjectMutation } from 'src/api/projects/projects.put';
 import { useScenario } from 'src/api/scenarios/scenarios.get';
 import { useTheme } from 'src/api/themes/themes.get';
 import { DiaporamaPlayer } from 'src/components/DiaporamaPlayer';
-import { getSounds } from 'src/lib/get-sounds';
 import { Loader } from 'src/components/layout/Loader';
 import { NextButton } from 'src/components/navigation/NextButton';
 import { Steps } from 'src/components/navigation/Steps';
 import { ThemeBreadcrumbs } from 'src/components/navigation/ThemeBreadcrumbs';
 import { Inverted } from 'src/components/ui/Inverted';
-import { projectContext } from 'src/contexts/projectContext';
+import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import { useTranslation } from 'src/i18n/useTranslation';
+import { getSounds } from 'src/lib/get-sounds';
+import { serializeToQueryUrl } from 'src/utils/serializeToQueryUrl';
 import { isString } from 'src/utils/type-guards/is-string';
 
 const MusicPage = () => {
     const router = useRouter();
     const { enqueueSnackbar } = useSnackbar();
     const { t, currentLocale } = useTranslation();
-    const { project, updateProject, questions, isLoading: isProjectLoading } = React.useContext(projectContext);
+    const { project, updateProject, questions, isLoading: isProjectLoading } = useCurrentProject();
     const { theme, isLoading: isThemeLoading } = useTheme(project ? project.themeId : 0, {
         enabled: !isProjectLoading && project !== undefined,
     });
@@ -101,7 +102,7 @@ const MusicPage = () => {
                 soundUrl: newSoundUrl,
                 soundVolume: volume,
             });
-            router.push('/create/6-result');
+            router.push(`/create/6-result${serializeToQueryUrl({ projectId: project.id || null })}`);
         } catch (err) {
             console.error(err);
             enqueueSnackbar(t('unknown_error'), {

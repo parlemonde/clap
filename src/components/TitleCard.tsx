@@ -7,15 +7,17 @@ import IconButton from '@mui/material/IconButton';
 
 import { useResizeObserver } from 'src/hooks/useResizeObserver';
 import { useTranslation } from 'src/i18n/useTranslation';
+import { serializeToQueryUrl } from 'src/utils/serializeToQueryUrl';
 import type { Title } from 'types/models/title.type';
 
 interface TitleCardProps {
+    projectId: number | null;
     questionIndex: number;
     title?: Title | null;
     onDelete?(): void;
 }
 
-export const TitleCard = ({ questionIndex, title, onDelete = () => {} }: TitleCardProps) => {
+export const TitleCard = ({ projectId, questionIndex, title, onDelete = () => {} }: TitleCardProps) => {
     const { t } = useTranslation();
     const style = React.useMemo(() => {
         if (!title || title.style === '') {
@@ -31,7 +33,7 @@ export const TitleCard = ({ questionIndex, title, onDelete = () => {} }: TitleCa
 
     return (
         <div className="plan-button-container">
-            <Link href={`/create/3-storyboard/title?question=${questionIndex}`} passHref>
+            <Link href={`/create/3-storyboard/title${serializeToQueryUrl({ question: questionIndex, projectId })}`} passHref>
                 <ButtonBase component="a" style={{ width: '100%', height: '100%' }}>
                     <div className="plan title-card" ref={canvasRef}>
                         {title ? (

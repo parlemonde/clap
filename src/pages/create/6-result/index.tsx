@@ -12,15 +12,15 @@ import { getProjectPdf } from 'src/api/projects/projects.pdf';
 import { useScenario } from 'src/api/scenarios/scenarios.get';
 import { useTheme } from 'src/api/themes/themes.get';
 import { DiaporamaPlayer } from 'src/components/DiaporamaPlayer';
-import { getSounds } from 'src/lib/get-sounds';
 import { Flex } from 'src/components/layout/Flex';
 import { Loader } from 'src/components/layout/Loader';
 import { Steps } from 'src/components/navigation/Steps';
 import { ThemeBreadcrumbs } from 'src/components/navigation/ThemeBreadcrumbs';
 import { Inverted } from 'src/components/ui/Inverted';
 import { Trans } from 'src/components/ui/Trans';
-import { projectContext } from 'src/contexts/projectContext';
+import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import { useTranslation } from 'src/i18n/useTranslation';
+import { getSounds } from 'src/lib/get-sounds';
 
 const styles = {
     verticalLine: {
@@ -42,7 +42,7 @@ const styles = {
 
 const ResultPage = () => {
     const { t, currentLocale } = useTranslation();
-    const { project, questions, isLoading: isProjectLoading } = React.useContext(projectContext);
+    const { project, questions, isLoading: isProjectLoading } = useCurrentProject();
     const { theme, isLoading: isThemeLoading } = useTheme(project ? project.themeId : 0, {
         enabled: !isProjectLoading && project !== undefined,
     });

@@ -15,7 +15,6 @@ import { useUpdateQuestionMutation } from 'src/api/questions/questions.put';
 import { useScenario } from 'src/api/scenarios/scenarios.get';
 import { useTheme } from 'src/api/themes/themes.get';
 import { DiaporamaPlayer } from 'src/components/DiaporamaPlayer';
-import type { Sound } from 'src/lib/get-sounds';
 import { Flex } from 'src/components/layout/Flex';
 import { FlexItem } from 'src/components/layout/FlexItem';
 import { Loader } from 'src/components/layout/Loader';
@@ -23,8 +22,10 @@ import { NextButton } from 'src/components/navigation/NextButton';
 import { Steps } from 'src/components/navigation/Steps';
 import { ThemeBreadcrumbs } from 'src/components/navigation/ThemeBreadcrumbs';
 import { Inverted } from 'src/components/ui/Inverted';
-import { projectContext } from 'src/contexts/projectContext';
+import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import { useTranslation } from 'src/i18n/useTranslation';
+import type { Sound } from 'src/lib/get-sounds';
+import { serializeToQueryUrl } from 'src/utils/serializeToQueryUrl';
 import { isString } from 'src/utils/type-guards/is-string';
 import { useQueryNumber } from 'src/utils/useQueryId';
 import type { Question } from 'types/models/question.type';
@@ -46,7 +47,7 @@ const PreMountSequence = () => {
     const router = useRouter();
     const { enqueueSnackbar } = useSnackbar();
     const { t, currentLocale } = useTranslation();
-    const { project, questions, isLoading: isProjectLoading, updateProject } = React.useContext(projectContext);
+    const { project, questions, isLoading: isProjectLoading, updateProject } = useCurrentProject();
     const { theme, isLoading: isThemeLoading } = useTheme(project ? project.themeId : 0, {
         enabled: !isProjectLoading && project !== undefined,
     });
@@ -56,7 +57,7 @@ const PreMountSequence = () => {
 
     const questionIndex = useQueryNumber('question') ?? -1;
     const currentSequence = React.useMemo(() => (questionIndex !== -1 ? questions[questionIndex] : undefined), [questions, questionIndex]);
-    const backUrl = '/create/4-pre-mounting';
+    const backUrl = `/create/4-pre-mounting${serializeToQueryUrl({ projectId: project?.id || null })}`;
 
     // --- new values ---
     const [sequence, setSequence] = React.useState<Question>(currentSequence || DEFAULT_SEQUENCE);

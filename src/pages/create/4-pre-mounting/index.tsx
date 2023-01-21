@@ -11,13 +11,14 @@ import { Steps } from 'src/components/navigation/Steps';
 import { ThemeBreadcrumbs } from 'src/components/navigation/ThemeBreadcrumbs';
 import { Inverted } from 'src/components/ui/Inverted';
 import { Trans } from 'src/components/ui/Trans';
-import { projectContext } from 'src/contexts/projectContext';
+import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import { useTranslation } from 'src/i18n/useTranslation';
+import { serializeToQueryUrl } from 'src/utils/serializeToQueryUrl';
 
 const PreMountingPage = () => {
     const router = useRouter();
     const { t, currentLocale } = useTranslation();
-    const { project, questions, isLoading: isProjectLoading } = React.useContext(projectContext);
+    const { project, questions, isLoading: isProjectLoading } = useCurrentProject();
     const { theme, isLoading: isThemeLoading } = useTheme(project ? project.themeId : 0, {
         enabled: !isProjectLoading && project !== undefined,
     });
@@ -52,7 +53,7 @@ const PreMountingPage = () => {
                             </Typography>
                             {hasBeenEdited ? (
                                 <div className="plans">
-                                    <SequenceDiaporama sequence={q} questionIndex={index} />
+                                    <SequenceDiaporama projectId={project?.id || null} sequence={q} questionIndex={index} />
                                 </div>
                             ) : (
                                 <p>{t('part4_placeholder')}</p>
@@ -62,7 +63,7 @@ const PreMountingPage = () => {
                 })}
                 <NextButton
                     onNext={() => {
-                        router.push('/create/5-music');
+                        router.push(`/create/5-music${serializeToQueryUrl({ projectId: project?.id || null })}`);
                     }}
                 />
             </div>

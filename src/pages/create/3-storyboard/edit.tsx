@@ -29,8 +29,9 @@ import { Steps } from 'src/components/navigation/Steps';
 import { ThemeBreadcrumbs } from 'src/components/navigation/ThemeBreadcrumbs';
 import { Inverted } from 'src/components/ui/Inverted';
 import Modal from 'src/components/ui/Modal';
-import { projectContext } from 'src/contexts/projectContext';
+import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import { useTranslation } from 'src/i18n/useTranslation';
+import { serializeToQueryUrl } from 'src/utils/serializeToQueryUrl';
 import { isString } from 'src/utils/type-guards/is-string';
 import { useQueryNumber } from 'src/utils/useQueryId';
 
@@ -106,7 +107,7 @@ const EditPlan = () => {
     const router = useRouter();
     const { enqueueSnackbar } = useSnackbar();
     const { t, currentLocale } = useTranslation();
-    const { project, questions, isLoading: isProjectLoading, updateProject } = React.useContext(projectContext);
+    const { project, questions, isLoading: isProjectLoading, updateProject } = useCurrentProject();
     const { theme, isLoading: isThemeLoading } = useTheme(project ? project.themeId : 0, {
         enabled: !isProjectLoading && project !== undefined,
     });
@@ -160,7 +161,7 @@ const EditPlan = () => {
     const createImageMutation = useCreateImageMutation();
     const deleteImageMutation = useDeleteImageMutation();
     const updatePlanMutation = useUpdatePlanMutation();
-    const backUrl = '/create/3-storyboard';
+    const backUrl = `/create/3-storyboard${serializeToQueryUrl({ projectId: project?.id || null })}`;
 
     const onSubmit = async () => {
         if (!project || !plan) {

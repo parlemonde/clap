@@ -1,10 +1,10 @@
 import Link from 'next/link';
-import React, { useContext } from 'react';
+import React from 'react';
 
 import EditIcon from '@mui/icons-material/Edit';
 import { Typography, IconButton } from '@mui/material';
 
-import { projectContext } from 'src/contexts/projectContext';
+import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import { useTranslation } from 'src/i18n/useTranslation';
 
 type ProjectTitleProp = {
@@ -14,7 +14,7 @@ type ProjectTitleProp = {
 
 export const ProjectTitle = ({ smaller = false, onClick = () => {} }: ProjectTitleProp) => {
     const { t } = useTranslation();
-    const { project } = useContext(projectContext);
+    const { project } = useCurrentProject();
 
     if (!project || project.id === null || project.id === 0) {
         return null;
