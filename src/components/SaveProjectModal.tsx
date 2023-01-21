@@ -17,7 +17,7 @@ export const SaveProjectModal = ({ isOpen, onClose }: SaveProjectModalProps) => 
     const router = useRouter();
     const { enqueueSnackbar } = useSnackbar();
     const { t } = useTranslation();
-    const { project, questions, setProject } = useCurrentProject();
+    const { project, questions } = useCurrentProject();
 
     const [title, setTitle] = React.useState('');
     const createProjectMutation = useCreateProjectMutation();
