@@ -84,7 +84,7 @@ const LoginPage = () => {
             <Typography color="primary" variant="h1" style={{ marginTop: '2rem' }}>
                 {t('login_title')}
             </Typography>
-            <form className="login-form" noValidate>
+            <form className="login-form" noValidate onSubmit={onLogin}>
                 {(errorCode === 0 || errorCode >= 3) && (
                     <Typography variant="caption" color="error">
                         {t(errorMessages[errorCode as 0] || errorMessages[0])}
@@ -152,7 +152,7 @@ const LoginPage = () => {
                         label={t('login_remember_me')}
                     />
                 </div>
-                <Button variant="contained" color="secondary" type="submit" value="Submit" onClick={onLogin}>
+                <Button variant="contained" color="secondary" type="submit" value="Submit">
                     {t('login_connect')}
                 </Button>
                 <div className="text-center">

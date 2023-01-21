@@ -15,14 +15,15 @@ import { IconButton, Slider, TextField } from '@mui/material';
 
 import { Frame } from './Frame';
 import { WaveForm } from './WaveForm';
-import { getFormatedTime } from './lib/get-formatted-time';
-import { getProjectDuration } from './lib/get-project-duration';
-import type { Sound } from './lib/get-sounds';
 import { useAudio } from './useAudio';
 import { KeepRatio } from 'src/components/layout/KeepRatio';
 import { useDragHandler } from 'src/hooks/useDragHandler';
 import { useFollowingRef } from 'src/hooks/useFollowingRef';
 import { useResizeObserver } from 'src/hooks/useResizeObserver';
+import { getFormatedTime } from 'src/lib/get-formatted-time';
+import { getProjectDuration } from 'src/lib/get-project-duration';
+import { isSequenceAvailable } from 'src/lib/get-sequence-duration';
+import type { Sound } from 'src/lib/get-sounds';
 import type { Question } from 'types/models/question.type';
 
 type DiaporamaPlayerProps = {
@@ -38,7 +39,7 @@ type DiaporamaPlayerProps = {
     setVolume: (newVolume: number) => void;
 };
 export const DiaporamaPlayer = ({
-    questions,
+    questions: allQuestions,
     sounds,
     soundUrl,
     soundBeginTime,
@@ -57,6 +58,7 @@ export const DiaporamaPlayer = ({
     const mountingPlansWidth = mountingTableWidth - 4; // 2 borders of 2px.
     const animationFrameRef = React.useRef<number | null>(null);
     const previousTimeRef = React.useRef<number | null>(null);
+    const questions = React.useMemo(() => allQuestions.filter((q) => isSequenceAvailable(q)), [allQuestions]);
     const duration = React.useMemo(() => getProjectDuration(questions), [questions]);
 
     // Edit global time

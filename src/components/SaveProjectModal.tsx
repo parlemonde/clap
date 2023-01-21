@@ -17,7 +17,7 @@ export const SaveProjectModal = ({ isOpen, onClose }: SaveProjectModalProps) => 
     const router = useRouter();
     const { enqueueSnackbar } = useSnackbar();
     const { t } = useTranslation();
-    const { project, questions, updateProject } = React.useContext(projectContext);
+    const { project, questions, setProject } = React.useContext(projectContext);
 
     const [title, setTitle] = React.useState('');
     const createProjectMutation = useCreateProjectMutation();
@@ -55,7 +55,7 @@ export const SaveProjectModal = ({ isOpen, onClose }: SaveProjectModalProps) => 
                 soundVolume: project.soundVolume,
                 musicBeginTime: Math.round(project.musicBeginTime),
             });
-            updateProject({ id: newProject.id, title });
+            setProject(newProject);
             enqueueSnackbar('Project saved successfully!', {
                 variant: 'success',
             });

@@ -30,7 +30,8 @@ const axiosRequest = async <T>(req: AxiosRequestConfig): Promise<AxiosReturnType
         };
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            if ((error.response || {}).status === 401 || (error.response || {}).status === 403) {
+            const status = (error.response || {}).status;
+            if ((status === 401 || status === 403) && !window.location.pathname.startsWith('/login')) {
                 window.location.replace('/login');
             }
 
@@ -45,7 +46,7 @@ const axiosRequest = async <T>(req: AxiosRequestConfig): Promise<AxiosReturnType
             const data = error.response ? error.response.data || null : null;
             return {
                 success: false,
-                status: (error.response || {}).status || 404,
+                status: status || 404,
                 errorMessages: data !== null ? data.errorMessages || [] : [],
                 errorCode: data !== null ? data.errorCode || 0 : 0,
             };

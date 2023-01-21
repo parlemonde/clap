@@ -11,7 +11,7 @@ import { useUpdateProjectMutation } from 'src/api/projects/projects.put';
 import { useScenario } from 'src/api/scenarios/scenarios.get';
 import { useTheme } from 'src/api/themes/themes.get';
 import { DiaporamaPlayer } from 'src/components/DiaporamaPlayer';
-import { getSounds } from 'src/components/DiaporamaPlayer/lib/get-sounds';
+import { getSounds } from 'src/lib/get-sounds';
 import { Loader } from 'src/components/layout/Loader';
 import { NextButton } from 'src/components/navigation/NextButton';
 import { Steps } from 'src/components/navigation/Steps';

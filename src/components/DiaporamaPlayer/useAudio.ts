@@ -1,7 +1,7 @@
 import React from 'react';
 
-import type { Sound } from './lib/get-sounds';
 import { useFollowingRef } from 'src/hooks/useFollowingRef';
+import type { Sound } from 'src/lib/get-sounds';
 
 export const useAudio = (soundUrl: string, initialVolume: number, sounds: Sound[]) => {
     const audioContextRef = React.useRef<AudioContext | null>(null);

@@ -1,4 +1,4 @@
-import { getProjectDuration } from './get-project-duration';
+import { getSequenceDuration } from './get-sequence-duration';
 import type { Question } from 'types/models/question.type';
 
 export type Sound = {
@@ -12,7 +12,10 @@ export function getSounds(questions: Question[]): Sound[] {
     const sounds: Sound[] = [];
     let time = 0;
     for (const question of questions) {
-        const questionDuration = getProjectDuration([question]);
+        const questionDuration = getSequenceDuration(question);
+        if (questionDuration === 0) {
+            continue;
+        }
         if (question.soundUrl) {
             sounds.push({
                 soundUrl: question.soundUrl,

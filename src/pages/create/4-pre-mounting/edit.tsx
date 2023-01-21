@@ -15,7 +15,7 @@ import { useUpdateQuestionMutation } from 'src/api/questions/questions.put';
 import { useScenario } from 'src/api/scenarios/scenarios.get';
 import { useTheme } from 'src/api/themes/themes.get';
 import { DiaporamaPlayer } from 'src/components/DiaporamaPlayer';
-import type { Sound } from 'src/components/DiaporamaPlayer/lib/get-sounds';
+import type { Sound } from 'src/lib/get-sounds';
 import { Flex } from 'src/components/layout/Flex';
 import { FlexItem } from 'src/components/layout/FlexItem';
 import { Loader } from 'src/components/layout/Loader';

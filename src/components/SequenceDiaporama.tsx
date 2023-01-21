@@ -6,9 +6,9 @@ import TimerIcon from '@mui/icons-material/Timer';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import ButtonBase from '@mui/material/ButtonBase';
 
-import { getProjectDuration } from './DiaporamaPlayer/lib/get-project-duration';
 import { useResizeObserver } from 'src/hooks/useResizeObserver';
 import { useTranslation } from 'src/i18n/useTranslation';
+import { getSequenceDuration } from 'src/lib/get-sequence-duration';
 import type { Question } from 'types/models/question.type';
 
 type SequenceDiaporamaProps = {
@@ -56,7 +56,7 @@ export const SequenceDiaporama = ({ questionIndex, sequence }: SequenceDiaporama
         });
     }, [sequence]);
 
-    const duration = React.useMemo(() => getProjectDuration([sequence]), [sequence]);
+    const duration = getSequenceDuration(sequence);
 
     React.useEffect(() => {
         if (intervalRef.current) {
@@ -105,7 +105,7 @@ export const SequenceDiaporama = ({ questionIndex, sequence }: SequenceDiaporama
                         </div>
                         <div className="time">
                             <TimerIcon sx={{ fontSize: '1.25rem', margin: '2px 0' }} />
-                            {duration / 1000}s
+                            {Math.round(duration / 1000)}s
                         </div>
                     </div>
                 </div>
