@@ -6475,7 +6475,7 @@ __metadata:
     json-stable-stringify: ^1.0.1
     jsonwebtoken: ^8.5.1
     mime-types: ^2.1.35
-    mlt-xml: ^1.0.2
+    mlt-xml: ^2.0.2
     morgan: ^1.10.0
     multer: ^1.4.4
     mysql2: ^2.3.3
@@ -10744,10 +10744,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mlt-xml@npm:^1.0.2":
-  version: 1.0.3
-  resolution: "mlt-xml@npm:1.0.3"
-  checksum: 25b6f5d62214f724d165932b5296997bd59b19cdda271c55e71a90dd338bd9700134da0ee65458f5a16dab7b7eff5f5b0f095ea832f04be1ba831012ee8625cf
+"mlt-xml@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "mlt-xml@npm:2.0.2"
+  checksum: d70a2d084ffc5984986bb37c70021c8abd40d744e8498a781adf19bdafe759ca75586c9906e79eb881e82b87685d14189e67378dd78900d9608165cfd535d033
   languageName: node
   linkType: hard
 

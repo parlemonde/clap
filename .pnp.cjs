@@ -101,7 +101,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["json-stable-stringify", "npm:1.0.1"],
             ["jsonwebtoken", "npm:8.5.1"],
             ["mime-types", "npm:2.1.35"],
-            ["mlt-xml", "npm:1.0.3"],
+            ["mlt-xml", "npm:2.0.2"],
             ["morgan", "npm:1.10.0"],
             ["multer", "npm:1.4.4"],
             ["mysql2", "npm:2.3.3"],
@@ -9335,7 +9335,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["json-stable-stringify", "npm:1.0.1"],
             ["jsonwebtoken", "npm:8.5.1"],
             ["mime-types", "npm:2.1.35"],
-            ["mlt-xml", "npm:1.0.3"],
+            ["mlt-xml", "npm:2.0.2"],
             ["morgan", "npm:1.10.0"],
             ["multer", "npm:1.4.4"],
             ["mysql2", "npm:2.3.3"],
@@ -14217,10 +14217,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]
       ]],
       ["mlt-xml", [
-        ["npm:1.0.3", {
-          "packageLocation": "./.yarn/cache/mlt-xml-npm-1.0.3-f7e9ad4d9f-25b6f5d622.zip/node_modules/mlt-xml/",
+        ["npm:2.0.2", {
+          "packageLocation": "./.yarn/cache/mlt-xml-npm-2.0.2-e852a79933-d70a2d084f.zip/node_modules/mlt-xml/",
           "packageDependencies": [
-            ["mlt-xml", "npm:1.0.3"]
+            ["mlt-xml", "npm:2.0.2"]
           ],
           "linkType": "HARD",
         }]
