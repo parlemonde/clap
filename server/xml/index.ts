@@ -197,7 +197,8 @@ export function objToXml(allQuestions: Question[], project: Project) {
 
         // [3] Add sound
         if (question.soundUrl && (question.soundVolume ?? 100) > 0) {
-            const blankDuration = getFramesCount(question.voiceOffBeginTime || 0);
+            const blankDuration = getFramesCount(Math.max(0, question.voiceOffBeginTime || 0));
+            const deltaSound = getFramesCount(Math.min(0, question.voiceOffBeginTime || 0));
             const audioDuration = questionDuration - blankDuration;
             if (blankDuration > 0) {
                 audioPlaylist.elements.push({
@@ -217,8 +218,8 @@ export function objToXml(allQuestions: Question[], project: Project) {
                 name: 'producer',
                 attributes: {
                     id: `producer${producerId}`,
-                    in: 0,
-                    out: audioDuration,
+                    in: deltaSound,
+                    out: audioDuration + deltaSound,
                     resource: question.soundUrl.replace('/api/audios/', ''),
                     length: audioDuration,
                     eof: 'pause',
@@ -270,8 +271,9 @@ export function objToXml(allQuestions: Question[], project: Project) {
         elements: [],
     };
     if (project.soundUrl) {
-        const blankDuration = getFramesCount(project.musicBeginTime || 0);
-        const audioDuration = spentDuration - blankDuration;
+        const blankDuration = getFramesCount(Math.max(0, project.musicBeginTime || 0));
+        const deltaSound = getFramesCount(Math.min(0, project.musicBeginTime || 0));
+        const audioDuration = Math.max(totalFrames, spentDuration) - blankDuration;
         if (blankDuration > 0) {
             projectAudioPlaylist.elements.push({
                 name: 'blank',
@@ -290,8 +292,8 @@ export function objToXml(allQuestions: Question[], project: Project) {
             name: 'producer',
             attributes: {
                 id: `producer${producerId}`,
-                in: '0',
-                out: audioDuration,
+                in: deltaSound,
+                out: audioDuration + deltaSound,
                 resource: project.soundUrl.replace('/api/audios/', ''),
                 length: audioDuration,
                 eof: 'pause',
