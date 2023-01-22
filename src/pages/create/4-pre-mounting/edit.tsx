@@ -60,7 +60,7 @@ const PreMountSequence = () => {
     const backUrl = `/create/4-pre-mounting${serializeToQueryUrl({ projectId: project?.id || null })}`;
 
     // --- new values ---
-    const [sequence, setSequence] = React.useState<Question>(currentSequence || DEFAULT_SEQUENCE);
+    const [sequence, setSequence] = React.useState<Question>(JSON.parse(JSON.stringify(currentSequence || DEFAULT_SEQUENCE)));
     const [voiceText, setVoiceText] = React.useState(currentSequence?.voiceOff || '');
     const [soundBlob, setSoundBlob] = React.useState<Blob | null>(null);
     const [volume, setVolume] = React.useState<number>(currentSequence?.soundVolume ?? 100);
@@ -75,7 +75,7 @@ const PreMountSequence = () => {
 
     // On external change, update the sequence.
     React.useEffect(() => {
-        setSequence(currentSequence || DEFAULT_SEQUENCE);
+        setSequence(JSON.parse(JSON.stringify(currentSequence || DEFAULT_SEQUENCE)));
         setVoiceText(currentSequence?.voiceOff || '');
         setVolume(currentSequence?.soundVolume ?? 100);
         setSoundBeginTime(currentSequence?.voiceOffBeginTime || 0);

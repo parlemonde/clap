@@ -17,12 +17,32 @@ import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import { useTranslation } from 'src/i18n/useTranslation';
 import { serializeToQueryUrl } from 'src/utils/serializeToQueryUrl';
 import { useQueryNumber } from 'src/utils/useQueryId';
+import type { Question } from 'types/models/question.type';
 import type { Title } from 'types/models/title.type';
 
 const EMPTY_TITLE: Title = {
     text: '',
     duration: 3000, // 3 seconds
-    style: '{}',
+    style: JSON.stringify({
+        fontFamily: 'serif',
+        fontSize: 8,
+        x: 15,
+        y: 30,
+        width: 70,
+    }),
+};
+
+const getTitleToEdit = (sequence?: Question) => {
+    return JSON.parse(
+        JSON.stringify(
+            sequence
+                ? sequence.title || {
+                      ...EMPTY_TITLE,
+                      text: sequence.question,
+                  }
+                : EMPTY_TITLE,
+        ),
+    );
 };
 
 const TitlePlan = () => {
@@ -40,18 +60,9 @@ const TitlePlan = () => {
     const questionIndex = useQueryNumber('question') ?? -1;
     const sequence = React.useMemo(() => (questionIndex !== -1 ? questions[questionIndex] : undefined), [questions, questionIndex]);
 
-    const [title, setTitle] = React.useState(EMPTY_TITLE);
+    const [title, setTitle] = React.useState(getTitleToEdit(sequence));
     React.useEffect(() => {
-        if (!sequence) {
-            setTitle(EMPTY_TITLE);
-            return;
-        }
-        setTitle(
-            sequence.title || {
-                ...EMPTY_TITLE,
-                text: sequence.question,
-            },
-        );
+        setTitle(getTitleToEdit(sequence));
     }, [sequence]);
 
     const backUrl = `/create/3-storyboard${serializeToQueryUrl({ projectId: project?.id || null })}`;

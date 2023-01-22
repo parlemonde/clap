@@ -114,7 +114,7 @@ export const useCurrentProject = () => {
             setToLocalStorage('project', newProject);
             queryClient.setQueryData(['local-project'], newProject);
         } else {
-            queryClient.setQueryData(['project', projectId, true], project);
+            queryClient.setQueryData(['project', projectId], newProject);
         }
     };
 
