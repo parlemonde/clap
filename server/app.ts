@@ -49,7 +49,7 @@ async function startApp() {
     // maximum of 30 requests per minute
     const limiter = RateLimit({
         windowMs: 1 * 60 * 1000, // 1 minute
-        max: IS_DEV ? 600 : 30,
+        max: IS_DEV ? 600 : 120,
         standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
         legacyHeaders: false, // Disable the `X-RateLimit-*` headers
     });
