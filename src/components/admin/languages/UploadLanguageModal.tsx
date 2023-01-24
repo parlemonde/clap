@@ -3,8 +3,8 @@ import React from 'react';
 
 import { Button } from '@mui/material';
 
-import { Modal } from 'src/components/Modal';
-import { UserServiceContext } from 'src/services/UserService';
+import { useUpdateLanguageMutation } from 'src/api/languages/languages.put';
+import Modal from 'src/components/ui/Modal';
 import type { Language } from 'types/models/language.type';
 
 interface UploadLanguageModalProps {
@@ -12,35 +12,31 @@ interface UploadLanguageModalProps {
     onClose?(): void;
 }
 
-export const UploadLanguageModal: React.FunctionComponent<UploadLanguageModalProps> = ({
-    language = null,
-    onClose = () => {},
-}: UploadLanguageModalProps) => {
+export const UploadLanguageModal = ({ language = null, onClose = () => {} }: UploadLanguageModalProps) => {
     const { enqueueSnackbar } = useSnackbar();
-    const { axiosLoggedRequest } = React.useContext(UserServiceContext);
     const [file, setFile] = React.useState<File | null>(null);
 
+    const updateLanguageMutation = useUpdateLanguageMutation();
     const onSubmit = async () => {
         if (language === null || file === null) {
             return;
         }
-        const formData = new FormData();
-        formData.append('file', file);
-        const response = await axiosLoggedRequest({
-            method: 'POST',
-            url: `/languages/${language.value}/po`,
-            data: formData,
-        });
-        if (response.error) {
+        try {
+            await updateLanguageMutation.mutateAsync({
+                languageId: language.value,
+                file,
+            });
+            enqueueSnackbar('Traductions modifiées avec succès!', {
+                variant: 'success',
+            });
+            setFile(null);
+            onClose();
+        } catch (err) {
+            console.error(err);
             enqueueSnackbar('Une erreur inconnue est survenue...', {
                 variant: 'error',
             });
         }
-        enqueueSnackbar('Traductions modifiées avec succès!', {
-            variant: 'success',
-        });
-        setFile(null);
-        onClose();
     };
 
     const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,18 +49,19 @@ export const UploadLanguageModal: React.FunctionComponent<UploadLanguageModalPro
 
     return (
         <Modal
-            open={language !== null}
+            isOpen={language !== null}
             onClose={() => {
                 setFile(null);
                 onClose();
             }}
+            isLoading={updateLanguageMutation.isLoading}
             onConfirm={onSubmit}
             confirmLabel="Mettre à jour"
             cancelLabel="Annuler"
             title="Mettre à jour la langue"
             ariaLabelledBy="delete-dialog-title"
             ariaDescribedBy="delete-dialog-description"
-            fullWidth
+            isFullWidth
         >
             <div id="delete-dialog-description">
                 {

@@ -78,41 +78,39 @@ function getRules(): pluralRules {
     return rules;
 }
 
-export class PluralResolver {
-    private rules: pluralRules = getRules();
+const RULES = getRules();
 
-    private getRule(language: string): Rule | null {
-        if (this.rules[language] === undefined) {
-            return null;
-        }
-
-        const rule: RuleWithoutPlural = this.rules[language];
-        return {
-            ...rule,
-            plurals: _rulesPluralsTypes[rule.fc],
-        };
+export function getRule(language: string): Rule | null {
+    if (RULES[language] === undefined) {
+        return null;
     }
 
-    public getPluralSuffix(language: string, count: number): string {
-        const rule = this.getRule(language);
-        if (rule === null) {
-            console.warn(`No rules found for language ${language}!`);
-            return '';
-        }
+    const rule: RuleWithoutPlural = RULES[language];
+    return {
+        ...rule,
+        plurals: _rulesPluralsTypes[rule.fc],
+    };
+}
 
-        const index = rule.plurals(Math.abs(count));
-        const suffixNumber = rule.numbers[index];
-        let suffix: string = `_${rule.numbers[index]}`;
-
-        // special treatment for languages only having singular and plural
-        if (rule.numbers.length === 2 && rule.numbers[0] === 1) {
-            if (suffixNumber === 2) {
-                suffix = '_plural';
-            } else if (suffixNumber === 1) {
-                suffix = '';
-            }
-        }
-
-        return suffix;
+export function getPluralSuffix(language: string, count: number): string {
+    const rule = getRule(language);
+    if (rule === null) {
+        console.warn(`No rules found for language ${language}!`);
+        return '';
     }
+
+    const index = rule.plurals(Math.abs(count));
+    const suffixNumber = rule.numbers[index];
+    let suffix: string = `_${rule.numbers[index]}`;
+
+    // special treatment for languages only having singular and plural
+    if (rule.numbers.length === 2 && rule.numbers[0] === 1) {
+        if (suffixNumber === 2) {
+            suffix = '_plural';
+        } else if (suffixNumber === 1) {
+            suffix = '';
+        }
+    }
+
+    return suffix;
 }

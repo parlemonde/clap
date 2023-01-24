@@ -3,20 +3,21 @@ import React from 'react';
 
 import Typography from '@mui/material/Typography';
 
-import { Inverted } from 'src/components/Inverted';
+import { useProjects } from 'src/api/projects/projects.list';
 import { ProjectCard } from 'src/components/ProjectCard';
-import { Trans } from 'src/components/Trans';
+import { Inverted } from 'src/components/ui/Inverted';
+import { Trans } from 'src/components/ui/Trans';
 import { useTranslation } from 'src/i18n/useTranslation';
-import { useProjects } from 'src/services/useProjects';
+import { serializeToQueryUrl } from 'src/utils/serializeToQueryUrl';
 
-const MyVideos: React.FunctionComponent = () => {
+const VideosPage = () => {
     const { t, currentLocale } = useTranslation();
     const router = useRouter();
-    const { projects } = useProjects();
+    const { projects } = useProjects({ include: 'theme' });
 
     const handleWipProjectClick = (projectId: number) => (event: React.MouseEvent) => {
         event.preventDefault();
-        router.push(`/create/3-storyboard-and-filming-schedule?project=${projectId}`);
+        router.push(`/create/3-storyboard${serializeToQueryUrl({ projectId: projectId || null })}`);
     };
 
     const handleWipProjectClickEdit = (projectId: number) => () => {
@@ -35,9 +36,6 @@ const MyVideos: React.FunctionComponent = () => {
                     Mes <Inverted>supers</Inverted> vidéos
                 </Trans>
             </Typography>
-            {/* <Typography color="inherit" variant="h2">
-        {t("my_videos_subtitle1")}
-      </Typography> */}
             <div className="wip-videos">
                 {projects.length > 0 ? (
                     <React.Fragment>
@@ -55,11 +53,8 @@ const MyVideos: React.FunctionComponent = () => {
                     <ProjectCard title={t('my_videos_empty')} onClick={handleNewProjectClick} />
                 )}
             </div>
-            {/* <Typography color="inherit" variant="h2">
-        {t("my_videos_subtitle2")}
-      </Typography> */}
         </div>
     );
 };
 
-export default MyVideos;
+export default VideosPage;

@@ -24,6 +24,7 @@ COPY .eslintignore ./
 COPY .eslintrc.js ./
 COPY .prettierrc.js ./
 COPY .swcrc ./
+COPY .svgrrc.js ./
 COPY next-env.d.ts ./
 COPY next.config.js ./
 COPY tsconfig.json ./

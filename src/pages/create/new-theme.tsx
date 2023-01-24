@@ -1,84 +1,66 @@
+import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useSnackbar } from 'notistack';
 import React from 'react';
-import { useMutation, useQueryClient } from 'react-query';
 
-import ArrowForwardIcon from '@mui/icons-material/ArrowForwardIos';
-import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import Box from '@mui/material/Box';
-import Breadcrumbs from '@mui/material/Breadcrumbs';
-import Button from '@mui/material/Button';
-import Link from '@mui/material/Link';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
+import { Breadcrumbs, Link as MuiLink, Typography, TextField } from '@mui/material';
 
-import { Inverted } from 'src/components/Inverted';
-import { Trans } from 'src/components/Trans';
+import { useCreateThemeMutation } from 'src/api/themes/themes.post';
+import { Loader } from 'src/components/layout/Loader';
+import { BackButton } from 'src/components/navigation/BackButton';
+import { NextButton } from 'src/components/navigation/NextButton';
+import { Inverted } from 'src/components/ui/Inverted';
+import { Trans } from 'src/components/ui/Trans';
 import { useTranslation } from 'src/i18n/useTranslation';
-import { ProjectServiceContext } from 'src/services/useProject';
-import { useThemeRequests } from 'src/services/useThemes';
 
-const NewTheme: React.FunctionComponent = () => {
+const NewThemePage = () => {
     const router = useRouter();
-    const queryClient = useQueryClient();
+    const { enqueueSnackbar } = useSnackbar();
     const { t, currentLocale } = useTranslation();
-    const { updateProject } = React.useContext(ProjectServiceContext);
-    const { createTheme } = useThemeRequests();
-    const { mutateAsync } = useMutation(createTheme);
+    const createThemeMutation = useCreateThemeMutation();
+
     const [themeName, setThemeName] = React.useState('');
     const [hasError, setHasError] = React.useState(false);
 
-    const handleHome = (event: React.MouseEvent) => {
-        event.preventDefault();
-        router.push('/create');
-    };
-
-    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        event.preventDefault();
-        setThemeName(event.target.value);
-        setHasError(false);
-    };
-
-    const handleSubmit = async () => {
-        if (themeName.length === 0) {
+    const onCreateTheme = () => {
+        if (!themeName) {
             setHasError(true);
             return;
         }
-        try {
-            const newTheme = await mutateAsync({
-                newTheme: {
-                    id: 0,
-                    order: 0,
-                    image: null,
-                    names: {
-                        fr: themeName,
-                        [currentLocale]: themeName,
-                    },
-                    isDefault: false,
+        createThemeMutation.mutate(
+            {
+                names: {
+                    [currentLocale]: themeName,
                 },
-            });
-            if (newTheme === null) {
-                // TODO
-                return;
-            }
-            queryClient.invalidateQueries('themes');
-            updateProject({
-                theme: newTheme,
-            });
-            router.push(`/create/1-scenario-choice`);
-        } catch (e) {
-            // TODO
-        }
+                order: 0,
+                isDefault: false,
+            },
+            {
+                onSuccess(newTheme) {
+                    router.push(`/create/1-scenario?themeId=${newTheme.id}`);
+                },
+                onError(error) {
+                    console.error(error);
+                    enqueueSnackbar(t('unknown_error'), {
+                        variant: 'error',
+                    });
+                },
+            },
+        );
     };
 
     return (
         <div>
             <Breadcrumbs sx={{ display: { xs: 'none', md: 'block' } }} separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
-                <Link color="inherit" href="/create" onClick={handleHome}>
-                    {t('all_themes')}
+                <Link href="/create" passHref>
+                    <MuiLink color="inherit" href="/create" sx={{ textDecoration: 'none', ':hover': { textDecoration: 'underline' } }}>
+                        {t('all_themes')}
+                    </MuiLink>
                 </Link>
                 <Typography color="textPrimary">{t('create_new_theme')}</Typography>
             </Breadcrumbs>
+            <BackButton href="/create" />
 
             <div
                 style={{
@@ -87,14 +69,6 @@ const NewTheme: React.FunctionComponent = () => {
                     paddingBottom: '2rem',
                 }}
             >
-                <Button
-                    sx={{ display: { xs: 'inline-flex', md: 'none' }, paddingLeft: '0!important', margin: '1rem 0 0 0' }}
-                    size="medium"
-                    onClick={handleHome}
-                >
-                    <KeyboardArrowLeft />
-                    {t('back')}
-                </Button>
                 <Typography color="primary" variant="h1" style={{ marginTop: '1rem' }}>
                     <Trans i18nKey="new_theme_title">
                         Créer votre <Inverted>thème</Inverted> :
@@ -104,53 +78,29 @@ const NewTheme: React.FunctionComponent = () => {
                     <Trans i18nKey="new_theme_title_label">
                         Nom du thème<span style={{ color: 'red' }}>*</span> :
                     </Trans>
-                    <div>
-                        <TextField
-                            value={themeName}
-                            onChange={handleInputChange}
-                            required
-                            error={hasError}
-                            className={hasError ? 'shake' : ''}
-                            id="themeName"
-                            placeholder={t('new_theme_title_placeholder')}
-                            fullWidth
-                            style={{ marginTop: '0.5rem' }}
-                            variant="outlined"
-                            color="secondary"
-                            autoComplete="off"
-                        />
-                    </div>
                 </Typography>
-
-                <div style={{ marginTop: '2rem' }}>
-                    <Box sx={{ display: { xs: 'none', md: 'block' } }} style={{ width: '100%', textAlign: 'right' }}>
-                        <Button
-                            component="a"
-                            variant="outlined"
-                            color="secondary"
-                            style={{ marginRight: '1rem' }}
-                            href={`/create`}
-                            onClick={handleHome}
-                        >
-                            {t('cancel')}
-                        </Button>
-                        <Button variant="contained" color="secondary" onClick={handleSubmit} endIcon={<ArrowForwardIcon />}>
-                            {t('next')}
-                        </Button>
-                    </Box>
-                    <Button
-                        sx={{ display: { xs: 'inline-flex', md: 'none' } }}
-                        variant="contained"
-                        color="secondary"
-                        style={{ width: '100%', marginTop: '2rem' }}
-                        onClick={handleSubmit}
-                    >
-                        {t('next')}
-                    </Button>
-                </div>
+                <TextField
+                    fullWidth
+                    value={themeName}
+                    onChange={(event) => {
+                        setThemeName(event.target.value.slice(0, 200));
+                        setHasError(false);
+                    }}
+                    error={hasError}
+                    helperText={`${themeName.length}/200`}
+                    FormHelperTextProps={{ style: { textAlign: 'right' } }}
+                    className={hasError ? 'shake' : ''}
+                    placeholder={t('new_theme_title_placeholder')}
+                    style={{ marginTop: '0.5rem' }}
+                    variant="outlined"
+                    color="secondary"
+                    autoComplete="off"
+                />
+                <NextButton backHref="/create" onNext={onCreateTheme} />
             </div>
+            <Loader isLoading={createThemeMutation.isLoading} />
         </div>
     );
 };
 
-export default NewTheme;
+export default NewThemePage;

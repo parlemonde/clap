@@ -5,30 +5,25 @@ import { getRepository } from 'typeorm';
 import { getNewAccessToken } from '../authentication/lib/tokens';
 import type { UserType } from '../entities/user';
 import { User } from '../entities/user';
-import { getHeader } from '../utils/utils';
+import { getHeader } from '../utils/get-header';
+import { AppError } from './handle-errors';
 
 const APP_SECRET: string = process.env.APP_SECRET || '';
 
 export function authenticate(userType: UserType | undefined = undefined): RequestHandler {
     return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        if (APP_SECRET.length === 0 || (!req.isCsrfValid && req.method !== 'GET')) {
+            // check cookie was not stolen
+            throw new AppError('forbidden');
+        }
+
         let token: string;
         if (req.cookies && req.cookies['access-token']) {
-            if (!req.isCsrfValid && req.method !== 'GET') {
-                // check cookie was not stolen
-                res.status(401).send('bad csrf token');
-                return;
-            }
             token = req.cookies['access-token'];
         } else if (req.cookies && req.cookies['refresh-token']) {
-            if (!req.isCsrfValid && req.method !== 'GET') {
-                // check cookie was not stolen
-                res.status(401).send('bad csrf token');
-                return;
-            }
             const newTokens = await getNewAccessToken(req.cookies['refresh-token']);
             if (newTokens === null) {
-                res.status(401).send('invalid refresh token');
-                return;
+                throw new AppError('forbidden');
             }
             // send new token
             token = newTokens.accessToken;
@@ -36,6 +31,8 @@ export function authenticate(userType: UserType | undefined = undefined): Reques
                 maxAge: 4 * 60 * 60000,
                 expires: new Date(Date.now() + 4 * 60 * 60000),
                 httpOnly: true,
+                secure: true,
+                sameSite: 'strict',
             });
         } else {
             token = getHeader(req, 'x-access-token') || getHeader(req, 'authorization') || '';
@@ -45,10 +42,6 @@ export function authenticate(userType: UserType | undefined = undefined): Reques
             // Remove Bearer from string
             token = token.slice(7, token.length);
         }
-        if (APP_SECRET.length === 0) {
-            res.status(401).send('invalid access token');
-            return;
-        }
 
         // no authentication
         if (userType === undefined && token.length === 0) {
@@ -56,50 +49,29 @@ export function authenticate(userType: UserType | undefined = undefined): Reques
             return;
         }
 
+        if (token.length === 0) {
+            throw new AppError('forbidden');
+        }
+
         // authenticate
+        let data: { userId: number; iat: number; exp: number };
         try {
             const decoded: string | { userId: number; iat: number; exp: number } = jwt.verify(token, APP_SECRET) as
                 | string
                 | { userId: number; iat: number; exp: number };
-            let data: { userId: number; iat: number; exp: number };
             if (typeof decoded === 'string') {
-                try {
-                    data = JSON.parse(decoded);
-                } catch (e) {
-                    if (req.method === 'GET' && userType === undefined) {
-                        req.user = undefined;
-                        res.cookie('access-token', '', { maxAge: 0, expires: new Date(0), httpOnly: true });
-                        res.cookie('refresh-token', '', { maxAge: 0, expires: new Date(0), httpOnly: true });
-                        next();
-                    } else {
-                        res.status(401).send('invalid access token');
-                    }
-                    return;
-                }
+                data = JSON.parse(decoded);
             } else {
                 data = decoded;
             }
-            const user = await getRepository(User).findOne({ where: { id: data.userId } });
-            if (user === undefined && userType !== undefined) {
-                res.status(401).send('invalid access token');
-                return;
-            } // class: 0 < admin: 1 < superAdmin: 2
-            if (userType !== undefined && user !== undefined && user.type < userType) {
-                res.status(403).send('Forbidden');
-                return;
-            }
-            req.user = user !== undefined ? user.userWithoutPassword() : undefined;
-        } catch (_e) {
-            if (req.method === 'GET' && userType === undefined) {
-                req.user = undefined;
-                res.cookie('access-token', '', { maxAge: 0, expires: new Date(0), httpOnly: true });
-                res.cookie('refresh-token', '', { maxAge: 0, expires: new Date(0), httpOnly: true });
-                next();
-            } else {
-                res.status(401).send('invalid access token');
-            }
-            return;
+        } catch (e) {
+            throw new AppError('forbidden');
         }
+        const user = await getRepository(User).findOne({ where: { id: data.userId } });
+        if (userType !== undefined && (user === undefined || user.type < userType)) {
+            throw new AppError('forbidden');
+        }
+        req.user = user;
         next();
     };
 }

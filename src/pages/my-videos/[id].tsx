@@ -1,7 +1,7 @@
+import { default as NextLink } from 'next/link';
 import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
 import React from 'react';
-import { useQueryClient } from 'react-query';
 
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
@@ -10,93 +10,88 @@ import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
-import { Modal } from 'src/components/Modal';
-import { Trans } from 'src/components/Trans';
+import { useDeleteProjectMutation } from 'src/api/projects/projects.delete';
+import { useProject } from 'src/api/projects/projects.get';
+import { useUpdateProjectMutation } from 'src/api/projects/projects.put';
+import { useScenario } from 'src/api/scenarios/scenarios.get';
+import { useTheme } from 'src/api/themes/themes.get';
+import Modal from 'src/components/ui/Modal';
+import { Trans } from 'src/components/ui/Trans';
+import { userContext } from 'src/contexts/userContext';
+import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import { useTranslation } from 'src/i18n/useTranslation';
-import { UserServiceContext } from 'src/services/UserService';
-import { getQueryString } from 'src/util';
-import type { Project } from 'types/models/project.type';
+import { getQueryString } from 'src/utils/get-query-string';
+import { serializeToQueryUrl } from 'src/utils/serializeToQueryUrl';
 
 const EditProject: React.FC = () => {
     const router = useRouter();
     const { t, currentLocale } = useTranslation();
-    const queryClient = useQueryClient();
     const { enqueueSnackbar } = useSnackbar();
-    const { axiosLoggedRequest, isLoggedIn } = React.useContext(UserServiceContext);
-    const projectId = React.useMemo(() => parseInt(getQueryString(router.query.id), 10) || 0, [router]);
-    const [project, setProject] = React.useState<Project | null>(null);
+    const { user } = React.useContext(userContext);
+    const { project: localProject, updateProject } = useCurrentProject();
+
+    const projectId = React.useMemo(() => Number(getQueryString(router.query.id)) || 0, [router]);
+    const { project, isLoading: isProjectLoading } = useProject(projectId);
+    const { theme } = useTheme(project ? project.themeId : 0, {
+        enabled: !isProjectLoading && project !== undefined,
+    });
+    const { scenario } = useScenario(project ? project.scenarioId : 0, {
+        enabled: !isProjectLoading && project !== undefined,
+    });
+
     const [projectTitle, setProjectTitle] = React.useState<string>('');
-    const [showModal, setShowModal] = React.useState<number>(-1);
-    const [hasError, setHasError] = React.useState(false);
-
-    const getProject = React.useCallback(async () => {
-        const response = await axiosLoggedRequest({
-            method: 'GET',
-            url: `/projects/${projectId}`,
-        });
-        if (!response.error) {
-            setProject(response.data);
-        } else {
-            router.push('/create');
-        }
-    }, [projectId, router, axiosLoggedRequest]);
-    React.useEffect(() => {
-        if (!isLoggedIn) {
-            router.push('/create');
-        }
-        getProject().catch();
-    }, [isLoggedIn, router, getProject]);
+    const [showTitleModal, setShowTitleModal] = React.useState(false);
+    const [showDeleteModal, setShowDeleteModal] = React.useState(false);
 
     React.useEffect(() => {
-        setProjectTitle(project?.title || '');
-    }, [project]);
+        if (!user) {
+            router.push('/create');
+        }
+    }, [router, user]);
 
+    const updateProjectMutation = useUpdateProjectMutation();
     const onUpdateProject = async () => {
-        if (project === null || projectTitle.length === 0) {
-            setHasError(true);
+        if (project === undefined || projectTitle.length === 0) {
             return;
         }
-        const response = await axiosLoggedRequest({
-            method: 'PUT',
-            url: `/projects/${projectId}`,
-            data: {
+        try {
+            await updateProjectMutation.mutateAsync({
+                projectId,
                 title: projectTitle,
-            },
-        });
-        if (!response.error) {
-            enqueueSnackbar('Projet modifié !', {
+            });
+            if (localProject && localProject.id === projectId) {
+                updateProject({ title: projectTitle });
+            }
+            enqueueSnackbar(t('project_saved'), {
                 variant: 'success',
             });
-            setProject({ ...project, title: projectTitle });
-            queryClient.invalidateQueries('projects');
-        } else {
-            enqueueSnackbar('Une erreur inconnue est survenue...', {
+        } catch (err) {
+            console.error(err);
+            enqueueSnackbar(t('unknown_error'), {
                 variant: 'error',
             });
         }
-        setShowModal(-1);
+        setShowTitleModal(false);
     };
 
+    const deleteProjectMutation = useDeleteProjectMutation();
     const onDeleteProject = async () => {
-        const response = await axiosLoggedRequest({
-            method: 'DELETE',
-            url: `/projects/${projectId}`,
-        });
-        if (!response.error) {
-            enqueueSnackbar('Projet supprimé !', {
+        try {
+            await deleteProjectMutation.mutateAsync({ projectId });
+            enqueueSnackbar(t('project_deleted'), {
                 variant: 'success',
             });
-            queryClient.invalidateQueries('projects');
             router.push('/my-videos');
-        } else {
-            enqueueSnackbar('Une erreur inconnue est survenue...', {
+        } catch (err) {
+            console.error(err);
+            enqueueSnackbar(t('unknown_error'), {
                 variant: 'error',
             });
         }
-        setShowModal(-1);
+        setShowDeleteModal(false);
     };
 
-    if (project === null) {
+    if (!project) {
         return <div></div>;
     }
 
@@ -120,7 +115,8 @@ const EditProject: React.FC = () => {
                     <Link
                         style={{ cursor: 'pointer' }}
                         onClick={() => {
-                            setShowModal(1);
+                            setProjectTitle(project.title);
+                            setShowTitleModal(true);
                         }}
                     >
                         {t('account_change_button')}
@@ -131,7 +127,7 @@ const EditProject: React.FC = () => {
                         <label style={{ marginRight: '0.5rem' }}>
                             <strong>{t('pdf_theme')}</strong>
                         </label>
-                        {project.theme.names[currentLocale] || project.theme.names.fr}
+                        {theme?.names[currentLocale] || theme?.names.fr || ''}
                     </div>
                 )}
                 {project.scenario !== null && (
@@ -139,7 +135,7 @@ const EditProject: React.FC = () => {
                         <label style={{ marginRight: '0.5rem' }}>
                             <strong>{t('pdf_scenario')}</strong>
                         </label>
-                        {project.scenario.name}
+                        {scenario?.names[currentLocale] || scenario?.names.fr || ''}
                     </div>
                 )}
                 {project.questions !== null && (
@@ -148,28 +144,28 @@ const EditProject: React.FC = () => {
                             <label style={{ marginRight: '0.5rem' }}>
                                 <strong>{t('project_question_number')}</strong>
                             </label>
-                            {project.questions.length}
+                            {project.questions?.length || 0}
                         </div>
                         <div style={{ marginTop: '0.5rem' }}>
                             <label style={{ marginRight: '0.5rem' }}>
                                 <strong>{t('project_plan_number')}</strong>
                             </label>
-                            {project.questions.reduce<number>((n, q) => n + (q.plans || []).length, 0)}
+                            {project.questions?.reduce<number>((n, q) => n + (q.plans || []).length, 0) ?? 0}
                         </div>
                     </>
                 )}
-                <Button
-                    style={{ marginTop: '0.8rem' }}
-                    className="mobile-full-width"
-                    onClick={() => {
-                        router.push(`/create/3-storyboard-and-filming-schedule?project=${projectId}`);
-                    }}
-                    variant="contained"
-                    color="secondary"
-                    size="small"
-                >
-                    {t('project_see_plans')}
-                </Button>
+                <NextLink href={`/create/3-storyboard${serializeToQueryUrl({ projectId: project?.id || null })}`} passHref>
+                    <Button
+                        component="a"
+                        style={{ marginTop: '0.8rem' }}
+                        className="mobile-full-width"
+                        variant="contained"
+                        color="secondary"
+                        size="small"
+                    >
+                        {t('project_see_plans')}
+                    </Button>
+                </NextLink>
                 <Divider style={{ margin: '1rem 0 1.5rem' }} />
                 <Typography variant="h2">{t('project_delete')}</Typography>
                 <Button
@@ -181,7 +177,7 @@ const EditProject: React.FC = () => {
                         },
                     }}
                     style={{ marginTop: '0.8rem' }}
-                    onClick={() => setShowModal(2)}
+                    onClick={() => setShowDeleteModal(true)}
                     className="mobile-full-width"
                     variant="contained"
                     size="small"
@@ -191,10 +187,9 @@ const EditProject: React.FC = () => {
             </div>
 
             <Modal
-                open={showModal === 1}
+                isOpen={showTitleModal}
                 onClose={() => {
-                    setProjectTitle(project.title);
-                    setShowModal(-1);
+                    setShowTitleModal(false);
                 }}
                 onConfirm={onUpdateProject}
                 confirmLabel={t('edit')}
@@ -202,7 +197,8 @@ const EditProject: React.FC = () => {
                 title={t('project_name')}
                 ariaLabelledBy="project-dialog-title"
                 ariaDescribedBy="project-dialog-description"
-                fullWidth
+                isLoading={updateProjectMutation.isLoading}
+                isFullWidth
             >
                 <div id="project-dialog-description">
                     <TextField
@@ -215,26 +211,26 @@ const EditProject: React.FC = () => {
                         placeholder={t('project_name')}
                         label={t('project_name')}
                         onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                            setProjectTitle(event.target.value || '');
+                            setProjectTitle(event.target.value.slice(0, 200));
                         }}
-                        className={hasError ? 'shake' : ''}
-                        error={hasError}
-                        helperText={hasError ? t('signup_required') : ''}
+                        helperText={`${projectTitle.length}/200`}
+                        FormHelperTextProps={{ style: { textAlign: 'right' } }}
                         color="secondary"
                     />
                 </div>
             </Modal>
             <Modal
-                open={showModal === 2}
-                onClose={() => setShowModal(-1)}
+                isOpen={showDeleteModal}
+                onClose={() => setShowDeleteModal(false)}
                 onConfirm={onDeleteProject}
                 confirmLabel={t('delete')}
+                confirmLevel="error"
                 cancelLabel={t('cancel')}
                 title={t('project_delete_title')}
                 ariaLabelledBy="delete-dialog-title"
                 ariaDescribedBy="delete-dialog-description"
-                fullWidth
-                error
+                isLoading={deleteProjectMutation.isLoading}
+                isFullWidth
             >
                 <div id="delete-dialog-description">
                     <Alert severity="error" style={{ marginBottom: '1rem' }}>

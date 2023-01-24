@@ -19,12 +19,12 @@ import TableSortLabel from '@mui/material/TableSortLabel';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 
+import type { GETParams as GetUsersArgs } from 'src/api/users/users.list';
+import { useUsers } from 'src/api/users/users.list';
 import { AdminTile } from 'src/components/admin/AdminTile';
 import { DeleteUserModal } from 'src/components/admin/users/DeleteUserModal';
 import { InviteUserModal } from 'src/components/admin/users/InviteUserModal';
-import { UserServiceContext } from 'src/services/UserService';
-import type { UserArgs } from 'src/services/useUsers';
-import { useUsers } from 'src/services/useUsers';
+import { userContext } from 'src/contexts/userContext';
 
 const styles = {
     visuallyHidden: {
@@ -46,14 +46,14 @@ const userTypeNames = {
     2: 'Super Admin',
 };
 
-const AdminUsers: React.FunctionComponent = () => {
+const AdminUsers = () => {
     const router = useRouter();
-    const [args, setArgs] = React.useState<UserArgs>({
+    const [args, setArgs] = React.useState<GetUsersArgs>({
         page: 1,
         limit: 10,
     });
-    const { user: currentUser } = React.useContext(UserServiceContext);
-    const { users, count } = useUsers(args);
+    const { user: currentUser } = React.useContext(userContext);
+    const { users, total } = useUsers(args);
     const [deleteIndex, setDeleteIndex] = React.useState<number>(-1);
     const [inviteOpen, setInviteOpen] = React.useState<boolean>(false);
 
@@ -138,26 +138,6 @@ const AdminUsers: React.FunctionComponent = () => {
                                                 ) : null}
                                             </TableSortLabel>
                                         </TableCell>
-                                        <TableCell style={{ color: 'white', fontWeight: 'bold' }}>
-                                            <TableSortLabel active={args.order === 'school'} direction={args.sort} onClick={onHeaderClick('school')}>
-                                                École
-                                                {args.order === 'school' ? (
-                                                    <Box component="span" sx={styles.visuallyHidden}>
-                                                        {args.sort === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                                                    </Box>
-                                                ) : null}
-                                            </TableSortLabel>
-                                        </TableCell>
-                                        <TableCell style={{ color: 'white', fontWeight: 'bold' }}>
-                                            <TableSortLabel active={args.order === 'level'} direction={args.sort} onClick={onHeaderClick('level')}>
-                                                Niveau de la classe
-                                                {args.order === 'level' ? (
-                                                    <Box component="span" sx={styles.visuallyHidden}>
-                                                        {args.sort === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                                                    </Box>
-                                                ) : null}
-                                            </TableSortLabel>
-                                        </TableCell>
                                         <TableCell style={{ color: 'white', fontWeight: 'bold' }}>Compte</TableCell>
                                         <TableCell style={{ color: 'white', fontWeight: 'bold' }} align="right">
                                             Actions
@@ -180,8 +160,6 @@ const AdminUsers: React.FunctionComponent = () => {
                                         >
                                             <TableCell>{user.pseudo}</TableCell>
                                             <TableCell>{user.email}</TableCell>
-                                            <TableCell>{user.school || <span style={{ color: 'grey' }}>Non renseignée</span>}</TableCell>
-                                            <TableCell>{user.level || <span style={{ color: 'grey' }}>Non renseigné</span>}</TableCell>
                                             <TableCell padding="none">
                                                 <Chip size="small" label={userTypeNames[user.type]} />
                                             </TableCell>
@@ -209,7 +187,7 @@ const AdminUsers: React.FunctionComponent = () => {
                                     <TableRow>
                                         <TablePagination
                                             rowsPerPageOptions={[5, 10, 25]}
-                                            count={count}
+                                            count={total}
                                             rowsPerPage={args.limit || 10}
                                             page={(args.page || 1) - 1}
                                             onPageChange={handleChangePage}

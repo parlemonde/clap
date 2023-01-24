@@ -1,5 +1,4 @@
 import React from 'react';
-import { useQueryClient } from 'react-query';
 
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import BackupIcon from '@mui/icons-material/Backup';
@@ -17,26 +16,18 @@ import TableRow from '@mui/material/TableRow';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 
+import { useLanguages } from 'src/api/languages/languages.list';
 import { AdminTile } from 'src/components/admin/AdminTile';
 import { AddLanguageModal } from 'src/components/admin/languages/AddLanguageModal';
 import { DeleteLanguageModal } from 'src/components/admin/languages/DeleteLanguageModal';
 import { UploadLanguageModal } from 'src/components/admin/languages/UploadLanguageModal';
-import { useLanguages } from 'src/services/useLanguages';
 import type { Language } from 'types/models/language.type';
 
-const AdminLanguages: React.FunctionComponent = () => {
-    const queryClient = useQueryClient();
+const AdminLanguages = () => {
     const { languages } = useLanguages();
     const [isAddModalOpen, setIsAddModalOpen] = React.useState<boolean>(false);
     const [uploadLanguageIndex, setUploadLanguageIndex] = React.useState<number>(-1);
     const [deleteLanguageIndex, setDeleteLanguageIndex] = React.useState<number>(-1);
-
-    const setLanguages = React.useCallback(
-        (f: (ll: Language[]) => Language[]) => {
-            queryClient.setQueryData(['languages'], f(languages));
-        },
-        [languages, queryClient],
-    );
 
     const onDownload = (l: Language) => async (event: React.MouseEvent) => {
         event.preventDefault();
@@ -163,7 +154,6 @@ const AdminLanguages: React.FunctionComponent = () => {
                     onClose={() => {
                         setIsAddModalOpen(false);
                     }}
-                    setLanguages={setLanguages}
                 />
                 <UploadLanguageModal
                     language={uploadLanguageIndex === -1 ? null : languages[uploadLanguageIndex] || null}
@@ -176,7 +166,6 @@ const AdminLanguages: React.FunctionComponent = () => {
                     onClose={() => {
                         setDeleteLanguageIndex(-1);
                     }}
-                    setLanguages={setLanguages}
                 />
             </NoSsr>
         </div>

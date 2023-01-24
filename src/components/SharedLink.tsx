@@ -4,8 +4,6 @@ import React from 'react';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import { Fab, Tooltip } from '@mui/material';
 
-// import "./sharedLink.css";
-
 interface SharedLinkProps {
     link?: string;
 }

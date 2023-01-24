@@ -1,8 +1,6 @@
 import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
 import React from 'react';
-import { useQueryClient } from 'react-query';
-import { ReactSortable } from 'react-sortablejs';
 
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import CheckIcon from '@mui/icons-material/Check';
@@ -26,70 +24,65 @@ import TableRow from '@mui/material/TableRow';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 
-import { Modal } from 'src/components/Modal';
+import { useLanguages } from 'src/api/languages/languages.list';
+import { useDeleteThemeMutation } from 'src/api/themes/themes.delete';
+import { useThemes } from 'src/api/themes/themes.list';
+import { useReorderThemesMutation } from 'src/api/themes/themes.order';
+import { useUpdateThemeMutation } from 'src/api/themes/themes.put';
 import { AdminTile } from 'src/components/admin/AdminTile';
-import { UserServiceContext } from 'src/services/UserService';
-import { useLanguages } from 'src/services/useLanguages';
-import { useThemes } from 'src/services/useThemes';
+import Modal from 'src/components/ui/Modal';
+import { Sortable } from 'src/components/ui/Sortable';
+import { useTranslation } from 'src/i18n/useTranslation';
 import type { Theme } from 'types/models/theme.type';
 
-const AdminThemes: React.FunctionComponent = () => {
+const ThemesPage = () => {
     const router = useRouter();
-    const queryClient = useQueryClient();
     const { enqueueSnackbar } = useSnackbar();
-    const { axiosLoggedRequest } = React.useContext(UserServiceContext);
+    const { t } = useTranslation();
+
+    const { themes: defaultThemes } = useThemes({ isDefault: true });
+    const { themes: userThemes } = useThemes({ isDefault: false });
     const { languages } = useLanguages();
-    const { themes: defaultThemes, setThemes: setDefaultThemes } = useThemes({ isDefault: true });
-    const { themes: userThemes, setThemes: setUserThemes } = useThemes({ isDefault: false });
     const [deleteIndex, setDeleteIndex] = React.useState<number | null>(null);
     const [selectedLanguage, setSelectedLanguage] = React.useState<string>('fr');
 
-    const validateTheme = (themeId: number | string, themeIndex: number) => async () => {
-        const response = await axiosLoggedRequest({
-            method: 'PUT',
-            url: `/themes/${themeId}`,
-            data: {
-                isDefault: true,
-                order: defaultThemes.length + userThemes.length + 1,
-            },
-        });
-        if (response.error) {
+    const updateThemeMutation = useUpdateThemeMutation();
+    const validateTheme = (themeId: number | string) => async () => {
+        if (typeof themeId === 'string') {
             return;
         }
-        const newUserThemes = [...userThemes];
-        const theme = newUserThemes.splice(themeIndex, 1)[0];
-        setUserThemes(newUserThemes);
-        setDefaultThemes([...defaultThemes, theme]);
-    };
-
-    const setThemesOrder = async (themes: Theme[]) => {
-        if (themes.map((t) => t.id).join(',') === defaultThemes.map((t) => t.id).join(',')) {
-            return;
-        }
-        setDefaultThemes(themes);
-        const order = themes.map((t) => t.id);
         try {
-            const response = await axiosLoggedRequest({
-                method: 'PUT',
-                url: '/themes/update-order',
-                data: {
-                    order,
-                },
+            await updateThemeMutation.mutateAsync({
+                themeId,
+                isDefault: true,
+                order: Math.max(0, ...defaultThemes.map((t) => t.order + 1)),
             });
-            if (response.error) {
-                enqueueSnackbar('Une erreur inconnue est survenue...', {
-                    variant: 'error',
-                });
-                queryClient.invalidateQueries('themes');
-                console.error(response.error);
-            }
-        } catch (e) {
-            enqueueSnackbar('Une erreur inconnue est survenue...', {
+            enqueueSnackbar('Thème ajouté aux défauts avec succès!', {
+                variant: 'success',
+            });
+        } catch (err) {
+            console.error(err);
+            enqueueSnackbar(t('unknown_error'), {
                 variant: 'error',
             });
-            queryClient.invalidateQueries('themes');
-            console.error(e);
         }
+    };
+
+    const reorderThemesMutation = useReorderThemesMutation();
+    const setThemesOrder = (themes: Theme[]) => {
+        reorderThemesMutation.mutate(
+            {
+                order: themes.map((theme) => theme.id).filter((id): id is number => typeof id === 'number'),
+            },
+            {
+                onError(error) {
+                    console.error(error);
+                    enqueueSnackbar(t('unknown_error'), {
+                        variant: 'error',
+                    });
+                },
+            },
+        );
     };
 
     const goToPath = (path: string) => (event: React.MouseEvent) => {
@@ -97,27 +90,23 @@ const AdminThemes: React.FunctionComponent = () => {
         router.push(path);
     };
 
+    const deleteThemeMutation = useDeleteThemeMutation();
     const onDeleteTheme = async () => {
-        if (deleteIndex === null) {
+        const themeId = deleteIndex ? defaultThemes[deleteIndex].id : null;
+        if (!themeId || typeof themeId === 'string') {
             return;
         }
-        const response = await axiosLoggedRequest({
-            method: 'DELETE',
-            url: `/themes/${defaultThemes[deleteIndex].id}`,
-        });
-        if (response.error) {
-            enqueueSnackbar('Une erreur inconnue est survenue...', {
+        try {
+            await deleteThemeMutation.mutateAsync({ themeId });
+            enqueueSnackbar('Thème supprimé avec succès!', {
+                variant: 'success',
+            });
+        } catch (err) {
+            console.error(err);
+            enqueueSnackbar(t('unknown_error'), {
                 variant: 'error',
             });
-            console.error(response.error);
-            return;
         }
-        enqueueSnackbar('Thème supprimé avec succès!', {
-            variant: 'success',
-        });
-        const themes = [...defaultThemes];
-        themes.splice(deleteIndex, 1);
-        setDefaultThemes(themes);
         setDeleteIndex(null);
     };
 
@@ -190,8 +179,7 @@ const AdminThemes: React.FunctionComponent = () => {
                                             </TableCell>
                                         </TableRow>
                                     </TableHead>
-
-                                    <ReactSortable tag={'tbody'} list={defaultThemes} setList={setThemesOrder} animation={100} handle=".theme-index">
+                                    <Sortable component="tbody" list={defaultThemes} setList={setThemesOrder} handle=".theme-index">
                                         {defaultThemes.map((t, index) => (
                                             <TableRow
                                                 sx={{
@@ -215,8 +203,8 @@ const AdminThemes: React.FunctionComponent = () => {
                                                     {t.names[selectedLanguage] || `${t.names.fr} (non traduit)`}
                                                 </TableCell>
                                                 <TableCell style={{ padding: '0 16px' }} padding="none">
-                                                    {t.image ? (
-                                                        <img style={{ display: 'table-cell' }} height="40" src={t.image.path} />
+                                                    {t.imageUrl ? (
+                                                        <img style={{ display: 'table-cell' }} height="40" src={t.imageUrl} />
                                                     ) : (
                                                         'Aucune image'
                                                     )}
@@ -240,7 +228,7 @@ const AdminThemes: React.FunctionComponent = () => {
                                                 </TableCell>
                                             </TableRow>
                                         ))}
-                                    </ReactSortable>
+                                    </Sortable>
                                 </>
                             ) : (
                                 <TableBody>
@@ -258,18 +246,19 @@ const AdminThemes: React.FunctionComponent = () => {
                     </TableContainer>
                 </AdminTile>
                 <Modal
-                    open={deleteIndex !== null}
+                    isOpen={deleteIndex !== null}
                     onClose={() => {
                         setDeleteIndex(null);
                     }}
                     onConfirm={onDeleteTheme}
                     confirmLabel="Supprimer"
+                    confirmLevel="error"
                     cancelLabel="Annuler"
                     title="Supprimer le thème ?"
-                    error={true}
                     ariaLabelledBy="delete-dialog-title"
                     ariaDescribedBy="delete-dialog-description"
-                    fullWidth
+                    isFullWidth
+                    isLoading={deleteThemeMutation.isLoading}
                 >
                     <DialogContentText id="delete-dialog-description">
                         Voulez-vous vraiment supprimer le thème <strong>{deleteIndex !== null && defaultThemes[deleteIndex].names.fr}</strong> ?
@@ -298,7 +287,7 @@ const AdminThemes: React.FunctionComponent = () => {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {userThemes.map((t, index) => (
+                                    {userThemes.map((t) => (
                                         <TableRow
                                             sx={{
                                                 backgroundColor: 'white',
@@ -314,7 +303,7 @@ const AdminThemes: React.FunctionComponent = () => {
                                             <TableCell>{t.names.fr}</TableCell>
                                             <TableCell align="right" padding="none">
                                                 <Tooltip title="Valider le thème">
-                                                    <IconButton aria-label="valider" onClick={validateTheme(t.id, index)}>
+                                                    <IconButton aria-label="valider" onClick={validateTheme(t.id)}>
                                                         <CheckIcon />
                                                     </IconButton>
                                                 </Tooltip>
@@ -331,4 +320,4 @@ const AdminThemes: React.FunctionComponent = () => {
     );
 };
 
-export default AdminThemes;
+export default ThemesPage;

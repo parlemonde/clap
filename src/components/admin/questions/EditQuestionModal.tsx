@@ -4,23 +4,20 @@ import React from 'react';
 import FormHelperText from '@mui/material/FormHelperText';
 import TextField from '@mui/material/TextField';
 
-import { Modal } from 'src/components/Modal';
-import { UserServiceContext } from 'src/services/UserService';
-import type { Question } from 'types/models/question.type';
+import { useUpdateQuestionTemplate } from 'src/api/question-templates/question-templates.put';
+import Modal from 'src/components/ui/Modal';
+import type { QuestionTemplate } from 'types/models/question.type';
 
 interface EditQuestionModalProps {
-    question?: Question | null;
+    question?: QuestionTemplate | null;
     onClose?(): void;
-    setQuestions?(f: (questions: Question[]) => Question[]): void;
 }
 
 export const EditQuestionModal: React.FunctionComponent<EditQuestionModalProps> = ({
     question = null,
     onClose = () => {},
-    setQuestions = () => {},
 }: EditQuestionModalProps) => {
     const { enqueueSnackbar } = useSnackbar();
-    const { axiosLoggedRequest } = React.useContext(UserServiceContext);
     const [q, setQ] = React.useState<string>('');
     const [hasError, setHasError] = React.useState<boolean>(false);
 
@@ -34,6 +31,8 @@ export const EditQuestionModal: React.FunctionComponent<EditQuestionModalProps> 
         setQ(event.target.value.slice(0, 280));
         setHasError(false);
     };
+
+    const updateQuestionTemplate = useUpdateQuestionTemplate();
     const onSubmit = async () => {
         if (question === null) {
             return;
@@ -42,45 +41,35 @@ export const EditQuestionModal: React.FunctionComponent<EditQuestionModalProps> 
             setHasError(true);
             return;
         }
-        const response = await axiosLoggedRequest({
-            method: 'PUT',
-            url: `/questions/${question.id}`,
-            data: {
+        try {
+            await updateQuestionTemplate.mutateAsync({
+                questionId: question.id,
                 question: q,
-            },
-        });
-        setQ('');
-        if (response.error) {
+            });
+            enqueueSnackbar('Question modifiée avec succès!', {
+                variant: 'success',
+            });
+            onClose();
+        } catch (err) {
+            console.error(err);
             enqueueSnackbar('Une erreur inconnue est survenue...', {
                 variant: 'error',
             });
-            onClose();
-            return;
         }
-        setQuestions((questions) => {
-            const index = questions.findIndex((item) => item.id === question.id);
-            if (index !== -1) {
-                questions[index].question = q;
-            }
-            return [...questions];
-        });
-        enqueueSnackbar('Question modifiée avec succès!', {
-            variant: 'success',
-        });
-        onClose();
     };
 
     return (
         <Modal
-            open={question !== null}
+            isOpen={question !== null}
             onClose={onClose}
+            isLoading={updateQuestionTemplate.isLoading}
             onConfirm={onSubmit}
             confirmLabel="Modifier"
             cancelLabel="Annuler"
             title="Modifer une question"
             ariaLabelledBy="create-dialog-title"
             ariaDescribedBy="create-dialog-description"
-            fullWidth
+            isFullWidth
         >
             <div id="create-dialog-description">
                 <TextField

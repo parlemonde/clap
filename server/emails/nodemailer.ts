@@ -1,7 +1,7 @@
 import nodemailer from 'nodemailer';
 import type Mail from 'nodemailer/lib/mailer';
 
-import { logger } from '../utils/logger';
+import { logger } from '../lib/logger';
 
 const SMTP_HOST = process.env.NODEMAILER_HOST || 'smtp.ethereal.email';
 const SMTP_USER: string | null = process.env.NODEMAILER_USER || null;

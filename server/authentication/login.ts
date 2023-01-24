@@ -1,12 +1,12 @@
 import type { JSONSchemaType } from 'ajv';
 import * as argon2 from 'argon2';
-import type { NextFunction, Request, Response } from 'express';
+import type { Request, Response } from 'express';
 import { getRepository } from 'typeorm';
 
 import { User } from '../entities/user';
-import { AppError, ErrorCode } from '../middlewares/handleErrors';
-import { ajv, sendInvalidDataError } from '../utils/jsonSchemaValidator';
-import { logger } from '../utils/logger';
+import { ajv, sendInvalidDataError } from '../lib/json-schema-validator';
+import { logger } from '../lib/logger';
+import { AppError } from '../middlewares/handle-errors';
 import { getAccessToken } from './lib/tokens';
 
 const APP_SECRET: string = process.env.APP_SECRET || '';
@@ -28,10 +28,9 @@ const LOGIN_SCHEMA: JSONSchemaType<LoginData> = {
     additionalProperties: false,
 };
 const loginValidator = ajv.compile(LOGIN_SCHEMA);
-export async function login(req: Request, res: Response, next: NextFunction): Promise<void> {
-    if (APP_SECRET.length === 0) {
-        next();
-        return;
+export async function login(req: Request, res: Response): Promise<void> {
+    if (APP_SECRET.length === 0 || !req.isCsrfValid) {
+        throw new AppError('forbidden');
     }
     const data = req.body;
     if (!loginValidator(data)) {
@@ -39,12 +38,14 @@ export async function login(req: Request, res: Response, next: NextFunction): Pr
         return;
     }
 
-    const user = await getRepository(User).findOne({
-        where: [{ email: data.username }, { pseudo: data.username }],
-    });
+    const user = await getRepository(User)
+        .createQueryBuilder()
+        .addSelect('User.passwordHash')
+        .where('User.email = :username OR User.pseudo = :username', { username: data.username })
+        .getOne();
 
     if (user === undefined) {
-        throw new AppError('Invalid username', ErrorCode.INVALID_USERNAME);
+        throw new AppError('loginError', ['Unauthorized - Invalid username.'], 1);
     }
 
     let isPasswordCorrect: boolean = false;
@@ -55,30 +56,39 @@ export async function login(req: Request, res: Response, next: NextFunction): Pr
     }
 
     if (user.accountRegistration === 4) {
-        throw new AppError('Account blocked. Please reset password', ErrorCode.ACCOUNT_BLOCKED);
+        throw new AppError('forbidden', ['Unauthorized - Account blocked. Please reset password.'], 3);
     }
 
     if (user.accountRegistration === 10) {
-        throw new AppError('Please use SSO', ErrorCode.USE_SSO);
+        throw new AppError('loginError', ['Unauthorized - Please use SSO.'], 5);
     }
 
     if (!isPasswordCorrect) {
         user.accountRegistration += 1;
         await getRepository(User).save(user);
-        throw new AppError('Invalid password', ErrorCode.INVALID_PASSWORD);
+        throw new AppError('loginError', ['Unauthorized - Invalid password.'], 2);
     } else if (user.accountRegistration > 0 && user.accountRegistration < 4) {
         user.accountRegistration = 0;
         await getRepository(User).save(user);
     }
 
     const { accessToken, refreshToken } = await getAccessToken(user.id, !!data.getRefreshToken);
-    res.cookie('access-token', accessToken, { maxAge: 4 * 60 * 60000, expires: new Date(Date.now() + 4 * 60 * 60000), httpOnly: true });
+    res.cookie('access-token', accessToken, {
+        maxAge: 4 * 60 * 60000,
+        expires: new Date(Date.now() + 4 * 60 * 60000),
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict',
+    });
     if (data.getRefreshToken) {
         res.cookie('refresh-token', refreshToken, {
             maxAge: 7 * 24 * 60 * 60000,
             expires: new Date(Date.now() + 7 * 24 * 60 * 60000),
             httpOnly: true,
+            secure: true,
+            sameSite: 'strict',
         });
     }
-    res.sendJSON({ user: user.userWithoutPassword(), accessToken, refreshToken: refreshToken });
+    delete user.passwordHash;
+    res.sendJSON({ user, accessToken, refreshToken: refreshToken });
 }

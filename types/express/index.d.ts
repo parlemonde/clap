@@ -10,7 +10,6 @@ declare namespace Express {
         image: import('../../server/entities/image').Image;
     }
     interface Response {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        sendJSON: (object: any) => void;
+        sendJSON: (object: unknown, statusCode?: number) => void;
     }
 }

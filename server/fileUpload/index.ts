@@ -1,41 +1,50 @@
-import type { Image } from '../entities/image';
-import { LocalUtils } from './local';
-import type { Provider } from './provider';
-import { AwsS3 } from './s3';
+import sanitize from 'sanitize-filename';
+import type { Readable } from 'stream';
 
-const STOCKAGE_PROVIDER: string = process.env.STOCKAGE_PROVIDER_NAME || 'local';
+import { localStorageProvider } from './local';
+import type { FileData } from './provider';
+import { s3StorageProvider } from './s3';
 
-const providers: { [p: string]: Provider } = {
-    local: new LocalUtils(),
-    s3: new AwsS3(),
-};
+export type FileType = 'images' | 'audios' | 'locales';
 
-export async function uploadImage(filename: string, filePath: string): Promise<string | null> {
-    if (providers[STOCKAGE_PROVIDER] === undefined) {
-        return null;
+const STOCKAGE_PROVIDER_NAME = (process.env.STOCKAGE_PROVIDER_NAME || 'local').toLowerCase();
+const USE_S3 = STOCKAGE_PROVIDER_NAME === 's3' || STOCKAGE_PROVIDER_NAME === 'minio';
+
+const getFileName = (fileType: FileType, name: string) => `${fileType}/${sanitize(name)}`;
+
+export async function uploadFile(fileType: FileType, name: string, fileData: Buffer): Promise<string> {
+    const fileName = getFileName(fileType, name);
+    if (USE_S3) {
+        await s3StorageProvider.uploadFile(fileName, fileData);
     } else {
-        return await providers[STOCKAGE_PROVIDER].uploadImage(filename, filePath);
+        await localStorageProvider.uploadFile(fileName, fileData);
+    }
+    return `/api/${fileName}`;
+}
+
+export function getFileData(fileType: FileType, name: string): Promise<FileData | null> {
+    const fileName = getFileName(fileType, name);
+    if (USE_S3) {
+        return s3StorageProvider.getFileData(fileName);
+    } else {
+        return localStorageProvider.getFileData(fileName);
     }
 }
 
-export async function deleteImage(image: Image): Promise<void> {
-    if (providers[STOCKAGE_PROVIDER] !== undefined) {
-        return await providers[STOCKAGE_PROVIDER].deleteImage(image.uuid, image.localPath);
+export function getFile(fileType: FileType, name: string, range?: string): Promise<Readable | null> {
+    const fileName = getFileName(fileType, name);
+    if (USE_S3) {
+        return s3StorageProvider.getFile(fileName, range);
+    } else {
+        return localStorageProvider.getFile(fileName, range);
     }
 }
 
-export async function uploadFile(filename: string, filedata: Buffer): Promise<void> {
-    if (providers[STOCKAGE_PROVIDER] === undefined) {
-        return;
+export function deleteFile(fileType: FileType, name: string): Promise<void> {
+    const fileName = getFileName(fileType, name);
+    if (USE_S3) {
+        return s3StorageProvider.deleteFile(fileName);
     } else {
-        return await providers[STOCKAGE_PROVIDER].uploadFile(filename, filedata);
-    }
-}
-
-export async function downloadFile(filename: string): Promise<Buffer | null> {
-    if (providers[STOCKAGE_PROVIDER] === undefined) {
-        return null;
-    } else {
-        return await providers[STOCKAGE_PROVIDER].getFile(filename);
+        return localStorageProvider.deleteFile(fileName);
     }
 }

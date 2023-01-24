@@ -1,57 +1,53 @@
 import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
 import React from 'react';
-import { useQueryClient } from 'react-query';
 
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import Backdrop from '@mui/material/Backdrop';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Button from '@mui/material/Button';
-import CircularProgress from '@mui/material/CircularProgress';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import Link from '@mui/material/Link';
 import Select from '@mui/material/Select';
 import Typography from '@mui/material/Typography';
 
+import { useCreateImageMutation } from 'src/api/images/images.post';
+import { useLanguages } from 'src/api/languages/languages.list';
+import { useThemes } from 'src/api/themes/themes.list';
+import { useCreateThemeMutation } from 'src/api/themes/themes.post';
 import type { ImgCroppieRef } from 'src/components/ImgCroppie';
 import { ImgCroppie } from 'src/components/ImgCroppie';
-import { Modal } from 'src/components/Modal';
 import { AdminTile } from 'src/components/admin/AdminTile';
 import { NameInput } from 'src/components/admin/themes/NameInput';
-import { UserServiceContext } from 'src/services/UserService';
-import { useLanguages } from 'src/services/useLanguages';
+import { Loader } from 'src/components/layout/Loader';
+import Modal from 'src/components/ui/Modal';
+import { useTranslation } from 'src/i18n/useTranslation';
 import type { Language } from 'types/models/language.type';
 import type { Theme } from 'types/models/theme.type';
 
-const AdminNewTheme: React.FunctionComponent = () => {
+const AdminNewTheme = () => {
     const router = useRouter();
+    const { t } = useTranslation();
     const { enqueueSnackbar } = useSnackbar();
-    const queryClient = useQueryClient();
+
+    const { themes: defaultThemes } = useThemes({ isDefault: true });
     const { languages } = useLanguages();
     const languagesMap = languages.reduce(
         (acc: { [key: string]: number }, language: Language, index: number) => ({ ...acc, [language.value]: index }),
         {},
     );
-    const { axiosLoggedRequest } = React.useContext(UserServiceContext);
+
     const croppieRef = React.useRef<ImgCroppieRef | null>(null);
     const inputRef = React.useRef<HTMLInputElement>(null);
-    const [theme, setTheme] = React.useState<Theme>({
-        id: 0,
-        names: {
-            fr: '',
-        },
-        isDefault: true,
-        image: null,
-        order: 0,
+    const [themeNames, setThemeNames] = React.useState<Theme['names']>({
+        fr: '',
     });
     const [showModal, setShowModal] = React.useState<boolean>(false);
     const [languageToAdd, setLanguageToAdd] = React.useState<number>(0);
     const [selectedLanguages, setSelectedLanguages] = React.useState<number[]>([]);
     const [imageUrl, setImageUrl] = React.useState<string | null>(null);
     const [imageBlob, setImageBlob] = React.useState<Blob | null>(null);
-    const [loading, setLoading] = React.useState<boolean>(false);
     const availableLanguages = languages.filter((l, index) => l.value !== 'fr' && !selectedLanguages.includes(index));
 
     const goToPath = (path: string) => (event: React.MouseEvent) => {
@@ -69,15 +65,18 @@ const AdminNewTheme: React.FunctionComponent = () => {
         const s = [...selectedLanguages];
         s.splice(deleteIndex, 1);
         setSelectedLanguages(s);
-        const newTheme = { ...theme };
-        delete newTheme.names[language.value];
-        setTheme(newTheme);
+        setThemeNames((prev) => {
+            const newNames = { ...prev };
+            delete newNames[language.value];
+            return newNames;
+        });
     };
 
     const onNameInputChange = (languageValue: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
-        const newTheme = { ...theme };
-        newTheme.names[languageValue] = event.target.value;
-        setTheme(newTheme);
+        setThemeNames((prev) => ({
+            ...prev,
+            [languageValue]: event.target.value,
+        }));
     };
 
     const onImageInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -101,55 +100,45 @@ const AdminNewTheme: React.FunctionComponent = () => {
         onImageUrlClear();
     };
 
+    const createImageMutation = useCreateImageMutation();
+    const createThemeMutation = useCreateThemeMutation();
+    const isLoading = createImageMutation.isLoading || createThemeMutation.isLoading;
+
     const onSubmit = async () => {
-        if (!theme.names.fr) {
+        if (!themeNames.fr) {
             enqueueSnackbar("Le thème 'fr' ne peut pas être vide.", {
                 variant: 'error',
             });
             return;
         }
-        setLoading(true);
+
         try {
-            const response = await axiosLoggedRequest({
-                method: 'POST',
-                url: '/themes',
-                data: {
-                    ...theme,
-                },
-            });
-            if (response.error) {
-                enqueueSnackbar('Une erreur inconnue est survenue...', {
-                    variant: 'error',
-                });
-                console.error(response.error);
-                return;
-            }
-            const newTheme = response.data;
+            // 1. Upload image.
+            let imageUrl: string | undefined = undefined;
             if (imageBlob !== null) {
-                const bodyFormData = new FormData();
-                bodyFormData.append('image', imageBlob);
-                const resp2 = await axiosLoggedRequest({
-                    method: 'POST',
-                    url: `/themes/${newTheme.id}/image`,
-                    headers: { 'Content-Type': 'multipart/form-data' },
-                    data: bodyFormData,
-                });
-                if (resp2.error) {
-                    console.error(resp2.error);
-                }
+                const imageResponse = await createImageMutation.mutateAsync({ image: imageBlob });
+                imageUrl = imageResponse.url;
             }
+
+            // 2. Create theme.
+            await createThemeMutation.mutateAsync({
+                names: themeNames,
+                isDefault: true,
+                order: Math.max(0, ...defaultThemes.map((t) => t.order + 1)),
+                imageUrl,
+            });
+
+            // 3. Redirect to list.
             enqueueSnackbar('Thème créé avec succès!', {
                 variant: 'success',
             });
-            queryClient.invalidateQueries('themes');
             router.push('/admin/themes');
-        } catch (e) {
-            enqueueSnackbar('Une erreur inconnue est survenue...', {
+        } catch (err) {
+            console.error(err);
+            enqueueSnackbar(t('unknown_error'), {
                 variant: 'error',
             });
-            console.error(e);
         }
-        setLoading(false);
     };
 
     return (
@@ -169,11 +158,11 @@ const AdminNewTheme: React.FunctionComponent = () => {
                     <Typography variant="h3" color="textPrimary">
                         Noms du thème :
                     </Typography>
-                    <NameInput value={theme.names.fr || ''} onChange={onNameInputChange('fr')} />
+                    <NameInput value={themeNames.fr || ''} onChange={onNameInputChange('fr')} />
                     {selectedLanguages.map((languageIndex, index) => (
                         <NameInput
                             key={languages[languageIndex].value}
-                            value={theme.names[languages[languageIndex].value] || ''}
+                            value={themeNames[languages[languageIndex].value] || ''}
                             language={languages[languageIndex]}
                             onDelete={onDeleteLanguage(index)}
                             onChange={onNameInputChange(languages[languageIndex].value)}
@@ -222,19 +211,10 @@ const AdminNewTheme: React.FunctionComponent = () => {
             <Button variant="outlined" style={{ marginTop: '1rem' }} onClick={goToPath('/admin/themes')}>
                 Retour
             </Button>
-            <Backdrop
-                sx={{
-                    zIndex: (theme) => theme.zIndex.drawer + 1,
-                    color: '#fff',
-                }}
-                open={loading}
-            >
-                <CircularProgress color="inherit" />
-            </Backdrop>
 
             {/* language modal */}
             <Modal
-                open={showModal}
+                isOpen={showModal}
                 onClose={() => {
                     setShowModal(false);
                 }}
@@ -272,7 +252,7 @@ const AdminNewTheme: React.FunctionComponent = () => {
 
             {/* image modal */}
             <Modal
-                open={imageUrl !== null}
+                isOpen={imageUrl !== null}
                 onClose={onImageUrlClear}
                 onConfirm={onSetImageBlob}
                 confirmLabel="Valider"
@@ -289,6 +269,8 @@ const AdminNewTheme: React.FunctionComponent = () => {
                     </div>
                 )}
             </Modal>
+
+            <Loader isLoading={isLoading} />
         </div>
     );
 };

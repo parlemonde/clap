@@ -1,7 +1,5 @@
 import { useSnackbar } from 'notistack';
 import React from 'react';
-import { useQueryClient } from 'react-query';
-import { ReactSortable } from 'react-sortablejs';
 
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -24,95 +22,68 @@ import TableRow from '@mui/material/TableRow';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 
+import { useLanguages } from 'src/api/languages/languages.list';
+import { useQuestionTemplates } from 'src/api/question-templates/question-templates.list';
+import { useUpdateQuestionTemplateOrderMutation } from 'src/api/question-templates/question-templates.order';
+import { useScenarios } from 'src/api/scenarios/scenarios.list';
 import { AdminTile } from 'src/components/admin/AdminTile';
 import { CreateQuestionModal } from 'src/components/admin/questions/CreateQuestionModal';
 import { DeleteQuestionModal } from 'src/components/admin/questions/DeleteQuestionModal';
 import { EditQuestionModal } from 'src/components/admin/questions/EditQuestionModal';
-import { UserServiceContext } from 'src/services/UserService';
-import { useLanguages } from 'src/services/useLanguages';
-import { useQuestions } from 'src/services/useQuestions';
-import { useScenarios } from 'src/services/useScenarios';
-import { groupScenarios } from 'src/util/groupScenarios';
-import type { Language } from 'types/models/language.type';
-import type { Question } from 'types/models/question.type';
+import { Sortable } from 'src/components/ui/Sortable';
+import type { QuestionTemplate } from 'types/models/question.type';
 
-const AdminQuestions: React.FunctionComponent = () => {
-    const queryClient = useQueryClient();
+const AdminQuestions = () => {
     const { enqueueSnackbar } = useSnackbar();
-    const { axiosLoggedRequest } = React.useContext(UserServiceContext);
+
     const { languages } = useLanguages();
     const { scenarios } = useScenarios({ isDefault: true });
-    const groupedScenarios = groupScenarios(scenarios);
-    const [availableLanguages, setAvailableLanguages] = React.useState<Language[]>([]);
-    const [selectedArgs, setSelectedArgs] = React.useState<{
-        isDefault: boolean;
-        scenarioId: number | string | null;
-        languageCode: string;
-    }>({
-        isDefault: true,
-        scenarioId: null,
-        languageCode: 'fr',
-    });
-    const { questions, setQuestions } = useQuestions(selectedArgs);
+
+    const [selectedScenarioId, setSelectedScenarioId] = React.useState(-1);
+    const [selectedLanguage, setSelectedLanguage] = React.useState('fr');
+    const selectedScenario = selectedScenarioId === -1 ? undefined : scenarios.find((s) => s.id === selectedScenarioId) ?? undefined;
+    const availableLanguages = selectedScenario === undefined ? [] : languages.filter((l) => selectedScenario.names[l.value] !== undefined);
+
+    const { questionTemplates: questions } = useQuestionTemplates(
+        {
+            scenarioId: selectedScenarioId,
+            languageCode: selectedLanguage,
+        },
+        { enabled: selectedScenarioId !== -1 },
+    );
     const [createModalOpen, setCreateModalOpen] = React.useState<boolean>(false);
     const [editQuestionIndex, setEditQuestionIndex] = React.useState<number>(-1);
     const [deleteQuestionIndex, setDeleteQuestionIndex] = React.useState<number>(-1);
 
     const onSelectScenario = (event: SelectChangeEvent<string | number>) => {
         const scenarioId = typeof event.target.value === 'number' ? event.target.value : parseInt(event.target.value, 10);
-        const scenarioLanguages = Object.keys(groupedScenarios.find((s) => s.id === scenarioId)?.names || {}).filter((key) => key !== 'default');
-        if (scenarioLanguages.length === 0) {
-            enqueueSnackbar('Une erreur inconnue est survenue...', {
-                variant: 'error',
-            });
-            return;
-        }
-        setAvailableLanguages(languages.filter((l) => scenarioLanguages.includes(l.value)));
-        const selectedLanguage = scenarioLanguages.includes('fr') ? 'fr' : scenarioLanguages[0];
-        setSelectedArgs((s) => ({ ...s, scenarioId, languageCode: selectedLanguage }));
+        setSelectedScenarioId(scenarioId);
     };
     const onLanguageChange = (event: SelectChangeEvent<string>) => {
-        setSelectedArgs((s) => ({ ...s, languageCode: event.target.value }));
+        setSelectedLanguage(event.target.value);
     };
 
-    const setQuestionsOrder = async (newQuestions: Question[]) => {
-        if (questions.map((q) => q.id).join(',') === newQuestions.map((q) => q.id).join(',')) {
-            return;
-        }
-        setQuestions(newQuestions);
-        const order = newQuestions.map((q) => q.id);
-        try {
-            const response = await axiosLoggedRequest({
-                method: 'PUT',
-                url: '/questions/update-order',
-                data: {
-                    order,
+    const updateQuestionOrderMutation = useUpdateQuestionTemplateOrderMutation();
+    const setQuestionsOrder = (newQuestions: QuestionTemplate[]) => {
+        updateQuestionOrderMutation.mutate(
+            {
+                order: newQuestions.map((q) => q.id),
+            },
+            {
+                onError(err) {
+                    console.error(err);
+                    enqueueSnackbar('Une erreur inconnue est survenue...', {
+                        variant: 'error',
+                    });
                 },
-            });
-            if (response.error) {
-                enqueueSnackbar('Une erreur inconnue est survenue...', {
-                    variant: 'error',
-                });
-                queryClient.invalidateQueries('questions');
-                console.error(response.error);
-            }
-        } catch (e) {
-            enqueueSnackbar('Une erreur inconnue est survenue...', {
-                variant: 'error',
-            });
-            queryClient.invalidateQueries('questions');
-            console.error(e);
-        }
-    };
-
-    const setQuestionsFunction = (f: (questions: Question[]) => Question[]) => {
-        setQuestions(f(questions));
+            },
+        );
     };
 
     const selectLanguage = (
         <span style={{ marginLeft: '2rem' }}>
             (
-            <Select variant="standard" value={selectedArgs.languageCode} color="secondary" style={{ color: 'white' }} onChange={onLanguageChange}>
+            <Select variant="standard" value={selectedLanguage} color="secondary" style={{ color: 'white' }} onChange={onLanguageChange}>
                 {availableLanguages.map((l) => (
                     <MenuItem key={l.value} value={l.value}>
                         {l.label.toLowerCase()}
@@ -137,19 +108,19 @@ const AdminQuestions: React.FunctionComponent = () => {
                                 variant="standard"
                                 labelId="demo-simple-select-label"
                                 id="demo-simple-select"
-                                value={selectedArgs.scenarioId || ''}
+                                value={selectedScenarioId === -1 ? '' : selectedScenarioId}
                                 onChange={onSelectScenario}
                             >
-                                {groupedScenarios.map((s) => (
+                                {scenarios.map((s) => (
                                     <MenuItem value={s.id} key={s.id}>
-                                        {s.names.default}
+                                        {s.names.fr || s.names[Object.keys(s.names)[0]]}
                                     </MenuItem>
                                 ))}
                             </Select>
                         </FormControl>
                     </div>
                 </AdminTile>
-                {selectedArgs.scenarioId !== null && (
+                {selectedScenarioId !== -1 && (
                     <AdminTile
                         title="Liste des questions du scénario"
                         selectLanguage={selectLanguage}
@@ -190,13 +161,7 @@ const AdminQuestions: React.FunctionComponent = () => {
                                             </TableCell>
                                         </TableRow>
                                     </TableHead>
-                                    <ReactSortable
-                                        tag={'tbody'}
-                                        list={questions}
-                                        setList={setQuestionsOrder}
-                                        animation={100}
-                                        handle=".questions-index"
-                                    >
+                                    <Sortable component="tbody" list={questions} setList={setQuestionsOrder} handle=".questions-index">
                                         {questions.map((q, index) => (
                                             <TableRow
                                                 key={q.id}
@@ -241,7 +206,7 @@ const AdminQuestions: React.FunctionComponent = () => {
                                                 </TableCell>
                                             </TableRow>
                                         ))}
-                                    </ReactSortable>
+                                    </Sortable>
                                 </>
                             ) : (
                                 <TableBody>
@@ -268,22 +233,19 @@ const AdminQuestions: React.FunctionComponent = () => {
                     onClose={() => {
                         setCreateModalOpen(false);
                     }}
-                    scenarioId={selectedArgs.scenarioId}
-                    languageCode={selectedArgs.languageCode}
+                    scenarioId={selectedScenarioId}
+                    languageCode={selectedLanguage}
                     open={createModalOpen}
-                    setQuestions={setQuestionsFunction}
                     order={Math.max(0, ...questions.map((q) => q.index)) + 1}
                 />
                 <EditQuestionModal
                     question={editQuestionIndex !== -1 ? questions[editQuestionIndex] || null : null}
-                    setQuestions={setQuestionsFunction}
                     onClose={() => {
                         setEditQuestionIndex(-1);
                     }}
                 />
                 <DeleteQuestionModal
                     question={deleteQuestionIndex !== -1 ? questions[deleteQuestionIndex] || null : null}
-                    setQuestions={setQuestionsFunction}
                     onClose={() => {
                         setDeleteQuestionIndex(-1);
                     }}
