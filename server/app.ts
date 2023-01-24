@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express, { Router } from 'express';
 import type { Request } from 'express';
+import RateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import next from 'next';
@@ -43,6 +44,17 @@ async function startApp() {
     // --- Init express ---
     const app = express();
     app.enable('strict routing');
+
+    // --- Set up rate limiter ---
+    // maximum of 30 requests per minute
+    const limiter = RateLimit({
+        windowMs: 1 * 60 * 1000, // 1 minute
+        max: IS_DEV ? 600 : 30,
+        standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+        legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+    });
+    // apply rate limiter to all requests
+    app.use(limiter);
 
     // --- Add middlewares ---
     const directives = getDefaultDirectives();

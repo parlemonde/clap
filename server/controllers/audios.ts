@@ -9,8 +9,7 @@ import { Controller } from './controller';
 const audioController = new Controller('/audios');
 
 audioController.get({ path: '/:filename' }, (req, res, next) => {
-    const fileurl = `audios/${req.params.filename}`;
-    streamFile(fileurl, req, res, next);
+    streamFile('audios', req.params.filename, req, res, next);
 });
 
 audioController.upload({ path: '/', multerFieldName: 'audio' }, async (req, res) => {
@@ -21,17 +20,16 @@ audioController.upload({ path: '/', multerFieldName: 'audio' }, async (req, res)
     // 1- Get file name
     const uuid = uuidv4();
     const extension = path.extname(req.file.originalname).substring(1);
-    const filename = `audios/${uuid}.${extension}`;
+    const filename = `${uuid}.${extension}`;
 
-    const url = await uploadFile(filename, req.file.buffer);
+    const url = await uploadFile('audios', filename, req.file.buffer);
     res.sendJSON({
         url,
     });
 });
 
 audioController.delete({ path: '/:filename' }, async (req, res) => {
-    const fileurl = `audios/${req.params.filename}`;
-    await deleteFile(fileurl);
+    await deleteFile('audios', req.params.filename);
     res.status(204).send();
 });
 

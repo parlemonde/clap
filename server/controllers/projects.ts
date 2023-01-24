@@ -467,18 +467,18 @@ projectController.post({ path: '/mlt' }, async (req, res) => {
 
     // Add files to the archive.
     archive.append(mlt, { name: 'Montage.mlt' });
-    for (const file of files.filter((file) => file !== undefined && file !== null && file.length > 0)) {
-        if (file.startsWith('/api')) {
-            logger.info(`[MLT] get file from s3: ${file}`);
-            const fileStream = await getFile(file.slice(5));
+    for (const file of files) {
+        if (file.isLocal) {
+            logger.info(`[MLT] get file from s3: ${file.name}`);
+            const fileStream = await getFile(file.fileType, file.name);
             if (fileStream !== null) {
-                archive.append(fileStream, { name: file.split('/').slice(-1)[0] });
+                archive.append(fileStream, { name: file.name });
             }
         } else {
-            logger.info(`[MLT] fetch http file: ${file}`);
+            logger.info(`[MLT] fetch http file: ${file.name}`);
             try {
-                http.get(file, (response) => {
-                    archive.append(response, { name: file });
+                http.get(file.name, (response) => {
+                    archive.append(response, { name: file.name });
                 });
             } catch (err) {
                 // ignore

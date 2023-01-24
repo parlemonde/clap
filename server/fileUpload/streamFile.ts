@@ -1,12 +1,13 @@
 import type { Request, Response, NextFunction } from 'express';
 import mime from 'mime-types';
 
+import type { FileType } from './index';
 import { getFileData, getFile } from './index';
 
 const getContentTypeFromFileName = (filename: string): string | null => mime.lookup(filename) || null;
 
-export async function streamFile(file: string, req: Request, res: Response, next: NextFunction): Promise<void> {
-    const data = await getFileData(file);
+export async function streamFile(fileType: FileType, name: string, req: Request, res: Response, next: NextFunction): Promise<void> {
+    const data = await getFileData(fileType, name);
     if (data === null) {
         next();
         return;
@@ -36,7 +37,7 @@ export async function streamFile(file: string, req: Request, res: Response, next
         return;
     }
 
-    const readable = await getFile(file, range);
+    const readable = await getFile(fileType, name, range);
     if (readable === null) {
         next();
         return;

@@ -10,8 +10,7 @@ import { Controller } from './controller';
 const imageController = new Controller('/images');
 
 imageController.get({ path: '/:filename' }, (req, res, next) => {
-    const fileurl = `images/${req.params.filename}`;
-    streamFile(fileurl, req, res, next);
+    streamFile('images', req.params.filename, req, res, next);
 });
 
 imageController.upload({ path: '/', multerFieldName: 'image' }, async (req, res) => {
@@ -26,7 +25,7 @@ imageController.upload({ path: '/', multerFieldName: 'image' }, async (req, res)
     if (needReFormat) {
         extension = 'jpeg';
     }
-    const filename = `images/${uuid}.${extension}`;
+    const filename = `${uuid}.${extension}`;
 
     // 2- Resize image if needed to max width: 1920.
     //    Use `.rotate()` to keep original image orientation metadata.
@@ -34,15 +33,14 @@ imageController.upload({ path: '/', multerFieldName: 'image' }, async (req, res)
         withoutEnlargement: true,
     });
     const imageBuffer = await imageProcess.toBuffer();
-    const url = await uploadFile(filename, imageBuffer);
+    const url = await uploadFile('images', filename, imageBuffer);
     res.sendJSON({
         url,
     });
 });
 
 imageController.delete({ path: '/:filename' }, async (req, res) => {
-    const fileurl = `images/${req.params.filename}`;
-    await deleteFile(fileurl);
+    await deleteFile('images', req.params.filename);
     res.status(204).send();
 });
 

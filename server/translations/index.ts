@@ -1,5 +1,6 @@
 import fs from 'fs-extra';
 import * as path from 'path';
+import sanitize from 'sanitize-filename';
 
 import { logger } from '../lib/logger';
 import { getLocales } from './getLocales';
@@ -61,7 +62,7 @@ export async function translationsToFile(language: string): Promise<string> {
         const pluralKey = `${key}_plural`;
         if (frenchTranslations[pluralKey]) {
             // eslint-disable-next-line
-      singleTranslation.msgid_plural = frenchTranslations[pluralKey];
+            singleTranslation.msgid_plural = frenchTranslations[pluralKey];
             singleTranslation.msgstr.push(translations[pluralKey] || '');
         }
         object.translations[key] = {};
@@ -71,7 +72,7 @@ export async function translationsToFile(language: string): Promise<string> {
     const directory: string = path.join(__dirname, 'poFiles');
     await fs.mkdirs(directory);
     await new Promise((resolve, reject) => {
-        fs.writeFile(path.join(directory, `${language}.po`), compile(object), (err) => {
+        fs.writeFile(path.join(directory, `${sanitize(language)}.po`), compile(object), (err) => {
             if (err) {
                 reject(err);
             } else {

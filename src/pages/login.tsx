@@ -20,7 +20,6 @@ import {
 import { userContext } from 'src/contexts/userContext';
 import { useTranslation } from 'src/i18n/useTranslation';
 import { axiosRequest } from 'src/utils/axiosRequest';
-import { getQueryString } from 'src/utils/get-query-string';
 import type { User } from 'types/models/user.type';
 
 const ssoHostName = 'foo'; // TODO
@@ -54,10 +53,6 @@ const LoginPage = () => {
     const [errorCode, setErrorCode] = React.useState(-1);
     const [isLoading, setIsLoading] = React.useState(false);
 
-    const redirect = React.useMemo(() => {
-        return getQueryString(router.query.redirect) || '/create';
-    }, [router]);
-
     if (user !== null) {
         return <div></div>;
     }
@@ -72,7 +67,7 @@ const LoginPage = () => {
         });
         if (response.success) {
             setUser(response.data.user);
-            router.push(redirect);
+            router.push('/create');
         } else {
             setErrorCode(response.errorCode);
         }

@@ -42,7 +42,7 @@ localesController.upload({ path: '/:value', userType: UserType.ADMIN, multerFiel
     }
 
     const newTranslations = await fileToTranslations(req.file.buffer);
-    const url = await uploadFile(`locales/${language.value}.json`, Buffer.from(JSON.stringify(newTranslations), 'utf-8'));
+    const url = await uploadFile('locales', `${language.value}.json`, Buffer.from(JSON.stringify(newTranslations), 'utf-8'));
     res.sendJSON({ url });
 });
 

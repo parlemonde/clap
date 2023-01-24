@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 import type { MLT, Playlist } from 'mlt-xml';
 import { mltToXml } from 'mlt-xml';
+import type { FileType } from 'server/fileUpload';
 
 import type { Question } from '../entities/question';
 
@@ -14,6 +15,12 @@ type Project = {
     soundUrl?: string | null;
     soundVolume?: number | null;
     musicBeginTime?: number;
+};
+
+type File = {
+    fileType: FileType;
+    name: string;
+    isLocal: boolean;
 };
 
 const getFramesCount = (duration: number) => Math.round((duration * FRAMERATE) / 1000);
@@ -30,7 +37,8 @@ export function objToXml(allQuestions: Question[], project: Project) {
             0,
         ),
     );
-    const files = new Set<string>();
+    const fileNames = new Set<string>();
+    const files: Array<File> = [];
 
     const mlt: MLT = {
         title: project.projectTitle || project.scenarioName,
@@ -161,7 +169,14 @@ export function objToXml(allQuestions: Question[], project: Project) {
             spentDuration += planDuration;
 
             if (plan.imageUrl) {
-                files.add(plan.imageUrl);
+                if (!fileNames.has(plan.imageUrl)) {
+                    fileNames.add(plan.imageUrl);
+                    files.push({
+                        fileType: 'images',
+                        name: plan.imageUrl.replace('/api/images/', ''),
+                        isLocal: plan.imageUrl.startsWith('/api'),
+                    });
+                }
                 producerId += 1;
                 mlt.elements.push({
                     name: 'producer',
@@ -212,7 +227,15 @@ export function objToXml(allQuestions: Question[], project: Project) {
             const volume = clamp(0.01, 1.5, (question.soundVolume || 100) / 100);
             const gain = Math.round(1000 * Math.log10(volume)) / 100;
 
-            files.add(question.soundUrl);
+            if (!fileNames.has(question.soundUrl)) {
+                fileNames.add(question.soundUrl);
+                files.push({
+                    fileType: 'audios',
+                    name: question.soundUrl.replace('/api/audios/', ''),
+                    isLocal: question.soundUrl.startsWith('/api'),
+                });
+            }
+
             producerId += 1;
             mlt.elements.push({
                 name: 'producer',
@@ -287,7 +310,15 @@ export function objToXml(allQuestions: Question[], project: Project) {
         const gain = Math.round(1000 * Math.log10(volume)) / 100;
 
         producerId += 1;
-        files.add(project.soundUrl);
+        if (!fileNames.has(project.soundUrl)) {
+            fileNames.add(project.soundUrl);
+            files.push({
+                fileType: 'audios',
+                name: project.soundUrl.replace('/api/audios/', ''),
+                isLocal: project.soundUrl.startsWith('/api'),
+            });
+        }
+
         mlt.elements.push({
             name: 'producer',
             attributes: {
