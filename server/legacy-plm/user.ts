@@ -3,16 +3,14 @@ import { getRepository } from 'typeorm';
 import { User, UserType } from '../entities/user';
 
 export type PLM_User = {
-    ID: string; // number in string
-    user_login: string;
-    user_nicename: string;
-    user_email: string;
-    user_registered: string; // date "YYYY-MM-DD HH:MM:SS",
-    user_status: string; // number in string
-    display_name: string;
-    spam: string; // boolean in string ("0" or "1")
-    deleted: string; // boolean in string ("0" or "1")
-    first_name: string;
+    id: string;
+    email: string;
+    peuso: string;
+    school: string;
+    address: string;
+    city: string;
+    postalCode: string;
+    country: string;
     groups: Array<{
         name: string; // village name
         id: string; // number in string, village id
@@ -20,26 +18,12 @@ export type PLM_User = {
         is_mod: string; // boolean in string ("0" or "1")
         user_title: string;
     }>;
-    meta: Array<{
-        key: string;
-        value: string; // can be a number
-    }>;
-    role: {
-        id: string; // number in string. (country id?)
-        title: string; // country
-        key: string; // country as well
-    };
-    db_error: string;
 };
-
-function getMetaValue(plmUser: PLM_User, key: string): string {
-    return (plmUser.meta ?? []).find((meta) => meta.key.toLowerCase() === key.toLowerCase())?.value ?? '';
-}
 
 export async function createPLMUserToDB(plmUser: PLM_User): Promise<User> {
     // Find type
     let userType = UserType.CLASS;
-    const userGroups = (plmUser.groups || []).filter((g) => parseInt(g.id, 10) !== 2 && parseInt(g.id, 10) !== 10);
+    const userGroups = plmUser.groups || [];
     if (userGroups.length > 1) {
         if (plmUser.groups.some((g) => parseInt(g.is_mod, 10) === 1)) {
             userType = UserType.ADMIN;
@@ -52,14 +36,14 @@ export async function createPLMUserToDB(plmUser: PLM_User): Promise<User> {
     // Check pseudo availability:
     const isPseudoAvailable =
         (await getRepository(User).count({
-            where: { pseudo: plmUser.user_login },
+            where: { pseudo: plmUser.peuso },
         })) === 0;
 
     // Add user
     const user = new User();
-    user.email = plmUser.user_email;
-    user.pseudo = isPseudoAvailable ? plmUser.user_login : `user_${plmUser.user_login}`;
-    user.school = getMetaValue(plmUser, 'Nom de votre école');
+    user.email = plmUser.email;
+    user.pseudo = isPseudoAvailable ? plmUser.peuso : `user_${plmUser.peuso}`;
+    user.school = plmUser.school || '';
     user.languageCode = 'fr';
     user.type = userType;
     user.passwordHash = '';
@@ -67,5 +51,7 @@ export async function createPLMUserToDB(plmUser: PLM_User): Promise<User> {
     user.accountRegistration = 10;
     await getRepository(User).save(user);
 
+    delete user.passwordHash;
+    delete user.verificationHash;
     return user;
 }

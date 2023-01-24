@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import qs from 'query-string';
 import React from 'react';
 
 import Visibility from '@mui/icons-material/Visibility';
@@ -15,14 +16,15 @@ import {
     Link as MaterialLink,
     Backdrop,
     CircularProgress,
+    NoSsr,
 } from '@mui/material';
 
 import { userContext } from 'src/contexts/userContext';
 import { useTranslation } from 'src/i18n/useTranslation';
 import { axiosRequest } from 'src/utils/axiosRequest';
+import { generateTemporaryToken } from 'src/utils/generate-temporary-token';
+import { clientId, ssoHost, ssoHostName } from 'src/utils/sso';
 import type { User } from 'types/models/user.type';
-
-const ssoHostName = 'foo'; // TODO
 
 const errorMessages = {
     0: 'login_unknown_error',
@@ -53,6 +55,43 @@ const LoginPage = () => {
     const [errorCode, setErrorCode] = React.useState(-1);
     const [isLoading, setIsLoading] = React.useState(false);
 
+    const firstCall = React.useRef(false);
+    const loginSSO = React.useCallback(
+        async (code: string) => {
+            if (firstCall.current === false) {
+                firstCall.current = true;
+                setIsLoading(true);
+                const response = await axiosRequest<{ user: User }>({
+                    method: 'POST',
+                    url: `/login-sso-plm`,
+                    data: {
+                        code,
+                    },
+                });
+                if (response.success) {
+                    setUser(response.data.user);
+                    router.push('/create');
+                } else {
+                    setErrorCode(response.errorCode);
+                }
+                setIsLoading(false);
+            }
+        },
+        [setUser, router],
+    );
+
+    React.useEffect(() => {
+        const urlQueryParams = qs.parse(window.location.search);
+        if (urlQueryParams.state && urlQueryParams.code) {
+            const state = window.sessionStorage.getItem('oauth-state') || '';
+            if (state === decodeURI(urlQueryParams.state as string)) {
+                loginSSO(decodeURI(urlQueryParams.code as string)).catch();
+            } else {
+                setErrorCode(0);
+            }
+        }
+    }, [loginSSO]);
+
     if (user !== null) {
         return <div></div>;
     }
@@ -74,6 +113,19 @@ const LoginPage = () => {
         setIsLoading(false);
     };
 
+    const onloginWithSSO = () => {
+        if (!clientId || !ssoHost) {
+            return;
+        }
+        setIsLoading(true);
+        const state = generateTemporaryToken();
+        window.sessionStorage.setItem('oauth-state', state);
+        const url = `${ssoHost}/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${
+            window.location.href.split('?')[0]
+        }&state=${state}`;
+        window.location.replace(url);
+    };
+
     return (
         <div className="text-center">
             <Typography color="primary" variant="h1" style={{ marginTop: '2rem' }}>
@@ -85,7 +137,20 @@ const LoginPage = () => {
                         {t(errorMessages[errorCode as 0] || errorMessages[0])}
                     </Typography>
                 )}
-                {/* TODO PLMO LOGIN */}
+                <NoSsr>
+                    {ssoHost.length && clientId ? (
+                        <>
+                            <Button variant="contained" color="secondary" onClick={onloginWithSSO} style={{ margin: '1.5rem 0' }}>
+                                Se connecter avec {ssoHostName}
+                            </Button>
+                            <div className="login__divider">
+                                <div className="login__or">
+                                    <span style={{ fontSize: '1.2rem', padding: '0.25rem', backgroundColor: 'white' }}>OU</span>
+                                </div>
+                            </div>
+                        </>
+                    ) : null}
+                </NoSsr>
                 <TextField
                     id="username"
                     name="username"

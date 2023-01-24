@@ -5,7 +5,7 @@ export class Token {
     @PrimaryGeneratedColumn()
     public id: number;
 
-    @Column({ type: 'varchar', length: 95 })
+    @Column({ type: 'varchar', length: 180 })
     public token: string;
 
     @Column()

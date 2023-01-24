@@ -46,10 +46,10 @@ async function startApp() {
     app.enable('strict routing');
 
     // --- Set up rate limiter ---
-    // maximum of 30 requests per minute
+    // maximum of 600 requests per minute.
     const limiter = RateLimit({
         windowMs: 1 * 60 * 1000, // 1 minute
-        max: IS_DEV ? 600 : 120,
+        max: IS_DEV ? 1500 : 600,
         standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
         legacyHeaders: false, // Disable the `X-RateLimit-*` headers
     });
