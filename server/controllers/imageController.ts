@@ -12,6 +12,5 @@ export class ImageController extends Controller {
     public async getImage(req: Request, res: Response, next: NextFunction): Promise<void> {
         const key = `images/${req.params.filename}`;
         streamFile(key, req, res, next);
-        res.sendJSON({});
     }
 }
