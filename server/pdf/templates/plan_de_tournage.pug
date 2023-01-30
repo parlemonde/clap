@@ -220,7 +220,7 @@ main
             - count += 1
             .plan
               if plan.url
-                .plan-image(style=`background-image: url(${plan.url})`)
+                .plan-image(style=`background-image: url(${hostUrl}${plan.url})`)
                   .plan-number #{count}
               else
                 .plan-image
