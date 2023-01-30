@@ -28,7 +28,7 @@ export class AwsS3 extends Provider {
                         reject(err);
                     }
                     if (data) {
-                        resolve(filepath);
+                        resolve(`/api/${filepath}`);
                     }
                 },
             );
