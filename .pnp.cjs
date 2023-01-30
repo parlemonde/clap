@@ -74,7 +74,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@yarnpkg/pnpify", "npm:3.1.1-rc.16"],
             ["ajv", "npm:8.10.0"],
             ["ajv-formats", "virtual:9524d3ef040c4bb9c1c826ae580f2180f1712a13ae6ac3e341a6833fb294feeed8d810e5c764dbbac52bd49f9c3019cf11a3f5270e36f3c88d5546b8a37dc3cf#npm:2.1.1"],
-            ["argon2", "npm:0.28.4"],
+            ["argon2", "npm:0.29.1"],
             ["aws-sdk", "npm:2.1077.0"],
             ["axios", "npm:0.26.0"],
             ["base64url", "npm:3.0.1"],
@@ -4777,14 +4777,14 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]
       ]],
       ["@mapbox/node-pre-gyp", [
-        ["npm:1.0.8", {
-          "packageLocation": "./.yarn/cache/@mapbox-node-pre-gyp-npm-1.0.8-14ba73c5fc-29a38f3957.zip/node_modules/@mapbox/node-pre-gyp/",
+        ["npm:1.0.10", {
+          "packageLocation": "./.yarn/cache/@mapbox-node-pre-gyp-npm-1.0.10-1811160047-1a98db05d9.zip/node_modules/@mapbox/node-pre-gyp/",
           "packageDependencies": [
-            ["@mapbox/node-pre-gyp", "npm:1.0.8"],
-            ["detect-libc", "npm:1.0.3"],
+            ["@mapbox/node-pre-gyp", "npm:1.0.10"],
+            ["detect-libc", "npm:2.0.1"],
             ["https-proxy-agent", "npm:5.0.0"],
             ["make-dir", "npm:3.1.0"],
-            ["node-fetch", "npm:2.6.6"],
+            ["node-fetch", "virtual:1811160047d7e0f7e43f371e07920c11204416dd6ae0b8461e04538b2f68e9167aca28b60b34dbd287674a5cdd52bd05be5797bbe2f7de916231958cb58055fb#npm:2.6.8"],
             ["nopt", "npm:5.0.0"],
             ["npmlog", "npm:5.0.1"],
             ["rimraf", "npm:3.0.2"],
@@ -7143,14 +7143,13 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]
       ]],
       ["argon2", [
-        ["npm:0.28.4", {
-          "packageLocation": "./.yarn/unplugged/argon2-npm-0.28.4-0dbe90a038/node_modules/argon2/",
+        ["npm:0.29.1", {
+          "packageLocation": "./.yarn/unplugged/argon2-npm-0.29.1-750a3f26bb/node_modules/argon2/",
           "packageDependencies": [
-            ["argon2", "npm:0.28.4"],
-            ["@mapbox/node-pre-gyp", "npm:1.0.8"],
+            ["argon2", "npm:0.29.1"],
+            ["@mapbox/node-pre-gyp", "npm:1.0.10"],
             ["@phc/format", "npm:1.0.0"],
-            ["node-addon-api", "npm:4.3.0"],
-            ["opencollective-postinstall", "npm:2.0.3"]
+            ["node-addon-api", "npm:5.1.0"]
           ],
           "linkType": "HARD",
         }]
@@ -8235,7 +8234,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@yarnpkg/pnpify", "npm:3.1.1-rc.16"],
             ["ajv", "npm:8.10.0"],
             ["ajv-formats", "virtual:9524d3ef040c4bb9c1c826ae580f2180f1712a13ae6ac3e341a6833fb294feeed8d810e5c764dbbac52bd49f9c3019cf11a3f5270e36f3c88d5546b8a37dc3cf#npm:2.1.1"],
-            ["argon2", "npm:0.28.4"],
+            ["argon2", "npm:0.29.1"],
             ["aws-sdk", "npm:2.1077.0"],
             ["axios", "npm:0.26.0"],
             ["base64url", "npm:3.0.1"],
@@ -9339,13 +9338,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]
       ]],
       ["detect-libc", [
-        ["npm:1.0.3", {
-          "packageLocation": "./.yarn/cache/detect-libc-npm-1.0.3-c30ac344d4-daaaed925f.zip/node_modules/detect-libc/",
-          "packageDependencies": [
-            ["detect-libc", "npm:1.0.3"]
-          ],
-          "linkType": "HARD",
-        }],
         ["npm:2.0.1", {
           "packageLocation": "./.yarn/cache/detect-libc-npm-2.0.1-2699cb2ac4-ccb05fcabb.zip/node_modules/detect-libc/",
           "packageDependencies": [
@@ -13396,23 +13388,44 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["node-gyp", "npm:8.4.1"]
           ],
           "linkType": "HARD",
+        }],
+        ["npm:5.1.0", {
+          "packageLocation": "./.yarn/unplugged/node-addon-api-npm-5.1.0-b50d00f739/node_modules/node-addon-api/",
+          "packageDependencies": [
+            ["node-addon-api", "npm:5.1.0"],
+            ["node-gyp", "npm:8.4.1"]
+          ],
+          "linkType": "HARD",
         }]
       ]],
       ["node-fetch", [
-        ["npm:2.6.6", {
-          "packageLocation": "./.yarn/cache/node-fetch-npm-2.6.6-056db6b778-ee8290626b.zip/node_modules/node-fetch/",
-          "packageDependencies": [
-            ["node-fetch", "npm:2.6.6"],
-            ["whatwg-url", "npm:5.0.0"]
-          ],
-          "linkType": "HARD",
-        }],
         ["npm:2.6.7", {
           "packageLocation": "./.yarn/cache/node-fetch-npm-2.6.7-777aa2a6df-8d816ffd1e.zip/node_modules/node-fetch/",
           "packageDependencies": [
             ["node-fetch", "npm:2.6.7"]
           ],
           "linkType": "SOFT",
+        }],
+        ["npm:2.6.8", {
+          "packageLocation": "./.yarn/cache/node-fetch-npm-2.6.8-ddb8bfc274-91f57be68e.zip/node_modules/node-fetch/",
+          "packageDependencies": [
+            ["node-fetch", "npm:2.6.8"]
+          ],
+          "linkType": "SOFT",
+        }],
+        ["virtual:1811160047d7e0f7e43f371e07920c11204416dd6ae0b8461e04538b2f68e9167aca28b60b34dbd287674a5cdd52bd05be5797bbe2f7de916231958cb58055fb#npm:2.6.8", {
+          "packageLocation": "./.yarn/__virtual__/node-fetch-virtual-4c40075230/0/cache/node-fetch-npm-2.6.8-ddb8bfc274-91f57be68e.zip/node_modules/node-fetch/",
+          "packageDependencies": [
+            ["node-fetch", "virtual:1811160047d7e0f7e43f371e07920c11204416dd6ae0b8461e04538b2f68e9167aca28b60b34dbd287674a5cdd52bd05be5797bbe2f7de916231958cb58055fb#npm:2.6.8"],
+            ["@types/encoding", null],
+            ["encoding", null],
+            ["whatwg-url", "npm:5.0.0"]
+          ],
+          "packagePeers": [
+            "@types/encoding",
+            "encoding"
+          ],
+          "linkType": "HARD",
         }],
         ["virtual:e414995db9c779306e687c7a7c66965e66d0cd7270f6b9fc4f00cc9772c5d50b305ab83e142e0e21dbf10968f7437cbdfcb170d05f4bde68707ac7d0082c9cca#npm:2.6.7", {
           "packageLocation": "./.yarn/__virtual__/node-fetch-virtual-10f4bc17d9/0/cache/node-fetch-npm-2.6.7-777aa2a6df-8d816ffd1e.zip/node_modules/node-fetch/",
@@ -13846,15 +13859,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [
             ["one-time", "npm:1.0.0"],
             ["fn.name", "npm:1.1.0"]
-          ],
-          "linkType": "HARD",
-        }]
-      ]],
-      ["opencollective-postinstall", [
-        ["npm:2.0.3", {
-          "packageLocation": "./.yarn/cache/opencollective-postinstall-npm-2.0.3-954643c36b-0a68c5cef1.zip/node_modules/opencollective-postinstall/",
-          "packageDependencies": [
-            ["opencollective-postinstall", "npm:2.0.3"]
           ],
           "linkType": "HARD",
         }]
