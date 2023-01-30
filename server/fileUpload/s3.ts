@@ -2,43 +2,17 @@ import type { S3 } from 'aws-sdk';
 import AWS from 'aws-sdk';
 import fs from 'fs-extra';
 import path from 'path';
+import type { Readable } from 'stream';
 
 import { logger } from '../utils/logger';
+import type { FileData } from './provider';
 import { Provider } from './provider';
 
 const BUCKET_NAME = process.env.S3_BUCKET_NAME || 'clap_bucket';
 const IS_MINIO = process.env.S3_ENDPOINT === 'minio:9000';
 
-const publicPolicy = (folderName: string): { Version: string; Statement: [{ [key: string]: string | string[] }] } => ({
-    Statement: [
-        {
-            Action: ['s3:GetObject'],
-            Effect: 'Allow',
-            Principal: '*',
-            Resource: [`arn:aws:s3:::${BUCKET_NAME}/${folderName}/*`],
-            Sid: 'PublicRead',
-        },
-    ],
-    Version: '2012-10-17',
-});
-
 export class AwsS3 extends Provider {
     private s3: S3;
-
-    private addPublicReadPolicy(folderName: string): void {
-        this.s3.putBucketPolicy(
-            {
-                Bucket: BUCKET_NAME,
-                Policy: JSON.stringify(publicPolicy(folderName)),
-            },
-            (err2) => {
-                if (err2) console.error(err2);
-                else {
-                    logger.info(`Successesfully create policy for folder ${folderName}`);
-                }
-            },
-        );
-    }
 
     private uploadS3File(filepath: string, file: Buffer | fs.ReadStream): Promise<string> {
         logger.info(filepath);
@@ -54,7 +28,7 @@ export class AwsS3 extends Provider {
                         reject(err);
                     }
                     if (data) {
-                        resolve(data.Location);
+                        resolve(filepath);
                     }
                 },
             );
@@ -115,8 +89,6 @@ export class AwsS3 extends Provider {
             secretAccessKey: process.env.S3_SECRET_KEY,
             sslEnabled: process.env.S3_USE_SSL === 'true',
         });
-
-        this.addPublicReadPolicy('images');
     }
 
     public async uploadImage(filename: string, filePath: string): Promise<string> {
@@ -171,5 +143,44 @@ export class AwsS3 extends Provider {
         } catch (e) {
             logger.error(`Error while uploading ${filename}.`);
         }
+    }
+
+    public async getFileData(filename: string): Promise<FileData | null> {
+        if (!this.s3) {
+            return null;
+        }
+        const data: S3.HeadObjectOutput | null = await new Promise((resolve) => {
+            this.s3.headObject(
+                {
+                    Bucket: BUCKET_NAME,
+                    Key: filename,
+                },
+                (error, data) => {
+                    if (error) {
+                        resolve(null);
+                        return;
+                    }
+                    resolve(data);
+                },
+            );
+        });
+        return {
+            AcceptRanges: data?.AcceptRanges || 'bytes',
+            LastModified: data?.LastModified || new Date(),
+            ContentLength: data?.ContentLength || 0,
+            ContentType: data?.ContentType || '',
+        };
+    }
+    public async streamFile(filename: string, range?: string): Promise<Readable | null> {
+        if (!this.s3) {
+            return null;
+        }
+        return this.s3
+            .getObject({
+                Bucket: BUCKET_NAME,
+                Key: filename,
+                Range: range,
+            })
+            .createReadStream();
     }
 }

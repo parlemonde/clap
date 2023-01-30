@@ -55,6 +55,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/fs-extra", "npm:9.0.13"],
             ["@types/json-stable-stringify", "npm:1.0.33"],
             ["@types/jsonwebtoken", "npm:8.5.8"],
+            ["@types/mime-types", "npm:2.1.1"],
             ["@types/morgan", "npm:1.9.3"],
             ["@types/multer", "npm:1.4.7"],
             ["@types/node", "npm:16.11.25"],
@@ -99,6 +100,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["helmet", "npm:5.0.2"],
             ["json-stable-stringify", "npm:1.0.1"],
             ["jsonwebtoken", "npm:8.5.1"],
+            ["mime-types", "npm:2.1.35"],
             ["morgan", "npm:1.10.0"],
             ["multer", "npm:1.4.4"],
             ["mysql2", "npm:2.3.3"],
@@ -6115,6 +6117,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD",
         }]
       ]],
+      ["@types/mime-types", [
+        ["npm:2.1.1", {
+          "packageLocation": "./.yarn/cache/@types-mime-types-npm-2.1.1-2f761de0b8-106b5d556a.zip/node_modules/@types/mime-types/",
+          "packageDependencies": [
+            ["@types/mime-types", "npm:2.1.1"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
       ["@types/minimatch", [
         ["npm:3.0.5", {
           "packageLocation": "./.yarn/cache/@types-minimatch-npm-3.0.5-802bb0797f-c41d136f67.zip/node_modules/@types/minimatch/",
@@ -8215,6 +8226,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/fs-extra", "npm:9.0.13"],
             ["@types/json-stable-stringify", "npm:1.0.33"],
             ["@types/jsonwebtoken", "npm:8.5.8"],
+            ["@types/mime-types", "npm:2.1.1"],
             ["@types/morgan", "npm:1.9.3"],
             ["@types/multer", "npm:1.4.7"],
             ["@types/node", "npm:16.11.25"],
@@ -8259,6 +8271,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["helmet", "npm:5.0.2"],
             ["json-stable-stringify", "npm:1.0.1"],
             ["jsonwebtoken", "npm:8.5.1"],
+            ["mime-types", "npm:2.1.35"],
             ["morgan", "npm:1.10.0"],
             ["multer", "npm:1.4.4"],
             ["mysql2", "npm:2.3.3"],
@@ -12943,6 +12956,13 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["mime-db", "npm:1.51.0"]
           ],
           "linkType": "HARD",
+        }],
+        ["npm:1.52.0", {
+          "packageLocation": "./.yarn/cache/mime-db-npm-1.52.0-b5371d6fd2-0d99a03585.zip/node_modules/mime-db/",
+          "packageDependencies": [
+            ["mime-db", "npm:1.52.0"]
+          ],
+          "linkType": "HARD",
         }]
       ]],
       ["mime-types", [
@@ -12951,6 +12971,14 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [
             ["mime-types", "npm:2.1.34"],
             ["mime-db", "npm:1.51.0"]
+          ],
+          "linkType": "HARD",
+        }],
+        ["npm:2.1.35", {
+          "packageLocation": "./.yarn/cache/mime-types-npm-2.1.35-dd9ea9f3e2-89a5b7f1de.zip/node_modules/mime-types/",
+          "packageDependencies": [
+            ["mime-types", "npm:2.1.35"],
+            ["mime-db", "npm:1.52.0"]
           ],
           "linkType": "HARD",
         }]

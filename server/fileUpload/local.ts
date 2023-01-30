@@ -1,7 +1,10 @@
 import fs from 'fs-extra';
+import mime from 'mime-types';
 import path from 'path';
+import type { Readable } from 'stream';
 
 import { logger } from '../utils/logger';
+import type { FileData } from './provider';
 import { Provider } from './provider';
 
 const STOCKAGE_PROVIDER = process.env.STOCKAGE_PROVIDER_NAME || 'local';
@@ -69,5 +72,28 @@ export class LocalUtils extends Provider {
             console.error(e);
             logger.error(`Error while uploading ${filename}.`);
         }
+    }
+
+    public async getFileData(filename: string): Promise<FileData | null> {
+        try {
+            const stats = fs.statSync(filename);
+            return {
+                AcceptRanges: 'none',
+                ContentLength: stats.size,
+                ContentType: mime.lookup(filename) || '',
+                LastModified: stats.mtime,
+            };
+        } catch (e) {
+            return null;
+        }
+    }
+
+    public async streamFile(filename: string): Promise<Readable | null> {
+        try {
+            return fs.createReadStream(filename);
+        } catch (e) {
+            logger.error(`File ${filename} not found !`);
+        }
+        return null;
     }
 }
