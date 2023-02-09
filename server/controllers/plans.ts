@@ -109,7 +109,7 @@ const PUT_PLAN_SCHEMA: JSONSchemaType<PutPlanData> = {
     additionalProperties: false,
 };
 const putPlanValidator = ajv.compile(PUT_PLAN_SCHEMA);
-planController.put({ path: '/:id', userType: UserType.ADMIN }, async (req, res, next) => {
+planController.put({ path: '/:id', userType: UserType.CLASS }, async (req, res, next) => {
     const user = req.user;
     if (user === undefined) {
         next();
@@ -137,7 +137,7 @@ planController.put({ path: '/:id', userType: UserType.ADMIN }, async (req, res, 
     res.sendJSON(plan);
 });
 
-planController.delete({ path: '/:id', userType: UserType.ADMIN }, async (req, res) => {
+planController.delete({ path: '/:id', userType: UserType.CLASS }, async (req, res) => {
     const id = parseInt(req.params.id, 10) || 0;
     await getRepository(Plan).delete({ id });
     res.status(204).send();

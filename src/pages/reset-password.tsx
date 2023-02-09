@@ -24,7 +24,8 @@ const ResetPassword: React.FunctionComponent = () => {
         setErrorCode(-1);
     };
 
-    const submit = async () => {
+    const submit = async (event: React.FormEvent) => {
+        event.preventDefault();
         setErrorCode(-1);
         setSuccessMsg('');
         setLoading(true);
@@ -53,7 +54,7 @@ const ResetPassword: React.FunctionComponent = () => {
             <Typography color="primary" variant="h1" style={{ marginTop: '2rem' }}>
                 {t('forgot_password_title')}
             </Typography>
-            <form className="login-form" noValidate autoComplete="off">
+            <form className="login-form" noValidate autoComplete="off" onSubmit={submit}>
                 {errorCode === 0 && (
                     <Typography variant="caption" color="error">
                         {t(errorMessages[0])}
@@ -80,7 +81,7 @@ const ResetPassword: React.FunctionComponent = () => {
                     helperText={errorCode === 1 ? t(errorMessages[1]) : null}
                 />
 
-                <Button variant="contained" color="secondary" onClick={submit}>
+                <Button variant="contained" color="secondary" type="submit">
                     {t('forgot_password_button')}
                 </Button>
 

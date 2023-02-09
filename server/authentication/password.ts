@@ -3,7 +3,7 @@ import * as argon2 from 'argon2';
 import type { NextFunction, Request, Response } from 'express';
 import { getRepository } from 'typeorm';
 
-// import { sendMail, Email } from '../emails';
+import { sendMail, Email } from '../emails';
 import { User } from '../entities/user';
 import { ajv, sendInvalidDataError } from '../lib/json-schema-validator';
 import { logger } from '../lib/logger';
@@ -51,7 +51,7 @@ export async function resetPassword(req: Request, res: Response): Promise<void> 
     await getRepository(User).save(user);
 
     // send mail with verification password
-    // await sendMail(Email.RESET_PASSWORD, user.email, { resetCode: temporaryPassword }, data.languageCode);
+    await sendMail(Email.RESET_PASSWORD, user.email, { resetCode: temporaryPassword }, req.cookies?.['app-language'] || 'fr');
     res.sendJSON({ success: true });
 }
 
