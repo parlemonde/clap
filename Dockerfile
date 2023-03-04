@@ -1,5 +1,5 @@
 # STAGE 1 - Typescript to Javascript
-FROM node:16.14.0-slim as build-dependencies
+FROM node:16.17.1-slim as build-dependencies
 
 # Create app directory
 WORKDIR /app
@@ -34,7 +34,7 @@ ENV NODE_ENV production
 RUN yarn build
 
 # STAGE 2 - Docker server
-FROM node:16.14.0-slim as prod
+FROM node:16.17.1-slim as prod
 
 # See https://crbug.com/795759
 RUN apt-get update && apt-get install -yq libgconf-2-4

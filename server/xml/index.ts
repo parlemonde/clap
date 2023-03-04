@@ -213,7 +213,7 @@ export function objToXml(allQuestions: Question[], project: Project) {
         // [3] Add sound
         if (question.soundUrl && (question.soundVolume ?? 100) > 0) {
             const blankDuration = getFramesCount(Math.max(0, question.voiceOffBeginTime || 0));
-            const deltaSound = getFramesCount(Math.min(0, question.voiceOffBeginTime || 0));
+            const deltaSound = -getFramesCount(Math.min(0, question.voiceOffBeginTime || 0));
             const audioDuration = questionDuration - blankDuration;
             if (blankDuration > 0) {
                 audioPlaylist.elements.push({
@@ -225,7 +225,7 @@ export function objToXml(allQuestions: Question[], project: Project) {
             }
 
             const volume = clamp(0.01, 1.5, (question.soundVolume || 100) / 100);
-            const gain = Math.round(1000 * Math.log10(volume)) / 100;
+            const gain = Math.round(2000 * Math.log10(volume)) / 100;
 
             if (!fileNames.has(question.soundUrl)) {
                 fileNames.add(question.soundUrl);
@@ -295,7 +295,7 @@ export function objToXml(allQuestions: Question[], project: Project) {
     };
     if (project.soundUrl) {
         const blankDuration = getFramesCount(Math.max(0, project.musicBeginTime || 0));
-        const deltaSound = getFramesCount(Math.min(0, project.musicBeginTime || 0));
+        const deltaSound = -getFramesCount(Math.min(0, project.musicBeginTime || 0));
         const audioDuration = Math.max(totalFrames, spentDuration) - blankDuration;
         if (blankDuration > 0) {
             projectAudioPlaylist.elements.push({
@@ -307,7 +307,7 @@ export function objToXml(allQuestions: Question[], project: Project) {
         }
 
         const volume = clamp(0.01, 1.5, (project.soundVolume || 100) / 100);
-        const gain = Math.round(1000 * Math.log10(volume)) / 100;
+        const gain = Math.round(2000 * Math.log10(volume)) / 100;
 
         producerId += 1;
         if (!fileNames.has(project.soundUrl)) {
