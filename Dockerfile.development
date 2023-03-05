@@ -1,4 +1,4 @@
-FROM node:16.17.1-slim
+FROM node:18.14.2-slim
 
 # See https://crbug.com/795759
 RUN apt-get update && apt-get install -yq libgconf-2-4

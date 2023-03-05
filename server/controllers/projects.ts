@@ -3,6 +3,7 @@ import archiver from 'archiver';
 import fs from 'fs-extra';
 import http from 'http';
 import * as path from 'path';
+import sanitize from 'sanitize-filename';
 import { getRepository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -17,7 +18,7 @@ import { logger } from '../lib/logger';
 import { AppError } from '../middlewares/handle-errors';
 import { htmlToPDF, PDF } from '../pdf';
 import { getQueryString } from '../utils/get-query-string';
-import { objToXml } from '../xml';
+import { projectToXml, projectToMlt } from '../xml';
 import { Controller } from './controller';
 
 type QuestionsFromBody = Array<{
@@ -153,7 +154,7 @@ projectController.get({ path: '', userType: UserType.CLASS }, async (req, res) =
     res.sendJSON(project);
 });
 
-projectController.get({ path: '/:id', userType: UserType.CLASS }, async (req, res, next) => {
+projectController.get({ path: '/:id(\\d+)', userType: UserType.CLASS }, async (req, res, next) => {
     if (!req.user) {
         next();
         return;
@@ -451,7 +452,7 @@ projectController.post({ path: '/mlt' }, async (req, res) => {
         return;
     }
     const questions: Question[] = getQuestionsFromBody(data.questions);
-    const { mlt, files } = objToXml(questions, data);
+    const { mlt, files } = projectToXml(questions, data);
 
     const id: string = uuidv4();
     const directory: string = path.join(__dirname, '..', 'static/xml', id);
@@ -491,6 +492,118 @@ projectController.post({ path: '/mlt' }, async (req, res) => {
         throw err;
     });
     archive.finalize();
+});
+
+type MeltJob = {
+    id: string;
+    createdAt: string;
+    status: 'waiting' | 'processing' | 'succeeded' | 'failed';
+    progress: number; // from 0 to 100%
+    outputs?: Array<{
+        url: string;
+        fileName: string;
+        fileSize: number;
+        mimeType: string;
+        duration?: number; // for videos and audios
+    }>;
+};
+const buildServerUrl = process.env.BUILD_SERVER_URL;
+projectController.get({ path: '/:id/video', userType: UserType.CLASS }, async (req, res, next) => {
+    if (!buildServerUrl) {
+        next();
+        return;
+    }
+    const projectId = parseInt(req.params.id, 10) || 0;
+    const project = await getRepository(Project)
+        .createQueryBuilder()
+        .addSelect('Project.videoJobId')
+        .where('Project.id = :id', { id: projectId })
+        .getOne();
+    if (!project || !project.videoJobId) {
+        next();
+        return;
+    }
+    const jobResponse: MeltJob | null = await fetch(`${buildServerUrl}/api/v1/melt/${project.videoJobId}`)
+        .then((response) => response.json())
+        .catch(() => null);
+    if (jobResponse) {
+        res.status(200).sendJSON({
+            progress: jobResponse.progress,
+            url: jobResponse.outputs?.[0]?.url?.replace('/api/v1/melt/', '/api/videos/') || '',
+        });
+        return;
+    }
+    next();
+});
+
+projectController.post({ path: '/:id/video', userType: UserType.CLASS }, async (req, res, next) => {
+    if (!buildServerUrl) {
+        next();
+        return;
+    }
+
+    // [1] Check project exist, project data is valid and project has not ongoing build.
+    const data = req.body;
+    const projectId = parseInt(req.params.id, 10) || 0;
+    const project = await getRepository(Project)
+        .createQueryBuilder()
+        .addSelect('Project.videoJobId')
+        .where('Project.id = :id', { id: projectId })
+        .getOne();
+    if (!project) {
+        next();
+        return;
+    }
+    if (!postProjectMltValidator(data)) {
+        sendInvalidDataError(postProjectMltValidator);
+        return;
+    }
+    if (project.videoJobId) {
+        const jobResponse: MeltJob | null = await fetch(`${buildServerUrl}/api/v1/melt/${project.videoJobId}`)
+            .then((response) => response.json())
+            .catch(() => null);
+        if (jobResponse !== null && jobResponse.progress !== 100) {
+            next(); // prevent adding another job.
+            return;
+        }
+    }
+
+    // [2] Send build job.
+    const questions: Question[] = getQuestionsFromBody(data.questions);
+    const mlt = projectToMlt(questions, data).mlt;
+    mlt.elements.push({
+        name: 'consumer',
+        attributes: {
+            id: 'consumer0',
+            target: `${sanitize(project.title.replace(/\s/g, '-')) || 'output'}.mp4`,
+            // eslint-disable-next-line camelcase
+            mlt_service: 'avformat',
+            r: 25,
+        },
+    });
+    const response: MeltJob | null = await fetch(`${buildServerUrl}/api/v1/melt`, {
+        method: 'POST',
+        body: JSON.stringify(mlt),
+        headers: { 'Content-Type': 'application/json' },
+    })
+        .then((response) => response.json())
+        .catch((err) => {
+            logger.error(err);
+            return null;
+        });
+    if (!response) {
+        throw new AppError('unknown', ['Could not create video job']);
+    }
+
+    // [3] Save job id and return progress.
+    const newProject = new Project();
+    newProject.id = projectId;
+    newProject.videoJobId = response.id;
+    await getRepository(Project).save(newProject);
+    res.status(200).sendJSON({
+        progress: response.progress,
+        url: response.outputs?.[0]?.url?.replace('/api/v1/melt/', '/api/videos/') || '',
+    });
 });
 
 projectController.delete({ path: '/:id', userType: UserType.CLASS }, async (req, res) => {

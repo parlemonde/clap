@@ -26,7 +26,19 @@ type File = {
 const getFramesCount = (duration: number) => Math.round((duration * FRAMERATE) / 1000);
 const clamp = (min: number, max: number, value: number) => Math.max(min, Math.min(max, value));
 
-export function objToXml(allQuestions: Question[], project: Project) {
+const SERVER_URL = process.env.SERVER_URL;
+const toFullUrl = (url: string) => {
+    if (url.startsWith('/api')) {
+        return `${SERVER_URL}${url}`;
+    } else {
+        return url;
+    }
+};
+const toLocalUrl = (url: string) => {
+    return url.replace('/api/images/', '').replace('/api/audios/', '');
+};
+
+export function projectToMlt(allQuestions: Question[], project: Project, urlTransform: (url: string) => string = toFullUrl) {
     const questions = allQuestions.filter((q) => q.title !== null || (q.plans || []).some((plan) => plan.description || plan.imageUrl));
     const totalFrames = getFramesCount(
         questions.reduce(
@@ -184,7 +196,7 @@ export function objToXml(allQuestions: Question[], project: Project) {
                         id: `producer${producerId}`,
                         in: 0,
                         out: planDuration,
-                        resource: plan.imageUrl.replace('/api/images/', ''),
+                        resource: urlTransform(plan.imageUrl),
                         mlt_service: 'qimage',
                         length: planDuration,
                         eof: 'pause',
@@ -243,7 +255,7 @@ export function objToXml(allQuestions: Question[], project: Project) {
                     id: `producer${producerId}`,
                     in: deltaSound,
                     out: audioDuration + deltaSound,
-                    resource: question.soundUrl.replace('/api/audios/', ''),
+                    resource: urlTransform(question.soundUrl),
                     length: audioDuration,
                     eof: 'pause',
                     mlt_service: 'avformat-novalidate',
@@ -325,7 +337,7 @@ export function objToXml(allQuestions: Question[], project: Project) {
                 id: `producer${producerId}`,
                 in: deltaSound,
                 out: audioDuration + deltaSound,
-                resource: project.soundUrl.replace('/api/audios/', ''),
+                resource: urlTransform(project.soundUrl),
                 length: audioDuration,
                 eof: 'pause',
                 mlt_service: 'avformat-novalidate',
@@ -452,7 +464,16 @@ export function objToXml(allQuestions: Question[], project: Project) {
         ],
     });
 
+    return {
+        mlt: mlt,
+        files: [...files],
+    };
+}
+
+export function projectToXml(allQuestions: Question[], project: Project) {
+    const { mlt, files } = projectToMlt(allQuestions, project, toLocalUrl);
     const mltStr = mltToXml(mlt);
+
     return {
         mlt: mltStr,
         files: [...files],

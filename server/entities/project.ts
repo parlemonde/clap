@@ -72,4 +72,8 @@ export class Project implements ProjectInterface {
     // -- questions --
     @OneToMany(() => Question, (question) => question.project, { cascade: true })
     public questions?: Question[];
+
+    // -- video generation job id --
+    @Column({ type: 'varchar', length: 36, select: false })
+    public videoJobId: string | null;
 }
