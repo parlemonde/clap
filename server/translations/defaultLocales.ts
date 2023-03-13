@@ -104,7 +104,15 @@ export const locales = {
     part6_subtitle1: 'À cette étape,  vous pouvez pré-visualiser votre diaporama sonore achevé.',
     part6_pdf_button: 'Télécharger le storyboard',
     part6_mlt_button: 'Télécharger le fichier de montage',
-    part6_mp4_button: 'Télécharger le diaporama sonore',
+    part6_mp4_button: 'Générer votre vidéo',
+    part6_mp4_download_button: 'Télécharger votre vidéo !',
+    part6_mp4_generate_button: 'Générer une nouvelle vidéo',
+    part6_mp4_loading: 'Création de votre vidéo...',
+    part6_mp4_description_1: 'La génération de votre vidéo peut prendre du temps.',
+    part6_mp4_description_2: "Vous pouvez quitter et suivre à tout moment l'avancement du montage de votre vidéo sur cette page.",
+    part6_mp4_description_3: 'Votre vidéo sera disponible pendant 2 jours. Passé ce delai elle sera supprimée.',
+    part6_mp4_user_disabled: 'Connectez-vous et créez un projet pour générer une vidéo.',
+    part6_mp4_project_disabled: 'Créez un projet pour générer une vidéo.',
     part6_subtitle2:
         'Vous pouvez également télécharger ce diaporama sonore comme film, télécharger le storyboard ainsi qu’un fichier de montage pour y intégrer vos plans vidéos.',
     //--- project ---
@@ -153,6 +161,7 @@ export const locales = {
     signin: 'Se connecter',
     update: 'Changer',
     validate: 'Valider',
+    generate: 'Générer',
     //--- steps ---
     all_themes: 'Tout les thèmes',
     step1: 'Choix du scénario',

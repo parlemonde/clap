@@ -1,14 +1,18 @@
+import { useSnackbar } from 'notistack';
 import React from 'react';
 
 import PictureAsPdf from '@mui/icons-material/PictureAsPdf';
-// import SmartDisplay from '@mui/icons-material/SmartDisplay';
+import SmartDisplay from '@mui/icons-material/SmartDisplay';
 import VideoFile from '@mui/icons-material/VideoFile';
-import { Box, Button, Typography } from '@mui/material';
+import type { LinearProgressProps } from '@mui/material';
+import { Tooltip, Box, Button, LinearProgress, Typography } from '@mui/material';
 import type { Theme as MaterialTheme } from '@mui/material/styles';
 
 import { getProjectMlt } from 'src/api/projects/projects.mlt';
 import type { GetPDFParams } from 'src/api/projects/projects.pdf';
 import { getProjectPdf } from 'src/api/projects/projects.pdf';
+import { useProjectVideo } from 'src/api/projects/projects.video.get';
+import { useCreateProjectVideoMutation } from 'src/api/projects/projects.video.post';
 import { useScenario } from 'src/api/scenarios/scenarios.get';
 import { useTheme } from 'src/api/themes/themes.get';
 import { DiaporamaPlayer } from 'src/components/DiaporamaPlayer';
@@ -17,7 +21,9 @@ import { Loader } from 'src/components/layout/Loader';
 import { Steps } from 'src/components/navigation/Steps';
 import { ThemeBreadcrumbs } from 'src/components/navigation/ThemeBreadcrumbs';
 import { Inverted } from 'src/components/ui/Inverted';
+import Modal from 'src/components/ui/Modal';
 import { Trans } from 'src/components/ui/Trans';
+import { userContext } from 'src/contexts/userContext';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import { useTranslation } from 'src/i18n/useTranslation';
 import { getSounds } from 'src/lib/get-sounds';
@@ -40,9 +46,37 @@ const styles = {
     },
 };
 
+function LinearProgressWithLabel(props: LinearProgressProps & { value: number }) {
+    return (
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Box sx={{ width: '100%', mr: 1 }}>
+                <LinearProgress variant="determinate" {...props} />
+            </Box>
+            <Box sx={{ minWidth: 35 }}>
+                <Typography variant="body2" color="text.secondary">{`${Math.round(props.value)}%`}</Typography>
+            </Box>
+        </Box>
+    );
+}
+
+const Or = () => {
+    const { t } = useTranslation();
+    return (
+        <div className="or-horizontal-divider">
+            <Box sx={styles.verticalLine} />
+            <Box component="span" sx={styles.secondaryColor}>
+                {t('or').toUpperCase()}
+            </Box>
+            <Box sx={styles.verticalLine} />
+        </div>
+    );
+};
+
 const ResultPage = () => {
     const { t, currentLocale } = useTranslation();
+    const { enqueueSnackbar } = useSnackbar();
     const { project, questions, isLoading: isProjectLoading } = useCurrentProject();
+    const { user } = React.useContext(userContext);
     const { theme, isLoading: isThemeLoading } = useTheme(project ? project.themeId : 0, {
         enabled: !isProjectLoading && project !== undefined,
     });
@@ -50,7 +84,25 @@ const ResultPage = () => {
         enabled: !isProjectLoading && project !== undefined,
     });
     const [isLoading, setIsLoading] = React.useState(false);
+    const [isVideoModalOpen, setIsVideoModalOpen] = React.useState(false);
+    const {
+        projectVideo,
+        isLoading: isLoadingProjectVideo,
+        refetch,
+    } = useProjectVideo(project?.id ?? 0, {
+        enabled: project !== undefined && project.id !== 0,
+    });
     const sounds = React.useMemo(() => getSounds(questions), [questions]);
+
+    React.useEffect(() => {
+        if (projectVideo !== undefined && projectVideo.progress < 100) {
+            const timeout = window.setTimeout(refetch, 1000);
+            return () => {
+                window.clearTimeout(timeout);
+            };
+        }
+        return () => {};
+    }, [projectVideo, refetch]);
 
     const getData = (): GetPDFParams | undefined => {
         if (!project) {
@@ -103,9 +155,33 @@ const ResultPage = () => {
         }
     };
 
-    // const generateMP4 = () => {
-    //     // todo
-    // };
+    const createProjectVideoMutation = useCreateProjectVideoMutation();
+    const generateMP4 = () => {
+        const data = getData();
+        if (!project || project.id === 0 || !data) {
+            return;
+        }
+        createProjectVideoMutation.mutate(
+            {
+                projectId: project.id,
+                data,
+            },
+            {
+                onSettled: () => {
+                    setIsVideoModalOpen(false);
+                },
+                onError: () => {
+                    enqueueSnackbar(t('unknown_error'), {
+                        variant: 'error',
+                    });
+                },
+            },
+        );
+    };
+
+    const videoUrl = projectVideo?.url;
+    const videoProgress = projectVideo?.progress;
+    const hasProject = project !== undefined && project.id !== 0;
 
     return (
         <div>
@@ -145,33 +221,92 @@ const ResultPage = () => {
                 </Typography>
 
                 <Flex flexDirection="column" alignItems="center" style={{ maxWidth: '400px', margin: '0 auto 2rem auto' }}>
-                    {/* <Button className="full-width" variant="contained" color="secondary" onClick={generateMP4}>
-                        <SmartDisplay style={{ marginRight: '10px' }} />
-                        {t('part6_mp4_button')}
-                    </Button>
-                    <div className="or-horizontal-divider">
-                        <Box sx={styles.verticalLine} />
-                        <Box component="span" sx={styles.secondaryColor}>
-                            {t('or').toUpperCase()}
-                        </Box>
-                        <Box sx={styles.verticalLine} />
-                    </div> */}
+                    {isLoadingProjectVideo ? (
+                        <div>loading</div>
+                    ) : (
+                        <>
+                            {videoUrl && (
+                                <>
+                                    <Button component="a" href={videoUrl} className="full-width" variant="contained" color="secondary" download>
+                                        <SmartDisplay style={{ marginRight: '10px' }} />
+                                        {t('part6_mp4_download_button')}
+                                    </Button>
+                                    <Or />
+                                </>
+                            )}
+                            {videoProgress && videoProgress !== 100 ? (
+                                <div
+                                    style={{
+                                        width: '100%',
+                                        textAlign: 'center',
+                                        padding: '0.5rem 1rem',
+                                        border: '1px solid #79C3A5',
+                                        borderRadius: 4,
+                                        boxShadow:
+                                            '0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%)',
+                                    }}
+                                >
+                                    <Typography variant="body2" color="text.secondary" style={{ fontSize: '0.8rem', marginBottom: '0.5rem' }}>
+                                        {t('part6_mp4_loading')}
+                                    </Typography>
+                                    <LinearProgressWithLabel color="secondary" variant="buffer" value={videoProgress} />
+                                </div>
+                            ) : (
+                                <Tooltip
+                                    title={user === null ? t('part6_mp4_user_disabled') : !hasProject ? t('part6_mp4_project_disabled') : ''}
+                                    placement="top"
+                                    arrow
+                                >
+                                    <span style={{ width: '100%' }}>
+                                        <Button
+                                            className="full-width"
+                                            variant="contained"
+                                            color="secondary"
+                                            onClick={() => {
+                                                setIsVideoModalOpen(true);
+                                            }}
+                                            disabled={user === null || !hasProject}
+                                        >
+                                            <SmartDisplay style={{ marginRight: '10px' }} />
+                                            {t(videoUrl ? 'part6_mp4_generate_button' : 'part6_mp4_button')}
+                                        </Button>
+                                    </span>
+                                </Tooltip>
+                            )}
+                        </>
+                    )}
+                    <Or />
                     <Button className="full-width" variant="contained" color="secondary" onClick={generatePDF}>
                         <PictureAsPdf style={{ marginRight: '10px' }} />
                         {t('part6_pdf_button')}
                     </Button>
-                    <div className="or-horizontal-divider">
-                        <Box sx={styles.verticalLine} />
-                        <Box component="span" sx={styles.secondaryColor}>
-                            {t('or').toUpperCase()}
-                        </Box>
-                        <Box sx={styles.verticalLine} />
-                    </div>
+                    <Or />
                     <Button className="full-width" variant="contained" color="secondary" onClick={generateMLT}>
                         <VideoFile style={{ marginRight: '10px' }} />
                         {t('part6_mlt_button')}
                     </Button>
                 </Flex>
+                <Modal
+                    isOpen={isVideoModalOpen}
+                    onClose={() => {
+                        setIsVideoModalOpen(false);
+                    }}
+                    isLoading={createProjectVideoMutation.isLoading}
+                    title={t('part6_mp4_button')}
+                    confirmLabel={t('generate')}
+                    onConfirm={generateMP4}
+                    maxWidth="sm"
+                    isFullWidth
+                    confirmLevel="secondary"
+                    ariaLabelledBy="download_title"
+                    ariaDescribedBy="download_desc"
+                >
+                    <ul style={{ margin: 0 }}>
+                        <li style={{ marginBottom: '0.5rem' }}>{t('part6_mp4_description_1')}</li>
+                        <li style={{ marginBottom: '0.5rem' }}>{t('part6_mp4_description_2')}</li>
+                        <li style={{ marginBottom: '0.5rem' }}>{t('part6_mp4_description_3')}</li>
+                    </ul>
+                </Modal>
             </div>
             <Loader isLoading={isLoading} />
         </div>

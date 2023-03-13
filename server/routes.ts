@@ -11,6 +11,7 @@ import { questionTemplateController } from './controllers/questions-templates';
 import { scenarioController } from './controllers/scenarios';
 import { themeController } from './controllers/themes';
 import { userController } from './controllers/users';
+import { videoController } from './controllers/videos';
 
 const routes = Router();
 
@@ -25,5 +26,6 @@ routes.use(questionTemplateController.name, questionTemplateController.router);
 routes.use(scenarioController.name, scenarioController.router);
 routes.use(themeController.name, themeController.router);
 routes.use(userController.name, userController.router);
+routes.use(videoController.name, videoController.router);
 
 export { routes };
