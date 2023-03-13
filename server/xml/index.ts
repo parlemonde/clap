@@ -26,10 +26,10 @@ type File = {
 const getFramesCount = (duration: number) => Math.round((duration * FRAMERATE) / 1000);
 const clamp = (min: number, max: number, value: number) => Math.max(min, Math.min(max, value));
 
-const SERVER_URL = process.env.SERVER_URL;
+const HOST_URL = process.env.HOST_URL;
 const toFullUrl = (url: string) => {
     if (url.startsWith('/api')) {
-        return `${SERVER_URL}${url}`;
+        return `${HOST_URL}${url}`;
     } else {
         return url;
     }

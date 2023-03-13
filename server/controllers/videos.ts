@@ -1,4 +1,5 @@
 import type { ReadableStream } from 'node:stream/web';
+import sanitize from 'sanitize-filename';
 import { Readable } from 'stream';
 
 import { logger } from '../lib/logger';
@@ -20,7 +21,7 @@ videoController.get({ path: '/:id/:filename' }, async (req, res, next) => {
         headers.range = req.headers.range;
     }
     try {
-        const response = await fetch(`${BUILD_SERVER_URL}/api/v1/melt/${req.params.id}/${req.params.filename}`, {
+        const response = await fetch(`${BUILD_SERVER_URL}/api/v1/melt/${sanitize(req.params.id)}/${sanitize(req.params.filename)}`, {
             method: req.method,
             headers,
         });
