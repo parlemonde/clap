@@ -3,7 +3,7 @@ import type { QueryFunction } from 'react-query';
 import { useQuery } from 'react-query';
 
 import { userContext } from 'src/contexts/userContext';
-import { axiosRequest } from 'src/utils/axiosRequest';
+import { httpRequest } from 'src/utils/http-request';
 import { getFromLocalStorage } from 'src/utils/local-storage';
 import { serializeToQueryUrl } from 'src/utils/serializeToQueryUrl';
 import type { Scenario } from 'types/models/scenario.type';
@@ -22,7 +22,7 @@ export const getScenarios: QueryFunction<GETResponse, GETQueryKey> = async ({ qu
     if (typeof args.themeId === 'string') {
         return localScenarios;
     } else {
-        const response = await axiosRequest<Scenario[]>({
+        const response = await httpRequest<Scenario[]>({
             method: 'GET',
             url: `/scenarios${serializeToQueryUrl(args || {})}`,
         });

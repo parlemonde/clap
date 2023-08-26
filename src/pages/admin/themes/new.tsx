@@ -1,27 +1,24 @@
+import { UploadIcon } from '@radix-ui/react-icons';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useSnackbar } from 'notistack';
 import React from 'react';
-
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import Breadcrumbs from '@mui/material/Breadcrumbs';
-import Button from '@mui/material/Button';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import Link from '@mui/material/Link';
-import Select from '@mui/material/Select';
-import Typography from '@mui/material/Typography';
 
 import { useCreateImageMutation } from 'src/api/images/images.post';
 import { useLanguages } from 'src/api/languages/languages.list';
 import { useThemes } from 'src/api/themes/themes.list';
 import { useCreateThemeMutation } from 'src/api/themes/themes.post';
-import type { ImgCroppieRef } from 'src/components/ImgCroppie';
-import { ImgCroppie } from 'src/components/ImgCroppie';
 import { AdminTile } from 'src/components/admin/AdminTile';
-import { NameInput } from 'src/components/admin/themes/NameInput';
-import { Loader } from 'src/components/layout/Loader';
-import Modal from 'src/components/ui/Modal';
+import { NameInput } from 'src/components/admin/NameInput';
+import { Breadcrumbs } from 'src/components/layout/Breadcrumbs';
+import { Button } from 'src/components/layout/Button';
+import { Field, Form } from 'src/components/layout/Form';
+import { Select } from 'src/components/layout/Form/Select';
+import { Modal } from 'src/components/layout/Modal';
+import { Title } from 'src/components/layout/Typography';
+import type { ImgCroppieRef } from 'src/components/ui/ImgCroppie';
+import { ImgCroppie } from 'src/components/ui/ImgCroppie';
+import { Loader } from 'src/components/ui/Loader';
+import { sendToast } from 'src/components/ui/Toasts';
 import { useTranslation } from 'src/i18n/useTranslation';
 import type { Language } from 'types/models/language.type';
 import type { Theme } from 'types/models/theme.type';
@@ -29,7 +26,6 @@ import type { Theme } from 'types/models/theme.type';
 const AdminNewTheme = () => {
     const router = useRouter();
     const { t } = useTranslation();
-    const { enqueueSnackbar } = useSnackbar();
 
     const { themes: defaultThemes } = useThemes({ isDefault: true });
     const { languages } = useLanguages();
@@ -49,11 +45,6 @@ const AdminNewTheme = () => {
     const [imageUrl, setImageUrl] = React.useState<string | null>(null);
     const [imageBlob, setImageBlob] = React.useState<Blob | null>(null);
     const availableLanguages = languages.filter((l, index) => l.value !== 'fr' && !selectedLanguages.includes(index));
-
-    const goToPath = (path: string) => (event: React.MouseEvent) => {
-        event.preventDefault();
-        router.push(path);
-    };
 
     const onAddLanguage = () => {
         setShowModal(false);
@@ -106,9 +97,7 @@ const AdminNewTheme = () => {
 
     const onSubmit = async () => {
         if (!themeNames.fr) {
-            enqueueSnackbar("Le thème 'fr' ne peut pas être vide.", {
-                variant: 'error',
-            });
+            sendToast({ message: "Le thème 'fr' ne peut pas être vide.", type: 'error' });
             return;
         }
 
@@ -129,35 +118,30 @@ const AdminNewTheme = () => {
             });
 
             // 3. Redirect to list.
-            enqueueSnackbar('Thème créé avec succès!', {
-                variant: 'success',
-            });
+            sendToast({ message: 'Thème créé avec succès!', type: 'success' });
             router.push('/admin/themes');
         } catch (err) {
             console.error(err);
-            enqueueSnackbar(t('unknown_error'), {
-                variant: 'error',
-            });
+            sendToast({ message: t('unknown_error'), type: 'error' });
         }
     };
 
     return (
-        <div style={{ paddingBottom: '2rem' }}>
-            <Breadcrumbs separator={<NavigateNextIcon fontSize="large" color="primary" />} aria-label="breadcrumb">
-                <Link href="/admin/themes" onClick={goToPath('/admin/themes')}>
-                    <Typography variant="h1" color="primary">
-                        Thèmes
-                    </Typography>
-                </Link>
-                <Typography variant="h1" color="textPrimary">
-                    Nouveau
-                </Typography>
-            </Breadcrumbs>
-            <AdminTile title="Ajouter un thème">
-                <div style={{ padding: '1rem' }}>
-                    <Typography variant="h3" color="textPrimary">
+        <div style={{ margin: '24px 32px' }}>
+            <Breadcrumbs
+                links={[
+                    {
+                        href: '/admin/themes',
+                        label: <Title style={{ display: 'inline' }}>Thèmes</Title>,
+                    },
+                ]}
+                currentLabel={<Title style={{ display: 'inline' }}>Nouveau</Title>}
+            />
+            <AdminTile marginY="md" title="Ajouter un thème">
+                <Form onSubmit={onSubmit} padding="md">
+                    <Title variant="h3" color="primary">
                         Noms du thème :
-                    </Typography>
+                    </Title>
                     <NameInput value={themeNames.fr || ''} onChange={onNameInputChange('fr')} />
                     {selectedLanguages.map((languageIndex, index) => (
                         <NameInput
@@ -171,46 +155,63 @@ const AdminNewTheme = () => {
                     ))}
                     {availableLanguages.length > 0 && (
                         <Button
+                            label="Ajouter une langue"
                             variant="outlined"
                             onClick={() => {
                                 setShowModal(true);
                             }}
-                        >
-                            Ajouter une langue
-                        </Button>
+                        ></Button>
                     )}
-
-                    <Typography variant="h3" color="textPrimary" style={{ marginTop: '2rem' }}>
+                    <Title variant="h3" color="primary" marginTop="lg">
                         Image :
-                    </Typography>
+                    </Title>
                     <div style={{ marginTop: '0.5rem' }}>{imageBlob && <img width="300px" src={window.URL.createObjectURL(imageBlob)} />}</div>
-                    <Button variant="outlined" color="secondary" component="label" startIcon={<CloudUploadIcon />} style={{ marginTop: '0.5rem' }}>
-                        {imageBlob ? "Changer d'image" : 'Choisir une image'}
-                        <input ref={inputRef} type="file" style={{ display: 'none' }} onChange={onImageInputChange} accept="image/*" />
-                    </Button>
+                    <input
+                        id="theme-image-upload"
+                        ref={inputRef}
+                        type="file"
+                        style={{ display: 'none' }}
+                        onChange={onImageInputChange}
+                        accept="image/*"
+                    />
+                    <Button
+                        label={imageBlob ? "Changer d'image" : 'Choisir une image'}
+                        variant="outlined"
+                        color="secondary"
+                        as="label"
+                        isUpperCase={false}
+                        role="button"
+                        aria-controls="filename"
+                        tabIndex={0}
+                        onKeyPress={(event) => {
+                            if (event.key === 'Enter' || event.key === ' ') {
+                                document.getElementById('theme-image-upload')?.click();
+                            }
+                        }}
+                        htmlFor={'theme-image-upload'}
+                        leftIcon={<UploadIcon style={{ width: '16px', height: '16px', marginRight: '8px' }} />}
+                        marginTop="sm"
+                    ></Button>
                     {imageBlob && (
                         <Button
+                            label="Supprimer l'image"
                             variant="outlined"
                             color="secondary"
-                            component="label"
-                            style={{ marginTop: '0.5rem', marginLeft: '0.5rem' }}
+                            marginTop="sm"
+                            marginLeft="sm"
                             onClick={() => {
                                 setImageBlob(null);
                             }}
-                        >
-                            {"Supprimer l'image"}
-                        </Button>
+                        ></Button>
                     )}
-                    <div style={{ width: '100%', textAlign: 'center', marginTop: '1rem' }}>
-                        <Button color="secondary" variant="contained" onClick={onSubmit}>
-                            Créer le thème !
-                        </Button>
+                    <div style={{ width: '100%', textAlign: 'center', marginTop: '16px' }}>
+                        <Button label="Créer le thème !" color="secondary" variant="contained" type="submit"></Button>
                     </div>
-                </div>
+                </Form>
             </AdminTile>
-            <Button variant="outlined" style={{ marginTop: '1rem' }} onClick={goToPath('/admin/themes')}>
-                Retour
-            </Button>
+            <Link href="/admin/themes" passHref>
+                <Button label="Retour" as="a" variant="outlined" marginTop="md"></Button>
+            </Link>
 
             {/* language modal */}
             <Modal
@@ -222,31 +223,32 @@ const AdminNewTheme = () => {
                 confirmLabel="Ajouter"
                 cancelLabel="Annuler"
                 title="Ajouter une langue"
-                ariaLabelledBy="add-dialog"
-                ariaDescribedBy="add-dialog-desc"
             >
                 {availableLanguages.length > 0 && (
-                    <FormControl variant="outlined" style={{ minWidth: '15rem' }} className="mobile-full-width">
-                        <InputLabel htmlFor="langage">Languages</InputLabel>
-                        <Select
-                            native
-                            value={languageToAdd}
-                            onChange={(event) => {
-                                setLanguageToAdd(typeof event.target.value === 'number' ? event.target.value : parseInt(event.target.value, 10));
-                            }}
-                            label={'Langages'}
-                            inputProps={{
-                                name: 'langage',
-                                id: 'langage',
-                            }}
-                        >
-                            {availableLanguages.map((l, index) => (
-                                <option value={index} key={l.value}>
-                                    {l.label}
-                                </option>
-                            ))}
-                        </Select>
-                    </FormControl>
+                    <Form>
+                        <Field
+                            name="languages"
+                            label="Langages"
+                            input={
+                                <Select
+                                    color="secondary"
+                                    isFullWidth
+                                    value={languageToAdd}
+                                    onChange={(event) => {
+                                        setLanguageToAdd(
+                                            typeof event.target.value === 'number' ? event.target.value : parseInt(event.target.value, 10),
+                                        );
+                                    }}
+                                >
+                                    {availableLanguages.map((l, index) => (
+                                        <option value={index} key={l.value}>
+                                            {l.label}
+                                        </option>
+                                    ))}
+                                </Select>
+                            }
+                        ></Field>
+                    </Form>
                 )}
             </Modal>
 
@@ -258,8 +260,6 @@ const AdminNewTheme = () => {
                 confirmLabel="Valider"
                 cancelLabel="Annuler"
                 title="Redimensionner l'image"
-                ariaLabelledBy="add-dialog"
-                ariaDescribedBy="add-dialog-desc"
             >
                 {imageUrl !== null && (
                     <div className="text-center">

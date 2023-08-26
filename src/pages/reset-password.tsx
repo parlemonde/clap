@@ -1,10 +1,13 @@
-import { useRouter } from 'next/router';
+import Link from 'next/link';
 import React from 'react';
 
-import { Button, Link, TextField, Typography, Backdrop, CircularProgress } from '@mui/material';
-
+import { Button } from 'src/components/layout/Button';
+import { Container } from 'src/components/layout/Container';
+import { Field, Form, Input } from 'src/components/layout/Form';
+import { Title } from 'src/components/layout/Typography';
+import { Loader } from 'src/components/ui/Loader';
 import { useTranslation } from 'src/i18n/useTranslation';
-import { axiosRequest } from 'src/utils/axiosRequest';
+import { httpRequest } from 'src/utils/http-request';
 
 const errorMessages = {
     0: 'login_unknown_error',
@@ -12,7 +15,6 @@ const errorMessages = {
 };
 
 const ResetPassword: React.FunctionComponent = () => {
-    const router = useRouter();
     const { t } = useTranslation();
     const [email, setEmail] = React.useState<string>('');
     const [errorCode, setErrorCode] = React.useState<number>(-1);
@@ -29,7 +31,7 @@ const ResetPassword: React.FunctionComponent = () => {
         setErrorCode(-1);
         setSuccessMsg('');
         setLoading(true);
-        const response = await axiosRequest({
+        const response = await httpRequest({
             method: 'POST',
             url: '/login/reset-password',
             data: {
@@ -44,57 +46,46 @@ const ResetPassword: React.FunctionComponent = () => {
         }
     };
 
-    const handleLinkClick = (path: string) => (event: React.MouseEvent) => {
-        event.preventDefault();
-        router.push(path);
-    };
-
     return (
-        <div className="text-center">
-            <Typography color="primary" variant="h1" style={{ marginTop: '2rem' }}>
+        <Container className="text-center">
+            <Title color="primary" variant="h1" marginTop="lg" marginBottom="md">
                 {t('forgot_password_title')}
-            </Typography>
-            <form className="login-form" noValidate autoComplete="off" onSubmit={submit}>
-                {errorCode === 0 && (
-                    <Typography variant="caption" color="error">
-                        {t(errorMessages[0])}
-                    </Typography>
-                )}
-
+            </Title>
+            <Form className="login-form" autoComplete="off" onSubmit={submit}>
+                {errorCode === 0 && <span style={{ color: 'rgb(211, 47, 47)', display: 'block' }}>{t(errorMessages[0])}</span>}
                 {successMsg.length > 0 && (
-                    <Typography variant="caption" color="primary">
+                    <span style={{ display: 'block' }} color="color-primary">
                         {t(successMsg)}
-                    </Typography>
+                    </span>
                 )}
-
-                <TextField
-                    id="username"
+                <Field
                     name="username"
-                    type="text"
-                    color="secondary"
                     label={t('forgot_password_email')}
-                    value={email}
-                    onChange={handleUserNameInputChange}
-                    variant="outlined"
-                    fullWidth
-                    error={errorCode === 1}
-                    helperText={errorCode === 1 ? t(errorMessages[1]) : null}
-                />
-
-                <Button variant="contained" color="secondary" type="submit">
-                    {t('forgot_password_button')}
-                </Button>
-
+                    input={
+                        <Input
+                            id="username"
+                            name="username"
+                            type="text"
+                            color="secondary"
+                            value={email}
+                            required
+                            onChange={handleUserNameInputChange}
+                            isFullWidth
+                            hasError={errorCode === 1}
+                        />
+                    }
+                    helperText={errorCode === 1 ? t(errorMessages[1]) : ''}
+                    helperTextStyle={{ textAlign: 'left', color: 'rgb(211, 47, 47)' }}
+                ></Field>
+                <Button label={t('forgot_password_button')} variant="contained" color="secondary" type="submit"></Button>
                 <div className="text-center">
-                    <Link href="/login" onClick={handleLinkClick('/login')}>
-                        {t('login_connect')}
+                    <Link href="/login" passHref>
+                        <a>{t('login_connect')}</a>
                     </Link>
                 </div>
-            </form>
-            <Backdrop sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, color: '#fff' }} open={loading}>
-                <CircularProgress color="inherit" />
-            </Backdrop>
-        </div>
+            </Form>
+            <Loader isLoading={loading} />
+        </Container>
     );
 };
 

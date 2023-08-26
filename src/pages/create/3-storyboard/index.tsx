@@ -1,22 +1,25 @@
+import { PlusIcon } from '@radix-ui/react-icons';
 import { useRouter } from 'next/router';
-import { useSnackbar } from 'notistack';
 import React from 'react';
-
-import AddIcon from '@mui/icons-material/Add';
-import { CircularProgress, IconButton, Tooltip, Typography } from '@mui/material';
 
 import { useDeletePlanMutation } from 'src/api/plans/plans.delete';
 import { useCreatePlanMutation } from 'src/api/plans/plans.post';
 import { useUpdateQuestionMutation } from 'src/api/questions/questions.put';
 import { useScenario } from 'src/api/scenarios/scenarios.get';
 import { useTheme } from 'src/api/themes/themes.get';
-import { PlanCard } from 'src/components/PlanCard';
-import { TitleCard } from 'src/components/TitleCard';
+import { PlanCard } from 'src/components/create/PlanCard';
+import { TitleCard } from 'src/components/create/TitleCard';
+import { IconButton } from 'src/components/layout/Button/IconButton';
+import { CircularProgress } from 'src/components/layout/CircularProgress';
+import { Container } from 'src/components/layout/Container';
+import { Modal } from 'src/components/layout/Modal';
+import { Tooltip } from 'src/components/layout/Tooltip/Tooltip';
+import { Title } from 'src/components/layout/Typography';
 import { NextButton } from 'src/components/navigation/NextButton';
 import { Steps } from 'src/components/navigation/Steps';
 import { ThemeBreadcrumbs } from 'src/components/navigation/ThemeBreadcrumbs';
 import { Inverted } from 'src/components/ui/Inverted';
-import Modal from 'src/components/ui/Modal';
+import { sendToast } from 'src/components/ui/Toasts';
 import { Trans } from 'src/components/ui/Trans';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import { useTranslation } from 'src/i18n/useTranslation';
@@ -33,7 +36,6 @@ type SequenceProps = {
     onUpdateSequence(newSequence: Partial<Question>): void;
 };
 const Scenario = ({ projectId, isSavedProject, sequence, sequenceIndex, planStartIndex, onUpdateSequence }: SequenceProps) => {
-    const { enqueueSnackbar } = useSnackbar();
     const { t } = useTranslation();
     const [deletePlanIndex, setDeletePlanIndex] = React.useState(-1);
     const [showDeleteTitle, setShowDeleteTitle] = React.useState(false);
@@ -56,9 +58,7 @@ const Scenario = ({ projectId, isSavedProject, sequence, sequenceIndex, planStar
                 });
             } catch (err) {
                 console.error(err);
-                enqueueSnackbar(t('unknown_error'), {
-                    variant: 'error',
-                });
+                sendToast({ message: t('unknown_error'), type: 'error' });
                 return;
             }
         } else {
@@ -83,9 +83,7 @@ const Scenario = ({ projectId, isSavedProject, sequence, sequenceIndex, planStar
                 await deletePlanMutation.mutateAsync({ planId: planToDelete.id });
             } catch (err) {
                 console.error(err);
-                enqueueSnackbar(t('unknown_error'), {
-                    variant: 'error',
-                });
+                sendToast({ message: t('unknown_error'), type: 'error' });
                 return;
             }
         }
@@ -102,9 +100,7 @@ const Scenario = ({ projectId, isSavedProject, sequence, sequenceIndex, planStar
                 });
             } catch (err) {
                 console.error(err);
-                enqueueSnackbar(t('unknown_error'), {
-                    variant: 'error',
-                });
+                sendToast({ message: t('unknown_error'), type: 'error' });
                 return;
             }
         }
@@ -114,9 +110,9 @@ const Scenario = ({ projectId, isSavedProject, sequence, sequenceIndex, planStar
 
     return (
         <>
-            <Typography color="primary" variant="h2" style={{ marginTop: '2rem' }}>
+            <Title color="primary" variant="h2" marginTop="lg">
                 {sequenceIndex + 1}. {sequence.question}
-            </Typography>
+            </Title>
             <div className="plans">
                 <TitleCard
                     projectId={projectId}
@@ -143,21 +139,14 @@ const Scenario = ({ projectId, isSavedProject, sequence, sequenceIndex, planStar
                         {createPlanMutation.isLoading ? (
                             <CircularProgress color="primary" />
                         ) : (
-                            <Tooltip title={t('part3_add_plan')} aria-label={t('part3_add_plan')}>
+                            <Tooltip position="bottom" content={t('part3_add_plan')} hasArrow>
                                 <IconButton
-                                    sx={{
-                                        backgroundColor: (theme) => theme.palette.primary.main,
-                                        color: 'white',
-                                        '&:hover': {
-                                            backgroundColor: (theme) => theme.palette.primary.light,
-                                        },
-                                    }}
                                     color="primary"
+                                    variant="contained"
                                     aria-label={t('part3_add_plan')}
                                     onClick={onAddPlan}
-                                >
-                                    <AddIcon />
-                                </IconButton>
+                                    icon={PlusIcon}
+                                ></IconButton>
                             </Tooltip>
                         )}
                     </div>
@@ -171,8 +160,6 @@ const Scenario = ({ projectId, isSavedProject, sequence, sequenceIndex, planStar
                     title={t('part3_delete_plan_question')}
                     confirmLabel={t('delete')}
                     confirmLevel="error"
-                    ariaLabelledBy="delete_plan_confirm"
-                    ariaDescribedBy="delete_plan_confirm_description"
                     isLoading={deletePlanMutation.isLoading}
                 >
                     {t('part3_delete_plan_desc', { planNumber: planStartIndex + deletePlanIndex })}
@@ -186,8 +173,6 @@ const Scenario = ({ projectId, isSavedProject, sequence, sequenceIndex, planStar
                     title={t('part3_delete_plan_title')}
                     confirmLabel={t('delete')}
                     confirmLevel="error"
-                    ariaLabelledBy="delete_title_confirm"
-                    ariaDescribedBy="delete_title_confirm_description"
                     isLoading={updateQuestionMutation.isLoading}
                 >
                     {t('part3_delete_plan_title_desc')}
@@ -218,7 +203,7 @@ const StoryboardPage = () => {
     }, [questions]);
 
     return (
-        <div>
+        <Container>
             <ThemeBreadcrumbs theme={theme} isLoading={isThemeLoading}></ThemeBreadcrumbs>
             <Steps
                 activeStep={2}
@@ -226,15 +211,15 @@ const StoryboardPage = () => {
                 scenarioName={scenario?.names?.[currentLocale] || undefined}
             ></Steps>
             <div style={{ maxWidth: '1000px', margin: 'auto', paddingBottom: '2rem' }}>
-                <Typography color="primary" variant="h1">
-                    <Inverted round>3</Inverted>{' '}
+                <Title color="primary" variant="h1" marginY="md">
+                    <Inverted isRound>3</Inverted>{' '}
                     <Trans i18nKey="part3_title">
                         Création du <Inverted>Storyboard</Inverted>
                     </Trans>
-                </Typography>
-                <Typography color="inherit" variant="h2">
+                </Title>
+                <Title color="inherit" variant="h2">
                     {t('part3_desc')}
-                </Typography>
+                </Title>
                 {questions.map((question, index) => (
                     <Scenario
                         projectId={project?.id || null}
@@ -259,7 +244,7 @@ const StoryboardPage = () => {
                     }}
                 />
             </div>
-        </div>
+        </Container>
     );
 };
 

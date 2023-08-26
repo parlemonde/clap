@@ -1,0 +1,98 @@
+@use 'mixins';
+@use 'variables' as *;
+
+// -- DESKTOP --
+.steps {
+    width: 100%;
+    display: none;
+    flex-direction: row;
+    align-self: stretch;
+    padding: 24px 0;
+}
+@include mixins.for-tablet-up {
+    .steps {
+        display: flex;
+    }
+}
+.step {
+    flex: 1 1 0;
+    text-decoration: none;
+}
+.stepNumberWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+.stepNumber {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background-color: rgba(0, 0, 0, 0.38);
+    color: white;
+    border-radius: 12px;
+    font-size: 12px;
+    flex-shrink: 0;
+    margin: 0 6px;
+    &--is-done {
+        background-color: $primaryColor;
+    }
+}
+.stepLine {
+    flex: 1 1 0;
+    background-color: rgba(0, 0, 0, 0.38);
+    height: 1px;
+    &--is-hidden {
+        background-color: unset;
+    }
+    &--is-done {
+        background-color: $primaryColor;
+    }
+}
+.stepText {
+    display: block;
+    text-align: center;
+    padding: 16px 4px 8px 4px;
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.6);
+    &--is-done {
+        color: black;
+    }
+}
+a.step:hover .stepText {
+    text-decoration: underline;
+}
+
+// -- MOBILE --
+.mobileSteps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 10px;
+  margin: 16px 0;
+}
+@include mixins.for-tablet-up {
+  .mobileSteps {
+      display: none;
+  }
+}
+.mobileBackButton {
+  position: absolute;
+  left: 0;
+  top: 0;
+  padding-left: 8px;
+}
+.dot {
+  background-color: white;
+  border: 1px solid $secondaryColor;
+  width: 13px;
+  height: 13px;
+  margin: 0px 4px;
+  border-radius: 50%;
+  transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  &--active {
+    background-color: $secondaryColor
+  }
+}

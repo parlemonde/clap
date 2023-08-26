@@ -1,11 +1,9 @@
-import { useSnackbar } from 'notistack';
 import React from 'react';
 
-import FormHelperText from '@mui/material/FormHelperText';
-import TextField from '@mui/material/TextField';
-
 import { useUpdateQuestionTemplate } from 'src/api/question-templates/question-templates.put';
-import Modal from 'src/components/ui/Modal';
+import { Field, Input } from 'src/components/layout/Form';
+import { Modal } from 'src/components/layout/Modal';
+import { sendToast } from 'src/components/ui/Toasts';
 import type { QuestionTemplate } from 'types/models/question.type';
 
 interface EditQuestionModalProps {
@@ -17,7 +15,6 @@ export const EditQuestionModal: React.FunctionComponent<EditQuestionModalProps> 
     question = null,
     onClose = () => {},
 }: EditQuestionModalProps) => {
-    const { enqueueSnackbar } = useSnackbar();
     const [q, setQ] = React.useState<string>('');
     const [hasError, setHasError] = React.useState<boolean>(false);
 
@@ -46,15 +43,11 @@ export const EditQuestionModal: React.FunctionComponent<EditQuestionModalProps> 
                 questionId: question.id,
                 question: q,
             });
-            enqueueSnackbar('Question modifiée avec succès!', {
-                variant: 'success',
-            });
+            sendToast({ message: 'Question modifiée avec succès!', type: 'success' });
             onClose();
         } catch (err) {
             console.error(err);
-            enqueueSnackbar('Une erreur inconnue est survenue...', {
-                variant: 'error',
-            });
+            sendToast({ message: 'Une erreur inconnue est survenue...', type: 'error' });
         }
     };
 
@@ -67,25 +60,25 @@ export const EditQuestionModal: React.FunctionComponent<EditQuestionModalProps> 
             confirmLabel="Modifier"
             cancelLabel="Annuler"
             title="Modifer une question"
-            ariaLabelledBy="create-dialog-title"
-            ariaDescribedBy="create-dialog-description"
             isFullWidth
+            onOpenAutoFocus={false}
         >
-            <div id="create-dialog-description">
-                <TextField
-                    value={q}
-                    onChange={onQuestionChange}
-                    error={hasError}
-                    className={hasError ? 'shake' : ''}
-                    label="Question"
-                    variant="outlined"
-                    fullWidth
-                    color="secondary"
-                />
-                <FormHelperText id="component-helper-text" style={{ marginLeft: '0.2rem', marginTop: '0.2rem' }}>
-                    {q.length}/280
-                </FormHelperText>
-            </div>
+            <Field
+                name="edit-question"
+                label="Question"
+                input={
+                    <Input
+                        name="edit-question"
+                        id="edit-question"
+                        value={q}
+                        onChange={onQuestionChange}
+                        hasError={hasError}
+                        isFullWidth
+                        color="secondary"
+                    />
+                }
+                helperText={`${q.length}/280`}
+            ></Field>
         </Modal>
     );
 };

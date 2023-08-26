@@ -1,15 +1,11 @@
-import { useSnackbar } from 'notistack';
 import React from 'react';
-
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import type { SelectChangeEvent } from '@mui/material/Select';
-import Select from '@mui/material/Select';
 
 import allLanguages from './iso_languages.json';
 import { useCreateLanguageMutation } from 'src/api/languages/languages.post';
-import Modal from 'src/components/ui/Modal';
+import { Field } from 'src/components/layout/Form';
+import { Select } from 'src/components/layout/Form/Select';
+import { Modal } from 'src/components/layout/Modal';
+import { sendToast } from 'src/components/ui/Toasts';
 
 interface AddLanguageModalProps {
     open?: boolean;
@@ -17,7 +13,6 @@ interface AddLanguageModalProps {
 }
 
 export const AddLanguageModal = ({ open = false, onClose = () => {} }: AddLanguageModalProps) => {
-    const { enqueueSnackbar } = useSnackbar();
     const [selectedLanguageIndex, setSelectedLanguageIndex] = React.useState<number>(-1);
 
     const createLanguageMutation = useCreateLanguageMutation();
@@ -30,21 +25,13 @@ export const AddLanguageModal = ({ open = false, onClose = () => {} }: AddLangua
                 value: allLanguages[selectedLanguageIndex].code,
                 label: allLanguages[selectedLanguageIndex].englishName,
             });
-            enqueueSnackbar('Langue ajoutée avec succès!', {
-                variant: 'success',
-            });
+            sendToast({ message: 'Langue ajoutée avec succès!', type: 'success' });
             setSelectedLanguageIndex(-1);
             onClose();
         } catch (err) {
             console.error(err);
-            enqueueSnackbar('Une erreur inconnue est survenue...', {
-                variant: 'error',
-            });
+            sendToast({ message: 'Une erreur inconnue est survenue...', type: 'error' });
         }
-    };
-
-    const onSelectLanguage = (event: SelectChangeEvent<string | number>) => {
-        setSelectedLanguageIndex(typeof event.target.value === 'number' ? event.target.value : parseInt(event.target.value, 10));
     };
 
     return (
@@ -59,28 +46,30 @@ export const AddLanguageModal = ({ open = false, onClose = () => {} }: AddLangua
             confirmLabel="Ajouter"
             cancelLabel="Annuler"
             title="Ajouter une langue"
-            ariaLabelledBy="new-dialog-title"
-            ariaDescribedBy="new-dialog-description"
             isFullWidth
         >
-            <div id="new-dialog-description">
-                <FormControl fullWidth color="secondary">
-                    <InputLabel id="demo-simple-select-label">Choisir la langue</InputLabel>
+            <Field
+                name="create-language"
+                label="Choisir la langue"
+                input={
                     <Select
-                        variant="standard"
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
+                        name="create-language"
+                        id="create-language"
                         value={selectedLanguageIndex === -1 ? '' : selectedLanguageIndex}
-                        onChange={onSelectLanguage}
+                        onChange={(event) => {
+                            setSelectedLanguageIndex(parseInt(event.target.value, 10));
+                        }}
+                        style={{ color: selectedLanguageIndex === -1 ? 'grey' : undefined }}
                     >
+                        <option value="" hidden></option>
                         {allLanguages.map((l, index) => (
-                            <MenuItem value={index} key={l.code}>
+                            <option value={index} key={l.code}>
                                 {l.englishName}
-                            </MenuItem>
+                            </option>
                         ))}
                     </Select>
-                </FormControl>
-            </div>
+                }
+            ></Field>
         </Modal>
     );
 };

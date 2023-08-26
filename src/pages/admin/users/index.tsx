@@ -1,44 +1,19 @@
-import { useRouter } from 'next/router';
+import { Pencil1Icon, TrashIcon, PlusCircledIcon, ChevronLeftIcon, ChevronRightIcon, ArrowUpIcon, ArrowDownIcon } from '@radix-ui/react-icons';
+import Link from 'next/link';
 import React from 'react';
-
-import AddCircleIcon from '@mui/icons-material/AddCircle';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Chip from '@mui/material/Chip';
-import IconButton from '@mui/material/IconButton';
-import NoSsr from '@mui/material/NoSsr';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableHead from '@mui/material/TableHead';
-import TablePagination from '@mui/material/TablePagination';
-import TableRow from '@mui/material/TableRow';
-import TableSortLabel from '@mui/material/TableSortLabel';
-import Tooltip from '@mui/material/Tooltip';
-import Typography from '@mui/material/Typography';
 
 import type { GETParams as GetUsersArgs } from 'src/api/users/users.list';
 import { useUsers } from 'src/api/users/users.list';
 import { AdminTile } from 'src/components/admin/AdminTile';
+import { Table } from 'src/components/admin/Table';
 import { DeleteUserModal } from 'src/components/admin/users/DeleteUserModal';
 import { InviteUserModal } from 'src/components/admin/users/InviteUserModal';
+import { Button } from 'src/components/layout/Button';
+import { IconButton } from 'src/components/layout/Button/IconButton';
+import { Select } from 'src/components/layout/Form/Select';
+import { Tooltip } from 'src/components/layout/Tooltip';
+import { Title } from 'src/components/layout/Typography';
 import { userContext } from 'src/contexts/userContext';
-
-const styles = {
-    visuallyHidden: {
-        border: 0,
-        clip: 'rect(0 0 0 0)',
-        height: 1,
-        margin: -1,
-        overflow: 'hidden',
-        padding: 0,
-        position: 'absolute',
-        top: 20,
-        width: 1,
-    },
-};
 
 const userTypeNames = {
     0: 'Classe',
@@ -47,7 +22,6 @@ const userTypeNames = {
 };
 
 const AdminUsers = () => {
-    const router = useRouter();
     const [args, setArgs] = React.useState<GetUsersArgs>({
         page: 1,
         limit: 10,
@@ -57,15 +31,10 @@ const AdminUsers = () => {
     const [deleteIndex, setDeleteIndex] = React.useState<number>(-1);
     const [inviteOpen, setInviteOpen] = React.useState<boolean>(false);
 
-    const goToPath = (path: string) => (event: React.MouseEvent) => {
-        event.preventDefault();
-        router.push(path);
+    const handleChangePage = (newPage: number) => {
+        setArgs({ ...args, page: newPage });
     };
-
-    const handleChangePage = (_event: unknown, newPage: number) => {
-        setArgs({ ...args, page: newPage + 1 });
-    };
-    const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setArgs({ ...args, page: 1, limit: parseInt(event.target.value, 10) });
     };
 
@@ -82,139 +51,197 @@ const AdminUsers = () => {
     }, []);
 
     return (
-        <div style={{ paddingBottom: '2rem' }}>
-            <Typography variant="h1" color="primary">
-                Utilisateurs
-            </Typography>
-            <NoSsr>
-                <AdminTile
-                    title="Liste des utilisateurs"
-                    toolbarButton={
-                        <Button
-                            color="inherit"
-                            sx={{ color: 'black' }}
-                            onClick={() => {
-                                setInviteOpen(true);
-                            }}
-                            style={{ flexShrink: 0 }}
-                            variant="contained"
-                            startIcon={<AddCircleIcon />}
-                        >
-                            Inviter un utilisateur
-                        </Button>
-                    }
-                >
-                    <Table aria-labelledby="themetabletitle" size="medium" aria-label="toutes les langues">
-                        {users.length > 0 ? (
-                            <>
-                                <TableHead
-                                    style={{ borderBottom: '1px solid white' }}
-                                    sx={{
-                                        backgroundColor: (theme) => theme.palette.secondary.main,
-                                        color: 'white',
-                                        fontWeight: 'bold',
-                                        minHeight: 'unset',
-                                        padding: '8px 8px 8px 16px',
-                                    }}
-                                >
-                                    <TableRow>
-                                        <TableCell style={{ color: 'white', fontWeight: 'bold' }}>
-                                            <TableSortLabel active={args.order === 'pseudo'} direction={args.sort} onClick={onHeaderClick('pseudo')}>
-                                                Pseudo
-                                                {args.order === 'pseudo' ? (
-                                                    <Box component="span" sx={styles.visuallyHidden}>
-                                                        {args.sort === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                                                    </Box>
-                                                ) : null}
-                                            </TableSortLabel>
-                                        </TableCell>
-                                        <TableCell style={{ color: 'white', fontWeight: 'bold' }}>
-                                            <TableSortLabel active={args.order === 'email'} direction={args.sort} onClick={onHeaderClick('email')}>
-                                                Email
-                                                {args.order === 'email' ? (
-                                                    <Box component="span" sx={styles.visuallyHidden}>
-                                                        {args.sort === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                                                    </Box>
-                                                ) : null}
-                                            </TableSortLabel>
-                                        </TableCell>
-                                        <TableCell style={{ color: 'white', fontWeight: 'bold' }}>Compte</TableCell>
-                                        <TableCell style={{ color: 'white', fontWeight: 'bold' }} align="right">
-                                            Actions
-                                        </TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {users.map((user, index) => (
-                                        <TableRow
-                                            sx={{
-                                                backgroundColor: 'white',
-                                                '&:nth-of-type(even)': {
-                                                    backgroundColor: 'rgb(224 239 232)',
-                                                },
-                                                '&.sortable-ghost': {
-                                                    opacity: 0,
-                                                },
-                                            }}
-                                            key={user.id}
-                                        >
-                                            <TableCell>{user.pseudo}</TableCell>
-                                            <TableCell>{user.email}</TableCell>
-                                            <TableCell padding="none">
-                                                <Chip size="small" label={userTypeNames[user.type]} />
-                                            </TableCell>
-                                            <TableCell align="right" padding="none" style={{ minWidth: '96px' }}>
-                                                <Tooltip title="Modifier">
-                                                    <IconButton aria-label="edit" onClick={goToPath(`/admin/users/edit/${user.id}`)}>
-                                                        <EditIcon />
-                                                    </IconButton>
-                                                </Tooltip>
-                                                {currentUser !== null && user.id !== currentUser.id && (
-                                                    <Tooltip title="Supprimer">
+        <div style={{ margin: '24px 32px' }}>
+            <Title>Utilisateurs</Title>
+            <AdminTile
+                marginY="md"
+                title="Liste des utilisateurs"
+                actions={
+                    <Button
+                        label="Inviter un utilisateur"
+                        onClick={() => {
+                            setInviteOpen(true);
+                        }}
+                        variant="contained"
+                        color="light-grey"
+                        leftIcon={<PlusCircledIcon style={{ width: '20px', height: '20px', marginRight: '8px' }} />}
+                    />
+                }
+            >
+                <Table aria-label="toutes les utilisateurs">
+                    {users.length > 0 ? (
+                        <>
+                            <thead>
+                                <tr>
+                                    <th align="left">
+                                        <Tooltip content="Trier par pseudo">
+                                            <Button
+                                                label="Pseudo"
+                                                variant="borderless"
+                                                style={{ padding: '4px', fontWeight: 600, transform: 'translateX(-4px)' }}
+                                                isUpperCase={false}
+                                                onClick={onHeaderClick('pseudo')}
+                                                rightIcon={
+                                                    args.order === 'pseudo' ? (
+                                                        args.sort === 'asc' ? (
+                                                            <ArrowUpIcon style={{ height: '20px', width: '20px', marginLeft: 8 }} />
+                                                        ) : (
+                                                            <ArrowDownIcon style={{ height: '20px', width: '20px', marginLeft: 8 }} />
+                                                        )
+                                                    ) : undefined
+                                                }
+                                            ></Button>
+                                        </Tooltip>
+                                    </th>
+                                    <th align="left">
+                                        <Tooltip content="Trier par email">
+                                            <Button
+                                                label="Email"
+                                                variant="borderless"
+                                                style={{ padding: '4px', fontWeight: 600, transform: 'translateX(-4px)' }}
+                                                isUpperCase={false}
+                                                onClick={onHeaderClick('email')}
+                                                rightIcon={
+                                                    args.order === 'email' ? (
+                                                        args.sort === 'asc' ? (
+                                                            <ArrowUpIcon style={{ height: '20px', width: '20px', marginLeft: 8 }} />
+                                                        ) : (
+                                                            <ArrowDownIcon style={{ height: '20px', width: '20px', marginLeft: 8 }} />
+                                                        )
+                                                    ) : undefined
+                                                }
+                                            ></Button>
+                                        </Tooltip>
+                                    </th>
+                                    <th align="left">Compte</th>
+                                    <th align="right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {users.map((user, index) => (
+                                    <tr key={user.id}>
+                                        <th style={{ padding: '0 16px' }}>{user.pseudo}</th>
+                                        <th style={{ padding: '0 16px' }}>{user.email}</th>
+                                        <th style={{ padding: '0 16px' }}>
+                                            <span
+                                                style={{
+                                                    height: '24px',
+                                                    color: 'rgba(0, 0, 0, 0.87)',
+                                                    backgroundColor: 'rgba(0, 0, 0, 0.08)',
+                                                    borderRadius: '16px',
+                                                    padding: '0 8px',
+                                                    display: 'inline-flex',
+                                                    alignItems: 'center',
+                                                }}
+                                            >
+                                                {userTypeNames[user.type]}
+                                            </span>
+                                        </th>
+                                        <th align="right" style={{ minWidth: '96px' }}>
+                                            <Tooltip content="Modifier">
+                                                <span>
+                                                    <Link href={`/admin/users/edit/${user.id}`} passHref>
                                                         <IconButton
-                                                            aria-label="delete"
-                                                            onClick={() => {
-                                                                setDeleteIndex(index);
-                                                            }}
-                                                        >
-                                                            <DeleteIcon />
-                                                        </IconButton>
-                                                    </Tooltip>
-                                                )}
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
-                                    <TableRow>
-                                        <TablePagination
-                                            rowsPerPageOptions={[5, 10, 25]}
-                                            count={total}
-                                            rowsPerPage={args.limit || 10}
-                                            page={(args.page || 1) - 1}
-                                            onPageChange={handleChangePage}
-                                            onRowsPerPageChange={handleChangeRowsPerPage}
-                                        />
-                                    </TableRow>
-                                </TableBody>
-                            </>
-                        ) : (
-                            <TableBody>
-                                <TableRow>
-                                    <TableCell colSpan={4} align="center">
-                                        Cette liste est vide !
-                                    </TableCell>
-                                </TableRow>
-                            </TableBody>
-                        )}
-                    </Table>
-                </AdminTile>
-                <InviteUserModal open={inviteOpen} onClose={closeInviteOpen} />
-                <DeleteUserModal
-                    user={deleteIndex === -1 ? null : users[deleteIndex] || null}
-                    onClose={() => {
-                        setDeleteIndex(-1);
-                    }}
-                />
-            </NoSsr>
+                                                            as="a"
+                                                            margin="xs"
+                                                            marginRight={currentUser === null || user.id === currentUser.id ? 'sm' : undefined}
+                                                            aria-label="edit"
+                                                            variant="borderless"
+                                                            icon={Pencil1Icon}
+                                                        ></IconButton>
+                                                    </Link>
+                                                </span>
+                                            </Tooltip>
+                                            {currentUser !== null && user.id !== currentUser.id && (
+                                                <Tooltip content="Supprimer">
+                                                    <IconButton
+                                                        marginY="xs"
+                                                        marginRight="sm"
+                                                        aria-label="delete"
+                                                        onClick={() => {
+                                                            setDeleteIndex(index);
+                                                        }}
+                                                        variant="borderless"
+                                                        color="error"
+                                                        icon={TrashIcon}
+                                                    ></IconButton>
+                                                </Tooltip>
+                                            )}
+                                        </th>
+                                    </tr>
+                                ))}
+                                <tr style={{ backgroundColor: 'white' }}>
+                                    <th colSpan={4} align="right">
+                                        <span style={{ marginRight: 16 }}>Lignes par pages:</span>
+                                        <Select
+                                            value={args.limit || 10}
+                                            onChange={handleChangeRowsPerPage}
+                                            style={{
+                                                borderTop: 'none',
+                                                borderLeft: 'none',
+                                                borderRight: 'none',
+                                                borderRadius: 0,
+                                                padding: '4px 26px 4px 4px',
+                                                fontWeight: 400,
+                                                fontSize: '14px',
+                                                lineHeight: '20px',
+                                            }}
+                                            width="unset"
+                                        >
+                                            <option value={5}>5</option>
+                                            <option value={10}>10</option>
+                                            <option value={25}>25</option>
+                                            <option value={50}>50</option>
+                                            <option value={100}>100</option>
+                                        </Select>
+                                        <span style={{ margin: '0 16px' }}>
+                                            {((args.page || 1) - 1) * (args.limit || 10) + 1}-{Math.min(total, (args.page || 1) * (args.limit || 10))}{' '}
+                                            sur {total}
+                                        </span>
+                                        <IconButton
+                                            marginY="xs"
+                                            marginLeft="sm"
+                                            aria-label="previous"
+                                            onClick={() => {
+                                                handleChangePage((args.page || 1) - 1);
+                                            }}
+                                            variant="borderless"
+                                            disabled={(args.page || 1) === 1}
+                                            icon={ChevronLeftIcon}
+                                        ></IconButton>
+                                        <IconButton
+                                            marginY="xs"
+                                            marginRight="sm"
+                                            aria-label="next"
+                                            onClick={() => {
+                                                handleChangePage((args.page || 1) + 1);
+                                            }}
+                                            disabled={(args.page || 1) * (args.limit || 10) >= total}
+                                            variant="borderless"
+                                            icon={ChevronRightIcon}
+                                        ></IconButton>
+                                    </th>
+                                </tr>
+                            </tbody>
+                        </>
+                    ) : (
+                        <tbody>
+                            <tr>
+                                <th colSpan={4} align="center">
+                                    Cette liste est vide !
+                                </th>
+                            </tr>
+                        </tbody>
+                    )}
+                </Table>
+            </AdminTile>
+            <InviteUserModal open={inviteOpen} onClose={closeInviteOpen} />
+            <DeleteUserModal
+                user={deleteIndex === -1 ? null : users[deleteIndex] || null}
+                onClose={() => {
+                    setDeleteIndex(-1);
+                }}
+            />
         </div>
     );
 };

@@ -1,21 +1,20 @@
+import { InfoCircledIcon } from '@radix-ui/react-icons';
 import { default as NextLink } from 'next/link';
 import { useRouter } from 'next/router';
-import { useSnackbar } from 'notistack';
 import React from 'react';
-
-import Alert from '@mui/material/Alert';
-import Button from '@mui/material/Button';
-import Divider from '@mui/material/Divider';
-import Link from '@mui/material/Link';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
 
 import { useDeleteProjectMutation } from 'src/api/projects/projects.delete';
 import { useProject } from 'src/api/projects/projects.get';
 import { useUpdateProjectMutation } from 'src/api/projects/projects.put';
 import { useScenario } from 'src/api/scenarios/scenarios.get';
 import { useTheme } from 'src/api/themes/themes.get';
-import Modal from 'src/components/ui/Modal';
+import { Button } from 'src/components/layout/Button';
+import { Divider } from 'src/components/layout/Divider';
+import { Flex } from 'src/components/layout/Flex';
+import { Field, Input } from 'src/components/layout/Form';
+import { Modal } from 'src/components/layout/Modal';
+import { Title } from 'src/components/layout/Typography';
+import { sendToast } from 'src/components/ui/Toasts';
 import { Trans } from 'src/components/ui/Trans';
 import { userContext } from 'src/contexts/userContext';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
@@ -26,7 +25,6 @@ import { serializeToQueryUrl } from 'src/utils/serializeToQueryUrl';
 const EditProject: React.FC = () => {
     const router = useRouter();
     const { t, currentLocale } = useTranslation();
-    const { enqueueSnackbar } = useSnackbar();
     const { user } = React.useContext(userContext);
     const { project: localProject, updateProject } = useCurrentProject();
 
@@ -62,14 +60,10 @@ const EditProject: React.FC = () => {
             if (localProject && localProject.id === projectId) {
                 updateProject({ title: projectTitle });
             }
-            enqueueSnackbar(t('project_saved'), {
-                variant: 'success',
-            });
+            sendToast({ message: t('project_saved'), type: 'success' });
         } catch (err) {
             console.error(err);
-            enqueueSnackbar(t('unknown_error'), {
-                variant: 'error',
-            });
+            sendToast({ message: t('unknown_error'), type: 'error' });
         }
         setShowTitleModal(false);
     };
@@ -78,15 +72,11 @@ const EditProject: React.FC = () => {
     const onDeleteProject = async () => {
         try {
             await deleteProjectMutation.mutateAsync({ projectId });
-            enqueueSnackbar(t('project_deleted'), {
-                variant: 'success',
-            });
+            sendToast({ message: t('project_deleted'), type: 'success' });
             router.push('/my-videos');
         } catch (err) {
             console.error(err);
-            enqueueSnackbar(t('unknown_error'), {
-                variant: 'error',
-            });
+            sendToast({ message: t('unknown_error'), type: 'error' });
         }
         setShowDeleteModal(false);
     };
@@ -98,29 +88,39 @@ const EditProject: React.FC = () => {
     return (
         <div>
             <div className="text-center" style={{ margin: '1rem 0' }}>
-                <Typography color="primary" variant="h1" style={{ display: 'inline' }}>
+                <Title color="primary" variant="h1" style={{ display: 'inline' }}>
                     {t('project')}
-                </Typography>
-                <Typography color="inherit" variant="h1" style={{ display: 'inline', marginLeft: '0.5rem' }}>
+                </Title>
+                <Title color="inherit" variant="h1" style={{ display: 'inline' }} marginLeft="sm">
                     {project.title}
-                </Typography>
+                </Title>
             </div>
             <div style={{ maxWidth: '800px', margin: 'auto', paddingBottom: '2rem' }}>
-                <Typography variant="h2">{t('project_details')}</Typography>
+                <Title color="inherit" variant="h2">
+                    {t('project_details')}
+                </Title>
                 <div style={{ marginTop: '0.5rem' }}>
                     <label>
                         <strong>{t('project_name')} : </strong>
                     </label>
                     {project.title} -{' '}
-                    <Link
-                        style={{ cursor: 'pointer' }}
+                    <a
+                        tabIndex={0}
+                        className="color-primary"
+                        onKeyDown={(event) => {
+                            if (event.key === ' ' || event.key === 'Enter') {
+                                setProjectTitle(project.title);
+                                setShowTitleModal(true);
+                            }
+                        }}
+                        style={{ cursor: 'pointer', textDecoration: 'underline' }}
                         onClick={() => {
                             setProjectTitle(project.title);
                             setShowTitleModal(true);
                         }}
                     >
                         {t('account_change_button')}
-                    </Link>
+                    </a>
                 </div>
                 {project.theme !== null && (
                     <div style={{ marginTop: '0.5rem' }}>
@@ -156,34 +156,28 @@ const EditProject: React.FC = () => {
                 )}
                 <NextLink href={`/create/3-storyboard${serializeToQueryUrl({ projectId: project?.id || null })}`} passHref>
                     <Button
-                        component="a"
-                        style={{ marginTop: '0.8rem' }}
+                        label={t('project_see_plans')}
+                        as="a"
+                        marginTop="md"
                         className="mobile-full-width"
                         variant="contained"
                         color="secondary"
-                        size="small"
-                    >
-                        {t('project_see_plans')}
-                    </Button>
+                        size="sm"
+                    ></Button>
                 </NextLink>
-                <Divider style={{ margin: '1rem 0 1.5rem' }} />
-                <Typography variant="h2">{t('project_delete')}</Typography>
+                <Divider marginY="md" />
+                <Title color="inherit" variant="h2">
+                    {t('project_delete')}
+                </Title>
                 <Button
-                    sx={{
-                        color: (theme) => theme.palette.error.contrastText,
-                        background: (theme) => theme.palette.error.light,
-                        '&:hover': {
-                            backgroundColor: (theme) => theme.palette.error.dark,
-                        },
-                    }}
-                    style={{ marginTop: '0.8rem' }}
+                    label={t('project_delete')}
+                    marginTop="md"
                     onClick={() => setShowDeleteModal(true)}
                     className="mobile-full-width"
                     variant="contained"
-                    size="small"
-                >
-                    {t('project_delete')}
-                </Button>
+                    color="error"
+                    size="sm"
+                ></Button>
             </div>
 
             <Modal
@@ -195,28 +189,29 @@ const EditProject: React.FC = () => {
                 confirmLabel={t('edit')}
                 cancelLabel={t('cancel')}
                 title={t('project_name')}
-                ariaLabelledBy="project-dialog-title"
-                ariaDescribedBy="project-dialog-description"
                 isLoading={updateProjectMutation.isLoading}
+                onOpenAutoFocus={false}
                 isFullWidth
             >
                 <div id="project-dialog-description">
-                    <TextField
-                        fullWidth
-                        variant="outlined"
-                        value={projectTitle}
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
-                        placeholder={t('project_name')}
+                    <Field
+                        name="description"
                         label={t('project_name')}
-                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                            setProjectTitle(event.target.value.slice(0, 200));
-                        }}
+                        input={
+                            <Input
+                                name="description"
+                                id="description"
+                                isFullWidth
+                                value={projectTitle}
+                                placeholder={t('project_name')}
+                                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                                    setProjectTitle(event.target.value.slice(0, 200));
+                                }}
+                                color="secondary"
+                            />
+                        }
                         helperText={`${projectTitle.length}/200`}
-                        FormHelperTextProps={{ style: { textAlign: 'right' } }}
-                        color="secondary"
-                    />
+                    ></Field>
                 </div>
             </Modal>
             <Modal
@@ -227,19 +222,31 @@ const EditProject: React.FC = () => {
                 confirmLevel="error"
                 cancelLabel={t('cancel')}
                 title={t('project_delete_title')}
-                ariaLabelledBy="delete-dialog-title"
-                ariaDescribedBy="delete-dialog-description"
                 isLoading={deleteProjectMutation.isLoading}
                 isFullWidth
             >
                 <div id="delete-dialog-description">
-                    <Alert severity="error" style={{ marginBottom: '1rem' }}>
+                    <Flex
+                        isFullWidth
+                        alignItems="flex-start"
+                        justifyContent="flex-start"
+                        marginBottom="md"
+                        paddingX="md"
+                        paddingY="sm"
+                        style={{
+                            backgroundColor: 'rgb(253, 237, 237)',
+                            borderRadius: 4,
+                            boxSizing: 'border-box',
+                            fontSize: '14px',
+                            color: 'rgb(95, 33, 32)',
+                        }}
+                    >
+                        <InfoCircledIcon style={{ width: 20, height: 20, marginRight: 8, paddingTop: 1 }} />
                         <Trans i18nKey="project_delete_desc1" i18nParams={{ projectTitle: project.title }}>
                             Attention! Êtes-vous sur de vouloir supprimer le projet <strong>{project.title}</strong> ? Cette action est{' '}
                             <strong>irréversible</strong> et supprimera toutes les données du projet incluant questions, plans et images.
                         </Trans>
-                        <br />
-                    </Alert>
+                    </Flex>
                 </div>
             </Modal>
         </div>

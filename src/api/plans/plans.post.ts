@@ -1,8 +1,8 @@
 import type { UseMutationOptions } from 'react-query';
 import { useMutation, useQueryClient } from 'react-query';
 
-import type { AxiosRequestError } from 'src/utils/axiosRequest';
-import { axiosRequest } from 'src/utils/axiosRequest';
+import type { HttpRequestError } from 'src/utils/http-request';
+import { httpRequest } from 'src/utils/http-request';
 import type { Plan } from 'types/models/plan.type';
 
 type POSTResponse = Plan;
@@ -15,7 +15,7 @@ type POSTParams = {
 };
 
 export const createPlan = async (data: POSTParams): Promise<POSTResponse> => {
-    const response = await axiosRequest<POSTResponse>({
+    const response = await httpRequest<POSTResponse>({
         method: 'POST',
         url: `/plans`,
         data,
@@ -27,7 +27,7 @@ export const createPlan = async (data: POSTParams): Promise<POSTResponse> => {
     }
 };
 
-export const useCreatePlanMutation = (mutationOpts: Omit<UseMutationOptions<POSTResponse, AxiosRequestError, POSTParams>, 'mutationFn'> = {}) => {
+export const useCreatePlanMutation = (mutationOpts: Omit<UseMutationOptions<POSTResponse, HttpRequestError, POSTParams>, 'mutationFn'> = {}) => {
     const queryClient = useQueryClient();
 
     return useMutation(createPlan, {

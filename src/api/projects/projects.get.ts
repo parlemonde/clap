@@ -1,7 +1,7 @@
 import type { UseQueryOptions } from 'react-query';
 import { useQuery } from 'react-query';
 
-import { axiosRequest } from 'src/utils/axiosRequest';
+import { httpRequest } from 'src/utils/http-request';
 import { serializeToQueryUrl } from 'src/utils/serializeToQueryUrl';
 import type { Project } from 'types/models/project.type';
 import type { Question } from 'types/models/question.type';
@@ -17,11 +17,11 @@ export const getProject = async (projectId: GETParams): Promise<GETResponse> => 
     }
 
     const [projectResponse, questionsResponse] = await Promise.all([
-        axiosRequest<Project>({
+        httpRequest<Project>({
             method: 'GET',
             url: `/projects/${projectId}`,
         }),
-        axiosRequest<Question[]>({
+        httpRequest<Question[]>({
             method: 'GET',
             url: `/questions${serializeToQueryUrl({ projectId, include: 'plans' })}`,
         }),

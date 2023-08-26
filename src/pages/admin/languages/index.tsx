@@ -1,27 +1,16 @@
+import { Pencil1Icon, TrashIcon, PlusCircledIcon, DownloadIcon } from '@radix-ui/react-icons';
 import React from 'react';
-
-import AddCircleIcon from '@mui/icons-material/AddCircle';
-import BackupIcon from '@mui/icons-material/Backup';
-import DeleteIcon from '@mui/icons-material/Delete';
-import GetAppIcon from '@mui/icons-material/GetApp';
-import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
-import Link from '@mui/material/Link';
-import NoSsr from '@mui/material/NoSsr';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Tooltip from '@mui/material/Tooltip';
-import Typography from '@mui/material/Typography';
 
 import { useLanguages } from 'src/api/languages/languages.list';
 import { AdminTile } from 'src/components/admin/AdminTile';
+import { Table } from 'src/components/admin/Table';
 import { AddLanguageModal } from 'src/components/admin/languages/AddLanguageModal';
 import { DeleteLanguageModal } from 'src/components/admin/languages/DeleteLanguageModal';
 import { UploadLanguageModal } from 'src/components/admin/languages/UploadLanguageModal';
-import type { Language } from 'types/models/language.type';
+import { Button } from 'src/components/layout/Button';
+import { IconButton } from 'src/components/layout/Button/IconButton';
+import { Tooltip } from 'src/components/layout/Tooltip';
+import { Title } from 'src/components/layout/Typography';
 
 const AdminLanguages = () => {
     const { languages } = useLanguages();
@@ -29,145 +18,121 @@ const AdminLanguages = () => {
     const [uploadLanguageIndex, setUploadLanguageIndex] = React.useState<number>(-1);
     const [deleteLanguageIndex, setDeleteLanguageIndex] = React.useState<number>(-1);
 
-    const onDownload = (l: Language) => async (event: React.MouseEvent) => {
-        event.preventDefault();
-        window.open(`/api/locales/${l.value}.po`);
-    };
-
     return (
-        <div style={{ paddingBottom: '2rem' }}>
-            <Typography variant="h1" color="primary">
-                Langues
-            </Typography>
-            <NoSsr>
-                <AdminTile
-                    title="Liste des langues"
-                    toolbarButton={
-                        <Button
-                            color="inherit"
-                            sx={{ color: 'black' }}
-                            onClick={() => {
-                                setIsAddModalOpen(true);
-                            }}
-                            style={{ flexShrink: 0 }}
-                            variant="contained"
-                            startIcon={<AddCircleIcon />}
-                        >
-                            Ajouter une langue
-                        </Button>
-                    }
-                >
-                    <Table aria-labelledby="themetabletitle" size="medium" aria-label="toutes les langues">
-                        {languages.length > 0 ? (
-                            <>
-                                <TableHead
-                                    style={{ borderBottom: '1px solid white' }}
-                                    sx={{
-                                        backgroundColor: (theme) => theme.palette.secondary.main,
-                                        color: 'white',
-                                        fontWeight: 'bold',
-                                        minHeight: 'unset',
-                                        padding: '8px 8px 8px 16px',
-                                    }}
-                                >
-                                    <TableRow>
-                                        <TableCell style={{ color: 'white', fontWeight: 'bold', maxWidth: '2rem' }}>Code langue</TableCell>
-                                        <TableCell style={{ color: 'white', fontWeight: 'bold' }}>Langue</TableCell>
-                                        <TableCell style={{ color: 'white', fontWeight: 'bold' }} align="right">
-                                            Actions
-                                        </TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {languages.map((l, index) => (
-                                        <TableRow
-                                            key={l.value}
-                                            sx={{
-                                                backgroundColor: 'white',
-                                                '&:nth-of-type(even)': {
-                                                    backgroundColor: 'rgb(224 239 232)',
-                                                },
-                                                '&.sortable-ghost': {
-                                                    opacity: 0,
-                                                },
-                                            }}
-                                        >
-                                            <TableCell style={{ maxWidth: '2rem' }}>
-                                                <strong>{l.value.toUpperCase()}</strong>
-                                            </TableCell>
-                                            <TableCell>{l.label}</TableCell>
-                                            <TableCell align="right" padding="none" style={{ minWidth: '96px' }}>
-                                                <Tooltip title="Télécharger le fichier des traductions (.po)">
-                                                    <IconButton aria-label="edit" onClick={onDownload(l)}>
-                                                        <GetAppIcon />
-                                                    </IconButton>
-                                                </Tooltip>
-                                                <Tooltip title="Uploader le fichier des traductions">
+        <div style={{ margin: '24px 32px' }}>
+            <Title>Langues</Title>
+            <AdminTile
+                marginY="md"
+                title="Liste des langues"
+                actions={
+                    <Button
+                        label="Ajouter une langue"
+                        onClick={() => {
+                            setIsAddModalOpen(true);
+                        }}
+                        variant="contained"
+                        color="light-grey"
+                        leftIcon={<PlusCircledIcon style={{ width: '20px', height: '20px', marginRight: '8px' }} />}
+                    ></Button>
+                }
+            >
+                <Table aria-label="toutes les langues">
+                    {languages.length > 0 ? (
+                        <>
+                            <thead>
+                                <tr>
+                                    <th align="left">Code langue</th>
+                                    <th align="left">Langue</th>
+                                    <th align="right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {languages.map((l, index) => (
+                                    <tr key={l.value}>
+                                        <th style={{ maxWidth: '2rem', padding: '0 16px' }}>
+                                            <strong>{l.value.toUpperCase()}</strong>
+                                        </th>
+                                        <th style={{ padding: '0 16px' }}>{l.label}</th>
+                                        <th align="right" style={{ minWidth: '96px' }}>
+                                            <Tooltip content="Télécharger le fichier des traductions (.po)">
+                                                <IconButton
+                                                    as={'a'}
+                                                    href={`/api/locales/${l.value}.po`}
+                                                    download
+                                                    margin="xs"
+                                                    aria-label="edit"
+                                                    variant="borderless"
+                                                    icon={DownloadIcon}
+                                                ></IconButton>
+                                            </Tooltip>
+                                            <Tooltip content="Modifier">
+                                                <IconButton
+                                                    margin="xs"
+                                                    aria-label="edit"
+                                                    variant="borderless"
+                                                    onClick={() => {
+                                                        setUploadLanguageIndex(index);
+                                                    }}
+                                                    icon={Pencil1Icon}
+                                                ></IconButton>
+                                            </Tooltip>
+                                            {l.value !== 'fr' && (
+                                                <Tooltip content="Supprimer">
                                                     <IconButton
-                                                        aria-label="edit"
+                                                        marginY="xs"
+                                                        marginRight="sm"
+                                                        aria-label="delete"
                                                         onClick={() => {
-                                                            setUploadLanguageIndex(index);
+                                                            setDeleteLanguageIndex(index);
                                                         }}
-                                                    >
-                                                        <BackupIcon />
-                                                    </IconButton>
+                                                        variant="borderless"
+                                                        color="error"
+                                                        icon={TrashIcon}
+                                                    ></IconButton>
                                                 </Tooltip>
-                                                {l.value !== 'fr' && (
-                                                    <Tooltip title="Supprimer">
-                                                        <IconButton
-                                                            aria-label="delete"
-                                                            onClick={() => {
-                                                                setDeleteLanguageIndex(index);
-                                                            }}
-                                                        >
-                                                            <DeleteIcon />
-                                                        </IconButton>
-                                                    </Tooltip>
-                                                )}
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </>
-                        ) : (
-                            <TableBody>
-                                <TableRow>
-                                    <TableCell colSpan={3} align="center">
-                                        Cette liste est vide !{' '}
-                                        <Link
-                                            onClick={() => {
-                                                setIsAddModalOpen(true);
-                                            }}
-                                            style={{ cursor: 'pointer' }}
-                                            color="secondary"
-                                        >
-                                            Ajouter une langue ?
-                                        </Link>
-                                    </TableCell>
-                                </TableRow>
-                            </TableBody>
-                        )}
-                    </Table>
-                </AdminTile>
-                <AddLanguageModal
-                    open={isAddModalOpen}
-                    onClose={() => {
-                        setIsAddModalOpen(false);
-                    }}
-                />
-                <UploadLanguageModal
-                    language={uploadLanguageIndex === -1 ? null : languages[uploadLanguageIndex] || null}
-                    onClose={() => {
-                        setUploadLanguageIndex(-1);
-                    }}
-                />
-                <DeleteLanguageModal
-                    language={deleteLanguageIndex === -1 ? null : languages[deleteLanguageIndex] || null}
-                    onClose={() => {
-                        setDeleteLanguageIndex(-1);
-                    }}
-                />
-            </NoSsr>
+                                            )}
+                                        </th>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </>
+                    ) : (
+                        <tbody>
+                            <tr>
+                                <th colSpan={3} align="center">
+                                    Cette liste est vide !{' '}
+                                    <Button
+                                        label="Ajouter une langue ?"
+                                        onClick={() => {
+                                            setIsAddModalOpen(true);
+                                        }}
+                                        color="secondary"
+                                        variant="borderless"
+                                    ></Button>
+                                </th>
+                            </tr>
+                        </tbody>
+                    )}
+                </Table>
+            </AdminTile>
+            <AddLanguageModal
+                open={isAddModalOpen}
+                onClose={() => {
+                    setIsAddModalOpen(false);
+                }}
+            />
+            <UploadLanguageModal
+                language={uploadLanguageIndex === -1 ? null : languages[uploadLanguageIndex] || null}
+                onClose={() => {
+                    setUploadLanguageIndex(-1);
+                }}
+            />
+            <DeleteLanguageModal
+                language={deleteLanguageIndex === -1 ? null : languages[deleteLanguageIndex] || null}
+                onClose={() => {
+                    setDeleteLanguageIndex(-1);
+                }}
+            />
         </div>
     );
 };

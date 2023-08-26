@@ -1,29 +1,6 @@
+import { Pencil1Icon, TrashIcon, PlusCircledIcon, CheckIcon, QuestionMarkCircledIcon } from '@radix-ui/react-icons';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { useSnackbar } from 'notistack';
 import React from 'react';
-
-import AddCircleIcon from '@mui/icons-material/AddCircle';
-import CheckIcon from '@mui/icons-material/Check';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import HelpIcon from '@mui/icons-material/Help';
-import { Link as MuiLink } from '@mui/material';
-import Button from '@mui/material/Button';
-import DialogContentText from '@mui/material/DialogContentText';
-import IconButton from '@mui/material/IconButton';
-import MenuItem from '@mui/material/MenuItem';
-import NoSsr from '@mui/material/NoSsr';
-import type { SelectChangeEvent } from '@mui/material/Select';
-import Select from '@mui/material/Select';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Tooltip from '@mui/material/Tooltip';
-import Typography from '@mui/material/Typography';
 
 import { useLanguages } from 'src/api/languages/languages.list';
 import { useDeleteScenarioMutation } from 'src/api/scenarios/scenarios.delete';
@@ -31,7 +8,15 @@ import { useScenarios } from 'src/api/scenarios/scenarios.list';
 import { useUpdateScenarioMutation } from 'src/api/scenarios/scenarios.put';
 import { useThemes } from 'src/api/themes/themes.list';
 import { AdminTile } from 'src/components/admin/AdminTile';
-import Modal from 'src/components/ui/Modal';
+import { Table } from 'src/components/admin/Table';
+import { Button } from 'src/components/layout/Button';
+import { IconButton } from 'src/components/layout/Button/IconButton';
+import { Flex } from 'src/components/layout/Flex';
+import { Select } from 'src/components/layout/Form/Select';
+import { Modal } from 'src/components/layout/Modal';
+import { Tooltip } from 'src/components/layout/Tooltip';
+import { Title } from 'src/components/layout/Typography';
+import { sendToast } from 'src/components/ui/Toasts';
 import type { Scenario } from 'types/models/scenario.type';
 
 type ScenarioData = {
@@ -40,10 +25,15 @@ type ScenarioData = {
     scenarios: Scenario[];
 };
 
-const AdminScenarios = () => {
-    const router = useRouter();
-    const { enqueueSnackbar } = useSnackbar();
+const HelpIcon = () => (
+    <Tooltip content="Un scénario non traduit ne sera pas affiché. Il n'est donc pas nécessaire de le traduire si le scénario n'est que pour une langue spécifique.">
+        <span style={{ cursor: 'pointer' }}>
+            <QuestionMarkCircledIcon style={{ width: '18px', height: '18px', marginLeft: '8px' }} />
+        </span>
+    </Tooltip>
+);
 
+const AdminScenarios = () => {
     const { languages } = useLanguages();
     const { themes } = useThemes({ isDefault: true });
     const { scenarios } = useScenarios({ isDefault: true });
@@ -93,51 +83,6 @@ const AdminScenarios = () => {
         return data;
     }, [themes, userScenarios, selectedLanguage]);
 
-    const goToPath = (path: string) => (event: React.MouseEvent) => {
-        event.preventDefault();
-        router.push(path);
-    };
-
-    const onLanguageChange = (event: SelectChangeEvent<string>) => {
-        setSelectedLanguage(event.target.value);
-    };
-
-    const selectLanguage = (
-        <span style={{ marginLeft: '2rem' }}>
-            (
-            <Select variant="standard" value={selectedLanguage} color="secondary" style={{ color: 'white' }} onChange={onLanguageChange}>
-                {languages.map((l) => (
-                    <MenuItem key={l.value} value={l.value}>
-                        {l.label.toLowerCase()}
-                    </MenuItem>
-                ))}
-            </Select>
-            )
-        </span>
-    );
-
-    const helpIcon = (
-        <Tooltip
-            sx={{
-                '& .MuiTooltip-tooltip': {
-                    backgroundColor: 'white',
-                    color: 'rgba(0, 0, 0, 0.87)',
-                    border: '1px solid grey',
-                },
-            }}
-            title={
-                <Typography color="inherit" variant="caption">
-                    {
-                        "Un scénario non traduit ne sera pas affiché. Il n'est donc pas nécessaire de le traduire si le scénario n'est que pour une langue spécifique."
-                    }
-                </Typography>
-            }
-            style={{ cursor: 'pointer' }}
-        >
-            <HelpIcon fontSize="inherit" />
-        </Tooltip>
-    );
-
     const deleteScenarioMutation = useDeleteScenarioMutation();
     const onDeleteScenario = async () => {
         if (deleteId === null) {
@@ -147,14 +92,10 @@ const AdminScenarios = () => {
             await deleteScenarioMutation.mutateAsync({
                 scenarioId: deleteId,
             });
-            enqueueSnackbar('Scénario supprimé avec succès!', {
-                variant: 'success',
-            });
+            sendToast({ message: 'Scénario supprimé avec succès!', type: 'success' });
         } catch (err) {
             console.error(err);
-            enqueueSnackbar('Une erreur inconnue est survenue...', {
-                variant: 'error',
-            });
+            sendToast({ message: 'Une erreur inconnue est survenue...', type: 'error' });
         }
         setDeleteId(null);
     };
@@ -169,14 +110,10 @@ const AdminScenarios = () => {
                 scenarioId,
                 isDefault: true,
             });
-            enqueueSnackbar('Scénario validé avec succès!', {
-                variant: 'success',
-            });
+            sendToast({ message: 'Scénario validé avec succès!', type: 'success' });
         } catch (err) {
             console.error(err);
-            enqueueSnackbar('Une erreur inconnue est survenue...', {
-                variant: 'error',
-            });
+            sendToast({ message: 'Une erreur inconnue est survenue...', type: 'error' });
         }
     };
 
@@ -188,243 +125,255 @@ const AdminScenarios = () => {
         return names[selectedLanguage] || names[Object.keys(names)[0]];
     }, [deleteId, scenarios, selectedLanguage]);
 
+    const selectLanguage = (
+        <span style={{ marginLeft: '2rem' }}>
+            (
+            <Select
+                value={selectedLanguage}
+                color="secondary"
+                onChange={(event) => {
+                    setSelectedLanguage(event.target.value);
+                }}
+                width="unset"
+                style={{
+                    backgroundColor: 'transparent',
+                    color: 'white',
+                    borderTop: 'none',
+                    borderLeft: 'none',
+                    borderRight: 'none',
+                    borderRadius: 0,
+                    padding: '4px 26px 4px 4px',
+                }}
+            >
+                {languages.map((l) => (
+                    <option key={l.value} value={l.value}>
+                        {l.label.toLowerCase()}
+                    </option>
+                ))}
+            </Select>
+            )
+        </span>
+    );
+
     return (
-        <div style={{ paddingBottom: '2rem' }}>
-            <Typography variant="h1" color="primary">
-                Scénarios
-            </Typography>
-            <NoSsr>
-                <AdminTile
-                    title="Liste des scénarios par thème"
-                    selectLanguage={selectLanguage}
-                    toolbarButton={
-                        scenariosData.length > 0 ? (
+        <div style={{ margin: '24px 32px' }}>
+            <Title>Scénarios</Title>
+            <AdminTile
+                marginY="md"
+                title={
+                    <Flex isFullWidth alignItems="center" justifyContent="flex-start">
+                        <Title variant="h2" color="inherit">
+                            Liste des scénarios par thème
+                        </Title>
+                        {selectLanguage}
+                    </Flex>
+                }
+                actions={
+                    scenariosData.length > 0 ? (
+                        <Link href="/admin/scenarios/new" passHref>
                             <Button
-                                color="inherit"
-                                sx={{ color: 'black' }}
-                                component="a"
-                                href="/admin/scenarios/new"
-                                onClick={goToPath('/admin/scenarios/new')}
-                                style={{ flexShrink: 0 }}
+                                label="Ajouter un scénario"
+                                as="a"
                                 variant="contained"
-                                startIcon={<AddCircleIcon />}
-                            >
-                                Ajouter un scénario
-                            </Button>
-                        ) : null
+                                color="light-grey"
+                                leftIcon={<PlusCircledIcon style={{ width: '20px', height: '20px', marginRight: '8px' }} />}
+                            ></Button>
+                        </Link>
+                    ) : null
+                }
+            >
+                <Table aria-label="tout les scénarios">
+                    {scenariosData.length > 0 ? (
+                        <>
+                            <thead style={{ borderBottom: 'none' }}>
+                                <tr>
+                                    <th align="left">#</th>
+                                    <th align="left">Nom</th>
+                                    <th align="left">Description</th>
+                                    <th align="right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {scenariosData.map((data) => (
+                                    <React.Fragment key={`top_${data.themeIndex}`}>
+                                        <tr style={{ backgroundColor: 'rgb(84, 136, 115)', color: 'white' }}>
+                                            <th
+                                                colSpan={4}
+                                                style={{
+                                                    padding: '4px 16px',
+                                                    border: 'none',
+                                                }}
+                                            >
+                                                Thème : {themes[data.themeIndex].names[selectedLanguage] || themes[data.themeIndex].names.fr || ''}
+                                            </th>
+                                        </tr>
+                                        {data.scenarios.length > 0 ? (
+                                            data.scenarios.map((s, index) => (
+                                                <tr
+                                                    style={{ backgroundColor: index % 2 === 0 ? 'white' : 'rgb(224 239 232)' }}
+                                                    key={`${data.themeIndex}_${s.id}`}
+                                                >
+                                                    <th style={{ width: '3rem', padding: '0 16px' }}>{index + data.startIndex + 1}</th>
+                                                    <th style={{ color: s.names[selectedLanguage] ? 'inherit' : 'grey', padding: '0 16px' }}>
+                                                        {s.names[selectedLanguage] ||
+                                                            `${s.names.fr || s.names[Object.keys(s.names)[0]]} (non traduit)`}
+                                                        {!s.names[selectedLanguage] && <HelpIcon />}
+                                                    </th>
+                                                    <th style={{ color: s.descriptions[selectedLanguage] ? 'inherit' : 'grey', padding: '0 16px' }}>
+                                                        {s.descriptions[selectedLanguage] || s.descriptions.default}
+                                                    </th>
+                                                    <th align="right" style={{ minWidth: '96px' }}>
+                                                        <Tooltip content="Modifier">
+                                                            <span>
+                                                                <Link href={`/admin/scenarios/edit/${s.id}`} passHref>
+                                                                    <IconButton
+                                                                        as="a"
+                                                                        margin="xs"
+                                                                        aria-label="edit"
+                                                                        variant="borderless"
+                                                                        icon={Pencil1Icon}
+                                                                    ></IconButton>
+                                                                </Link>
+                                                            </span>
+                                                        </Tooltip>
+                                                        <Tooltip content="Supprimer">
+                                                            <IconButton
+                                                                marginY="xs"
+                                                                marginRight="sm"
+                                                                aria-label="delete"
+                                                                onClick={() => {
+                                                                    if (typeof s.id === 'number') {
+                                                                        setDeleteId(s.id);
+                                                                    }
+                                                                }}
+                                                                variant="borderless"
+                                                                color="error"
+                                                                icon={TrashIcon}
+                                                            ></IconButton>
+                                                        </Tooltip>
+                                                    </th>
+                                                </tr>
+                                            ))
+                                        ) : (
+                                            <tr style={{ backgroundColor: 'white' }} key={`${data.themeIndex}_no_data`}>
+                                                <th colSpan={4} align="center" style={{ padding: '4px' }}>
+                                                    {`Ce thème n'a pas de scénario ! `}
+                                                    <Link href={`/admin/scenarios/new?themeId=${themes[data.themeIndex].id}`} passHref>
+                                                        <a>Ajouter un scénario ?</a>
+                                                    </Link>
+                                                </th>
+                                            </tr>
+                                        )}
+                                    </React.Fragment>
+                                ))}
+                            </tbody>
+                        </>
+                    ) : (
+                        <tbody>
+                            <tr>
+                                <th colSpan={4} align="center">
+                                    {"Vous n'avez pas de thème ! "}
+                                    <Link href="/admin/themes/new" passHref>
+                                        <a>Ajouter un thème ?</a>
+                                    </Link>
+                                </th>
+                            </tr>
+                        </tbody>
+                    )}
+                </Table>
+            </AdminTile>
+            <Modal
+                isOpen={deleteId !== null}
+                onClose={() => {
+                    setDeleteId(null);
+                }}
+                onConfirm={onDeleteScenario}
+                isLoading={deleteScenarioMutation.isLoading}
+                confirmLabel="Supprimer"
+                confirmLevel="error"
+                cancelLabel="Annuler"
+                title="Supprimer le scénario ?"
+                isFullWidth
+            >
+                Voulez-vous vraiment supprimer le scénario <strong>{toDeleteScenarioName}</strong> ?
+            </Modal>
+
+            {userScenariosData.length > 0 && (
+                <AdminTile
+                    marginTop={32}
+                    marginBottom="md"
+                    title={
+                        <Flex isFullWidth alignItems="center" justifyContent="flex-start">
+                            <Title variant="h2" color="inherit">
+                                Scénarios des utilisateurs
+                            </Title>
+                            {selectLanguage}
+                        </Flex>
                     }
                 >
-                    <TableContainer>
-                        <Table aria-labelledby="themetabletitle" size="medium" aria-label="tout les scénarios">
-                            {scenariosData.length > 0 ? (
-                                <>
-                                    <TableHead
-                                        style={{ borderBottom: 'none' }}
-                                        sx={{
-                                            backgroundColor: (theme) => theme.palette.secondary.main,
-                                            color: 'white',
-                                            fontWeight: 'bold',
-                                            minHeight: 'unset',
-                                            padding: '8px 8px 8px 16px',
-                                        }}
-                                    >
-                                        <TableRow>
-                                            <TableCell style={{ color: 'white', fontWeight: 'bold', border: 'none' }}>#</TableCell>
-                                            <TableCell style={{ color: 'white', fontWeight: 'bold', border: 'none' }}>Nom</TableCell>
-                                            <TableCell style={{ color: 'white', fontWeight: 'bold', border: 'none' }}>Description</TableCell>
-                                            <TableCell style={{ color: 'white', fontWeight: 'bold', border: 'none' }} align="right">
-                                                Actions
-                                            </TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {scenariosData.map((data) => (
-                                            <React.Fragment key={`top_${data.themeIndex}`}>
-                                                <TableRow key={data.themeIndex}>
-                                                    <TableCell
-                                                        colSpan={4}
-                                                        sx={{
-                                                            padding: '4px 16px',
-                                                            backgroundColor: (theme) => theme.palette.secondary.dark,
-                                                            borderBottom: 'none',
-                                                            color: 'white',
-                                                        }}
-                                                    >
-                                                        Thème :{' '}
-                                                        {themes[data.themeIndex].names[selectedLanguage] || themes[data.themeIndex].names.fr || ''}
-                                                    </TableCell>
-                                                </TableRow>
-                                                {data.scenarios.length > 0 ? (
-                                                    data.scenarios.map((s, index) => (
-                                                        <TableRow
-                                                            key={`${data.themeIndex}_${s.id}`}
-                                                            sx={
-                                                                index % 2 === 0
-                                                                    ? { backgroundColor: 'white' }
-                                                                    : { backgroundColor: 'rgb(224 239 232)' }
-                                                            }
-                                                        >
-                                                            <TableCell style={{ width: '3rem' }}>{index + data.startIndex + 1}</TableCell>
-                                                            <TableCell style={{ color: s.names[selectedLanguage] ? 'inherit' : 'grey' }}>
-                                                                {s.names[selectedLanguage] ||
-                                                                    `${s.names.fr || s.names[Object.keys(s.names)[0]]} (non traduit)`}
-                                                                {!s.names[selectedLanguage] && helpIcon}
-                                                            </TableCell>
-                                                            <TableCell style={{ color: s.descriptions[selectedLanguage] ? 'inherit' : 'grey' }}>
-                                                                {s.descriptions[selectedLanguage] || s.descriptions.default}
-                                                            </TableCell>
-                                                            <TableCell align="right" padding="none" style={{ minWidth: '96px' }}>
-                                                                <Tooltip title="Modifier">
-                                                                    <IconButton aria-label="edit" onClick={goToPath(`/admin/scenarios/edit/${s.id}`)}>
-                                                                        <EditIcon />
-                                                                    </IconButton>
-                                                                </Tooltip>
-                                                                <Tooltip title="Supprimer">
-                                                                    <IconButton
-                                                                        aria-label="delete"
-                                                                        onClick={() => {
-                                                                            if (typeof s.id === 'number') {
-                                                                                setDeleteId(s.id);
-                                                                            }
-                                                                        }}
-                                                                    >
-                                                                        <DeleteIcon />
-                                                                    </IconButton>
-                                                                </Tooltip>
-                                                            </TableCell>
-                                                        </TableRow>
-                                                    ))
-                                                ) : (
-                                                    <TableRow sx={{ backgroundColor: 'white' }} key={`${data.themeIndex}_no_data`}>
-                                                        <TableCell colSpan={4} align="center" style={{ padding: '4px' }}>
-                                                            {`Ce thème n'a pas de scénario ! `}
-                                                            <Link href={`/admin/scenarios/new?themeId=${themes[data.themeIndex].id}`} passHref>
-                                                                <MuiLink>Ajouter un scénario ?</MuiLink>
-                                                            </Link>
-                                                        </TableCell>
-                                                    </TableRow>
+                    <Table aria-label="Scénarios des utilisateurs">
+                        <thead style={{ borderBottom: 'none' }}>
+                            <tr>
+                                <th align="left">#</th>
+                                <th align="left">Nom</th>
+                                <th align="left">Description</th>
+                                <th align="right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {userScenariosData.map((data) => (
+                                <React.Fragment key={`user_top_${data.themeIndex}`}>
+                                    <tr style={{ backgroundColor: 'rgb(84, 136, 115)', color: 'white' }}>
+                                        <th
+                                            colSpan={4}
+                                            style={{
+                                                padding: '4px 16px',
+                                                border: 'none',
+                                            }}
+                                        >
+                                            {data.themeIndex === -1
+                                                ? 'Autres thèmes (créés par les utilisateurs)'
+                                                : `Thème : ${
+                                                      themes[data.themeIndex].names[selectedLanguage] || themes[data.themeIndex].names.fr || ''
+                                                  }`}
+                                        </th>
+                                    </tr>
+                                    {data.scenarios.map((s, index) => (
+                                        <tr
+                                            key={`${data.themeIndex}_${s.id}`}
+                                            style={{ backgroundColor: index % 2 === 0 ? 'white' : 'rgb(224 239 232)' }}
+                                        >
+                                            <th style={{ width: '3rem', padding: '0 16px' }}>{index + data.startIndex + 1}</th>
+                                            <th style={{ color: s.names[selectedLanguage] ? 'inherit' : 'grey', padding: '0 16px' }}>
+                                                {s.names[selectedLanguage] || `${s.names.default} (non traduit)`}
+                                            </th>
+                                            <th style={{ color: s.descriptions[selectedLanguage] ? 'inherit' : 'grey', padding: '0 16px' }}>
+                                                {s.descriptions[selectedLanguage] || s.descriptions.default}
+                                            </th>
+                                            <th align="right" style={{ minWidth: '96px' }}>
+                                                {data.themeIndex !== -1 && (
+                                                    <Tooltip content="Valider">
+                                                        <IconButton
+                                                            variant="borderless"
+                                                            marginY="xs"
+                                                            marginRight="sm"
+                                                            aria-label="valider"
+                                                            onClick={() => {
+                                                                validateScenario(s.id).catch();
+                                                            }}
+                                                            icon={CheckIcon}
+                                                        ></IconButton>
+                                                    </Tooltip>
                                                 )}
-                                            </React.Fragment>
-                                        ))}
-                                    </TableBody>
-                                </>
-                            ) : (
-                                <TableBody>
-                                    <TableRow>
-                                        <TableCell colSpan={4} align="center">
-                                            {"Vous n'avez pas de thème ! "}
-                                            <Link href="/admin/themes/new" passHref>
-                                                <MuiLink color="secondary">Ajouter un thème ?</MuiLink>
-                                            </Link>
-                                        </TableCell>
-                                    </TableRow>
-                                </TableBody>
-                            )}
-                        </Table>
-                    </TableContainer>
-                </AdminTile>
-                <Modal
-                    isOpen={deleteId !== null}
-                    onClose={() => {
-                        setDeleteId(null);
-                    }}
-                    onConfirm={onDeleteScenario}
-                    isLoading={deleteScenarioMutation.isLoading}
-                    confirmLabel="Supprimer"
-                    confirmLevel="error"
-                    cancelLabel="Annuler"
-                    title="Supprimer le scénario ?"
-                    ariaLabelledBy="delete-dialog-title"
-                    ariaDescribedBy="delete-dialog-description"
-                    isFullWidth
-                >
-                    <DialogContentText id="delete-dialog-description">
-                        Voulez-vous vraiment supprimer le scénario <strong>{toDeleteScenarioName}</strong> ?
-                    </DialogContentText>
-                </Modal>
-
-                {userScenariosData.length > 0 && (
-                    <AdminTile title="Scénarios des utilisateurs" selectLanguage={selectLanguage} style={{ marginTop: '2rem' }}>
-                        <TableContainer>
-                            <Table aria-labelledby="themetabletitle" size="medium" aria-label="Scénarios des utilisateurs">
-                                <TableHead
-                                    style={{ borderBottom: 'none' }}
-                                    sx={{
-                                        backgroundColor: (theme) => theme.palette.secondary.main,
-                                        color: 'white',
-                                        fontWeight: 'bold',
-                                        minHeight: 'unset',
-                                        padding: '8px 8px 8px 16px',
-                                    }}
-                                >
-                                    <TableRow>
-                                        <TableCell style={{ color: 'white', fontWeight: 'bold', border: 'none' }}>#</TableCell>
-                                        <TableCell style={{ color: 'white', fontWeight: 'bold', border: 'none' }}>Nom</TableCell>
-                                        <TableCell style={{ color: 'white', fontWeight: 'bold', border: 'none' }}>Description</TableCell>
-                                        <TableCell style={{ color: 'white', fontWeight: 'bold', border: 'none' }} align="right">
-                                            Actions
-                                        </TableCell>
-                                    </TableRow>
-                                </TableHead>
-
-                                <TableBody>
-                                    {userScenariosData.map((data) => (
-                                        <React.Fragment key={`user_top_${data.themeIndex}`}>
-                                            <TableRow key={data.themeIndex}>
-                                                <TableCell
-                                                    colSpan={4}
-                                                    sx={{
-                                                        padding: '4px 16px',
-                                                        backgroundColor: (theme) => theme.palette.secondary.dark,
-                                                        borderBottom: 'none',
-                                                        color: 'white',
-                                                    }}
-                                                >
-                                                    {data.themeIndex === -1
-                                                        ? 'Autres thèmes (créés par les utilisateurs)'
-                                                        : `Thème : ${
-                                                              themes[data.themeIndex].names[selectedLanguage] ||
-                                                              themes[data.themeIndex].names.fr ||
-                                                              ''
-                                                          }`}
-                                                </TableCell>
-                                            </TableRow>
-                                            {data.scenarios.map((s, index) => (
-                                                <TableRow
-                                                    key={`${data.themeIndex}_${s.id}`}
-                                                    sx={index % 2 === 0 ? { backgroundColor: 'white' } : { backgroundColor: 'rgb(224 239 232)' }}
-                                                >
-                                                    <TableCell style={{ width: '3rem' }}>{index + data.startIndex + 1}</TableCell>
-                                                    <TableCell style={{ color: s.names[selectedLanguage] ? 'inherit' : 'grey' }}>
-                                                        {s.names[selectedLanguage] || `${s.names.default} (non traduit)`}
-                                                    </TableCell>
-                                                    <TableCell style={{ color: s.descriptions[selectedLanguage] ? 'inherit' : 'grey' }}>
-                                                        {s.descriptions[selectedLanguage] || s.descriptions.default}
-                                                    </TableCell>
-                                                    <TableCell align="right" padding="none" style={{ minWidth: '96px' }}>
-                                                        {data.themeIndex !== -1 && (
-                                                            <Tooltip title="Valider le scénario">
-                                                                <IconButton
-                                                                    aria-label="valider"
-                                                                    onClick={() => {
-                                                                        validateScenario(s.id).catch();
-                                                                    }}
-                                                                >
-                                                                    <CheckIcon />
-                                                                </IconButton>
-                                                            </Tooltip>
-                                                        )}
-                                                    </TableCell>
-                                                </TableRow>
-                                            ))}
-                                        </React.Fragment>
+                                            </th>
+                                        </tr>
                                     ))}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                    </AdminTile>
-                )}
-            </NoSsr>
+                                </React.Fragment>
+                            ))}
+                        </tbody>
+                    </Table>
+                </AdminTile>
+            )}
         </div>
     );
 };

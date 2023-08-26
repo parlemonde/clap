@@ -1,36 +1,28 @@
+import { Cross1Icon } from '@radix-ui/react-icons';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useSnackbar } from 'notistack';
 import React from 'react';
-
-import Close from '@mui/icons-material/Close';
-import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import Breadcrumbs from '@mui/material/Breadcrumbs';
-import Button from '@mui/material/Button';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import FormControl from '@mui/material/FormControl';
-import IconButton from '@mui/material/IconButton';
-import InputLabel from '@mui/material/InputLabel';
-import Link from '@mui/material/Link';
-import NoSsr from '@mui/material/NoSsr';
-import Select from '@mui/material/Select';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
 
 import { useLanguages } from 'src/api/languages/languages.list';
 import { useScenario } from 'src/api/scenarios/scenarios.get';
 import { useUpdateScenarioMutation } from 'src/api/scenarios/scenarios.put';
 import { AdminTile } from 'src/components/admin/AdminTile';
-import { Loader } from 'src/components/layout/Loader';
-import Modal from 'src/components/ui/Modal';
+import { Breadcrumbs } from 'src/components/layout/Breadcrumbs';
+import { Button } from 'src/components/layout/Button';
+import { IconButton } from 'src/components/layout/Button/IconButton';
+import { Flex, FlexItem } from 'src/components/layout/Flex';
+import { Field, Form, Input, TextArea } from 'src/components/layout/Form';
+import { Select } from 'src/components/layout/Form/Select';
+import { Modal } from 'src/components/layout/Modal';
+import { Title } from 'src/components/layout/Typography';
+import { Loader } from 'src/components/ui/Loader';
+import { sendToast } from 'src/components/ui/Toasts';
 import { getQueryString } from 'src/utils/get-query-string';
 import type { Language } from 'types/models/language.type';
 import type { Scenario } from 'types/models/scenario.type';
 
 const AdminEditScenario = () => {
     const router = useRouter();
-    const { enqueueSnackbar } = useSnackbar();
     const scenarioId = React.useMemo(() => Number(getQueryString(router.query.id)) || 0, [router]);
 
     const { scenario } = useScenario(scenarioId, { enabled: scenarioId !== 0 });
@@ -54,11 +46,6 @@ const AdminEditScenario = () => {
             setSelectedLanguages([...new Set(Object.keys(scenario.names).map((l) => languagesMap[l]))]);
         }
     }, [scenario, languagesMap]);
-
-    const goToPath = (path: string) => (event: React.MouseEvent) => {
-        event.preventDefault();
-        router.push(path);
-    };
 
     const onAddLanguage = () => {
         setShowModal(false);
@@ -88,7 +75,7 @@ const AdminEditScenario = () => {
             [languageValue]: event.target.value,
         }));
     };
-    const onDescInputChange = (languageValue: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    const onDescInputChange = (languageValue: string) => (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         setScenarioDescriptions((prev) => ({
             ...prev,
             [languageValue]: event.target.value,
@@ -99,18 +86,14 @@ const AdminEditScenario = () => {
     const isLoading = updateScenarioMutation.isLoading;
     const onSubmit = async () => {
         if (!scenario) {
-            enqueueSnackbar("Ce scénario n'existe pas...", {
-                variant: 'error',
-            });
+            sendToast({ message: "Ce scénario n'existe pas...", type: 'error' });
             router.push('/admin/scenarios');
             return;
         }
 
         const usedLanguages = Object.keys(scenarioNames);
         if (usedLanguages.length === 0) {
-            enqueueSnackbar('Le nom du scénario ne peut pas être vide.', {
-                variant: 'error',
-            });
+            sendToast({ message: 'Le nom du scénario ne peut pas être vide.', type: 'error' });
             return;
         }
 
@@ -120,117 +103,120 @@ const AdminEditScenario = () => {
                 names: scenarioNames,
                 descriptions: scenarioDescriptions,
             });
-            enqueueSnackbar('Scénario mis à jour avec succès!', {
-                variant: 'success',
-            });
+            sendToast({ message: 'Scénario mis à jour avec succès!', type: 'success' });
             router.push('/admin/scenarios');
         } catch (err) {
             console.error(err);
-            enqueueSnackbar('Une erreur inconnue est survenue...', {
-                variant: 'error',
-            });
+            sendToast({ message: 'Une erreur inconnue est survenue...', type: 'error' });
         }
     };
 
     return (
-        <div style={{ paddingBottom: '2rem' }}>
-            <Breadcrumbs separator={<NavigateNextIcon fontSize="large" color="primary" />} aria-label="breadcrumb">
-                <Link href="/admin/scenarios" onClick={goToPath('/admin/scenarios')}>
-                    <Typography variant="h1" color="primary">
-                        Scénarios
-                    </Typography>
-                </Link>
-                <Typography variant="h1" color="textPrimary">
-                    Modifier un scenario
-                </Typography>
-            </Breadcrumbs>
-            <NoSsr>
-                <AdminTile title="Modifier un scénario">
-                    <div style={{ padding: '1rem' }}>
-                        <Typography variant="h3" color="textPrimary">
-                            Scénario :
-                        </Typography>
-                        {selectedLanguages.map((languageIndex, index) => (
-                            <Card key={languages[languageIndex].value} variant="outlined" style={{ margin: '8px 0' }}>
-                                <CardActions>
-                                    <div style={{ marginLeft: '8px', fontWeight: 'bold' }}>{languages[languageIndex].label}</div>
-                                    {selectedLanguages.length > 1 && (
-                                        <IconButton style={{ marginLeft: 'auto' }} size="small" onClick={onDeleteLanguage(index)}>
-                                            <Close />
-                                        </IconButton>
-                                    )}
-                                </CardActions>
-                                <CardContent style={{ paddingTop: '0' }}>
-                                    <TextField
-                                        variant="standard"
-                                        label="Nom"
+        <div style={{ margin: '24px 32px' }}>
+            <Breadcrumbs
+                links={[
+                    {
+                        href: '/admin/scenarios',
+                        label: <Title style={{ display: 'inline' }}>Scénarios</Title>,
+                    },
+                ]}
+                currentLabel={<Title style={{ display: 'inline' }}>Modifier un scenario</Title>}
+            />
+            <AdminTile marginY="md" title="Modifier un scénario">
+                <Form padding="md" onSubmit={onSubmit}>
+                    <Title variant="h3" color="primary">
+                        Scénario :
+                    </Title>
+                    {selectedLanguages.map((languageIndex, index) => (
+                        <div
+                            key={languages[languageIndex].value}
+                            style={{ margin: '8px 0', border: '1px solid rgba(0, 0, 0, 0.12)', borderRadius: 4, padding: 16 }}
+                        >
+                            <Flex alignItems="center" marginBottom="md">
+                                <FlexItem flexGrow={1} flexBasis={0} style={{ fontWeight: 'bold' }}>
+                                    {languages[languageIndex].label}
+                                </FlexItem>
+                                {selectedLanguages.length > 1 && (
+                                    <IconButton onClick={onDeleteLanguage(index)} icon={Cross1Icon} variant="borderless"></IconButton>
+                                )}
+                            </Flex>
+                            <Field
+                                name={`name_for_${languages[languageIndex].value}`}
+                                label={<span style={{ fontSize: '14px' }}>Nom</span>}
+                                input={
+                                    <Input
+                                        id={`name_for_${languages[languageIndex].value}`}
+                                        name={`name_for_${languages[languageIndex].value}`}
+                                        placeholder="Entrez le nom"
                                         value={scenarioNames[languages[languageIndex].value] || ''}
                                         onChange={onNameInputChange(languages[languageIndex].value)}
                                         color="secondary"
-                                        fullWidth
+                                        isFullWidth
                                     />
-                                    <TextField
-                                        variant="standard"
-                                        style={{ marginTop: '8px' }}
-                                        label="Description"
+                                }
+                            ></Field>
+                            <Field
+                                marginTop="sm"
+                                name={`description_for_${languages[languageIndex].value}`}
+                                label={<span style={{ fontSize: '14px' }}>Description</span>}
+                                input={
+                                    <TextArea
+                                        id={`description_for_${languages[languageIndex].value}`}
+                                        name={`description_for_${languages[languageIndex].value}`}
+                                        placeholder="Entrez la description"
                                         value={scenarioDescriptions[languages[languageIndex].value] || ''}
                                         onChange={onDescInputChange(languages[languageIndex].value)}
                                         color="secondary"
-                                        multiline
-                                        fullWidth
+                                        isFullWidth
                                     />
-                                </CardContent>
-                            </Card>
-                        ))}
-                        {availableLanguages.length > 0 && (
-                            <Button
-                                variant="outlined"
-                                onClick={() => {
-                                    setShowModal(true);
-                                }}
-                            >
-                                Ajouter une langue
-                            </Button>
-                        )}
-
-                        <div style={{ width: '100%', textAlign: 'center', marginTop: '1rem' }}>
-                            <Button color="secondary" variant="contained" onClick={onSubmit}>
-                                Modifier le scénario !
-                            </Button>
+                                }
+                            ></Field>
                         </div>
-                    </div>
-                </AdminTile>
-                <Button variant="outlined" style={{ marginTop: '1rem' }} onClick={goToPath('/admin/scenarios')}>
-                    Retour
-                </Button>
-
-                {/* language modal */}
-                <Modal
-                    isOpen={showModal}
-                    onClose={() => {
-                        setShowModal(false);
-                    }}
-                    onConfirm={onAddLanguage}
-                    confirmLabel="Ajouter"
-                    cancelLabel="Annuler"
-                    title="Ajouter une langue"
-                    ariaLabelledBy="add-dialog"
-                    ariaDescribedBy="add-dialog-desc"
-                >
+                    ))}
                     {availableLanguages.length > 0 && (
-                        <FormControl variant="outlined" style={{ minWidth: '15rem' }} className="mobile-full-width">
-                            <InputLabel htmlFor="langage">Languages</InputLabel>
+                        <Button
+                            label="Ajouter une langue"
+                            variant="outlined"
+                            onClick={() => {
+                                setShowModal(true);
+                            }}
+                        ></Button>
+                    )}
+
+                    <div style={{ width: '100%', textAlign: 'center', marginTop: '1rem' }}>
+                        <Button label="Modifier le scénario !" color="secondary" variant="contained" type="submit"></Button>
+                    </div>
+                </Form>
+            </AdminTile>
+            <Link href="/admin/scenarios" passHref>
+                <Button as="a" label="Retour" variant="outlined" marginTop="md"></Button>
+            </Link>
+
+            {/* language modal */}
+            <Modal
+                isOpen={showModal}
+                onClose={() => {
+                    setShowModal(false);
+                }}
+                onConfirm={onAddLanguage}
+                confirmLabel="Ajouter"
+                cancelLabel="Annuler"
+                title="Ajouter une langue"
+                onOpenAutoFocus={false}
+            >
+                {availableLanguages.length > 0 && (
+                    <Field
+                        name="languages-select"
+                        label="Languages"
+                        input={
                             <Select
-                                native
+                                name="languages-select"
+                                id="languages-select"
                                 value={languageToAdd}
                                 onChange={(event) => {
-                                    setLanguageToAdd(typeof event.target.value === 'number' ? event.target.value : parseInt(event.target.value, 10));
+                                    setLanguageToAdd(parseInt(event.target.value, 10));
                                 }}
-                                label={'Langages'}
-                                inputProps={{
-                                    name: 'langage',
-                                    id: 'langage',
-                                }}
+                                isFullWidth
                             >
                                 {availableLanguages.map((l, index) => (
                                     <option value={index} key={l.value}>
@@ -238,10 +224,11 @@ const AdminEditScenario = () => {
                                     </option>
                                 ))}
                             </Select>
-                        </FormControl>
-                    )}
-                </Modal>
-            </NoSsr>
+                        }
+                    ></Field>
+                )}
+            </Modal>
+
             <Loader isLoading={isLoading} />
         </div>
     );

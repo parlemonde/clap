@@ -1,4 +1,4 @@
-import { axiosRequest } from 'src/utils/axiosRequest';
+import { httpRequest } from 'src/utils/http-request';
 import type { Question } from 'types/models/question.type';
 
 export type GetPDFParams = {
@@ -17,7 +17,7 @@ export type GetPDFParams = {
 };
 
 export const getProjectPdf = async (data: GetPDFParams) => {
-    const response = await axiosRequest<{ url: string }>({
+    const response = await httpRequest<{ url: string }>({
         method: 'POST',
         url: `/projects/pdf`,
         data,

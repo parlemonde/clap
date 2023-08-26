@@ -1,9 +1,9 @@
-import { useSnackbar } from 'notistack';
 import React from 'react';
 
+import { SharedLink } from '../SharedLink';
 import { getUsersInvite } from 'src/api/users/users.invite';
-import { SharedLink } from 'src/components/SharedLink';
-import Modal from 'src/components/ui/Modal';
+import { Modal } from 'src/components/layout/Modal';
+import { sendToast } from 'src/components/ui/Toasts';
 import { useFollowingRef } from 'src/hooks/useFollowingRef';
 
 interface InviteUserModalProps {
@@ -12,7 +12,6 @@ interface InviteUserModalProps {
 }
 
 export const InviteUserModal = ({ open = false, onClose = () => {} }: InviteUserModalProps) => {
-    const { enqueueSnackbar } = useSnackbar();
     const [inviteCode, setInviteCode] = React.useState<string>('');
 
     const onCLoseRef = useFollowingRef(onClose);
@@ -23,28 +22,18 @@ export const InviteUserModal = ({ open = false, onClose = () => {} }: InviteUser
         const { inviteCode } = await getUsersInvite();
         if (inviteCode === null) {
             onCLoseRef.current();
-            enqueueSnackbar('Une erreur inconnue est survenue...', {
-                variant: 'error',
-            });
+            sendToast({ message: 'Une erreur inconnue est survenue...', type: 'error' });
             return;
         }
         setInviteCode(inviteCode);
-    }, [enqueueSnackbar, onCLoseRef, open]);
+    }, [onCLoseRef, open]);
 
     React.useEffect(() => {
         getInviteCode().catch();
     }, [getInviteCode]);
 
     return (
-        <Modal
-            isOpen={open}
-            onClose={onClose}
-            cancelLabel="Retour"
-            title="Inviter un utilisateur"
-            ariaLabelledBy="add-dialog-title"
-            ariaDescribedBy="add-dialog-description"
-            isFullWidth
-        >
+        <Modal isOpen={open} width="lg" onClose={onClose} cancelLabel="Retour" title="Inviter un utilisateur" isFullWidth onOpenAutoFocus={false}>
             <div id="add-dialog-description">
                 <div>
                     <label style={{ fontWeight: 'bold' }}>{"Code d'invitation :"}</label>

@@ -1,12 +1,11 @@
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React from 'react';
 
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import { Box, Typography } from '@mui/material';
-
 import { useScenarios } from 'src/api/scenarios/scenarios.list';
 import { useTheme } from 'src/api/themes/themes.get';
+import { ScenarioCard } from 'src/components/create/ScenarioCard';
+import { Container } from 'src/components/layout/Container';
+import { Title } from 'src/components/layout/Typography';
 import { Steps } from 'src/components/navigation/Steps';
 import { ThemeBreadcrumbs } from 'src/components/navigation/ThemeBreadcrumbs';
 import { Inverted } from 'src/components/ui/Inverted';
@@ -14,38 +13,6 @@ import { Trans } from 'src/components/ui/Trans';
 import { useTranslation } from 'src/i18n/useTranslation';
 import { serializeToQueryUrl } from 'src/utils/serializeToQueryUrl';
 import { useQueryId } from 'src/utils/useQueryId';
-
-type ScenarioCardProps = {
-    isNew?: boolean;
-    name: string;
-    description?: string;
-    questionsCount?: string;
-    href: string;
-};
-const ScenarioCard = ({ isNew = false, name, description, questionsCount, href }: ScenarioCardProps) => (
-    <Link href={href} passHref>
-        <Box
-            component="a"
-            sx={{
-                borderColor: (theme) => theme.palette.secondary.main,
-            }}
-            className="scenario-card"
-            tabIndex={0}
-            style={isNew ? { backgroundColor: '#f0fafa' } : {}}
-        >
-            <Typography color="primary" variant="h3">
-                {name}
-            </Typography>
-            <p>{description}</p>
-            {questionsCount && (
-                <Box component="div" style={{ color: '#646464' }}>
-                    {questionsCount}
-                </Box>
-            )}
-            <div className="scenario-card__arrow">{<ArrowForwardIosIcon sx={{ color: '#646464' }} />}</div>
-        </Box>
-    </Link>
-);
 
 const ScenarioPage = () => {
     const router = useRouter();
@@ -69,19 +36,19 @@ const ScenarioPage = () => {
     };
 
     return (
-        <div>
+        <Container>
             <ThemeBreadcrumbs theme={theme} isLoading={isThemeLoading}></ThemeBreadcrumbs>
             <Steps activeStep={0} themeId={themeId}></Steps>
-            <div style={{ maxWidth: '1000px', margin: 'auto', paddingBottom: '2rem' }}>
-                <Typography color="primary" variant="h1">
-                    <Inverted round>1</Inverted>{' '}
+            <div style={{ maxWidth: '1000px', margin: 'auto', paddingBottom: '32px' }}>
+                <Title color="primary" marginY="md" variant="h1">
+                    <Inverted isRound>1</Inverted>{' '}
                     <Trans i18nKey="part1_title">
                         Quel <Inverted>scénario</Inverted> choisir ?
                     </Trans>
-                </Typography>
-                <Typography color="inherit" variant="h2">
+                </Title>
+                <Title color="inherit" variant="h2" marginBottom="md">
                     {t('part1_subtitle2')}
-                </Typography>
+                </Title>
                 <ScenarioCard
                     isNew
                     name={t('new_scenario_card_title')}
@@ -100,7 +67,7 @@ const ScenarioPage = () => {
                         />
                     ))}
             </div>
-        </div>
+        </Container>
     );
 };
 

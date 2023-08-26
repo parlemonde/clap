@@ -1,25 +1,23 @@
+import { EyeOpenIcon, EyeNoneIcon, InfoCircledIcon } from '@radix-ui/react-icons';
 import { useRouter } from 'next/router';
-import { useSnackbar } from 'notistack';
 import React from 'react';
-
-import { Visibility, VisibilityOff } from '@mui/icons-material';
-import Alert from '@mui/material/Alert';
-import Button from '@mui/material/Button';
-import Divider from '@mui/material/Divider';
-import IconButton from '@mui/material/IconButton';
-import InputAdornment from '@mui/material/InputAdornment';
-import Link from '@mui/material/Link';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
 
 import { useDeleteUserMutation } from 'src/api/users/users.delete';
 import type { PUTParams as UpdateUserArgs } from 'src/api/users/users.put';
 import { useUpdateUserMutation } from 'src/api/users/users.put';
-import Modal from 'src/components/ui/Modal';
+import { Button } from 'src/components/layout/Button';
+import { IconButton } from 'src/components/layout/Button/IconButton';
+import { Container } from 'src/components/layout/Container';
+import { Divider } from 'src/components/layout/Divider';
+import { Flex } from 'src/components/layout/Flex';
+import { Field, Input } from 'src/components/layout/Form';
+import { Modal } from 'src/components/layout/Modal';
+import { Title } from 'src/components/layout/Typography';
+import { sendToast } from 'src/components/ui/Toasts';
 import { Trans } from 'src/components/ui/Trans';
 import { userContext } from 'src/contexts/userContext';
 import { useTranslation } from 'src/i18n/useTranslation';
-import { axiosRequest } from 'src/utils/axiosRequest';
+import { httpRequest } from 'src/utils/http-request';
 import type { User } from 'types/models/user.type';
 
 type UpdatedUser = Partial<User> & { password?: string; passwordConfirm?: string; oldPassword?: string };
@@ -29,18 +27,18 @@ const emailRegex =
 const strongPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/;
 const checks = {
     // eslint-disable-next-line
-  email: (value: string, _u: UpdatedUser) => emailRegex.test(value), // eslint-disable-next-line
-  pseudo: (value: string, _u: UpdatedUser) => value.length > 0, // eslint-disable-next-line
-  password: (value: string, _u: UpdatedUser) => strongPassword.test(value), // eslint-disable-next-line
-  passwordConfirm: (value: string, user: UpdatedUser) => value === user.password, // eslint-disable-next-line
-  school: (_v: string, _u: UpdatedUser) => true,
+    email: (value: string, _u: UpdatedUser) => emailRegex.test(value), // eslint-disable-next-line
+    pseudo: (value: string, _u: UpdatedUser) => value.length > 0, // eslint-disable-next-line
+    password: (value: string, _u: UpdatedUser) => strongPassword.test(value), // eslint-disable-next-line
+    passwordConfirm: (value: string, user: UpdatedUser) => value === user.password, // eslint-disable-next-line
+    school: (_v: string, _u: UpdatedUser) => true,
 };
 
 const isPseudoAvailable = async (userPseudo: string, pseudo: string): Promise<boolean> => {
     if (userPseudo === pseudo) {
         return true;
     }
-    const response = await axiosRequest<{ available: boolean }>({
+    const response = await httpRequest<{ available: boolean }>({
         method: 'GET',
         url: `/users/test-pseudo/${pseudo}`,
     });
@@ -53,7 +51,6 @@ const isPseudoAvailable = async (userPseudo: string, pseudo: string): Promise<bo
 const AccountPage = () => {
     const router = useRouter();
     const { t } = useTranslation();
-    const { enqueueSnackbar } = useSnackbar();
     const { user, setUser } = React.useContext(userContext);
     const [updatedUser, setUpdatedUser] = React.useState<UpdatedUser | null>(null);
     const [showPassword, setShowPassword] = React.useState<boolean>(false);
@@ -128,16 +125,12 @@ const AccountPage = () => {
 
         try {
             const { user: newUser } = await upadeUserMutation.mutateAsync(data);
-            enqueueSnackbar(t('account_updated'), {
-                variant: 'success',
-            });
+            sendToast({ message: t('account_updated'), type: 'success' });
             setUser(newUser);
             setShowModal(-1);
         } catch (err) {
             console.error(err);
-            enqueueSnackbar(t('unknown_error'), {
-                variant: 'error',
-            });
+            sendToast({ message: t('unknown_error'), type: 'error' });
         }
     };
 
@@ -150,20 +143,16 @@ const AccountPage = () => {
             await deleteUserMutation.mutateAsync({
                 userId: user.id,
             });
-            enqueueSnackbar(t('account_deleted'), {
-                variant: 'success',
-            });
+            sendToast({ message: t('account_deleted'), type: 'success' });
             setShowModal(-1);
         } catch (err) {
             console.error(err);
-            enqueueSnackbar(t('unknown_error'), {
-                variant: 'error',
-            });
+            sendToast({ message: t('unknown_error'), type: 'error' });
         }
     };
 
     const logout = async () => {
-        await axiosRequest({
+        await httpRequest({
             method: 'POST',
             url: '/logout',
         });
@@ -176,14 +165,16 @@ const AccountPage = () => {
     }
 
     return (
-        <div>
+        <Container>
             <div className="text-center">
-                <Typography color="primary" variant="h1">
+                <Title color="primary" variant="h1" marginY="md">
                     {t('my_account')}
-                </Typography>
+                </Title>
             </div>
             <div style={{ maxWidth: '800px', margin: 'auto', paddingBottom: '2rem' }}>
-                <Typography variant="h2">{t('account_connexion_title')}</Typography>
+                <Title color="inherit" variant="h2">
+                    {t('account_connexion_title')}
+                </Title>
                 <div style={{ marginTop: '0.5rem' }}>
                     <label>
                         <strong>{t('signup_pseudo')} : </strong>
@@ -193,13 +184,23 @@ const AccountPage = () => {
                         <>
                             {' '}
                             -{' '}
-                            <Link style={{ cursor: 'pointer' }} onClick={openModal(1)}>
+                            <a
+                                tabIndex={0}
+                                className="color-primary"
+                                onKeyDown={(event) => {
+                                    if (event.key === ' ' || event.key === 'Enter') {
+                                        openModal(1)();
+                                    }
+                                }}
+                                style={{ cursor: 'pointer', textDecoration: 'underline' }}
+                                onClick={openModal(1)}
+                            >
                                 {t('account_change_button')}
-                            </Link>
+                            </a>
                         </>
                     )}
                 </div>
-                <div>
+                <div style={{ marginTop: '4px' }}>
                     <label>
                         <strong>{t('signup_email')} : </strong>
                     </label>
@@ -208,59 +209,54 @@ const AccountPage = () => {
                         <>
                             {' '}
                             -{' '}
-                            <Link style={{ cursor: 'pointer' }} onClick={openModal(2)}>
+                            <a
+                                tabIndex={0}
+                                className="color-primary"
+                                onKeyDown={(event) => {
+                                    if (event.key === ' ' || event.key === 'Enter') {
+                                        openModal(2)();
+                                    }
+                                }}
+                                style={{ cursor: 'pointer', textDecoration: 'underline' }}
+                                onClick={openModal(2)}
+                            >
                                 {t('account_change_button')}
-                            </Link>
+                            </a>
                         </>
                     )}
                 </div>
                 {user.accountRegistration < 10 && (
                     <Button
+                        label={t('account_password_change')}
                         style={{ marginTop: '0.8rem' }}
                         className="mobile-full-width"
                         onClick={openModal(3)}
                         variant="contained"
                         color="secondary"
-                        size="small"
-                    >
-                        {t('account_password_change')}
-                    </Button>
+                        size="sm"
+                        marginTop="md"
+                    ></Button>
                 )}
-                <Divider style={{ margin: '1rem 0 1.5rem' }} />
+                <Divider marginY="lg" />
 
-                <Typography variant="h2">{t('logout_button')}</Typography>
-                <Button
-                    sx={{ color: (theme) => theme.palette.error.main, borderColor: (theme) => theme.palette.error.main }}
-                    variant="outlined"
-                    className="mobile-full-width"
-                    onClick={logout}
-                    size="small"
-                >
+                <Title color="inherit" variant="h2">
                     {t('logout_button')}
-                </Button>
-                <Divider style={{ margin: '1rem 0 1.5rem' }} />
-                <Typography variant="h2">{t('my_account')}</Typography>
-                {/* <Button style={{ marginTop: "0.8rem" }} className="mobile-full-width" onClick={() => {}} variant="contained" color="secondary" size="small">
-          Télécharger toutes mes données
-        </Button> */}
-                {/* <br /> */}
+                </Title>
+                <Button label={t('logout_button')} variant="outlined" color="error" className="mobile-full-width" onClick={logout} size="sm"></Button>
+                <Divider marginY="lg" />
+                <Title color="inherit" variant="h2">
+                    {t('my_account')}
+                </Title>
                 <Button
-                    sx={{
-                        color: (theme) => theme.palette.error.contrastText,
-                        background: (theme) => theme.palette.error.light,
-                        '&:hover': {
-                            backgroundColor: (theme) => theme.palette.error.dark,
-                        },
-                    }}
+                    label={t('account_delete_button')}
                     style={{ marginTop: '0.8rem' }}
                     className="mobile-full-width"
                     onClick={openModal(5)}
                     variant="contained"
-                    color="secondary"
-                    size="small"
-                >
-                    {t('account_delete_button')}
-                </Button>
+                    color="error"
+                    size="sm"
+                    marginTop="sm"
+                ></Button>
 
                 <Modal
                     isOpen={showModal === 1 && updatedUser !== null}
@@ -270,28 +266,49 @@ const AccountPage = () => {
                     confirmLabel={t('edit')}
                     cancelLabel={t('cancel')}
                     title={t('Changer de pseudo')}
-                    ariaLabelledBy="pseudo-dialog-title"
-                    ariaDescribedBy="pseudo-dialog-description"
+                    onOpenAutoFocus={false}
                     isFullWidth
                 >
                     <div id="pseudo-dialog-description">
-                        <Alert severity="info" style={{ marginBottom: '1rem' }}>
+                        <Flex
+                            isFullWidth
+                            alignItems="flex-start"
+                            justifyContent="flex-start"
+                            marginBottom="md"
+                            paddingX="md"
+                            paddingY="sm"
+                            style={{
+                                backgroundColor: 'rgb(229, 246, 253)',
+                                borderRadius: 4,
+                                boxSizing: 'border-box',
+                                fontSize: '14px',
+                                color: 'rgb(1, 67, 97)',
+                            }}
+                        >
+                            <InfoCircledIcon style={{ width: 20, height: 20, marginRight: 8, paddingTop: 1 }} />
                             {t('account_change_pseudo_info')}
-                        </Alert>
-                        <TextField
-                            fullWidth
-                            variant="outlined"
-                            value={updatedUser?.pseudo || ''}
+                        </Flex>
+                        <Field
+                            name="pseudo"
                             label={t('signup_pseudo')}
-                            onChange={onUserChange('pseudo')}
-                            onBlur={handleInputValidations('pseudo')}
-                            color="secondary"
-                            error={errors.pseudo || errors.pseudoNotAvailable}
+                            input={
+                                <Input
+                                    id="pseudo"
+                                    name="pseudo"
+                                    isFullWidth
+                                    value={updatedUser?.pseudo || ''}
+                                    onChange={onUserChange('pseudo')}
+                                    onBlur={handleInputValidations('pseudo')}
+                                    color="secondary"
+                                    hasError={errors.pseudo || errors.pseudoNotAvailable}
+                                />
+                            }
                             helperText={
                                 (errors.pseudo ? `${t('signup_required')} | ` : errors.pseudoNotAvailable ? `${t('signup_pseudo_error')} |` : '') +
                                 t('signup_pseudo_help')
                             }
-                        />
+                            helperTextStyle={{ textAlign: 'left', color: 'inherit' }}
+                        ></Field>
                     </div>
                 </Modal>
                 <Modal
@@ -302,24 +319,45 @@ const AccountPage = () => {
                     confirmLabel={t('edit')}
                     cancelLabel={t('cancel')}
                     title={t('account_change_email')}
-                    ariaLabelledBy="email-dialog-title"
-                    ariaDescribedBy="email-dialog-description"
                     isFullWidth
+                    onOpenAutoFocus={false}
                 >
                     <div id="email-dialog-description">
-                        <Alert severity="info" style={{ marginBottom: '1rem' }}>
+                        <Flex
+                            isFullWidth
+                            alignItems="flex-start"
+                            justifyContent="flex-start"
+                            marginBottom="md"
+                            paddingX="md"
+                            paddingY="sm"
+                            style={{
+                                backgroundColor: 'rgb(229, 246, 253)',
+                                borderRadius: 4,
+                                boxSizing: 'border-box',
+                                fontSize: '14px',
+                                color: 'rgb(1, 67, 97)',
+                            }}
+                        >
+                            <InfoCircledIcon style={{ width: 20, height: 20, marginRight: 8, paddingTop: 1 }} />
                             {t('account_change_email_info')}
-                        </Alert>
-                        <TextField
-                            fullWidth
-                            variant="outlined"
-                            value={updatedUser?.email || ''}
+                        </Flex>
+                        <Field
+                            name="email"
                             label={t('signup_email')}
-                            onChange={onUserChange('email')}
-                            onBlur={handleInputValidations('email')}
-                            color="secondary"
-                            error={errors.email}
+                            input={
+                                <Input
+                                    name="email"
+                                    id="email"
+                                    isFullWidth
+                                    value={updatedUser?.email || ''}
+                                    onChange={onUserChange('email')}
+                                    onBlur={handleInputValidations('email')}
+                                    color="secondary"
+                                    hasError={errors.email}
+                                />
+                            }
                             helperText={errors.email ? t('signup_email_error') : ''}
+                            helperTextStyle={{ textAlign: 'left', color: 'rgb(211, 47, 47)' }}
                         />
                     </div>
                 </Modal>
@@ -331,96 +369,100 @@ const AccountPage = () => {
                     confirmLabel={t('edit')}
                     cancelLabel={t('cancel')}
                     title={t('account_change_password')}
-                    ariaLabelledBy="mdp-dialog-title"
-                    ariaDescribedBy="mdp-dialog-description"
                     isFullWidth
+                    onOpenAutoFocus={false}
                 >
                     <div id="mdp-dialog-description">
-                        <TextField
-                            type={showPassword ? 'text' : 'password'}
-                            color="secondary"
-                            id="password"
-                            name="password"
+                        <Field
+                            name="old_password"
                             label={t('account_current_password')}
-                            value={updatedUser?.oldPassword || ''}
-                            onChange={onUserChange('oldPassword')}
-                            variant="outlined"
-                            InputProps={{
-                                endAdornment: (
-                                    <InputAdornment position="end">
+                            input={
+                                <Input
+                                    type={showPassword ? 'text' : 'password'}
+                                    color="secondary"
+                                    id="old_password"
+                                    name="old_password"
+                                    value={updatedUser?.oldPassword || ''}
+                                    onChange={onUserChange('oldPassword')}
+                                    iconAdornment={
                                         <IconButton
                                             aria-label="toggle password visibility"
                                             onClick={() => {
                                                 setShowPassword(!showPassword);
                                             }}
-                                            edge="end"
-                                        >
-                                            {showPassword ? <Visibility /> : <VisibilityOff />}
-                                        </IconButton>
-                                    </InputAdornment>
-                                ),
-                            }}
-                            fullWidth
+                                            variant="borderless"
+                                            icon={showPassword ? EyeNoneIcon : EyeOpenIcon}
+                                            iconProps={{ style: { color: 'rgba(0, 0, 0, 0.54)', height: 24, width: 24 } }}
+                                        ></IconButton>
+                                    }
+                                    iconAdornmentProps={{ position: 'right' }}
+                                    isFullWidth
+                                />
+                            }
                         />
-                        <Divider style={{ margin: '1.5rem 0' }} />
-                        <TextField
-                            type={showPassword ? 'text' : 'password'}
-                            color="secondary"
-                            id="password"
-                            name="password"
+                        <Divider marginY="lg" />
+                        <Field
+                            name="new_password"
                             label={t('account_new_password')}
-                            value={updatedUser?.password || ''}
-                            onChange={onUserChange('password')}
-                            onBlur={handleInputValidations('password')}
-                            variant="outlined"
-                            InputProps={{
-                                endAdornment: (
-                                    <InputAdornment position="end">
+                            input={
+                                <Input
+                                    type={showPassword ? 'text' : 'password'}
+                                    color="secondary"
+                                    id="new_password"
+                                    name="new_password"
+                                    value={updatedUser?.password || ''}
+                                    onChange={onUserChange('password')}
+                                    onBlur={handleInputValidations('password')}
+                                    iconAdornment={
                                         <IconButton
                                             aria-label="toggle password visibility"
                                             onClick={() => {
                                                 setShowPassword(!showPassword);
                                             }}
-                                            edge="end"
-                                        >
-                                            {showPassword ? <Visibility /> : <VisibilityOff />}
-                                        </IconButton>
-                                    </InputAdornment>
-                                ),
-                            }}
-                            fullWidth
-                            error={errors.password}
+                                            variant="borderless"
+                                            icon={showPassword ? EyeNoneIcon : EyeOpenIcon}
+                                            iconProps={{ style: { color: 'rgba(0, 0, 0, 0.54)', height: 24, width: 24 } }}
+                                        ></IconButton>
+                                    }
+                                    iconAdornmentProps={{ position: 'right' }}
+                                    isFullWidth
+                                    hasError={errors.password}
+                                />
+                            }
                             helperText={errors.password ? t('signup_password_error') : ''}
+                            helperTextStyle={{ textAlign: 'left', color: 'rgb(211, 47, 47)' }}
                         />
-                        <TextField
-                            style={{ marginTop: '1rem' }}
-                            type={showPassword ? 'text' : 'password'}
-                            color="secondary"
-                            id="passwordComfirm"
-                            name="passwordComfirm"
+                        <Field
+                            name="new_password_confirm"
                             label={t('signup_password_confirm')}
-                            value={updatedUser?.passwordConfirm || ''}
-                            onChange={onUserChange('passwordConfirm')}
-                            onBlur={handleInputValidations('passwordConfirm')}
-                            variant="outlined"
-                            InputProps={{
-                                endAdornment: (
-                                    <InputAdornment position="end">
+                            input={
+                                <Input
+                                    style={{ marginTop: '1rem' }}
+                                    type={showPassword ? 'text' : 'password'}
+                                    color="secondary"
+                                    id="new_password_confirm"
+                                    name="new_password_confirm"
+                                    value={updatedUser?.passwordConfirm || ''}
+                                    onChange={onUserChange('passwordConfirm')}
+                                    onBlur={handleInputValidations('passwordConfirm')}
+                                    iconAdornment={
                                         <IconButton
                                             aria-label="toggle password visibility"
                                             onClick={() => {
                                                 setShowPassword(!showPassword);
                                             }}
-                                            edge="end"
-                                        >
-                                            {showPassword ? <Visibility /> : <VisibilityOff />}
-                                        </IconButton>
-                                    </InputAdornment>
-                                ),
-                            }}
-                            fullWidth
-                            error={errors.passwordConfirm}
+                                            variant="borderless"
+                                            icon={showPassword ? EyeNoneIcon : EyeOpenIcon}
+                                            iconProps={{ style: { color: 'rgba(0, 0, 0, 0.54)', height: 24, width: 24 } }}
+                                        ></IconButton>
+                                    }
+                                    iconAdornmentProps={{ position: 'right' }}
+                                    isFullWidth
+                                    hasError={errors.passwordConfirm}
+                                />
+                            }
                             helperText={errors.passwordConfirm ? t('signup_password_confirm_error') : ''}
+                            helperTextStyle={{ textAlign: 'left', color: 'rgb(211, 47, 47)' }}
                         />
                     </div>
                 </Modal>
@@ -433,30 +475,40 @@ const AccountPage = () => {
                     confirmLevel="error"
                     cancelLabel={t('cancel')}
                     title={t('account_delete_button')}
-                    ariaLabelledBy="delete-dialog-title"
-                    ariaDescribedBy="delete-dialog-description"
                     isConfirmDisabled={deleteText.toLowerCase() !== t('account_delete_confirm').toLowerCase()}
                     isFullWidth
                 >
                     <div id="delete-dialog-description">
-                        <Alert severity="error" style={{ marginBottom: '1rem' }}>
-                            <Trans i18nKey="account_delete_warning1">
-                                Attention! Êtes-vous sur de vouloir supprimer votre compte ? Cette action est <strong>irréversible</strong>.
-                            </Trans>
-                            <br />
-                            <Trans i18nKey="account_delete_warning2" i18nParams={{ deleteConfirm: t('account_delete_confirm') }}>
-                                Pour supprimer votre compte, veuillez taper <strong>supprimer</strong> ci-dessous et cliquez sur supprimer.
-                            </Trans>
-                        </Alert>
-                        <TextField
-                            fullWidth
-                            variant="outlined"
-                            value={deleteText}
-                            InputLabelProps={{
-                                shrink: true,
+                        <Flex
+                            isFullWidth
+                            alignItems="flex-start"
+                            justifyContent="flex-start"
+                            marginBottom="md"
+                            paddingX="md"
+                            paddingY="sm"
+                            style={{
+                                backgroundColor: 'rgb(253, 237, 237)',
+                                borderRadius: 4,
+                                boxSizing: 'border-box',
+                                fontSize: '14px',
+                                color: 'rgb(95, 33, 32)',
                             }}
+                        >
+                            <InfoCircledIcon style={{ width: 20, height: 20, marginRight: 8, paddingTop: 1 }} />
+                            <span>
+                                <Trans i18nKey="account_delete_warning1">
+                                    Attention! Êtes-vous sur de vouloir supprimer votre compte ? Cette action est <strong>irréversible</strong>.
+                                </Trans>
+                                <br />
+                                <Trans i18nKey="account_delete_warning2" i18nParams={{ deleteConfirm: t('account_delete_confirm') }}>
+                                    Pour supprimer votre compte, veuillez taper <strong>supprimer</strong> ci-dessous et cliquez sur supprimer.
+                                </Trans>
+                            </span>
+                        </Flex>
+                        <Input
+                            isFullWidth
+                            value={deleteText}
                             placeholder={t('account_delete_placeholder', { deleteConfirm: t('account_delete_confirm') })}
-                            label=""
                             color="secondary"
                             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                                 setDeleteText(event.target.value);
@@ -466,7 +518,7 @@ const AccountPage = () => {
                     </div>
                 </Modal>
             </div>
-        </div>
+        </Container>
     );
 };
 

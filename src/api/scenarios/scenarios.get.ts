@@ -1,7 +1,7 @@
 import type { QueryFunction, UseQueryOptions } from 'react-query';
 import { useQuery } from 'react-query';
 
-import { axiosRequest } from 'src/utils/axiosRequest';
+import { httpRequest } from 'src/utils/http-request';
 import { getFromLocalStorage } from 'src/utils/local-storage';
 import type { Scenario } from 'types/models/scenario.type';
 
@@ -17,7 +17,7 @@ export const getScenario: QueryFunction<GETResponse, GETQueryKey> = async ({ que
     } else if (typeof scenarioId === 'string') {
         return getFromLocalStorage('scenarios', []).find((s) => s.id === scenarioId) || undefined;
     } else {
-        const response = await axiosRequest<Scenario>({
+        const response = await httpRequest<Scenario>({
             method: 'GET',
             url: `/scenarios/${scenarioId}`,
         });

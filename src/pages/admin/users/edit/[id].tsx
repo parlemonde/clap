@@ -1,30 +1,22 @@
+import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useSnackbar } from 'notistack';
 import React from 'react';
-
-import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import Breadcrumbs from '@mui/material/Breadcrumbs';
-import Button from '@mui/material/Button';
-import FormControl from '@mui/material/FormControl';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Link from '@mui/material/Link';
-import NoSsr from '@mui/material/NoSsr';
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
 
 import { useUser } from 'src/api/users/users.get';
 import { useUpdateUserMutation } from 'src/api/users/users.put';
 import { AdminTile } from 'src/components/admin/AdminTile';
-import { Loader } from 'src/components/layout/Loader';
-import Modal from 'src/components/ui/Modal';
+import { Breadcrumbs } from 'src/components/layout/Breadcrumbs';
+import { Button } from 'src/components/layout/Button';
+import { Field, Form, Input } from 'src/components/layout/Form';
+import { Modal } from 'src/components/layout/Modal';
+import { Title } from 'src/components/layout/Typography';
+import { Loader } from 'src/components/ui/Loader';
+import { sendToast } from 'src/components/ui/Toasts';
 import { getQueryString } from 'src/utils/get-query-string';
 import type { User } from 'types/models/user.type';
 
 const AdminEditUser = () => {
     const router = useRouter();
-    const { enqueueSnackbar } = useSnackbar();
 
     const userId = React.useMemo(() => Number(getQueryString(router.query.id)) || 0, [router]);
     const { user: fetchedUser } = useUser(userId, { enabled: userId !== 0 });
@@ -36,11 +28,6 @@ const AdminEditUser = () => {
     React.useEffect(() => {
         setUser(fetchedUser || null);
     }, [fetchedUser]);
-
-    const goToPath = (path: string) => (event: React.MouseEvent) => {
-        event.preventDefault();
-        router.push(path);
-    };
 
     const onChangeValue = (key: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
         setUser(
@@ -71,109 +58,132 @@ const AdminEditUser = () => {
                 userId: user.id,
                 ...updatedUser,
             });
-            enqueueSnackbar('Utilisateur modifié avec succès!', {
-                variant: 'success',
-            });
+            sendToast({ message: 'Utilisateur modifié avec succès!', type: 'success' });
             router.push('/admin/users');
         } catch (err) {
             console.error(err);
-            enqueueSnackbar('Une erreur est survenue...', {
-                variant: 'error',
-            });
+            sendToast({ message: 'Une erreur est survenue...', type: 'error' });
         }
     };
 
     return (
-        <div style={{ paddingBottom: '2rem' }}>
-            <Breadcrumbs separator={<NavigateNextIcon fontSize="large" color="primary" />} aria-label="breadcrumb">
-                <Link href="/admin/users" onClick={goToPath('/admin/users')}>
-                    <Typography variant="h1" color="primary">
-                        Utilisateurs
-                    </Typography>
-                </Link>
-                <Typography variant="h1" color="textPrimary">
-                    {user?.pseudo || ''}
-                </Typography>
-            </Breadcrumbs>
-            <NoSsr>
-                {user !== null && (
-                    <AdminTile title="Informations">
-                        <div style={{ padding: '1rem' }}>
-                            <Typography variant="h3">Identifiants de connexion</Typography>
-                            <div style={{ margin: '0.5rem 0 2rem 0' }}>
-                                <TextField
-                                    variant="standard"
-                                    label="Pseudo"
-                                    value={user.pseudo || ''}
-                                    color="secondary"
-                                    fullWidth
-                                    disabled={isBlocked}
-                                    onChange={onChangeValue('pseudo')}
-                                />
-                                <TextField
-                                    variant="standard"
-                                    style={{ marginTop: '0.5rem' }}
-                                    label="Email"
-                                    value={user.email || ''}
-                                    color="secondary"
-                                    fullWidth
-                                    disabled={isBlocked}
-                                    onChange={onChangeValue('email')}
-                                />
-                                {isBlocked && (
-                                    <Button
-                                        style={{ marginTop: '0.8rem' }}
-                                        onClick={() => {
-                                            setIsBlockedModalOpen(true);
-                                        }}
-                                        variant="contained"
+        <div style={{ margin: '24px 32px' }}>
+            <Breadcrumbs
+                links={[
+                    {
+                        href: '/admin/users',
+                        label: <Title style={{ display: 'inline' }}>Utilisateurs</Title>,
+                    },
+                ]}
+                currentLabel={<Title style={{ display: 'inline' }}>{user?.pseudo || ''}</Title>}
+            />
+
+            {user !== null && (
+                <AdminTile marginY="md" title="Informations">
+                    <Form padding="md" onSubmit={submit}>
+                        <Title variant="h3" color="inherit">
+                            Identifiants de connexion
+                        </Title>
+                        <div style={{ margin: '0.5rem 0 2rem 0' }}>
+                            <Field
+                                name="pseudo"
+                                label="Pseudo"
+                                input={
+                                    <Input
+                                        id="pseudo"
+                                        name="pseudo"
+                                        value={user.pseudo || ''}
                                         color="secondary"
-                                        size="small"
-                                    >
-                                        Changer les identifiants
-                                    </Button>
-                                )}
+                                        isFullWidth
+                                        disabled={isBlocked}
+                                        onChange={onChangeValue('pseudo')}
+                                    />
+                                }
+                            ></Field>
+                            <Field
+                                marginTop="sm"
+                                name="email"
+                                label="Email"
+                                input={
+                                    <Input
+                                        id="email"
+                                        name="email"
+                                        value={user.email || ''}
+                                        color="secondary"
+                                        isFullWidth
+                                        disabled={isBlocked}
+                                        onChange={onChangeValue('email')}
+                                    />
+                                }
+                            ></Field>
+                            {isBlocked && (
+                                <Button
+                                    label="Changer les identifiants"
+                                    marginTop="md"
+                                    onClick={() => {
+                                        setIsBlockedModalOpen(true);
+                                    }}
+                                    variant="contained"
+                                    color="secondary"
+                                    size="sm"
+                                ></Button>
+                            )}
+                        </div>
+                        <Title variant="h3" color="inherit">
+                            Type de compte
+                        </Title>
+                        <div style={{ margin: '0.5rem 0 2rem 0' }}>
+                            <div style={{ margin: '4px 0', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                <input type="radio" id="class" name="account" checked={user.type === 0} value="0" onChange={onChangeValue('type')} />
+                                <label htmlFor="class" style={{ cursor: 'pointer' }}>
+                                    Compte classe
+                                </label>
                             </div>
-                            <Typography variant="h3">Type de compte</Typography>
-                            <div style={{ margin: '0.5rem 0 2rem 0' }}>
-                                <FormControl component="fieldset">
-                                    <RadioGroup aria-label="type de compte" name="type" value={user.type} onChange={onChangeValue('type')}>
-                                        <FormControlLabel value={0} control={<Radio size="small" />} label="Compte classe" />
-                                        <FormControlLabel value={1} control={<Radio size="small" />} label="Compte administrateur" />
-                                        <FormControlLabel value={2} control={<Radio size="small" />} label="Super administrateur" />
-                                    </RadioGroup>
-                                </FormControl>
+                            <div style={{ margin: '4px 0', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                <input type="radio" id="admin" name="account" value="1" checked={user.type === 1} onChange={onChangeValue('type')} />
+                                <label htmlFor="admin" style={{ cursor: 'pointer' }}>
+                                    Compte administrateur
+                                </label>
                             </div>
-                            <div style={{ width: '100%', textAlign: 'center' }}>
-                                <Button variant="contained" color="secondary" onClick={submit}>
-                                    Modifier
-                                </Button>
+                            <div style={{ margin: '4px 0', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                <input
+                                    type="radio"
+                                    id="super-admin"
+                                    name="account"
+                                    checked={user.type === 2}
+                                    value="2"
+                                    onChange={onChangeValue('type')}
+                                />
+                                <label htmlFor="super-admin" style={{ cursor: 'pointer' }}>
+                                    Super administrateur
+                                </label>
                             </div>
                         </div>
-                        <Modal
-                            isOpen={isBlockedModalOpen}
-                            onClose={() => {
-                                setIsBlockedModalOpen(false);
-                            }}
-                            onConfirm={() => {
-                                setIsBlocked(false);
-                                setIsBlockedModalOpen(false);
-                            }}
-                            cancelLabel="Annuler"
-                            confirmLabel="Changer"
-                            title="Modifier les identifiants"
-                            ariaLabelledBy="up-dialog-title"
-                            ariaDescribedBy="up-dialog-description"
-                            isFullWidth
-                        >
-                            <div>Attention, les identifiants sont nécessaires à la connection ! Êtes vous sur de vouloir les changer ?</div>
-                        </Modal>
-                    </AdminTile>
-                )}
-            </NoSsr>
-            <Button variant="outlined" style={{ marginTop: '1rem' }} onClick={goToPath('/admin/users')}>
-                Retour
-            </Button>
+                        <div style={{ width: '100%', textAlign: 'center' }}>
+                            <Button label="Modifier" variant="contained" color="secondary" type="submit"></Button>
+                        </div>
+                    </Form>
+                    <Modal
+                        isOpen={isBlockedModalOpen}
+                        onClose={() => {
+                            setIsBlockedModalOpen(false);
+                        }}
+                        onConfirm={() => {
+                            setIsBlocked(false);
+                            setIsBlockedModalOpen(false);
+                        }}
+                        cancelLabel="Annuler"
+                        confirmLabel="Changer"
+                        title="Modifier les identifiants"
+                        isFullWidth
+                    >
+                        <div>Attention, les identifiants sont nécessaires à la connection ! Êtes vous sur de vouloir les changer ?</div>
+                    </Modal>
+                </AdminTile>
+            )}
+            <Link href="/admin/users" passHref>
+                <Button label="Retour" as="a" variant="outlined" marginTop="md"></Button>
+            </Link>
             <Loader isLoading={isLoading} />
         </div>
     );

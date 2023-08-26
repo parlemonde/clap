@@ -1,7 +1,7 @@
 import type { QueryFunction, UseQueryOptions } from 'react-query';
 import { useQuery } from 'react-query';
 
-import { axiosRequest } from 'src/utils/axiosRequest';
+import { httpRequest } from 'src/utils/http-request';
 import { serializeToQueryUrl } from 'src/utils/serializeToQueryUrl';
 import type { QuestionTemplate } from 'types/models/question.type';
 
@@ -12,7 +12,7 @@ type GETParams = {
 type GETQueryKey = [string, GETParams];
 
 export const getQuestionTemplates = async ({ scenarioId, languageCode }: GETParams): Promise<QuestionTemplate[]> => {
-    const questionsResponse = await axiosRequest<QuestionTemplate[]>({
+    const questionsResponse = await httpRequest<QuestionTemplate[]>({
         method: 'GET',
         url: `/questions-templates${serializeToQueryUrl({ scenarioId, languageCode })}`,
     });

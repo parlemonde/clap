@@ -1,18 +1,18 @@
 import type { UseMutationOptions } from 'react-query';
 import { useMutation } from 'react-query';
 
-import type { AxiosRequestError } from 'src/utils/axiosRequest';
-import { axiosRequest } from 'src/utils/axiosRequest';
+import type { HttpRequestError } from 'src/utils/http-request';
+import { httpRequest } from 'src/utils/http-request';
 
 type DELETEParams = {
     soundUrl: string;
 };
 
 export const deleteSound = async ({ soundUrl }: DELETEParams): Promise<void> => {
-    const response = await axiosRequest<void>({
+    const response = await httpRequest<void>({
         method: 'DELETE',
         url: soundUrl,
-        baseURL: '',
+        baseUrl: '',
     });
     if (response.success) {
         return;
@@ -21,7 +21,7 @@ export const deleteSound = async ({ soundUrl }: DELETEParams): Promise<void> => 
     }
 };
 
-export const useDeleteSoundMutation = (mutationOpts: Omit<UseMutationOptions<void, AxiosRequestError, DELETEParams>, 'mutationFn'> = {}) => {
+export const useDeleteSoundMutation = (mutationOpts: Omit<UseMutationOptions<void, HttpRequestError, DELETEParams>, 'mutationFn'> = {}) => {
     return useMutation(deleteSound, {
         ...mutationOpts,
         onSuccess: (data, variables, context) => {

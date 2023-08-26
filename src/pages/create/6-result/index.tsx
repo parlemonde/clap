@@ -1,12 +1,5 @@
-import { useSnackbar } from 'notistack';
+import { VideoIcon } from '@radix-ui/react-icons';
 import React from 'react';
-
-import PictureAsPdf from '@mui/icons-material/PictureAsPdf';
-import SmartDisplay from '@mui/icons-material/SmartDisplay';
-import VideoFile from '@mui/icons-material/VideoFile';
-import type { LinearProgressProps } from '@mui/material';
-import { Tooltip, Box, Button, LinearProgress, Typography } from '@mui/material';
-import type { Theme as MaterialTheme } from '@mui/material/styles';
 
 import { getProjectMlt } from 'src/api/projects/projects.mlt';
 import type { GetPDFParams } from 'src/api/projects/projects.pdf';
@@ -15,47 +8,52 @@ import { useProjectVideo } from 'src/api/projects/projects.video.get';
 import { useCreateProjectVideoMutation } from 'src/api/projects/projects.video.post';
 import { useScenario } from 'src/api/scenarios/scenarios.get';
 import { useTheme } from 'src/api/themes/themes.get';
-import { DiaporamaPlayer } from 'src/components/DiaporamaPlayer';
+import { DiaporamaPlayer } from 'src/components/create/DiaporamaPlayer';
+import { Button } from 'src/components/layout/Button';
+import { Container } from 'src/components/layout/Container';
 import { Flex } from 'src/components/layout/Flex';
-import { Loader } from 'src/components/layout/Loader';
+import { LinearProgress } from 'src/components/layout/LinearProgress';
+import { Modal } from 'src/components/layout/Modal';
+import { Tooltip } from 'src/components/layout/Tooltip';
+import { Title, Text } from 'src/components/layout/Typography';
 import { Steps } from 'src/components/navigation/Steps';
 import { ThemeBreadcrumbs } from 'src/components/navigation/ThemeBreadcrumbs';
 import { Inverted } from 'src/components/ui/Inverted';
-import Modal from 'src/components/ui/Modal';
+import { Loader } from 'src/components/ui/Loader';
+import { sendToast } from 'src/components/ui/Toasts';
 import { Trans } from 'src/components/ui/Trans';
 import { userContext } from 'src/contexts/userContext';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import { useTranslation } from 'src/i18n/useTranslation';
 import { getSounds } from 'src/lib/get-sounds';
+import PictureAsPdf from 'src/svg/pdf.svg';
+import VideoFile from 'src/svg/plan.svg';
 
-const styles = {
+const styles: Record<'verticalLine' | 'horizontalLine', React.CSSProperties> = {
     verticalLine: {
-        backgroundColor: (theme: MaterialTheme) => theme.palette.secondary.main,
+        backgroundColor: '#79C3A5',
         flex: 1,
         width: '1px',
-        margin: '0.2rem 0',
+        margin: '4px 0',
     },
     horizontalLine: {
-        backgroundColor: (theme: MaterialTheme) => theme.palette.secondary.main,
+        backgroundColor: '#79C3A5',
         flex: 1,
         height: '1px',
-        margin: '2rem 1rem',
-    },
-    secondaryColor: {
-        color: (theme: MaterialTheme) => theme.palette.secondary.main,
+        margin: '32px 16px',
     },
 };
 
-function LinearProgressWithLabel(props: LinearProgressProps & { value: number }) {
+function LinearProgressWithLabel({ value }: { value: number }) {
     return (
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Box sx={{ width: '100%', mr: 1 }}>
-                <LinearProgress variant="determinate" {...props} />
-            </Box>
-            <Box sx={{ minWidth: 35 }}>
-                <Typography variant="body2" color="text.secondary">{`${Math.round(props.value)}%`}</Typography>
-            </Box>
-        </Box>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={{ width: '100%', marginRight: 16 }}>
+                <LinearProgress value={value} color="secondary" />
+            </div>
+            <div style={{ minWidth: 35 }}>
+                <Text className="color-secondary">{`${Math.round(value)}%`}</Text>
+            </div>
+        </div>
     );
 }
 
@@ -63,18 +61,15 @@ const Or = () => {
     const { t } = useTranslation();
     return (
         <div className="or-horizontal-divider">
-            <Box sx={styles.verticalLine} />
-            <Box component="span" sx={styles.secondaryColor}>
-                {t('or').toUpperCase()}
-            </Box>
-            <Box sx={styles.verticalLine} />
+            <div style={styles.verticalLine} />
+            <Text className="color-secondary">{t('or').toUpperCase()}</Text>
+            <div style={styles.verticalLine} />
         </div>
     );
 };
 
 const ResultPage = () => {
     const { t, currentLocale } = useTranslation();
-    const { enqueueSnackbar } = useSnackbar();
     const { project, questions, isLoading: isProjectLoading } = useCurrentProject();
     const { user } = React.useContext(userContext);
     const { theme, isLoading: isThemeLoading } = useTheme(project ? project.themeId : 0, {
@@ -171,9 +166,7 @@ const ResultPage = () => {
                     setIsVideoModalOpen(false);
                 },
                 onError: () => {
-                    enqueueSnackbar(t('unknown_error'), {
-                        variant: 'error',
-                    });
+                    sendToast({ message: t('unknown_error'), type: 'error' });
                 },
             },
         );
@@ -184,7 +177,7 @@ const ResultPage = () => {
     const hasProject = project !== undefined && project.id !== 0;
 
     return (
-        <div>
+        <Container>
             <ThemeBreadcrumbs theme={theme} isLoading={isThemeLoading}></ThemeBreadcrumbs>
             <Steps
                 activeStep={5}
@@ -192,17 +185,17 @@ const ResultPage = () => {
                 scenarioName={scenario?.names?.[currentLocale] || undefined}
             ></Steps>
             <div style={{ maxWidth: '1000px', margin: 'auto', paddingBottom: '2rem' }}>
-                <Typography color="primary" variant="h1">
-                    <Inverted round>6</Inverted>
+                <Title color="primary" variant="h1" marginY="md">
+                    <Inverted isRound>6</Inverted>
                     <Trans i18nKey="part6_title">
                         À votre <Inverted>caméra</Inverted> !
                     </Trans>
-                </Typography>
-                <Typography color="inherit" variant="h2">
+                </Title>
+                <Title color="inherit" variant="h2">
                     {t('part6_subtitle1')}
-                </Typography>
+                </Title>
 
-                <div style={{ margin: '2rem 0' }}>
+                <div style={{ margin: '16px 0' }}>
                     {project && !isProjectLoading && (
                         <DiaporamaPlayer
                             questions={questions}
@@ -216,21 +209,28 @@ const ResultPage = () => {
                     )}
                 </div>
 
-                <Typography variant="h2" style={{ margin: '1rem 0' }}>
+                <Title variant="h2" style={{ margin: '16px 0' }}>
                     {t('part6_subtitle2')}
-                </Typography>
+                </Title>
 
-                <Flex flexDirection="column" alignItems="center" style={{ maxWidth: '400px', margin: '0 auto 2rem auto' }}>
+                <Flex flexDirection="column" alignItems="center" marginX="auto" marginY="lg" style={{ maxWidth: '400px' }}>
                     {isLoadingProjectVideo ? (
                         <div>loading</div>
                     ) : (
                         <>
                             {videoUrl && (
                                 <>
-                                    <Button component="a" href={videoUrl} className="full-width" variant="contained" color="secondary" download>
-                                        <SmartDisplay style={{ marginRight: '10px' }} />
-                                        {t('part6_mp4_download_button')}
-                                    </Button>
+                                    <Button
+                                        label={t('part6_mp4_download_button')}
+                                        as="a"
+                                        href={videoUrl}
+                                        className="full-width"
+                                        variant="contained"
+                                        color="secondary"
+                                        style={{ width: '100%' }}
+                                        leftIcon={<VideoIcon style={{ marginRight: '10px', width: '24px', height: '24px' }} />}
+                                        download
+                                    ></Button>
                                     <Or />
                                 </>
                             )}
@@ -241,50 +241,58 @@ const ResultPage = () => {
                                         textAlign: 'center',
                                         padding: '0.5rem 1rem',
                                         border: '1px solid #79C3A5',
+                                        boxSizing: 'border-box',
                                         borderRadius: 4,
                                         boxShadow:
                                             '0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%)',
                                     }}
                                 >
-                                    <Typography variant="body2" color="text.secondary" style={{ fontSize: '0.8rem', marginBottom: '0.5rem' }}>
+                                    <Text className="color-secondary" style={{ fontSize: '0.8rem', marginBottom: '0.5rem' }}>
                                         {t('part6_mp4_loading')}
-                                    </Typography>
-                                    <LinearProgressWithLabel color="secondary" variant="buffer" value={videoProgress} />
+                                    </Text>
+                                    <LinearProgressWithLabel value={videoProgress} />
                                 </div>
                             ) : (
                                 <Tooltip
-                                    title={user === null ? t('part6_mp4_user_disabled') : !hasProject ? t('part6_mp4_project_disabled') : ''}
-                                    placement="top"
-                                    arrow
+                                    content={user === null ? t('part6_mp4_user_disabled') : !hasProject ? t('part6_mp4_project_disabled') : ''}
+                                    hasArrow
                                 >
-                                    <span style={{ width: '100%' }}>
-                                        <Button
-                                            className="full-width"
-                                            variant="contained"
-                                            color="secondary"
-                                            onClick={() => {
-                                                setIsVideoModalOpen(true);
-                                            }}
-                                            disabled={user === null || !hasProject}
-                                        >
-                                            <SmartDisplay style={{ marginRight: '10px' }} />
-                                            {t(videoUrl ? 'part6_mp4_generate_button' : 'part6_mp4_button')}
-                                        </Button>
-                                    </span>
+                                    <Button
+                                        label={t(videoUrl ? 'part6_mp4_generate_button' : 'part6_mp4_button')}
+                                        className="full-width"
+                                        variant="contained"
+                                        color="secondary"
+                                        onClick={() => {
+                                            setIsVideoModalOpen(true);
+                                        }}
+                                        disabled={user === null || !hasProject}
+                                        style={{ width: '100%' }}
+                                        leftIcon={<VideoIcon style={{ marginRight: '10px', width: '24px', height: '24px' }} />}
+                                    ></Button>
                                 </Tooltip>
                             )}
                         </>
                     )}
                     <Or />
-                    <Button className="full-width" variant="contained" color="secondary" onClick={generatePDF}>
-                        <PictureAsPdf style={{ marginRight: '10px' }} />
-                        {t('part6_pdf_button')}
-                    </Button>
+                    <Button
+                        label={t('part6_pdf_button')}
+                        leftIcon={<PictureAsPdf style={{ marginRight: '10px' }} />}
+                        className="full-width"
+                        variant="contained"
+                        color="secondary"
+                        onClick={generatePDF}
+                        style={{ width: '100%' }}
+                    ></Button>
                     <Or />
-                    <Button className="full-width" variant="contained" color="secondary" onClick={generateMLT}>
-                        <VideoFile style={{ marginRight: '10px' }} />
-                        {t('part6_mlt_button')}
-                    </Button>
+                    <Button
+                        label={t('part6_mlt_button')}
+                        leftIcon={<VideoFile style={{ marginRight: '10px' }} />}
+                        className="full-width"
+                        variant="contained"
+                        color="secondary"
+                        onClick={generateMLT}
+                        style={{ width: '100%' }}
+                    ></Button>
                 </Flex>
                 <Modal
                     isOpen={isVideoModalOpen}
@@ -295,11 +303,9 @@ const ResultPage = () => {
                     title={t('part6_mp4_button')}
                     confirmLabel={t('generate')}
                     onConfirm={generateMP4}
-                    maxWidth="sm"
+                    width="md"
                     isFullWidth
                     confirmLevel="secondary"
-                    ariaLabelledBy="download_title"
-                    ariaDescribedBy="download_desc"
                 >
                     <ul style={{ margin: 0 }}>
                         <li style={{ marginBottom: '0.5rem' }}>{t('part6_mp4_description_1')}</li>
@@ -309,7 +315,7 @@ const ResultPage = () => {
                 </Modal>
             </div>
             <Loader isLoading={isLoading} />
-        </div>
+        </Container>
     );
 };
 

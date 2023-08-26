@@ -1,0 +1,65 @@
+@use 'mixins';
+@use 'variables' as *;
+
+$height: 56px;
+
+.bottomNavBar {
+  display: block;
+  height: $height + 1;
+}
+@include mixins.for-tablet-up {
+  .bottomNavBar {
+    display: none;
+    height: 0;
+  }
+}
+
+.navigationMenu {
+  position: fixed;
+  z-index: 100;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: $height;
+  background-color: #fafafa;
+  border-top: 1px solid rgba(128, 128, 128, 0.7);
+}
+
+.navigationList {
+  display: flex;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.navigationItem {
+  flex: 1 1 0;
+  max-width: 160px;
+}
+
+.navigationButton {
+  text-decoration: none;
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  fill: #808080;
+  color: #808080;
+  font-size: 14px;
+  font-weight: 400;
+  height: $height - 2*$sizeSM;
+  padding: $sizeSM;
+
+  &:hover {
+    background-color: #aaa1a122;
+  }
+
+  &[data-active] {
+    color: $secondaryColor;
+  }
+}

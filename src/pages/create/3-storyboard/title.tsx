@@ -1,18 +1,18 @@
 import { useRouter } from 'next/router';
-import { useSnackbar } from 'notistack';
 import React from 'react';
-
-import { Typography } from '@mui/material';
 
 import { useUpdateQuestionMutation } from 'src/api/questions/questions.put';
 import { useScenario } from 'src/api/scenarios/scenarios.get';
 import { useTheme } from 'src/api/themes/themes.get';
-import { TitleCanvas } from 'src/components/TitleCanvas';
-import { Loader } from 'src/components/layout/Loader';
+import { TitleCanvas } from 'src/components/create/TitleCanvas';
+import { Container } from 'src/components/layout/Container';
+import { Title as TitleComponent } from 'src/components/layout/Typography';
 import { NextButton } from 'src/components/navigation/NextButton';
 import { Steps } from 'src/components/navigation/Steps';
 import { ThemeBreadcrumbs } from 'src/components/navigation/ThemeBreadcrumbs';
 import { Inverted } from 'src/components/ui/Inverted';
+import { Loader } from 'src/components/ui/Loader';
+import { sendToast } from 'src/components/ui/Toasts';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import { useTranslation } from 'src/i18n/useTranslation';
 import { serializeToQueryUrl } from 'src/utils/serializeToQueryUrl';
@@ -47,7 +47,6 @@ const getTitleToEdit = (sequence?: Question) => {
 
 const TitlePlan = () => {
     const router = useRouter();
-    const { enqueueSnackbar } = useSnackbar();
     const { t, currentLocale } = useTranslation();
     const { project, questions, isLoading: isProjectLoading, updateProject } = useCurrentProject();
     const { theme, isLoading: isThemeLoading } = useTheme(project ? project.themeId : 0, {
@@ -79,9 +78,7 @@ const TitlePlan = () => {
                 });
             } catch (err) {
                 console.error(err);
-                enqueueSnackbar(t('unknown_error'), {
-                    variant: 'error',
-                });
+                sendToast({ message: t('unknown_error'), type: 'error' });
                 return;
             }
         }
@@ -97,7 +94,7 @@ const TitlePlan = () => {
     };
 
     return (
-        <div>
+        <Container>
             <ThemeBreadcrumbs theme={theme} isLoading={isThemeLoading}></ThemeBreadcrumbs>
             <Steps
                 activeStep={2}
@@ -106,21 +103,22 @@ const TitlePlan = () => {
                 backHref={backUrl}
             ></Steps>
             <div style={{ maxWidth: '1000px', margin: 'auto', paddingBottom: '2rem' }}>
-                <Typography color="primary" variant="h1">
-                    <Inverted round>3</Inverted> {t('part3_edit_title', { planNumber: questionIndex + 1 })}
-                </Typography>
-                <Typography variant="h2">
+                <TitleComponent color="primary" variant="h1" marginY="md">
+                    <Inverted isRound>3</Inverted> {t('part3_edit_title', { planNumber: questionIndex + 1 })}
+                </TitleComponent>
+                <TitleComponent color="inherit" variant="h2">
                     <span>{t('part3_question')}</span> {sequence?.question || ''}
-                </Typography>
-                <Typography>
+                </TitleComponent>
+                <TitleComponent color="inherit" variant="h2" marginY="md">
                     <span>{t('part3_edit_title_desc')}</span>
-                </Typography>
+                </TitleComponent>
+
                 {title !== null && <TitleCanvas title={title} onChange={setTitle} />}
 
                 <NextButton label={t('continue')} backHref={backUrl} onNext={onUpdateQuestion} />
             </div>
             <Loader isLoading={updateQuestionMutation.isLoading} />
-        </div>
+        </Container>
     );
 };
 

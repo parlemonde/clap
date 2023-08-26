@@ -1,7 +1,7 @@
 import type { UseQueryOptions } from 'react-query';
 import { useQuery } from 'react-query';
 
-import { axiosRequest } from 'src/utils/axiosRequest';
+import { httpRequest } from 'src/utils/http-request';
 
 type ProjectVideo = {
     progress: number;
@@ -17,7 +17,7 @@ export const getProjectVideo = async (projectId: GETParams): Promise<GETResponse
         return undefined;
     }
 
-    const projectVideoResponse = await axiosRequest<ProjectVideo>({
+    const projectVideoResponse = await httpRequest<ProjectVideo>({
         method: 'GET',
         url: `/projects/${projectId}/video`,
     });

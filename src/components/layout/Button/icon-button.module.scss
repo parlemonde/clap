@@ -1,0 +1,10 @@
+.iconButton {
+  border-radius: 50%;
+  padding: 5px;
+  font-size: 18px;
+
+  &--sm {
+    padding: 2px;
+    font-size: 10px;
+  }
+}

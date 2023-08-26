@@ -1,8 +1,8 @@
-import { useSnackbar } from 'notistack';
 import React from 'react';
 
 import { useDeleteUserMutation } from 'src/api/users/users.delete';
-import Modal from 'src/components/ui/Modal';
+import { Modal } from 'src/components/layout/Modal';
+import { sendToast } from 'src/components/ui/Toasts';
 import type { User } from 'types/models/user.type';
 
 interface DeleteUserModalProps {
@@ -11,8 +11,6 @@ interface DeleteUserModalProps {
 }
 
 export const DeleteUserModal = ({ user = null, onClose = () => {} }: DeleteUserModalProps) => {
-    const { enqueueSnackbar } = useSnackbar();
-
     const deleteUserMutation = useDeleteUserMutation();
     const onSubmit = async () => {
         if (user === null) {
@@ -22,15 +20,11 @@ export const DeleteUserModal = ({ user = null, onClose = () => {} }: DeleteUserM
             await deleteUserMutation.mutateAsync({
                 userId: user.id,
             });
-            enqueueSnackbar('Utilisateur supprimé avec succès!', {
-                variant: 'success',
-            });
+            sendToast({ message: 'Utilisateur supprimé avec succès!', type: 'success' });
             onClose();
         } catch (err) {
             console.error(err);
-            enqueueSnackbar('Une erreur inconnue est survenue...', {
-                variant: 'error',
-            });
+            sendToast({ message: 'Une erreur inconnue est survenue...', type: 'error' });
         }
     };
 
@@ -44,14 +38,10 @@ export const DeleteUserModal = ({ user = null, onClose = () => {} }: DeleteUserM
             confirmLevel="error"
             cancelLabel="Annuler"
             title="Supprimer l'utilisateur ?"
-            ariaLabelledBy="delete-dialog-title"
-            ariaDescribedBy="delete-dialog-description"
             isFullWidth
         >
-            <div id="delete-dialog-description">
-                {"Voulez-vous vraiment supprimer l'utilisateur "}
-                <strong>{user?.pseudo || ''}</strong> ?
-            </div>
+            {"Voulez-vous vraiment supprimer l'utilisateur "}
+            <strong>{user?.pseudo || ''}</strong> ?
         </Modal>
     );
 };

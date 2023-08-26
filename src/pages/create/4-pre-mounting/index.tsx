@@ -1,11 +1,11 @@
 import { useRouter } from 'next/router';
 import React from 'react';
 
-import { Typography } from '@mui/material';
-
 import { useScenario } from 'src/api/scenarios/scenarios.get';
 import { useTheme } from 'src/api/themes/themes.get';
-import { SequenceDiaporama } from 'src/components/SequenceDiaporama';
+import { DiaporamaCard } from 'src/components/create/DiaporamaCard';
+import { Container } from 'src/components/layout/Container';
+import { Title } from 'src/components/layout/Typography';
 import { NextButton } from 'src/components/navigation/NextButton';
 import { Steps } from 'src/components/navigation/Steps';
 import { ThemeBreadcrumbs } from 'src/components/navigation/ThemeBreadcrumbs';
@@ -27,7 +27,7 @@ const PreMountingPage = () => {
     });
 
     return (
-        <div>
+        <Container>
             <ThemeBreadcrumbs theme={theme} isLoading={isThemeLoading}></ThemeBreadcrumbs>
             <Steps
                 activeStep={3}
@@ -35,25 +35,25 @@ const PreMountingPage = () => {
                 scenarioName={scenario?.names?.[currentLocale] || undefined}
             ></Steps>
             <div style={{ maxWidth: '1000px', margin: 'auto', paddingBottom: '2rem' }}>
-                <Typography color="primary" variant="h1">
-                    <Inverted round>4</Inverted>{' '}
+                <Title color="primary" variant="h1" marginY="md">
+                    <Inverted isRound>4</Inverted>{' '}
                     <Trans i18nKey="part4_title">
                         Création du <Inverted>Storyboard</Inverted>
                     </Trans>
-                </Typography>
-                <Typography color="inherit" variant="h2">
+                </Title>
+                <Title color="inherit" variant="h2">
                     {t('part4_subtitle1')}
-                </Typography>
+                </Title>
                 {questions.map((q, index) => {
                     const hasBeenEdited = q.title !== null || (q.plans || []).some((plan) => plan.description || plan.imageUrl);
                     return (
                         <div key={index}>
-                            <Typography color="primary" variant="h2" style={{ marginTop: '2rem' }}>
+                            <Title color="primary" variant="h2" marginTop="lg">
                                 {index + 1}. {q.question}
-                            </Typography>
+                            </Title>
                             {hasBeenEdited ? (
                                 <div className="plans">
-                                    <SequenceDiaporama projectId={project?.id || null} sequence={q} questionIndex={index} />
+                                    <DiaporamaCard projectId={project?.id || null} sequence={q} questionIndex={index} />
                                 </div>
                             ) : (
                                 <p>{t('part4_placeholder')}</p>
@@ -67,7 +67,7 @@ const PreMountingPage = () => {
                     }}
                 />
             </div>
-        </div>
+        </Container>
     );
 };
 

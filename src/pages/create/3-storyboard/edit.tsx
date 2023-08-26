@@ -1,55 +1,53 @@
+import { LightningBoltIcon, ImageIcon, CameraIcon, UploadIcon, Pencil2Icon } from '@radix-ui/react-icons';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { useSnackbar } from 'notistack';
 import React from 'react';
 import Camera from 'react-html5-camera-photo';
-
-import BoltIcon from '@mui/icons-material/Bolt';
-import CreateIcon from '@mui/icons-material/Create';
-import LandscapeIcon from '@mui/icons-material/Landscape';
-import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
-import CloudUploadIcon from '@mui/icons-material/Upload';
-import { Typography, TextField, FormHelperText, Box, Button } from '@mui/material';
-import type { Theme as MaterialTheme } from '@mui/material/styles';
 
 import { useDeleteImageMutation } from 'src/api/images/images.delete';
 import { useCreateImageMutation } from 'src/api/images/images.post';
 import { useUpdatePlanMutation } from 'src/api/plans/plans.put';
 import { useScenario } from 'src/api/scenarios/scenarios.get';
 import { useTheme } from 'src/api/themes/themes.get';
-import { Canvas } from 'src/components/Canvas';
-import type { ImgCroppieRef } from 'src/components/ImgCroppie';
-import { ImgCroppie } from 'src/components/ImgCroppie';
-import { Flex } from 'src/components/layout/Flex';
-import { FlexItem } from 'src/components/layout/FlexItem';
+import { Canvas } from 'src/components/create/Canvas';
+import { Button } from 'src/components/layout/Button';
+import { Container } from 'src/components/layout/Container';
+import { Flex, FlexItem } from 'src/components/layout/Flex';
+import { Field, Form, TextArea } from 'src/components/layout/Form';
 import { KeepRatio } from 'src/components/layout/KeepRatio';
-import { Loader } from 'src/components/layout/Loader';
+import { Modal } from 'src/components/layout/Modal';
+import { Title } from 'src/components/layout/Typography';
 import { NextButton } from 'src/components/navigation/NextButton';
 import { Steps } from 'src/components/navigation/Steps';
 import { ThemeBreadcrumbs } from 'src/components/navigation/ThemeBreadcrumbs';
+import type { ImgCroppieRef } from 'src/components/ui/ImgCroppie';
+import { ImgCroppie } from 'src/components/ui/ImgCroppie';
 import { Inverted } from 'src/components/ui/Inverted';
-import Modal from 'src/components/ui/Modal';
+import { Loader } from 'src/components/ui/Loader';
+import { sendToast } from 'src/components/ui/Toasts';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import { useTranslation } from 'src/i18n/useTranslation';
 import { serializeToQueryUrl } from 'src/utils/serializeToQueryUrl';
 import { isString } from 'src/utils/type-guards/is-string';
 import { useQueryNumber } from 'src/utils/useQueryId';
 
-const styles = {
+const SecondaryColor = '#79C3A5';
+
+const styles: Record<string, React.CSSProperties> = {
     verticalLine: {
-        backgroundColor: (theme: MaterialTheme) => theme.palette.secondary.main,
+        backgroundColor: SecondaryColor,
         flex: 1,
         width: '1px',
         margin: '0.2rem 0',
     },
     horizontalLine: {
-        backgroundColor: (theme: MaterialTheme) => theme.palette.secondary.main,
+        backgroundColor: SecondaryColor,
         flex: 1,
         height: '1px',
         margin: '2rem 1rem',
     },
     secondaryColor: {
-        color: (theme: MaterialTheme) => theme.palette.secondary.main,
+        color: SecondaryColor,
     },
 };
 
@@ -62,50 +60,57 @@ const EditImageButtons = ({ imageUploadId, onShowCamera, onDraw }: EditImageButt
     const { t } = useTranslation();
 
     return (
-        <Box className="edit-plans-container">
+        <div className="edit-plans-container">
             <Button
                 variant="outlined"
                 color="secondary"
-                component="label"
+                as="label"
+                label={t('import_image')}
                 htmlFor={imageUploadId}
-                style={{ textTransform: 'none' }}
-                startIcon={<CloudUploadIcon />}
-            >
-                {t('import_image')}
-            </Button>
+                isUpperCase={false}
+                role="button"
+                aria-controls="filename"
+                tabIndex={0}
+                onKeyPress={(event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        document.getElementById(imageUploadId)?.click();
+                    }
+                }}
+                leftIcon={<UploadIcon style={{ width: '16px', height: '16px', marginRight: '8px' }} />}
+            ></Button>
             <div className="or-horizontal-divider">
-                <Box sx={styles.verticalLine} />
-                <Box component="span" sx={styles.secondaryColor}>
-                    {t('or').toUpperCase()}
-                </Box>
-                <Box sx={styles.verticalLine} />
+                <div style={styles.verticalLine} />
+                <span style={styles.secondaryColor}>{t('or').toUpperCase()}</span>
+                <div style={styles.verticalLine} />
             </div>
-            <Button variant="outlined" color="secondary" style={{ textTransform: 'none' }} onClick={onShowCamera} startIcon={<PhotoCameraIcon />}>
-                {t('take_picture')}
-            </Button>
-            <Box className="or-horizontal-divider" sx={{ display: { xs: 'none', md: 'flex' } }}>
-                <Box sx={styles.verticalLine} />
-                <Box component="span" sx={styles.secondaryColor}>
-                    {t('or').toUpperCase()}
-                </Box>
-                <Box sx={styles.verticalLine} />
-            </Box>
             <Button
+                label={t('take_picture')}
                 variant="outlined"
                 color="secondary"
-                sx={{ textTransform: 'none', display: { xs: 'none', md: 'inline-flex' } }}
-                startIcon={<CreateIcon />}
+                isUpperCase={false}
+                onClick={onShowCamera}
+                leftIcon={<CameraIcon style={{ width: '16px', height: '16px', marginRight: '8px' }} />}
+            ></Button>
+            <div className="or-horizontal-divider for-tablet-up">
+                <div style={styles.verticalLine} />
+                <span style={styles.secondaryColor}>{t('or').toUpperCase()}</span>
+                <div style={styles.verticalLine} />
+            </div>
+            <Button
+                label={t('draw_plan')}
+                variant="outlined"
+                color="secondary"
+                isUpperCase={false}
+                isTabletUpOnly
+                leftIcon={<Pencil2Icon style={{ width: '16px', height: '16px', marginRight: '8px' }} />}
                 onClick={onDraw}
-            >
-                {t('draw_plan')}
-            </Button>
-        </Box>
+            ></Button>
+        </div>
     );
 };
 
 const EditPlan = () => {
     const router = useRouter();
-    const { enqueueSnackbar } = useSnackbar();
     const { t, currentLocale } = useTranslation();
     const { project, questions, isLoading: isProjectLoading, updateProject } = useCurrentProject();
     const { theme, isLoading: isThemeLoading } = useTheme(project ? project.themeId : 0, {
@@ -212,16 +217,14 @@ const EditPlan = () => {
             router.push(backUrl);
         } catch (err) {
             console.error(err);
-            enqueueSnackbar(t('unknown_error'), {
-                variant: 'error',
-            });
+            sendToast({ message: t('unknown_error'), type: 'error' });
         }
     };
 
     const isLoading = createImageMutation.isLoading || deleteImageMutation.isLoading || updatePlanMutation.isLoading;
 
     return (
-        <div>
+        <Container>
             <ThemeBreadcrumbs theme={theme} isLoading={isThemeLoading}></ThemeBreadcrumbs>
             <Steps
                 activeStep={2}
@@ -230,232 +233,226 @@ const EditPlan = () => {
                 backHref={backUrl}
             ></Steps>
             <div style={{ maxWidth: '1000px', margin: 'auto', paddingBottom: '2rem' }}>
-                <Typography color="primary" variant="h1">
-                    <Inverted round>3</Inverted> {t('part3_edit_plan')}
-                </Typography>
-                <Typography variant="h2">
+                <Title color="primary" variant="h1" marginY="md">
+                    <Inverted isRound>3</Inverted> {t('part3_edit_plan')}
+                </Title>
+                <Title color="inherit" variant="h2">
                     <span>{t('part3_question')}</span> {sequence?.question || ''}
-                </Typography>
-                <Typography variant="h2">
+                </Title>
+                <Title color="inherit" variant="h2" marginY="md">
                     <span>{t('part3_plan_number')}</span> {planStartIndex + planIndex}
-                </Typography>
+                </Title>
 
-                {plan !== undefined && (
-                    <>
-                        <Flex isFullWidth flexDirection="row" alignItems="center" justifyContent="flex-start">
-                            <div className={`bolt ${description ? 'green' : ''}`} style={{ marginRight: '10px' }}>
-                                <BoltIcon />
-                            </div>
-                            <FlexItem flexGrow={1} flexBasis={0}>
-                                <Typography color="inherit" variant="h2" style={{ margin: '1rem 0' }}>
-                                    {t('part3_plan_desc')}
-                                </Typography>
-                            </FlexItem>
-                        </Flex>
-                        <TextField
-                            value={description}
-                            onChange={(event) => {
-                                setDescription(event.target.value.slice(0, 2000));
-                            }}
-                            required
-                            multiline
-                            placeholder={t('part3_plan_desc_placeholder')}
-                            fullWidth
-                            minRows={7}
-                            variant="outlined"
-                            color="secondary"
-                            autoComplete="off"
-                        />
-                        <FormHelperText id="component-helper-text" style={{ marginLeft: '0.2rem', marginTop: '0.2rem' }}>
-                            {plan.description.length}/2000
-                        </FormHelperText>
-
-                        <Flex isFullWidth flexDirection="row" alignItems="center" justifyContent="flex-start" style={{ margin: '1rem 0 0 0' }}>
-                            <div className={`bolt ${imageUrl ? 'green' : ''}`} style={{ marginRight: '10px' }}>
-                                <LandscapeIcon />
-                            </div>
-                            <FlexItem flexGrow={1} flexBasis={0}>
-                                <Typography color="inherit" variant="h2">
-                                    {t('part3_plan_image')}
-                                </Typography>
-                            </FlexItem>
-                        </Flex>
-                        <Typography color="inherit" variant="h3" sx={{ display: { xs: 'none', md: 'block' } }}>
-                            {t('part3_plan_edit_title_desktop')}
-                        </Typography>
-                        <Typography color="inherit" variant="h3" sx={{ display: { xs: 'block', md: 'none' } }}>
-                            {t('part3_plan_edit_title_mobile')}
-                        </Typography>
-
-                        <div style={{ width: '100%', maxWidth: '600px', margin: '2rem auto' }}>
-                            <KeepRatio
-                                ratio={9 / 16}
-                                sx={{
-                                    border: '1px solid rgb(192, 192, 192)',
-                                    borderRadius: '4px',
-                                    backgroundColor: imageUrl ? 'black' : 'unset',
-                                    overflow: 'hidden',
-                                }}
-                            >
-                                {imageUrl ? (
-                                    <Image unoptimized layout="fill" objectFit="contain" src={imageUrl} />
-                                ) : (
-                                    <EditImageButtons
-                                        imageUploadId="plan-img-upload"
-                                        onShowCamera={() => {
-                                            setShowCameraModal(true);
+                <Form onSubmit={onSubmit}>
+                    {plan !== undefined && (
+                        <>
+                            <Flex isFullWidth flexDirection="row" alignItems="center" justifyContent="flex-start">
+                                <div className={`pill ${description ? 'pill--green' : ''}`} style={{ marginRight: '10px' }}>
+                                    <LightningBoltIcon />
+                                </div>
+                                <FlexItem flexGrow={1} flexBasis={0}>
+                                    <Title color="inherit" variant="h2" style={{ margin: '1rem 0' }}>
+                                        {t('part3_plan_desc')}
+                                    </Title>
+                                </FlexItem>
+                            </Flex>
+                            <Field
+                                name="plan_description"
+                                input={
+                                    <TextArea
+                                        value={description}
+                                        onChange={(event) => {
+                                            setDescription(event.target.value.slice(0, 2000));
                                         }}
-                                        onDraw={() => {
-                                            setShowDrawModal(true);
-                                        }}
+                                        placeholder={t('part3_plan_desc_placeholder')}
+                                        isFullWidth
+                                        rows={7}
+                                        color="secondary"
+                                        autoComplete="off"
                                     />
-                                )}
-                            </KeepRatio>
-                        </div>
-                        <input id="plan-img-upload" type="file" accept="image/*" onChange={onInputUpload} style={{ display: 'none' }} />
-                        {imageUrl && (
-                            <div className="text-center">
-                                <Button
-                                    className="plan-button"
-                                    variant="outlined"
-                                    color="secondary"
-                                    style={{ display: 'inline-block' }}
-                                    onClick={() => {
-                                        setShowChangeModal(true);
+                                }
+                                helperText={`${description.length}/2000`}
+                            ></Field>
+
+                            <Flex isFullWidth flexDirection="row" alignItems="center" justifyContent="flex-start" style={{ margin: '1rem 0 0 0' }}>
+                                <div className={`pill ${imageUrl ? 'pill--green' : ''}`} style={{ marginRight: '10px' }}>
+                                    <ImageIcon />
+                                </div>
+                                <FlexItem flexGrow={1} flexBasis={0}>
+                                    <Title color="inherit" variant="h2">
+                                        {t('part3_plan_image')}
+                                    </Title>
+                                </FlexItem>
+                            </Flex>
+                            <Title color="inherit" variant="h3" className="for-tablet-up-only">
+                                {t('part3_plan_edit_title_desktop')}
+                            </Title>
+                            <Title color="inherit" variant="h3" className="for-mobile-only">
+                                {t('part3_plan_edit_title_mobile')}
+                            </Title>
+                            <div style={{ width: '100%', maxWidth: '600px', margin: '2rem auto' }}>
+                                <KeepRatio
+                                    ratio={9 / 16}
+                                    style={{
+                                        border: '1px solid rgb(192, 192, 192)',
+                                        borderRadius: '4px',
+                                        backgroundColor: imageUrl ? 'black' : 'unset',
+                                        overflow: 'hidden',
                                     }}
                                 >
-                                    {t('part3_change_image')}
-                                </Button>
-                                <Modal
-                                    isOpen={showChangeModal}
-                                    onClose={() => {
-                                        setShowChangeModal(false);
-                                    }}
-                                    title={t('part3_change_image')}
-                                    ariaLabelledBy="change_img"
-                                    ariaDescribedBy="change_img_description"
-                                    isFullWidth
-                                >
-                                    <EditImageButtons
-                                        imageUploadId="plan-img-upload"
-                                        onShowCamera={() => {
-                                            setShowCameraModal(true);
-                                            setShowChangeModal(false);
-                                        }}
-                                        onDraw={() => {
-                                            setShowDrawModal(true);
-                                            setShowChangeModal(false);
-                                        }}
-                                    />
-                                </Modal>
+                                    {imageUrl ? (
+                                        <Image unoptimized layout="fill" objectFit="contain" src={imageUrl} />
+                                    ) : (
+                                        <EditImageButtons
+                                            imageUploadId="plan-img-upload"
+                                            onShowCamera={() => {
+                                                setShowCameraModal(true);
+                                            }}
+                                            onDraw={() => {
+                                                setShowDrawModal(true);
+                                            }}
+                                        />
+                                    )}
+                                </KeepRatio>
                             </div>
-                        )}
-                        <Modal
-                            isOpen={showCameraModal}
-                            onClose={() => {
-                                setShowCameraModal(false);
-                            }}
-                            title={t('take_picture')}
-                            ariaLabelledBy="take_picture"
-                            ariaDescribedBy="take_picture_description"
-                            isFullWidth
-                        >
-                            <div style={{ maxWidth: '120vh', margin: '0 auto' }}>
-                                <Camera
-                                    idealResolution={{ width: 1920, height: 1080 }}
-                                    onTakePhoto={(picture: string) => {
-                                        setShowCameraModal(false);
-                                        setTemporaryImageUrl(picture);
-                                    }}
-                                    isSilentMode={true}
-                                />
-                            </div>
-                        </Modal>
-                        <Modal
-                            isOpen={showDrawModal}
-                            isLoading={isCreatingBlob}
-                            onClose={() => {
-                                setShowDrawModal(false);
-                            }}
-                            confirmLabel={t('save')}
-                            confirmLevel="secondary"
-                            onConfirm={async () => {
-                                setIsCreatingBlob(true);
-                                const canvas = canvasRef.current;
-                                let blob: Blob | null = null;
-                                if (canvas) {
-                                    blob = await new Promise<Blob | null>((resolve) => {
-                                        const canvasWithBackground = document.createElement('canvas');
-                                        canvasWithBackground.width = canvas.width;
-                                        canvasWithBackground.height = canvas.height;
-
-                                        const ctx = canvasWithBackground.getContext('2d');
-                                        if (!ctx) {
-                                            resolve(null);
-                                            return;
-                                        }
-                                        ctx.fillStyle = 'white';
-                                        ctx.fillRect(0, 0, canvas.width, canvas.height);
-                                        ctx.drawImage(canvas, 0, 0);
-
-                                        canvasWithBackground.toBlob(resolve);
-                                    });
-                                }
-                                if (blob !== null) {
-                                    setImageBlob(blob);
-                                } else {
-                                    enqueueSnackbar(t('unknown_error'), {
-                                        variant: 'error',
-                                    });
-                                }
-                                setIsCreatingBlob(false);
-                                setShowDrawModal(false);
-                            }}
-                            title={t('draw_plan')}
-                            ariaLabelledBy="draw_img"
-                            ariaDescribedBy="draw_img_description"
-                            isFullWidth
-                        >
-                            <Canvas ref={canvasRef} />
-                        </Modal>
-
-                        {/* image modal */}
-                        <Modal
-                            isOpen={temporaryImageUrl !== null}
-                            onClose={() => {
-                                setTemporaryImageUrl(null);
-                            }}
-                            onConfirm={async () => {
-                                setIsCreatingBlob(true);
-                                if (croppieRef.current) {
-                                    setImageBlob(await croppieRef.current.getBlob());
-                                }
-                                setTemporaryImageUrl(null);
-                                setIsCreatingBlob(false);
-                            }}
-                            isLoading={isCreatingBlob}
-                            confirmLabel={t('validate')}
-                            cancelLabel={t('cancel')}
-                            title={t('part3_resize_image')}
-                            ariaLabelledBy="add-dialog"
-                            ariaDescribedBy="add-dialog-desc"
-                            isFullWidth
-                        >
-                            {temporaryImageUrl !== null && (
+                            <input id="plan-img-upload" type="file" accept="image/*" onChange={onInputUpload} style={{ display: 'none' }} />
+                            {imageUrl && (
                                 <div className="text-center">
-                                    <div style={{ display: 'inline-block', width: '640px', height: '360px', marginBottom: '2rem' }}>
-                                        <ImgCroppie src={temporaryImageUrl} alt="Plan image" ref={croppieRef} imgWidth={560} imgHeight={315} />
-                                    </div>
+                                    <Button
+                                        label={t('part3_change_image')}
+                                        className="plan-button"
+                                        variant="outlined"
+                                        color="secondary"
+                                        style={{ display: 'inline-block' }}
+                                        onClick={() => {
+                                            setShowChangeModal(true);
+                                        }}
+                                    ></Button>
+                                    <Modal
+                                        isOpen={showChangeModal}
+                                        onClose={() => {
+                                            setShowChangeModal(false);
+                                        }}
+                                        title={t('part3_change_image')}
+                                        isFullWidth
+                                    >
+                                        <EditImageButtons
+                                            imageUploadId="plan-img-upload"
+                                            onShowCamera={() => {
+                                                setShowCameraModal(true);
+                                                setShowChangeModal(false);
+                                            }}
+                                            onDraw={() => {
+                                                setShowDrawModal(true);
+                                                setShowChangeModal(false);
+                                            }}
+                                        />
+                                    </Modal>
                                 </div>
                             )}
-                        </Modal>
-                    </>
-                )}
 
-                <NextButton backHref={backUrl} label={t('continue')} onNext={onSubmit} />
+                            <Modal
+                                width="lg"
+                                isOpen={showCameraModal}
+                                onClose={() => {
+                                    setShowCameraModal(false);
+                                }}
+                                title={t('take_picture')}
+                                isFullWidth
+                            >
+                                <div style={{ maxWidth: '120vh', margin: '0 auto' }}>
+                                    <Camera
+                                        idealResolution={{ width: 1920, height: 1080 }}
+                                        onTakePhoto={(picture: string) => {
+                                            setShowCameraModal(false);
+                                            setTemporaryImageUrl(picture);
+                                        }}
+                                        isSilentMode={true}
+                                    />
+                                </div>
+                            </Modal>
+                            <Modal
+                                width="lg"
+                                isOpen={showDrawModal}
+                                isLoading={isCreatingBlob}
+                                onClose={() => {
+                                    setShowDrawModal(false);
+                                }}
+                                confirmLabel={t('save')}
+                                confirmLevel="secondary"
+                                onConfirm={async () => {
+                                    setIsCreatingBlob(true);
+                                    const canvas = canvasRef.current;
+                                    let blob: Blob | null = null;
+                                    if (canvas) {
+                                        blob = await new Promise<Blob | null>((resolve) => {
+                                            const canvasWithBackground = document.createElement('canvas');
+                                            canvasWithBackground.width = canvas.width;
+                                            canvasWithBackground.height = canvas.height;
+
+                                            const ctx = canvasWithBackground.getContext('2d');
+                                            if (!ctx) {
+                                                resolve(null);
+                                                return;
+                                            }
+                                            ctx.fillStyle = 'white';
+                                            ctx.fillRect(0, 0, canvas.width, canvas.height);
+                                            ctx.drawImage(canvas, 0, 0);
+
+                                            canvasWithBackground.toBlob(resolve);
+                                        });
+                                    }
+                                    if (blob !== null) {
+                                        setImageBlob(blob);
+                                    } else {
+                                        sendToast({ message: t('unknown_error'), type: 'error' });
+                                    }
+                                    setIsCreatingBlob(false);
+                                    setShowDrawModal(false);
+                                }}
+                                title={t('draw_plan')}
+                                isFullWidth
+                                onOpenAutoFocus={false}
+                            >
+                                <Canvas ref={canvasRef} />
+                            </Modal>
+
+                            {/* image modal */}
+                            <Modal
+                                width="lg"
+                                isOpen={temporaryImageUrl !== null}
+                                onClose={() => {
+                                    setTemporaryImageUrl(null);
+                                }}
+                                onConfirm={async () => {
+                                    setIsCreatingBlob(true);
+                                    if (croppieRef.current) {
+                                        setImageBlob(await croppieRef.current.getBlob());
+                                    }
+                                    setTemporaryImageUrl(null);
+                                    setIsCreatingBlob(false);
+                                }}
+                                isLoading={isCreatingBlob}
+                                confirmLabel={t('validate')}
+                                cancelLabel={t('cancel')}
+                                title={t('part3_resize_image')}
+                                isFullWidth
+                            >
+                                {temporaryImageUrl !== null && (
+                                    <div className="text-center">
+                                        <div style={{ display: 'inline-block', width: '640px', height: '360px', marginBottom: '2rem' }}>
+                                            <ImgCroppie src={temporaryImageUrl} alt="Plan image" ref={croppieRef} imgWidth={560} imgHeight={315} />
+                                        </div>
+                                    </div>
+                                )}
+                            </Modal>
+                        </>
+                    )}
+                    <NextButton backHref={backUrl} label={t('continue')} type="submit" />
+                </Form>
             </div>
             <Loader isLoading={isLoading} />
-        </div>
+        </Container>
     );
 };
 

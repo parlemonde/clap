@@ -1,8 +1,8 @@
 import type { UseMutationOptions } from 'react-query';
 import { useMutation, useQueryClient } from 'react-query';
 
-import type { AxiosRequestError } from 'src/utils/axiosRequest';
-import { axiosRequest } from 'src/utils/axiosRequest';
+import type { HttpRequestError } from 'src/utils/http-request';
+import { httpRequest } from 'src/utils/http-request';
 import type { User } from 'types/models/user.type';
 
 type PUTResponse = { user: User };
@@ -13,7 +13,7 @@ export type UpdateUserParams = {
 };
 
 export const updateUserPassword = async (data: UpdateUserParams): Promise<PUTResponse> => {
-    const response = await axiosRequest<PUTResponse>({
+    const response = await httpRequest<PUTResponse>({
         method: 'POST',
         url: `/login/update-password`,
         data,
@@ -26,7 +26,7 @@ export const updateUserPassword = async (data: UpdateUserParams): Promise<PUTRes
 };
 
 export const useUpdateUserPasswordMutation = (
-    mutationOpts: Omit<UseMutationOptions<PUTResponse, AxiosRequestError, UpdateUserParams>, 'mutationFn'> = {},
+    mutationOpts: Omit<UseMutationOptions<PUTResponse, HttpRequestError, UpdateUserParams>, 'mutationFn'> = {},
 ) => {
     const queryClient = useQueryClient();
 

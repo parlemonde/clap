@@ -1,7 +1,7 @@
 import type { UseQueryOptions, QueryFunction } from 'react-query';
 import { useQuery } from 'react-query';
 
-import { axiosRequest } from 'src/utils/axiosRequest';
+import { httpRequest } from 'src/utils/http-request';
 import { getFromLocalStorage } from 'src/utils/local-storage';
 import type { Theme } from 'types/models/theme.type';
 
@@ -17,7 +17,7 @@ export const getTheme: QueryFunction<GETResponse, GETQueryKey> = async ({ queryK
     } else if (typeof themeId === 'string') {
         return getFromLocalStorage('themes', []).find((t) => t.id === themeId) || undefined;
     } else {
-        const response = await axiosRequest<Theme>({
+        const response = await httpRequest<Theme>({
             method: 'GET',
             url: `/themes/${themeId}`,
         });

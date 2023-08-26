@@ -1,8 +1,8 @@
 import type { UseMutationOptions } from 'react-query';
 import { useMutation, useQueryClient } from 'react-query';
 
-import type { AxiosRequestError } from 'src/utils/axiosRequest';
-import { axiosRequest } from 'src/utils/axiosRequest';
+import type { HttpRequestError } from 'src/utils/http-request';
+import { httpRequest } from 'src/utils/http-request';
 import type { QuestionTemplate } from 'types/models/question.type';
 
 type POSTResponse = QuestionTemplate;
@@ -14,7 +14,7 @@ type POSTParams = {
 };
 
 export const createQuestionTemplate = async (data: POSTParams): Promise<POSTResponse> => {
-    const response = await axiosRequest<POSTResponse>({
+    const response = await httpRequest<POSTResponse>({
         method: 'POST',
         url: `/questions-templates`,
         data,
@@ -26,7 +26,7 @@ export const createQuestionTemplate = async (data: POSTParams): Promise<POSTResp
     }
 };
 
-export const useCreateQuestionTemplate = (mutationOpts: Omit<UseMutationOptions<POSTResponse, AxiosRequestError, POSTParams>, 'mutationFn'> = {}) => {
+export const useCreateQuestionTemplate = (mutationOpts: Omit<UseMutationOptions<POSTResponse, HttpRequestError, POSTParams>, 'mutationFn'> = {}) => {
     const queryClient = useQueryClient();
 
     return useMutation(createQuestionTemplate, {

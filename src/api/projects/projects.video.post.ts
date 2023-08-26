@@ -2,8 +2,8 @@ import type { UseMutationOptions } from 'react-query';
 import { useMutation, useQueryClient } from 'react-query';
 
 import type { GetPDFParams } from './projects.pdf';
-import type { AxiosRequestError } from 'src/utils/axiosRequest';
-import { axiosRequest } from 'src/utils/axiosRequest';
+import type { HttpRequestError } from 'src/utils/http-request';
+import { httpRequest } from 'src/utils/http-request';
 
 type ProjectVideo = {
     progress: number;
@@ -13,7 +13,7 @@ type POSTParams = { projectId: number; data: GetPDFParams };
 type POSTResponse = ProjectVideo;
 
 export const createProjectVideo = async ({ projectId, data }: POSTParams): Promise<POSTResponse> => {
-    const response = await axiosRequest<POSTResponse>({
+    const response = await httpRequest<POSTResponse>({
         method: 'POST',
         url: `/projects/${projectId}/video`,
         data,
@@ -26,7 +26,7 @@ export const createProjectVideo = async ({ projectId, data }: POSTParams): Promi
 };
 
 export const useCreateProjectVideoMutation = (
-    mutationOpts: Omit<UseMutationOptions<POSTResponse, AxiosRequestError, POSTParams>, 'mutationFn'> = {},
+    mutationOpts: Omit<UseMutationOptions<POSTResponse, HttpRequestError, POSTParams>, 'mutationFn'> = {},
 ) => {
     const queryClient = useQueryClient();
 

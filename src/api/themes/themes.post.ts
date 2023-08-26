@@ -3,8 +3,8 @@ import type { UseMutationOptions } from 'react-query';
 import { useMutation, useQueryClient } from 'react-query';
 
 import { userContext } from 'src/contexts/userContext';
-import type { AxiosRequestError } from 'src/utils/axiosRequest';
-import { axiosRequest } from 'src/utils/axiosRequest';
+import type { HttpRequestError } from 'src/utils/http-request';
+import { httpRequest } from 'src/utils/http-request';
 import { getFromLocalStorage, setToLocalStorage } from 'src/utils/local-storage';
 import type { Theme } from 'types/models/theme.type';
 
@@ -18,7 +18,7 @@ type POSTParams = {
 
 export const createTheme = async (isLoggedIn: boolean, data: POSTParams): Promise<POSTResponse> => {
     if (isLoggedIn) {
-        const response = await axiosRequest<Theme>({
+        const response = await httpRequest<Theme>({
             method: 'POST',
             url: `/themes`,
             data,
@@ -43,7 +43,7 @@ export const createTheme = async (isLoggedIn: boolean, data: POSTParams): Promis
     }
 };
 
-export const useCreateThemeMutation = (mutationOpts: Omit<UseMutationOptions<Theme, AxiosRequestError, POSTParams>, 'mutationFn'> = {}) => {
+export const useCreateThemeMutation = (mutationOpts: Omit<UseMutationOptions<Theme, HttpRequestError, POSTParams>, 'mutationFn'> = {}) => {
     const queryClient = useQueryClient();
     const { user } = React.useContext(userContext);
     const isLoggedIn = user !== null;

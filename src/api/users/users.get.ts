@@ -1,7 +1,7 @@
 import type { QueryFunction, UseQueryOptions } from 'react-query';
 import { useQuery } from 'react-query';
 
-import { axiosRequest } from 'src/utils/axiosRequest';
+import { httpRequest } from 'src/utils/http-request';
 import type { User } from 'types/models/user.type';
 
 type GETResponse = User | undefined;
@@ -11,7 +11,7 @@ type GETQueryKey = [string, GETParams];
 
 export const getUser: QueryFunction<GETResponse, GETQueryKey> = async ({ queryKey }) => {
     const [, userId] = queryKey;
-    const response = await axiosRequest<User>({
+    const response = await httpRequest<User>({
         method: 'GET',
         url: `/users/${userId}`,
     });

@@ -1,12 +1,6 @@
+import { FileTextIcon, SpeakerLoudIcon, UploadIcon } from '@radix-ui/react-icons';
 import { useRouter } from 'next/router';
-import { useSnackbar } from 'notistack';
 import React from 'react';
-
-import ChatIcon from '@mui/icons-material/Chat';
-import TimerIcon from '@mui/icons-material/Timer';
-import CloudUploadIcon from '@mui/icons-material/Upload';
-import VolumeUpIcon from '@mui/icons-material/VolumeUp';
-import { Typography, TextField, Button } from '@mui/material';
 
 import { useDeleteSoundMutation } from 'src/api/audios/audios.delete';
 import { useCreateSoundMutation } from 'src/api/audios/audios.post';
@@ -14,17 +8,22 @@ import { useUpdatePlanMutation } from 'src/api/plans/plans.put';
 import { useUpdateQuestionMutation } from 'src/api/questions/questions.put';
 import { useScenario } from 'src/api/scenarios/scenarios.get';
 import { useTheme } from 'src/api/themes/themes.get';
-import { DiaporamaPlayer } from 'src/components/DiaporamaPlayer';
-import { Flex } from 'src/components/layout/Flex';
-import { FlexItem } from 'src/components/layout/FlexItem';
-import { Loader } from 'src/components/layout/Loader';
+import { DiaporamaPlayer } from 'src/components/create/DiaporamaPlayer';
+import { Button } from 'src/components/layout/Button';
+import { Container } from 'src/components/layout/Container';
+import { Flex, FlexItem } from 'src/components/layout/Flex';
+import { Field, Form, TextArea } from 'src/components/layout/Form';
+import { Title } from 'src/components/layout/Typography';
 import { NextButton } from 'src/components/navigation/NextButton';
 import { Steps } from 'src/components/navigation/Steps';
 import { ThemeBreadcrumbs } from 'src/components/navigation/ThemeBreadcrumbs';
 import { Inverted } from 'src/components/ui/Inverted';
+import { Loader } from 'src/components/ui/Loader';
+import { sendToast } from 'src/components/ui/Toasts';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import { useTranslation } from 'src/i18n/useTranslation';
 import type { Sound } from 'src/lib/get-sounds';
+import TimerIcon from 'src/svg/timer.svg';
 import { serializeToQueryUrl } from 'src/utils/serializeToQueryUrl';
 import { isString } from 'src/utils/type-guards/is-string';
 import { useQueryNumber } from 'src/utils/useQueryId';
@@ -45,7 +44,6 @@ const DEFAULT_SEQUENCE: Question = {
 
 const PreMountSequence = () => {
     const router = useRouter();
-    const { enqueueSnackbar } = useSnackbar();
     const { t, currentLocale } = useTranslation();
     const { project, questions, isLoading: isProjectLoading, updateProject } = useCurrentProject();
     const { theme, isLoading: isThemeLoading } = useTheme(project ? project.themeId : 0, {
@@ -160,16 +158,14 @@ const PreMountSequence = () => {
             router.push(backUrl);
         } catch (err) {
             console.error(err);
-            enqueueSnackbar(t('unknown_error'), {
-                variant: 'error',
-            });
+            sendToast({ message: t('unknown_error'), type: 'error' });
         }
     };
 
     const diaporamaSequences = React.useMemo(() => (sequence ? [sequence] : []), [sequence]);
 
     return (
-        <div>
+        <Container>
             <ThemeBreadcrumbs theme={theme} isLoading={isThemeLoading}></ThemeBreadcrumbs>
             <Steps
                 activeStep={3}
@@ -178,94 +174,108 @@ const PreMountSequence = () => {
                 backHref={backUrl}
             ></Steps>
             <div style={{ maxWidth: '1000px', margin: 'auto', paddingBottom: '2rem' }}>
-                <Typography color="primary" variant="h1">
-                    <Inverted round>4</Inverted>
+                <Title color="primary" variant="h1" marginY="md">
+                    <Inverted isRound>4</Inverted>
                     {t('pre_mount_title', { number: questionIndex + 1 })}
-                </Typography>
-                <Typography variant="h2">{t('pre_mount_title_desc')}</Typography>
+                </Title>
+                <Title variant="h2">{t('pre_mount_title_desc')}</Title>
 
-                {/* Voice text */}
-                <Flex isFullWidth flexDirection="row" alignItems="center" justifyContent="flex-start" style={{ marginTop: '1rem' }}>
-                    <div className={`bolt ${voiceText ? 'green' : ''}`} style={{ marginRight: '10px' }}>
-                        <ChatIcon sx={{ fontSize: '1.25rem', margin: '2px 0' }} />
+                <Form onSubmit={onSubmit} marginTop="lg">
+                    {/* Voice text */}
+                    <Flex isFullWidth flexDirection="row" alignItems="center" justifyContent="flex-start">
+                        <div className={`pill ${voiceText ? 'pill--green' : ''}`} style={{ marginRight: '10px' }}>
+                            <FileTextIcon />
+                        </div>
+                        <FlexItem flexGrow={1} flexBasis={0}>
+                            <Title color="inherit" variant="h2" style={{ margin: '1rem 0' }}>
+                                {t('pre_mount_voice_off')}
+                            </Title>
+                        </FlexItem>
+                    </Flex>
+                    <Field
+                        marginTop="sm"
+                        name="voice_text"
+                        input={
+                            <TextArea
+                                value={voiceText}
+                                onChange={(event) => {
+                                    setVoiceText(event.target.value.slice(0, 4000));
+                                }}
+                                placeholder={t('part4_plan_desc_placeholder')}
+                                isFullWidth
+                                rows={4}
+                                color="secondary"
+                                autoComplete="off"
+                            />
+                        }
+                        helperText={`${voiceText.length}/4000`}
+                    ></Field>
+
+                    {/* Durations */}
+                    {diaporamaSequences.length > 0 && (
+                        <>
+                            <Flex isFullWidth flexDirection="row" alignItems="center" justifyContent="flex-start" marginTop="lg" marginBottom="sm">
+                                <div className="pill pill--green" style={{ marginRight: '10px' }}>
+                                    <TimerIcon style={{ height: '95%' }} />
+                                </div>
+                                <FlexItem flexGrow={1} flexBasis={0}>
+                                    <Title color="inherit" variant="h2" style={{ margin: '1rem 0' }}>
+                                        {t('pre_mount_duration')}
+                                    </Title>
+                                </FlexItem>
+                            </Flex>
+                            <DiaporamaPlayer
+                                canEdit
+                                canEditPlans
+                                questions={diaporamaSequences}
+                                setQuestion={setSequence}
+                                soundUrl={soundUrl}
+                                volume={volume}
+                                setVolume={setVolume}
+                                soundBeginTime={soundBeginTime}
+                                setSoundBeginTime={setSoundBeginTime}
+                                sounds={sounds}
+                            />
+                        </>
+                    )}
+
+                    {/* Sound */}
+                    <Flex isFullWidth flexDirection="row" alignItems="center" justifyContent="flex-start" marginTop="lg" marginBottom="md">
+                        <div className={`pill ${soundUrl ? 'pill--green' : ''}`} style={{ marginRight: '10px' }}>
+                            <SpeakerLoudIcon />
+                        </div>
+                        <FlexItem flexGrow={1} flexBasis={0}>
+                            <Title color="inherit" variant="h2" style={{ margin: '1rem 0' }}>
+                                {t('pre_mount_no_sound')}
+                            </Title>
+                        </FlexItem>
+                    </Flex>
+                    <div className="text-center">
+                        <Button
+                            label={t('import_voice_off')}
+                            variant="outlined"
+                            color="secondary"
+                            as="label"
+                            isUpperCase={false}
+                            role="button"
+                            aria-controls="filename"
+                            tabIndex={0}
+                            onKeyPress={(event) => {
+                                if (event.key === 'Enter' || event.key === ' ') {
+                                    document.getElementById('sequence-sound-upload')?.click();
+                                }
+                            }}
+                            htmlFor={'sequence-sound-upload'}
+                            leftIcon={<UploadIcon style={{ width: '16px', height: '16px', marginRight: '8px' }} />}
+                        ></Button>
                     </div>
-                    <FlexItem flexGrow={1} flexBasis={0}>
-                        <Typography color="inherit" variant="h2" style={{ margin: '1rem 0' }}>
-                            {t('pre_mount_voice_off')}
-                        </Typography>
-                    </FlexItem>
-                </Flex>
-                <TextField
-                    value={voiceText}
-                    onChange={(event) => {
-                        setVoiceText(event.target.value);
-                    }}
-                    required
-                    multiline
-                    placeholder={t('part4_plan_desc_placeholder')}
-                    fullWidth
-                    minRows={4}
-                    variant="outlined"
-                    color="secondary"
-                    autoComplete="off"
-                />
+                    <input id="sequence-sound-upload" type="file" accept="audio/*" onChange={onInputUpload} style={{ display: 'none' }} />
 
-                {/* Durations */}
-                <Flex isFullWidth flexDirection="row" alignItems="center" justifyContent="flex-start" style={{ marginTop: '2rem' }}>
-                    <div className={`bolt green`} style={{ marginRight: '10px' }}>
-                        <TimerIcon sx={{ fontSize: '1.25rem', margin: '2px 0' }} />
-                    </div>
-                    <FlexItem flexGrow={1} flexBasis={0}>
-                        <Typography color="inherit" variant="h2" style={{ margin: '1rem 0' }}>
-                            {t('pre_mount_duration')}
-                        </Typography>
-                    </FlexItem>
-                </Flex>
-
-                {diaporamaSequences.length > 0 && (
-                    <DiaporamaPlayer
-                        canEdit
-                        canEditPlans
-                        questions={diaporamaSequences}
-                        setQuestion={setSequence}
-                        soundUrl={soundUrl}
-                        volume={volume}
-                        setVolume={setVolume}
-                        soundBeginTime={soundBeginTime}
-                        setSoundBeginTime={setSoundBeginTime}
-                        sounds={sounds}
-                    />
-                )}
-
-                {/* Sound */}
-                <Flex isFullWidth flexDirection="row" alignItems="center" justifyContent="flex-start" style={{ marginTop: '2rem' }}>
-                    <div className={`bolt ${soundUrl ? 'green' : ''}`} style={{ marginRight: '10px' }}>
-                        <VolumeUpIcon sx={{ fontSize: '1.25rem', margin: '2px 0' }} />
-                    </div>
-                    <FlexItem flexGrow={1} flexBasis={0}>
-                        <Typography color="inherit" variant="h2" style={{ margin: '1rem 0' }}>
-                            {t('pre_mount_no_sound')}
-                        </Typography>
-                    </FlexItem>
-                </Flex>
-                <div className="text-center">
-                    <Button
-                        variant="outlined"
-                        color="secondary"
-                        component="label"
-                        htmlFor={'sequence-sound-upload'}
-                        style={{ textTransform: 'none' }}
-                        startIcon={<CloudUploadIcon />}
-                    >
-                        {t('import_voice_off')}
-                    </Button>
-                </div>
-                <input id="sequence-sound-upload" type="file" accept="audio/*" onChange={onInputUpload} style={{ display: 'none' }} />
-
-                <NextButton backHref={backUrl} label={t('continue')} onNext={onSubmit} />
+                    <NextButton backHref={backUrl} label={t('continue')} type="submit" />
+                </Form>
             </div>
             <Loader isLoading={isLoading} />
-        </div>
+        </Container>
     );
 };
 

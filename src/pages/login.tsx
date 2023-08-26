@@ -1,29 +1,20 @@
+import { EyeOpenIcon, EyeNoneIcon } from '@radix-ui/react-icons';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import qs from 'query-string';
 import React from 'react';
 
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import {
-    Typography,
-    TextField,
-    InputAdornment,
-    IconButton,
-    FormControlLabel,
-    Checkbox,
-    Button,
-    Link as MaterialLink,
-    Backdrop,
-    CircularProgress,
-    NoSsr,
-} from '@mui/material';
-
+import { Button } from 'src/components/layout/Button';
+import { IconButton } from 'src/components/layout/Button/IconButton';
+import { Container } from 'src/components/layout/Container';
+import { Checkbox, Field, Form, Input } from 'src/components/layout/Form';
+import { Title } from 'src/components/layout/Typography';
+import { Loader } from 'src/components/ui/Loader';
 import { userContext } from 'src/contexts/userContext';
 import { useTranslation } from 'src/i18n/useTranslation';
-import { axiosRequest } from 'src/utils/axiosRequest';
 import { generateTemporaryToken } from 'src/utils/generate-temporary-token';
+import { httpRequest } from 'src/utils/http-request';
 import { clientId, ssoHost, ssoHostName } from 'src/utils/sso';
+import { useQueryString } from 'src/utils/useQueryId';
 import type { User } from 'types/models/user.type';
 
 const errorMessages = {
@@ -55,13 +46,16 @@ const LoginPage = () => {
     const [errorCode, setErrorCode] = React.useState(-1);
     const [isLoading, setIsLoading] = React.useState(false);
 
+    const stateQueryParam = useQueryString('state');
+    const codeQueryParam = useQueryString('code');
+
     const firstCall = React.useRef(false);
     const loginSSO = React.useCallback(
         async (code: string) => {
             if (firstCall.current === false) {
                 firstCall.current = true;
                 setIsLoading(true);
-                const response = await axiosRequest<{ user: User }>({
+                const response = await httpRequest<{ user: User }>({
                     method: 'POST',
                     url: `/login-sso-plm`,
                     data: {
@@ -81,25 +75,23 @@ const LoginPage = () => {
     );
 
     React.useEffect(() => {
-        const urlQueryParams = qs.parse(window.location.search);
-        if (urlQueryParams.state && urlQueryParams.code) {
+        if (stateQueryParam && codeQueryParam) {
             const state = window.sessionStorage.getItem('oauth-state') || '';
-            if (state === decodeURI(urlQueryParams.state as string)) {
-                loginSSO(decodeURI(urlQueryParams.code as string)).catch();
+            if (state === decodeURI(stateQueryParam)) {
+                loginSSO(decodeURI(codeQueryParam)).catch();
             } else {
                 setErrorCode(0);
             }
         }
-    }, [loginSSO]);
+    }, [stateQueryParam, codeQueryParam, loginSSO]);
 
     if (user !== null) {
         return <div></div>;
     }
 
-    const onLogin = async (event: React.FormEvent) => {
-        event.preventDefault();
+    const onLogin = async () => {
         setIsLoading(true);
-        const response = await axiosRequest<{ user: User }>({
+        const response = await httpRequest<{ user: User }>({
             method: 'POST',
             url: `/login`,
             data: login,
@@ -113,7 +105,7 @@ const LoginPage = () => {
         setIsLoading(false);
     };
 
-    const onloginWithSSO = () => {
+    const onLoginWithSSO = () => {
         if (!clientId || !ssoHost) {
             return;
         }
@@ -127,110 +119,109 @@ const LoginPage = () => {
     };
 
     return (
-        <div className="text-center">
-            <Typography color="primary" variant="h1" style={{ marginTop: '2rem' }}>
+        <Container className="text-center">
+            <Title color="primary" variant="h1" marginTop={48} marginBottom="lg">
                 {t('login_title')}
-            </Typography>
-            <form className="login-form" noValidate onSubmit={onLogin}>
+            </Title>
+            <Form className="login-form" onSubmit={onLogin}>
                 {(errorCode === 0 || errorCode >= 3) && (
-                    <Typography variant="caption" color="error">
-                        {t(errorMessages[errorCode as 0] || errorMessages[0])}
-                    </Typography>
+                    <span style={{ color: 'rgb(211, 47, 47)', display: 'block' }}>{t(errorMessages[errorCode as 0] || errorMessages[0])}</span>
                 )}
-                <NoSsr>
-                    {ssoHost.length && clientId ? (
-                        <>
-                            <Button variant="contained" color="secondary" onClick={onloginWithSSO} style={{ margin: '1.5rem 0' }}>
-                                Se connecter avec {ssoHostName}
-                            </Button>
-                            <div className="login__divider">
-                                <div className="login__or">
-                                    <span style={{ fontSize: '1.2rem', padding: '0.25rem', backgroundColor: 'white' }}>OU</span>
-                                </div>
+
+                {ssoHost.length && clientId ? (
+                    <>
+                        <Button
+                            label={`Se connecter avec ${ssoHostName}`}
+                            variant="contained"
+                            color="secondary"
+                            onClick={onLoginWithSSO}
+                            marginY="lg"
+                        ></Button>
+                        <div className="login__divider">
+                            <div className="login__or">
+                                <span style={{ fontSize: '1.2rem', padding: '0.25rem', backgroundColor: 'white' }}>OU</span>
                             </div>
-                        </>
-                    ) : null}
-                </NoSsr>
-                <TextField
-                    id="username"
+                        </div>
+                    </>
+                ) : null}
+                <Field
                     name="username"
-                    type="text"
-                    color="secondary"
-                    label={t('login_username')}
-                    value={login.username}
-                    onChange={(event) => {
-                        setLogin({ ...login, username: event.target.value });
-                        setErrorCode(-1);
-                    }}
-                    variant="outlined"
-                    fullWidth
-                    error={errorCode === 1}
-                    helperText={errorCode === 1 ? t(errorMessages[1]) : null}
-                />
-                <TextField
-                    type={showPassword ? 'text' : 'password'}
-                    color="secondary"
-                    id="password"
+                    label={<span style={{ display: 'inline-block', marginBottom: 4 }}>{t('login_username')}</span>}
+                    input={
+                        <Input
+                            id="username"
+                            name="username"
+                            type="text"
+                            color="secondary"
+                            value={login.username}
+                            onChange={(event) => {
+                                setLogin({ ...login, username: event.target.value });
+                                setErrorCode(-1);
+                            }}
+                            isFullWidth
+                            required
+                            hasError={errorCode === 1}
+                        />
+                    }
+                    helperText={errorCode === 1 ? t(errorMessages[1]) : ''}
+                    helperTextStyle={{ textAlign: 'left', color: 'rgb(211, 47, 47)' }}
+                ></Field>
+                <Field
                     name="password"
-                    label={t('login_password')}
-                    value={login.password}
-                    onChange={(event) => {
-                        setLogin({ ...login, password: event.target.value });
-                        setErrorCode(-1);
-                    }}
-                    variant="outlined"
-                    InputProps={{
-                        endAdornment: (
-                            <InputAdornment position="end">
+                    label={<span style={{ display: 'inline-block', marginBottom: 4 }}>{t('login_password')}</span>}
+                    input={
+                        <Input
+                            type={showPassword ? 'text' : 'password'}
+                            id="password"
+                            name="password"
+                            color="secondary"
+                            value={login.password}
+                            onChange={(event) => {
+                                setLogin({ ...login, password: event.target.value });
+                                setErrorCode(-1);
+                            }}
+                            isFullWidth
+                            required
+                            hasError={errorCode === 2}
+                            iconAdornment={
                                 <IconButton
                                     aria-label="toggle password visibility"
                                     onClick={() => {
                                         setShowPassword(!showPassword);
                                     }}
-                                    edge="end"
-                                >
-                                    {showPassword ? <Visibility /> : <VisibilityOff />}
-                                </IconButton>
-                            </InputAdornment>
-                        ),
+                                    variant="borderless"
+                                    icon={showPassword ? EyeNoneIcon : EyeOpenIcon}
+                                    iconProps={{ style: { color: 'rgba(0, 0, 0, 0.54)', height: 24, width: 24 } }}
+                                ></IconButton>
+                            }
+                            iconAdornmentProps={{ position: 'right' }}
+                        />
+                    }
+                    helperText={errorCode === 2 ? t(errorMessages[2]) : ''}
+                ></Field>
+                <Checkbox
+                    name="remember-checkbox"
+                    isChecked={login.getRefreshToken}
+                    onChange={() => {
+                        setLogin({ ...login, getRefreshToken: !login.getRefreshToken });
                     }}
-                    fullWidth
-                    error={errorCode === 2}
-                    helperText={errorCode === 2 ? t(errorMessages[2]) : null}
+                    label={t('login_remember_me')}
                 />
-                <div>
-                    <FormControlLabel
-                        control={
-                            <Checkbox
-                                checked={login.getRefreshToken}
-                                onChange={() => {
-                                    setLogin({ ...login, getRefreshToken: !login.getRefreshToken });
-                                }}
-                                value={login.getRefreshToken}
-                            />
-                        }
-                        label={t('login_remember_me')}
-                    />
-                </div>
-                <Button variant="contained" color="secondary" type="submit" value="Submit">
-                    {t('login_connect')}
-                </Button>
+                <Button label={t('login_connect')} variant="contained" color="secondary" type="submit" value="Submit"></Button>
                 <div className="text-center">
                     <Link href="/reset-password" passHref>
-                        <MaterialLink>{t('login_forgot_password')}</MaterialLink>
+                        <a className="color-primary">{t('login_forgot_password')}</a>
                     </Link>
                 </div>
                 <div className="text-center">
                     {t('login_new')}{' '}
                     <Link href="/sign-up" passHref>
-                        <MaterialLink>{t('login_signup')}</MaterialLink>
+                        <a className="color-primary">{t('login_signup')}</a>
                     </Link>
                 </div>
-            </form>
-            <Backdrop style={{ zIndex: 2000, color: 'white' }} open={isLoading}>
-                <CircularProgress color="inherit" />
-            </Backdrop>
-        </div>
+            </Form>
+            <Loader isLoading={isLoading} />
+        </Container>
     );
 };
 

@@ -1,76 +1,31 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useSnackbar } from 'notistack';
 import React from 'react';
-
-import DeleteIcon from '@mui/icons-material/Delete';
-import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
-import EditIcon from '@mui/icons-material/Edit';
-import { Button, Typography, Box, IconButton } from '@mui/material';
 
 import { useDeleteQuestionMutation } from 'src/api/questions/questions.delete';
 import { useReorderQuestionsMutation } from 'src/api/questions/questions.order';
 import { useScenario } from 'src/api/scenarios/scenarios.get';
 import { useTheme } from 'src/api/themes/themes.get';
-import { SaveProjectModal } from 'src/components/SaveProjectModal';
+import { QuestionCard } from 'src/components/create/QuestionCard';
+import { SaveProjectModal } from 'src/components/create/SaveProjectModal';
+import { Button } from 'src/components/layout/Button';
+import { Container } from 'src/components/layout/Container';
+import { Modal } from 'src/components/layout/Modal';
+import { Title } from 'src/components/layout/Typography';
 import { NextButton } from 'src/components/navigation/NextButton';
 import { Steps } from 'src/components/navigation/Steps';
 import { ThemeBreadcrumbs } from 'src/components/navigation/ThemeBreadcrumbs';
 import { Inverted } from 'src/components/ui/Inverted';
-import Modal from 'src/components/ui/Modal';
 import { Sortable } from 'src/components/ui/Sortable';
+import { sendToast } from 'src/components/ui/Toasts';
 import { Trans } from 'src/components/ui/Trans';
 import { userContext } from 'src/contexts/userContext';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import { useTranslation } from 'src/i18n/useTranslation';
 import { serializeToQueryUrl } from 'src/utils/serializeToQueryUrl';
 
-type QuestionCardProps = {
-    projectId: number | null;
-    question: string;
-    index?: number;
-    onDelete?(): void;
-};
-
-const QuestionCard = ({ projectId, question, index = 0, onDelete }: QuestionCardProps) => {
-    return (
-        <Box sx={{ border: '1px solid', borderColor: (theme) => theme.palette.secondary.main }} className="question-container">
-            <Box sx={{ backgroundColor: (theme) => theme.palette.secondary.main }} className="question-index">
-                <DragIndicatorIcon style={{ height: '1rem' }} />
-                {index + 1}
-            </Box>
-            <div className="question-content">
-                <p>{question}</p>
-            </div>
-            <div className="question-actions">
-                <Link href={`/create/2-questions/edit${serializeToQueryUrl({ question: index, projectId })}`} passHref>
-                    <IconButton
-                        sx={{ border: '1px solid', borderColor: (theme) => theme.palette.secondary.main }}
-                        aria-label="edit"
-                        size="small"
-                        color="secondary"
-                        style={{ marginRight: '0.6rem' }}
-                    >
-                        <EditIcon />
-                    </IconButton>
-                </Link>
-                <IconButton
-                    sx={{ border: '1px solid', borderColor: (theme) => theme.palette.secondary.main }}
-                    aria-label="delete"
-                    size="small"
-                    color="secondary"
-                    onClick={onDelete}
-                >
-                    <DeleteIcon />
-                </IconButton>
-            </div>
-        </Box>
-    );
-};
-
 const QuestionsPage = () => {
     const router = useRouter();
-    const { enqueueSnackbar } = useSnackbar();
     const { t, currentLocale } = useTranslation();
     const { user } = React.useContext(userContext);
     const { project, questions, isLoading: isProjectLoading, updateProject } = useCurrentProject();
@@ -100,9 +55,7 @@ const QuestionsPage = () => {
                 await deleteQuestionMutation.mutateAsync({ questionId: questionToDelete.id });
             } catch (err) {
                 console.error(err);
-                enqueueSnackbar(t('unknown_error'), {
-                    variant: 'error',
-                });
+                sendToast({ message: t('unknown_error'), type: 'error' });
                 return;
             }
         }
@@ -121,16 +74,14 @@ const QuestionsPage = () => {
             {
                 onError(error) {
                     console.error(error);
-                    enqueueSnackbar(t('unknown_error'), {
-                        variant: 'error',
-                    });
+                    sendToast({ message: t('unknown_error'), type: 'error' });
                 },
             },
         );
     };
 
     return (
-        <div>
+        <Container>
             <ThemeBreadcrumbs theme={theme} isLoading={isThemeLoading}></ThemeBreadcrumbs>
             <Steps
                 activeStep={1}
@@ -138,27 +89,17 @@ const QuestionsPage = () => {
                 scenarioName={scenario?.names?.[currentLocale] || undefined}
             ></Steps>
             <div style={{ maxWidth: '1000px', margin: 'auto', paddingBottom: '2rem' }}>
-                <Typography color="primary" variant="h1">
-                    <Inverted round>2</Inverted>{' '}
+                <Title color="primary" marginY="md" variant="h1">
+                    <Inverted isRound>2</Inverted>{' '}
                     <Trans i18nKey="part2_title">
                         Mes <Inverted>séquences</Inverted>
                     </Trans>
-                </Typography>
-                <Typography color="inherit" variant="h2">
+                </Title>
+                <Title color="inherit" variant="h2">
                     {t('part2_desc')}
-                </Typography>
+                </Title>
                 <Link href={`/create/2-questions/new${serializeToQueryUrl({ projectId: project?.id || null })}`} passHref>
-                    <Button
-                        component="a"
-                        variant="outlined"
-                        color="secondary"
-                        style={{
-                            textTransform: 'none',
-                            marginTop: '2rem',
-                        }}
-                    >
-                        {t('add_question')}
-                    </Button>
+                    <Button as="a" label={t('add_question')} variant="outlined" color="secondary" marginTop="lg" isUpperCase={false}></Button>
                 </Link>
                 {!isProjectLoading && (
                     <Sortable
@@ -177,6 +118,26 @@ const QuestionsPage = () => {
                                 onDelete={() => {
                                     setDeleteQuestionIndex(index);
                                 }}
+                                onIndexUp={
+                                    index > 0
+                                        ? () => {
+                                              const newQuestions = [...questions];
+                                              newQuestions.splice(index - 1, 0, newQuestions.splice(index, 1)[0]);
+                                              updateProject({ questions: newQuestions });
+                                              onReorderQuestions(newQuestions.map((q) => q.id));
+                                          }
+                                        : undefined
+                                }
+                                onIndexDown={
+                                    index < questions.length - 1
+                                        ? () => {
+                                              const newQuestions = [...questions];
+                                              newQuestions.splice(index + 1, 0, newQuestions.splice(index, 1)[0]);
+                                              updateProject({ questions: newQuestions });
+                                              onReorderQuestions(newQuestions.map((q) => q.id));
+                                          }
+                                        : undefined
+                                }
                             />
                         ))}
                     </Sortable>
@@ -199,8 +160,6 @@ const QuestionsPage = () => {
                     title={t('part2_delete_question_title')}
                     confirmLabel={t('delete')}
                     confirmLevel="error"
-                    ariaLabelledBy="delete_question_confirm"
-                    ariaDescribedBy="delete_question_confirm_description"
                     isLoading={deleteQuestionMutation.isLoading}
                 >
                     {t('part2_delete_question_desc')} {questions[deleteQuestionIndex]?.question || ''} ?
@@ -213,7 +172,7 @@ const QuestionsPage = () => {
                     }}
                 />
             </div>
-        </div>
+        </Container>
     );
 };
 

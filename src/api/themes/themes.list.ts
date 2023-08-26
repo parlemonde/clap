@@ -3,7 +3,7 @@ import type { QueryFunction } from 'react-query';
 import { useQuery } from 'react-query';
 
 import { userContext } from 'src/contexts/userContext';
-import { axiosRequest } from 'src/utils/axiosRequest';
+import { httpRequest } from 'src/utils/http-request';
 import { getFromLocalStorage } from 'src/utils/local-storage';
 import { serializeToQueryUrl } from 'src/utils/serializeToQueryUrl';
 import type { Theme } from 'types/models/theme.type';
@@ -19,7 +19,7 @@ type GETQueryKey = [string, boolean, GETParams | undefined];
 export const getThemes: QueryFunction<GETResponse, GETQueryKey> = async ({ queryKey }) => {
     const [, isLoggedIn, args = {}] = queryKey;
     const localThemes = isLoggedIn ? [] : getFromLocalStorage('themes', []);
-    const response = await axiosRequest<Theme[]>({
+    const response = await httpRequest<Theme[]>({
         method: 'GET',
         url: `/themes${serializeToQueryUrl(args)}`,
     });

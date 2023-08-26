@@ -1,0 +1,24 @@
+@use 'variables' as *;
+
+.inverted {
+  padding: 0 2px;
+  color: white;
+
+  &.inverted__round {
+    border-radius: $sizeXL/2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: $sizeXL;
+    width: $sizeXL;
+    padding: 0;
+  }
+
+  &.inverted__primary {
+    background-color: $primaryColor;
+  }
+
+  &.inverted__secondary {
+    background-color: $secondaryColor;
+  }
+}

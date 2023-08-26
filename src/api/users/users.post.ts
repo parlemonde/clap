@@ -1,8 +1,8 @@
 import type { UseMutationOptions } from 'react-query';
 import { useMutation, useQueryClient } from 'react-query';
 
-import type { AxiosRequestError } from 'src/utils/axiosRequest';
-import { axiosRequest } from 'src/utils/axiosRequest';
+import type { HttpRequestError } from 'src/utils/http-request';
+import { httpRequest } from 'src/utils/http-request';
 import type { User } from 'types/models/user.type';
 
 type POSTResponse = { user: User };
@@ -15,7 +15,7 @@ export type POSTParams = {
 };
 
 export const createUser = async (data: POSTParams): Promise<POSTResponse> => {
-    const response = await axiosRequest<POSTResponse>({
+    const response = await httpRequest<POSTResponse>({
         method: 'POST',
         url: `/users`,
         data,
@@ -27,7 +27,7 @@ export const createUser = async (data: POSTParams): Promise<POSTResponse> => {
     }
 };
 
-export const useCreateUserMutation = (mutationOpts: Omit<UseMutationOptions<POSTResponse, AxiosRequestError, POSTParams>, 'mutationFn'> = {}) => {
+export const useCreateUserMutation = (mutationOpts: Omit<UseMutationOptions<POSTResponse, HttpRequestError, POSTParams>, 'mutationFn'> = {}) => {
     const queryClient = useQueryClient();
 
     return useMutation(createUser, {

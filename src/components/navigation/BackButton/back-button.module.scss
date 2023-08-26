@@ -1,0 +1,12 @@
+@use 'mixins';
+@use 'variables' as *;
+
+.backButton {
+  margin-top: $sizeMD;
+  padding-left: 8px;
+}
+@include mixins.for-tablet-up {
+  a.backButton {
+    display: none;
+  }
+}

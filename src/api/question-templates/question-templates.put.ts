@@ -1,8 +1,8 @@
 import type { UseMutationOptions } from 'react-query';
 import { useMutation, useQueryClient } from 'react-query';
 
-import type { AxiosRequestError } from 'src/utils/axiosRequest';
-import { axiosRequest } from 'src/utils/axiosRequest';
+import type { HttpRequestError } from 'src/utils/http-request';
+import { httpRequest } from 'src/utils/http-request';
 import type { QuestionTemplate } from 'types/models/question.type';
 
 type PUTResponse = QuestionTemplate;
@@ -12,7 +12,7 @@ type PUTParams = {
 };
 
 export const updateQuestionTemplate = async ({ questionId, ...data }: PUTParams): Promise<PUTResponse> => {
-    const response = await axiosRequest<PUTResponse>({
+    const response = await httpRequest<PUTResponse>({
         method: 'PUT',
         url: `/questions-templates/${questionId}`,
         data,
@@ -24,7 +24,7 @@ export const updateQuestionTemplate = async ({ questionId, ...data }: PUTParams)
     }
 };
 
-export const useUpdateQuestionTemplate = (mutationOpts: Omit<UseMutationOptions<PUTResponse, AxiosRequestError, PUTParams>, 'mutationFn'> = {}) => {
+export const useUpdateQuestionTemplate = (mutationOpts: Omit<UseMutationOptions<PUTResponse, HttpRequestError, PUTParams>, 'mutationFn'> = {}) => {
     const queryClient = useQueryClient();
 
     return useMutation(updateQuestionTemplate, {

@@ -71,6 +71,7 @@ async function startApp() {
                 policy: 'cross-origin',
             },
             crossOriginEmbedderPolicy: false,
+            expectCt: false,
         }),
     );
     app.use(cors());

@@ -1,15 +1,15 @@
 import type { UseMutationOptions } from 'react-query';
 import { useMutation, useQueryClient } from 'react-query';
 
-import type { AxiosRequestError } from 'src/utils/axiosRequest';
-import { axiosRequest } from 'src/utils/axiosRequest';
+import type { HttpRequestError } from 'src/utils/http-request';
+import { httpRequest } from 'src/utils/http-request';
 
 type DELETEParams = {
     planId: number;
 };
 
 export const deletePlan = async ({ planId }: DELETEParams): Promise<void> => {
-    const response = await axiosRequest<void>({
+    const response = await httpRequest<void>({
         method: 'DELETE',
         url: `/plans/${planId}`,
     });
@@ -20,7 +20,7 @@ export const deletePlan = async ({ planId }: DELETEParams): Promise<void> => {
     }
 };
 
-export const useDeletePlanMutation = (mutationOpts: Omit<UseMutationOptions<void, AxiosRequestError, DELETEParams>, 'mutationFn'> = {}) => {
+export const useDeletePlanMutation = (mutationOpts: Omit<UseMutationOptions<void, HttpRequestError, DELETEParams>, 'mutationFn'> = {}) => {
     const queryClient = useQueryClient();
 
     return useMutation(deletePlan, {

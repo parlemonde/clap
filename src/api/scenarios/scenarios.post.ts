@@ -3,8 +3,8 @@ import type { UseMutationOptions } from 'react-query';
 import { useMutation, useQueryClient } from 'react-query';
 
 import { userContext } from 'src/contexts/userContext';
-import type { AxiosRequestError } from 'src/utils/axiosRequest';
-import { axiosRequest } from 'src/utils/axiosRequest';
+import type { HttpRequestError } from 'src/utils/http-request';
+import { httpRequest } from 'src/utils/http-request';
 import { getFromLocalStorage, setToLocalStorage } from 'src/utils/local-storage';
 import type { Scenario } from 'types/models/scenario.type';
 
@@ -18,7 +18,7 @@ type POSTParams = {
 
 export const createScenario = async (isLoggedIn: boolean, data: POSTParams): Promise<POSTResponse> => {
     if (isLoggedIn) {
-        const response = await axiosRequest<POSTResponse>({
+        const response = await httpRequest<POSTResponse>({
             method: 'POST',
             url: `/scenarios`,
             data,
@@ -43,7 +43,7 @@ export const createScenario = async (isLoggedIn: boolean, data: POSTParams): Pro
     }
 };
 
-export const useCreateScenarioMutation = (mutationOpts: Omit<UseMutationOptions<POSTResponse, AxiosRequestError, POSTParams>, 'mutationFn'> = {}) => {
+export const useCreateScenarioMutation = (mutationOpts: Omit<UseMutationOptions<POSTResponse, HttpRequestError, POSTParams>, 'mutationFn'> = {}) => {
     const queryClient = useQueryClient();
     const { user } = React.useContext(userContext);
     const isLoggedIn = user !== null;

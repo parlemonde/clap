@@ -1,10 +1,10 @@
-import { useSnackbar } from 'notistack';
+import { UploadIcon } from '@radix-ui/react-icons';
 import React from 'react';
 
-import { Button } from '@mui/material';
-
 import { useUpdateLanguageMutation } from 'src/api/languages/languages.put';
-import Modal from 'src/components/ui/Modal';
+import { Button } from 'src/components/layout/Button';
+import { Modal } from 'src/components/layout/Modal';
+import { sendToast } from 'src/components/ui/Toasts';
 import type { Language } from 'types/models/language.type';
 
 interface UploadLanguageModalProps {
@@ -13,7 +13,6 @@ interface UploadLanguageModalProps {
 }
 
 export const UploadLanguageModal = ({ language = null, onClose = () => {} }: UploadLanguageModalProps) => {
-    const { enqueueSnackbar } = useSnackbar();
     const [file, setFile] = React.useState<File | null>(null);
 
     const updateLanguageMutation = useUpdateLanguageMutation();
@@ -26,16 +25,12 @@ export const UploadLanguageModal = ({ language = null, onClose = () => {} }: Upl
                 languageId: language.value,
                 file,
             });
-            enqueueSnackbar('Traductions modifiées avec succès!', {
-                variant: 'success',
-            });
+            sendToast({ message: 'Traductions modifiées avec succès!', type: 'success' });
             setFile(null);
             onClose();
         } catch (err) {
             console.error(err);
-            enqueueSnackbar('Une erreur inconnue est survenue...', {
-                variant: 'error',
-            });
+            sendToast({ message: 'Une erreur inconnue est survenue...', type: 'error' });
         }
     };
 
@@ -59,26 +54,39 @@ export const UploadLanguageModal = ({ language = null, onClose = () => {} }: Upl
             confirmLabel="Mettre à jour"
             cancelLabel="Annuler"
             title="Mettre à jour la langue"
-            ariaLabelledBy="delete-dialog-title"
-            ariaDescribedBy="delete-dialog-description"
             isFullWidth
         >
-            <div id="delete-dialog-description">
+            <div>
                 {
                     "Veuillez choisir le fichier .po de la langue pour la mettre à jour. Attention ! Ne vous trompez pas de langue, l'API actuelle ne vérifie pas si la langue dans le fichier .po envoyée correspond bien."
                 }
             </div>
             <div style={{ width: '100%', textAlign: 'center', margin: '1rem 0' }}>
-                <Button component="label" htmlFor="new-language-po" style={{ textTransform: 'none' }} color="secondary" variant="contained">
-                    {file === null ? (
-                        <>
-                            Choisir le fichier pour la langue :<strong style={{ marginLeft: '0.3rem' }}>{language?.label || ''}</strong>
-                        </>
-                    ) : (
-                        `${file.name} | changer`
-                    )}
-                </Button>
-
+                <Button
+                    label={
+                        file === null ? (
+                            <>
+                                Choisir le fichier pour la langue :<strong style={{ marginLeft: '0.3rem' }}>{language?.label || ''}</strong>
+                            </>
+                        ) : (
+                            `${file.name} | changer`
+                        )
+                    }
+                    variant="outlined"
+                    color="secondary"
+                    as="label"
+                    isUpperCase={false}
+                    role="button"
+                    aria-controls="filename"
+                    tabIndex={0}
+                    onKeyPress={(event) => {
+                        if (event.key === 'Enter' || event.key === ' ') {
+                            document.getElementById('new-language-po')?.click();
+                        }
+                    }}
+                    htmlFor="new-language-po"
+                    leftIcon={<UploadIcon style={{ width: '16px', height: '16px', marginRight: '8px' }} />}
+                />
                 <input style={{ display: 'none' }} type="file" accept=".po" id="new-language-po" onChange={onFileChange}></input>
             </div>
         </Modal>

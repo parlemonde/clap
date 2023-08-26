@@ -1,8 +1,8 @@
-import { useSnackbar } from 'notistack';
 import React from 'react';
 
 import { useDeleteQuestionTemplateMutation } from 'src/api/question-templates/question-templates.delete';
-import Modal from 'src/components/ui/Modal';
+import { Modal } from 'src/components/layout/Modal';
+import { sendToast } from 'src/components/ui/Toasts';
 import type { QuestionTemplate } from 'types/models/question.type';
 
 interface DeleteQuestionModalProps {
@@ -11,8 +11,6 @@ interface DeleteQuestionModalProps {
 }
 
 export const DeleteQuestionModal = ({ question = null, onClose = () => {} }: DeleteQuestionModalProps) => {
-    const { enqueueSnackbar } = useSnackbar();
-
     const deleteQuestionTemplateMutation = useDeleteQuestionTemplateMutation();
     const onSubmit = async () => {
         if (question === null) {
@@ -22,15 +20,11 @@ export const DeleteQuestionModal = ({ question = null, onClose = () => {} }: Del
             await deleteQuestionTemplateMutation.mutateAsync({
                 questionId: question.id,
             });
-            enqueueSnackbar('Question supprimée avec succès!', {
-                variant: 'success',
-            });
+            sendToast({ message: 'Question supprimée avec succès!', type: 'success' });
             onClose();
         } catch (err) {
             console.error(err);
-            enqueueSnackbar('Une erreur inconnue est survenue...', {
-                variant: 'error',
-            });
+            sendToast({ message: 'Une erreur inconnue est survenue...', type: 'error' });
         }
     };
 
@@ -44,13 +38,9 @@ export const DeleteQuestionModal = ({ question = null, onClose = () => {} }: Del
             confirmLevel="error"
             cancelLabel="Annuler"
             title="Supprimer la question ?"
-            ariaLabelledBy="create-dialog-title"
-            ariaDescribedBy="create-dialog-description"
             isFullWidth
         >
-            <div id="create-dialog-description">
-                Voulez-vous vraiment supprimer la question <strong>{question?.question || ''}</strong> ?
-            </div>
+            Voulez-vous vraiment supprimer la question <strong>{question?.question || ''}</strong> ?
         </Modal>
     );
 };

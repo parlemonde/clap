@@ -1,0 +1,25 @@
+@use 'variables' as *;
+
+.LinearProgress {
+    width: 100%;
+    height: 4px;
+
+    &__Bar {
+        display: block;
+        height: 100%;
+        transition: width .4s linear;
+    }
+
+    &--primary {
+        background-color: rgba(156, 159, 240, 0.8);
+        .LinearProgress__Bar {
+            background-color: $primaryColor;
+        }
+    }
+    &--secondary {
+        background-color: rgb(175, 231, 208, 0.8);
+        .LinearProgress__Bar {
+            background-color: $secondaryColor;
+        }
+    }
+}

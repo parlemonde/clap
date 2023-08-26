@@ -1,8 +1,8 @@
 import type { UseMutationOptions } from 'react-query';
 import { useMutation, useQueryClient } from 'react-query';
 
-import type { AxiosRequestError } from 'src/utils/axiosRequest';
-import { axiosRequest } from 'src/utils/axiosRequest';
+import type { HttpRequestError } from 'src/utils/http-request';
+import { httpRequest } from 'src/utils/http-request';
 import type { Project } from 'types/models/project.type';
 import type { Question } from 'types/models/question.type';
 
@@ -18,7 +18,7 @@ type POSTParams = {
 type POSTResponse = Project;
 
 export const createProject = async (data: POSTParams): Promise<POSTResponse> => {
-    const response = await axiosRequest<POSTResponse>({
+    const response = await httpRequest<POSTResponse>({
         method: 'POST',
         url: `/projects`,
         data,
@@ -30,7 +30,7 @@ export const createProject = async (data: POSTParams): Promise<POSTResponse> => 
     }
 };
 
-export const useCreateProjectMutation = (mutationOpts: Omit<UseMutationOptions<POSTResponse, AxiosRequestError, POSTParams>, 'mutationFn'> = {}) => {
+export const useCreateProjectMutation = (mutationOpts: Omit<UseMutationOptions<POSTResponse, HttpRequestError, POSTParams>, 'mutationFn'> = {}) => {
     const queryClient = useQueryClient();
 
     return useMutation(createProject, {

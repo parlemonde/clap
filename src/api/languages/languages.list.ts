@@ -1,14 +1,14 @@
 import type { QueryFunction } from 'react-query';
 import { useQuery } from 'react-query';
 
-import { axiosRequest } from 'src/utils/axiosRequest';
+import { httpRequest } from 'src/utils/http-request';
 import type { Language } from 'types/models/language.type';
 
 type GETResponse = Language[];
 type GETQueryKey = [string];
 
 export const getLanguages: QueryFunction<GETResponse, GETQueryKey> = async () => {
-    const response = await axiosRequest<Language[]>({
+    const response = await httpRequest<Language[]>({
         method: 'GET',
         url: `/languages`,
     });

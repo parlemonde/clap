@@ -1,8 +1,8 @@
-import { useSnackbar } from 'notistack';
 import React from 'react';
 
 import { useDeleteLanguageMutation } from 'src/api/languages/languages.delete';
-import Modal from 'src/components/ui/Modal';
+import { Modal } from 'src/components/layout/Modal';
+import { sendToast } from 'src/components/ui/Toasts';
 import type { Language } from 'types/models/language.type';
 
 interface DeleteLanguageModalProps {
@@ -14,8 +14,6 @@ export const DeleteLanguageModal: React.FunctionComponent<DeleteLanguageModalPro
     language = null,
     onClose = () => {},
 }: DeleteLanguageModalProps) => {
-    const { enqueueSnackbar } = useSnackbar();
-
     const deleteLanguageMutation = useDeleteLanguageMutation();
     const onSubmit = async () => {
         if (language === null) {
@@ -25,15 +23,11 @@ export const DeleteLanguageModal: React.FunctionComponent<DeleteLanguageModalPro
             await deleteLanguageMutation.mutateAsync({
                 languageId: language.value,
             });
-            enqueueSnackbar('Language supprimé avec succès!', {
-                variant: 'success',
-            });
+            sendToast({ message: 'Language supprimé avec succès!', type: 'success' });
             onClose();
         } catch (err) {
             console.error(err);
-            enqueueSnackbar('Une erreur inconnue est survenue...', {
-                variant: 'error',
-            });
+            sendToast({ message: 'Une erreur inconnue est survenue...', type: 'error' });
         }
     };
 
@@ -47,15 +41,11 @@ export const DeleteLanguageModal: React.FunctionComponent<DeleteLanguageModalPro
             confirmLevel="error"
             cancelLabel="Annuler"
             title="Supprimer le language ?"
-            ariaLabelledBy="delete-dialog-title"
-            ariaDescribedBy="delete-dialog-description"
             isFullWidth
         >
-            <div id="delete-dialog-description">
-                Voulez-vous vraiment supprimer le language <strong>{language?.label || ''}</strong> ?
-                <br />
-                Cette action est irréversible. Cependant les projets, thèmes, scénarios et questions liés à cette langue ne seront pas supprimés.
-            </div>
+            Voulez-vous vraiment supprimer le language <strong>{language?.label || ''}</strong> ?
+            <br />
+            Cette action est irréversible. Cependant les projets, thèmes, scénarios et questions liés à cette langue ne seront pas supprimés.
         </Modal>
     );
 };

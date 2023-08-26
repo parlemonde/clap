@@ -1,19 +1,23 @@
+import { EyeOpenIcon, EyeNoneIcon } from '@radix-ui/react-icons';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import qs from 'query-string';
 import React from 'react';
 
-import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { Link, Typography, InputAdornment, IconButton, TextField, Button, FormControl, InputLabel, Select } from '@mui/material';
-import type { SelectChangeEvent } from '@mui/material';
-
 import { useLanguages } from 'src/api/languages/languages.list';
 import type { POSTParams as PostUserArgs } from 'src/api/users/users.post';
 import { useCreateUserMutation } from 'src/api/users/users.post';
-import { Loader } from 'src/components/layout/Loader';
+import { Button } from 'src/components/layout/Button';
+import { IconButton } from 'src/components/layout/Button/IconButton';
+import { Container } from 'src/components/layout/Container';
+import { Field, Form, Input } from 'src/components/layout/Form';
+import { Select } from 'src/components/layout/Form/Select';
+import { Title } from 'src/components/layout/Typography';
+import { Loader } from 'src/components/ui/Loader';
 import { userContext } from 'src/contexts/userContext';
 import { useTranslation } from 'src/i18n/useTranslation';
-import { axiosRequest } from 'src/utils/axiosRequest';
 import { getQueryString } from 'src/utils/get-query-string';
+import { httpRequest } from 'src/utils/http-request';
 import { useQueryString } from 'src/utils/useQueryId';
 
 type NewUser = Omit<PostUserArgs, 'inviteCode'> & { passwordConfirm: string };
@@ -22,7 +26,6 @@ type NewUser = Omit<PostUserArgs, 'inviteCode'> & { passwordConfirm: string };
 const emailRegex =
     /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/i;
 const strongPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/;
-// const frenchClasses = ["CP", "CE1", "CE2", "CM1", "CM2"];
 
 const checks = {
     email: (value: string) => emailRegex.test(value),
@@ -32,7 +35,7 @@ const checks = {
 };
 
 const isPseudoAvailable = async (pseudo: string): Promise<boolean> => {
-    const response = await axiosRequest<{ available: boolean }>({
+    const response = await httpRequest<{ available: boolean }>({
         method: 'GET',
         url: `/users/test-pseudo/${pseudo}`,
     });
@@ -43,7 +46,7 @@ const isPseudoAvailable = async (pseudo: string): Promise<boolean> => {
 };
 
 const checkInviteCode = async (code: string): Promise<boolean> => {
-    const response = await axiosRequest<{ isValid: boolean }>({
+    const response = await httpRequest<{ isValid: boolean }>({
         method: 'GET',
         url: `/users/check-invite/${code}`,
     });
@@ -80,16 +83,9 @@ const SignupPage = () => {
     const [inviteCodeError, setInviteCodeError] = React.useState<boolean>(false);
     const inviteCodeURL = useQueryString('inviteCode');
 
-    const handleLinkClick = (path: string) => (event: React.MouseEvent) => {
-        event.preventDefault();
-        router.push(path);
-    };
-
     const createUserMutation = useCreateUserMutation();
     const isLoading = createUserMutation.isLoading;
-    const handleSubmit = async (event: React.MouseEvent) => {
-        event.preventDefault();
-
+    const handleSubmit = async () => {
         // Check entries
         const userKeys: Array<'email' | 'pseudo' | 'password' | 'passwordConfirm'> = ['email', 'pseudo', 'password', 'passwordConfirm'];
         let isFormValid = true;
@@ -123,8 +119,7 @@ const SignupPage = () => {
         }
     };
 
-    const handleInviteCodeSubmit = async (event: React.MouseEvent) => {
-        event.preventDefault();
+    const handleInviteCodeSubmit = async () => {
         if (!(await checkInviteCode(inviteCodeValue))) {
             setInviteCodeError(true);
             return;
@@ -153,7 +148,7 @@ const SignupPage = () => {
         setInviteCodeError(false);
     };
 
-    const handleInputChange = (userKey: string) => (event: SelectChangeEvent<string> | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const handleInputChange = (userKey: string) => (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         setUser({ ...user, [userKey]: event.target.value });
         setErrors((e) => ({ ...e, [userKey]: false, global: false }));
     };
@@ -184,161 +179,171 @@ const SignupPage = () => {
     }
 
     return (
-        <div className="text-center">
-            <Typography color="primary" variant="h1" style={{ marginTop: '2rem' }}>
+        <Container className="text-center">
+            <Title color="primary" variant="h1" marginTop="lg" marginBottom="md">
                 {t('signup_title')}
-            </Typography>
+            </Title>
 
             {inviteCode === null ? (
-                <form className="signup-form" noValidate autoComplete={'off'} style={{ textAlign: 'left' }}>
+                <Form onSubmit={handleInviteCodeSubmit} className="signup-form" autoComplete="off" style={{ textAlign: 'left' }}>
                     <label style={{ fontWeight: 'bold', fontSize: '1rem' }}>{t('signup_invite_title')}</label>
-                    <TextField
-                        id="inviteCode"
+                    <Field
+                        marginTop="md"
                         name="inviteCode"
-                        type="text"
-                        color="secondary"
                         label={t('signup_invite_placeholder')}
-                        value={inviteCodeValue}
-                        onChange={onInviteChange}
-                        variant="outlined"
-                        fullWidth
-                        error={inviteCodeError}
+                        input={
+                            <Input
+                                id="inviteCode"
+                                name="inviteCode"
+                                type="text"
+                                color="secondary"
+                                required
+                                value={inviteCodeValue}
+                                onChange={onInviteChange}
+                                isFullWidth
+                                hasError={inviteCodeError}
+                            />
+                        }
                         helperText={inviteCodeError ? t('signup_invite_error') : ''}
-                        style={{ marginTop: '1rem' }}
-                    />
-                    <Button variant="contained" color="secondary" type="submit" value="Submit" onClick={handleInviteCodeSubmit}>
-                        {t('continue')}
-                    </Button>
-                </form>
+                        helperTextStyle={{ textAlign: 'left', color: 'rgb(211, 47, 47)' }}
+                    ></Field>
+                    <Button label={t('continue')} variant="contained" color="secondary" type="submit" value="Submit"></Button>
+                </Form>
             ) : (
-                <form className="signup-form" noValidate autoComplete={'off'}>
-                    {errors.global && (
-                        <Typography variant="caption" color="error">
-                            {t('signup_error_msg')}
-                        </Typography>
-                    )}
-                    <TextField
-                        id="email"
+                <Form onSubmit={handleSubmit} className="signup-form" autoComplete="off">
+                    {errors.global && <span style={{ color: 'rgb(211, 47, 47)', display: 'block' }}>{t('signup_error_msg')}</span>}
+                    <Field
                         name="email"
-                        type="email"
-                        color="secondary"
                         label={t('signup_email')}
-                        value={user.email || ''}
-                        onChange={handleInputChange('email')}
-                        onBlur={handleInputValidations('email')}
-                        variant="outlined"
-                        fullWidth
-                        error={errors.email}
+                        input={
+                            <Input
+                                id="email"
+                                name="email"
+                                type="email"
+                                color="secondary"
+                                required
+                                value={user.email || ''}
+                                onChange={handleInputChange('email')}
+                                onBlur={handleInputValidations('email')}
+                                isFullWidth
+                                hasError={errors.email}
+                            />
+                        }
                         helperText={errors.email ? t('signup_email_error') : ''}
+                        helperTextStyle={{ textAlign: 'left', color: 'rgb(211, 47, 47)' }}
                     />
-                    <TextField
-                        id="username"
+                    <Field
                         name="username"
-                        type="text"
-                        color="secondary"
                         label={t('signup_pseudo')}
-                        value={user.pseudo || ''}
-                        onChange={handleInputChange('pseudo')}
-                        onBlur={handleInputValidations('pseudo')}
-                        variant="outlined"
-                        fullWidth
-                        error={errors.pseudo || errors.pseudoNotAvailable}
+                        input={
+                            <Input
+                                id="username"
+                                name="username"
+                                type="text"
+                                color="secondary"
+                                required
+                                value={user.pseudo || ''}
+                                onChange={handleInputChange('pseudo')}
+                                onBlur={handleInputValidations('pseudo')}
+                                isFullWidth
+                                hasError={errors.pseudo || errors.pseudoNotAvailable}
+                            />
+                        }
                         helperText={
                             (errors.pseudo ? `${t('signup_required')} | ` : errors.pseudoNotAvailable ? `${t('signup_pseudo_error')} |` : '') +
                             t('signup_pseudo_help')
                         }
+                        helperTextStyle={{ textAlign: 'left', color: errors.pseudo || errors.pseudoNotAvailable ? 'rgb(211, 47, 47)' : 'inherit' }}
                     />
-                    <FormControl variant="outlined" color="secondary">
-                        <InputLabel htmlFor="languageCode">{t('signup_language')}</InputLabel>
-                        <Select
-                            native
-                            value={user.languageCode}
-                            onChange={handleInputChange('languageCode')}
-                            label={t('signup_language')}
-                            inputProps={{
-                                name: 'languageCode',
-                                id: 'languageCode',
-                            }}
-                        >
-                            {languages.map((l) => (
-                                <option value={l.value} key={l.value}>
-                                    {l.label}
-                                </option>
-                            ))}
-                        </Select>
-                    </FormControl>
-                    <TextField
-                        type={showPassword ? 'text' : 'password'}
-                        color="secondary"
-                        id="password"
+                    <Field
+                        name="language"
+                        label={t('signup_language')}
+                        input={
+                            <Select isFullWidth color="secondary" value={user.languageCode} onChange={handleInputChange('languageCode')}>
+                                {languages.map((l) => (
+                                    <option value={l.value} key={l.value}>
+                                        {l.label}
+                                    </option>
+                                ))}
+                            </Select>
+                        }
+                    />
+                    <Field
                         name="password"
                         label={t('login_password')}
-                        value={user.password || ''}
-                        onChange={handleInputChange('password')}
-                        onBlur={handleInputValidations('password')}
-                        variant="outlined"
-                        InputProps={{
-                            endAdornment: (
-                                <InputAdornment position="end">
+                        input={
+                            <Input
+                                type={showPassword ? 'text' : 'password'}
+                                color="secondary"
+                                id="password"
+                                name="password"
+                                value={user.password || ''}
+                                required
+                                onChange={handleInputChange('password')}
+                                onBlur={handleInputValidations('password')}
+                                iconAdornment={
                                     <IconButton
                                         aria-label="toggle password visibility"
                                         onClick={() => {
                                             setShowPassword(!showPassword);
                                         }}
-                                        edge="end"
-                                    >
-                                        {showPassword ? <Visibility /> : <VisibilityOff />}
-                                    </IconButton>
-                                </InputAdornment>
-                            ),
-                        }}
-                        fullWidth
-                        error={errors.password}
+                                        variant="borderless"
+                                        icon={showPassword ? EyeNoneIcon : EyeOpenIcon}
+                                        iconProps={{ style: { color: 'rgba(0, 0, 0, 0.54)', height: 24, width: 24 } }}
+                                    ></IconButton>
+                                }
+                                iconAdornmentProps={{ position: 'right' }}
+                                isFullWidth
+                                hasError={errors.password}
+                            />
+                        }
                         helperText={errors.password ? t('signup_password_error') : ''}
+                        helperTextStyle={{ textAlign: 'left', color: 'rgb(211, 47, 47)' }}
                     />
-                    <TextField
-                        type={showPassword ? 'text' : 'password'}
-                        color="secondary"
-                        id="passwordComfirm"
+                    <Field
                         name="passwordComfirm"
                         label={t('signup_password_confirm')}
-                        value={user.passwordConfirm || ''}
-                        onChange={handleInputChange('passwordConfirm')}
-                        onBlur={handleInputValidations('passwordConfirm')}
-                        variant="outlined"
-                        InputProps={{
-                            endAdornment: (
-                                <InputAdornment position="end">
+                        input={
+                            <Input
+                                type={showPassword ? 'text' : 'password'}
+                                color="secondary"
+                                id="passwordComfirm"
+                                name="passwordComfirm"
+                                required
+                                value={user.passwordConfirm || ''}
+                                onChange={handleInputChange('passwordConfirm')}
+                                onBlur={handleInputValidations('passwordConfirm')}
+                                iconAdornment={
                                     <IconButton
                                         aria-label="toggle password visibility"
                                         onClick={() => {
                                             setShowPassword(!showPassword);
                                         }}
-                                        edge="end"
-                                    >
-                                        {showPassword ? <Visibility /> : <VisibilityOff />}
-                                    </IconButton>
-                                </InputAdornment>
-                            ),
-                        }}
-                        fullWidth
-                        error={errors.passwordConfirm}
+                                        variant="borderless"
+                                        icon={showPassword ? EyeNoneIcon : EyeOpenIcon}
+                                        iconProps={{ style: { color: 'rgba(0, 0, 0, 0.54)', height: 24, width: 24 } }}
+                                    ></IconButton>
+                                }
+                                iconAdornmentProps={{ position: 'right' }}
+                                isFullWidth
+                                hasError={errors.passwordConfirm}
+                            />
+                        }
                         helperText={errors.passwordConfirm ? t('signup_password_confirm_error') : ''}
+                        helperTextStyle={{ textAlign: 'left', color: 'rgb(211, 47, 47)' }}
                     />
-                    <Button variant="contained" color={'secondary'} type="submit" value="Submit" onClick={handleSubmit}>
-                        {t('signup_button')}
-                    </Button>
-                </form>
+                    <Button label={t('signup_button')} variant="contained" color={'secondary'} type="submit" value="Submit"></Button>
+                </Form>
             )}
 
             <div className="text-center" style={{ marginBottom: '2rem' }}>
                 {t('signup_already')}{' '}
-                <Link href="/login" onClick={handleLinkClick('/login')}>
-                    {t('login_connect')}
+                <Link passHref href="/login">
+                    <a>{t('login_connect')}</a>
                 </Link>
             </div>
             <Loader isLoading={isLoading} />
-        </div>
+        </Container>
     );
 };
 

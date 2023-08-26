@@ -1,0 +1,90 @@
+@use 'mixins';
+@use 'variables' as *;
+
+.topNavBar {
+  display: none;
+}
+@include mixins.for-tablet-up {
+  .topNavBar {
+    display: block;
+    height: 48px;
+  }
+}
+
+.header {
+  position: fixed;
+  z-index: 100;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 48px;
+  background-color: $primaryColor;
+  color: white;
+}
+
+.container {
+  height: 100%;
+}
+
+.logo {
+  flex: 0 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  font-family: littledays, Alegreya Sans, sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 32px;
+  color: white;
+  text-decoration: none;
+}
+.logo > span {
+  flex: 1 1 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.navigation {
+  flex: 0 0 auto;
+}
+
+.navigation ul {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.navigationButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 130px;
+  padding: 6px $sizeMD;
+  margin-left: $sizeLG;
+  font-family: "Alegreya Sans", sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  text-decoration: none;
+  color: white;
+  cursor: pointer;
+}
+.navigationButton[data-active] {
+  background-color: white;
+  color: rgb(96, 101, 252);
+}
+.navigationButton:hover {
+  background-color: #ffffff22;
+}
+.navigationButton[data-active]:hover {
+  background-color: #e3e3e3;
+}
+.navigationButton > span {
+  margin-right: $sizeSM;
+}

@@ -1,11 +1,9 @@
-import { useSnackbar } from 'notistack';
 import React from 'react';
 
-import FormHelperText from '@mui/material/FormHelperText';
-import TextField from '@mui/material/TextField';
-
 import { useCreateQuestionTemplate } from 'src/api/question-templates/question-templates.post';
-import Modal from 'src/components/ui/Modal';
+import { Field, Input } from 'src/components/layout/Form';
+import { Modal } from 'src/components/layout/Modal';
+import { sendToast } from 'src/components/ui/Toasts';
 
 interface CreateQuestionModalProps {
     scenarioId: number;
@@ -16,7 +14,6 @@ interface CreateQuestionModalProps {
 }
 
 export const CreateQuestionModal = ({ scenarioId, languageCode, open = false, onClose = () => {}, order = 0 }: CreateQuestionModalProps) => {
-    const { enqueueSnackbar } = useSnackbar();
     const [question, setQuestion] = React.useState<string>('');
     const [hasError, setHasError] = React.useState<boolean>(false);
 
@@ -44,16 +41,12 @@ export const CreateQuestionModal = ({ scenarioId, languageCode, open = false, on
                 languageCode,
                 index: order,
             });
-            enqueueSnackbar('Question ajoutée avec succès!', {
-                variant: 'success',
-            });
+            sendToast({ message: 'Question ajoutée avec succès!', type: 'success' });
             setQuestion('');
             onClose();
         } catch (err) {
             console.error(err);
-            enqueueSnackbar('Une erreur inconnue est survenue...', {
-                variant: 'error',
-            });
+            sendToast({ message: 'Une erreur inconnue est survenue...', type: 'error' });
         }
     };
 
@@ -69,25 +62,24 @@ export const CreateQuestionModal = ({ scenarioId, languageCode, open = false, on
             confirmLabel="Créer"
             cancelLabel="Annuler"
             title="Ajouter une question"
-            ariaLabelledBy="create-dialog-title"
-            ariaDescribedBy="create-dialog-description"
             isFullWidth
         >
-            <div id="create-dialog-description">
-                <TextField
-                    value={question}
-                    onChange={onQuestionChange}
-                    error={hasError}
-                    className={hasError ? 'shake' : ''}
-                    label="Question"
-                    variant="outlined"
-                    fullWidth
-                    color="secondary"
-                />
-                <FormHelperText id="component-helper-text" style={{ marginLeft: '0.2rem', marginTop: '0.2rem' }}>
-                    {question.length}/280
-                </FormHelperText>
-            </div>
+            <Field
+                name="create-question"
+                label="Question"
+                input={
+                    <Input
+                        name="create-question"
+                        id="create-question"
+                        value={question}
+                        onChange={onQuestionChange}
+                        hasError={hasError}
+                        isFullWidth
+                        color="secondary"
+                    />
+                }
+                helperText={`${question.length}/280`}
+            ></Field>
         </Modal>
     );
 };

@@ -1,18 +1,18 @@
 import type { UseMutationOptions } from 'react-query';
 import { useMutation } from 'react-query';
 
-import type { AxiosRequestError } from 'src/utils/axiosRequest';
-import { axiosRequest } from 'src/utils/axiosRequest';
+import type { HttpRequestError } from 'src/utils/http-request';
+import { httpRequest } from 'src/utils/http-request';
 
 type DELETEParams = {
     imageUrl: string;
 };
 
 export const deleteImage = async ({ imageUrl }: DELETEParams): Promise<void> => {
-    const response = await axiosRequest<void>({
+    const response = await httpRequest<void>({
         method: 'DELETE',
         url: imageUrl,
-        baseURL: '',
+        baseUrl: '',
     });
     if (response.success) {
         return;
@@ -21,7 +21,7 @@ export const deleteImage = async ({ imageUrl }: DELETEParams): Promise<void> => 
     }
 };
 
-export const useDeleteImageMutation = (mutationOpts: Omit<UseMutationOptions<void, AxiosRequestError, DELETEParams>, 'mutationFn'> = {}) => {
+export const useDeleteImageMutation = (mutationOpts: Omit<UseMutationOptions<void, HttpRequestError, DELETEParams>, 'mutationFn'> = {}) => {
     return useMutation(deleteImage, {
         ...mutationOpts,
         onSuccess: (data, variables, context) => {
