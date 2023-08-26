@@ -106,10 +106,13 @@ export async function htmlToPDF<P extends PDF>(pdf: P, options: PDFOptions<P>, l
     logger.info(`File ${filename}.pdf successfully generated!`);
 
     // Set timeout of 10 minutes to delete pdf
-    setTimeout(() => {
-        fs.unlinkSync(path.join(directory, `${filename}.pdf`));
-        fs.rmdir(directory);
-    }, 10 * 60 * 1000); // Minutes * Seconds * Milliseconds
+    setTimeout(
+        () => {
+            fs.unlinkSync(path.join(directory, `${filename}.pdf`));
+            fs.rmdir(directory);
+        },
+        10 * 60 * 1000,
+    ); // Minutes * Seconds * Milliseconds
 
     // Return url
     return `${id}/${filename}.pdf`;

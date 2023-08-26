@@ -1,5 +1,4 @@
 /* eslint-disable camelcase */
-import axios from 'axios';
 import { getRepository } from 'typeorm';
 
 import { User } from '../entities/user';
@@ -14,23 +13,24 @@ const CLIENT_SECRET = process.env.CLIENT_SECRET || '';
 
 export async function getUserFromPLM(code: string): Promise<User | null> {
     try {
-        const ssoResponse = await axios({
+        const ssoResponse = await fetch(`${PLM_HOST_URL}/oauth/token`, {
             method: 'POST',
-            url: `${PLM_HOST_URL}/oauth/token`,
-            data: {
+            headers: {
+                ['Content-Type']: 'application/json',
+            },
+            body: JSON.stringify({
                 grant_type: 'authorization_code',
                 client_id: CLIENT_ID,
                 client_secret: CLIENT_SECRET,
                 redirect_uri: `${CLAP_HOST_URL}/login`,
                 code,
-            },
+            }),
         });
-        const { access_token } = ssoResponse.data as { access_token: string };
-        const userResponse = await axios({
+        const { access_token } = (await ssoResponse.json()) as { access_token: string };
+        const userResponse = await fetch(`${PLM_HOST_URL}/oauth/me?access_token=${access_token}`, {
             method: 'GET',
-            url: `${PLM_HOST_URL}/oauth/me?access_token=${access_token}`,
         });
-        const plmUser = userResponse.data as PLM_User;
+        const plmUser = (await userResponse.json()) as PLM_User;
         let user = await getRepository(User).findOne({
             where: { email: plmUser.email },
         });

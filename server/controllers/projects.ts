@@ -23,15 +23,15 @@ import { Controller } from './controller';
 
 type QuestionsFromBody = Array<{
     question: string;
-    title: Title | null;
-    voiceOff: string | null;
+    title?: Title | null;
+    voiceOff?: string | null;
     voiceOffBeginTime?: number;
-    soundUrl: string | null;
-    soundVolume: number | null;
+    soundUrl?: string | null;
+    soundVolume?: number | null;
     plans: Array<{
         description: string;
-        imageUrl: string | null;
-        duration: number | null;
+        imageUrl?: string | null;
+        duration?: number | null;
     }>;
 }>;
 
@@ -95,12 +95,12 @@ const QUESTION_FROM_BODY_SCHEMA: JSONSchemaType<QuestionsFromBody> = {
                             nullable: true,
                         },
                     },
-                    required: ['description', 'imageUrl', 'duration'],
+                    required: ['description'],
                     additionalProperties: true,
                 },
             },
         },
-        required: ['question', 'soundUrl', 'soundVolume', 'title', 'voiceOff'],
+        required: ['question', 'plans'],
         additionalProperties: true,
     },
 };
@@ -109,7 +109,7 @@ function getQuestionsFromBody(questionsFromBody: QuestionsFromBody): Question[] 
     for (const q of questionsFromBody) {
         const question = new Question();
         question.question = q.question || '';
-        question.title = q.title;
+        question.title = q.title ?? null;
         question.voiceOff = q.voiceOff || '';
         question.voiceOffBeginTime = q.voiceOffBeginTime || 0;
         question.soundUrl = q.soundUrl || '';
@@ -119,7 +119,7 @@ function getQuestionsFromBody(questionsFromBody: QuestionsFromBody): Question[] 
             const plan = new Plan();
             plan.imageUrl = p.imageUrl || '';
             plan.description = p.description || '';
-            plan.duration = p.duration;
+            plan.duration = p.duration ?? null;
             question.plans.push(plan);
         }
         questions.push(question);
