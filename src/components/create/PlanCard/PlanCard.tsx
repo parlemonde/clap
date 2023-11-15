@@ -36,29 +36,28 @@ export const PlanCard = ({ projectId, plan, questionIndex, planIndex, showNumber
                 question: questionIndex,
                 plan: planIndex,
             })}`}
-            passHref
+            className={styles.planCard}
+            style={buttonStyle}
         >
-            <a className={styles.planCard} style={buttonStyle}>
-                <div className={classNames('pill', styles.planCard__number, { ['pill--purple']: Boolean(plan.imageUrl) })}>{showNumber}</div>
-                <div className={classNames('pill', styles.planCard__bolt, { ['pill--green']: Boolean(plan.description) })}>
-                    <LightningBoltIcon />
-                </div>
-                <div className={styles.planCard__editButton}>{t('edit')}</div>
-                {canDelete && (
-                    <IconButton
-                        className={styles.planCard__deleteButton}
-                        aria-label={t('delete')}
-                        icon={TrashIcon}
-                        color="error"
-                        variant="contained"
-                        onClick={(event) => {
-                            event.preventDefault();
-                            event.stopPropagation();
-                            onDelete();
-                        }}
-                    />
-                )}
-            </a>
+            <div className={classNames('pill', styles.planCard__number, { ['pill--purple']: Boolean(plan.imageUrl) })}>{showNumber}</div>
+            <div className={classNames('pill', styles.planCard__bolt, { ['pill--green']: Boolean(plan.description) })}>
+                <LightningBoltIcon />
+            </div>
+            <div className={styles.planCard__editButton}>{t('edit')}</div>
+            {canDelete && (
+                <IconButton
+                    className={styles.planCard__deleteButton}
+                    aria-label={t('delete')}
+                    icon={TrashIcon}
+                    color="error"
+                    variant="contained"
+                    onClick={(event) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        onDelete();
+                    }}
+                />
+            )}
         </Link>
     );
 };

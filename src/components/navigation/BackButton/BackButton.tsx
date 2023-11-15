@@ -18,7 +18,7 @@ type BackButtonProps = {
 export const BackButton = ({ href, label = 'back', onClick, className, style }: BackButtonProps) => {
     const { t } = useTranslation();
     return (
-        <Link href={href} passHref>
+        <Link href={href} passHref legacyBehavior>
             <Button
                 color="primary"
                 variant="borderless"

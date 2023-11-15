@@ -29,7 +29,7 @@ export const BottomNavBar = () => {
                 <NavigationMenu.List className={styles.navigationList}>
                     {tabs.map((tab) => (
                         <NavigationMenu.Item key={tab.path} className={styles.navigationItem}>
-                            <NextLink href={tab.path} passHref>
+                            <NextLink href={tab.path} passHref legacyBehavior>
                                 <NavigationMenu.Link active={tab.path === currentPath} className={styles.navigationButton}>
                                     <span style={{ marginBottom: '2px' }}>{tab.icon}</span>
                                     <span>{t(tab.label)}</span>

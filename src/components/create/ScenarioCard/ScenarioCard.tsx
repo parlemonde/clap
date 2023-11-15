@@ -13,20 +13,19 @@ type ScenarioCardProps = {
     href: string;
 };
 export const ScenarioCard = ({ isNew = false, name, description, questionsCount, href }: ScenarioCardProps) => (
-    <Link href={href} passHref>
-        <a
-            style={{
-                backgroundColor: isNew ? '#f0fafa' : 'unset',
-            }}
-            className={styles.scenarioCard}
-            tabIndex={0}
-        >
-            <Title variant="h3" color="primary">
-                {name}
-            </Title>
-            <p>{description}</p>
-            {questionsCount && <div style={{ color: '#646464' }}>{questionsCount}</div>}
-            <div className={styles.scenarioCard__arrow}>{<ChevronRightIcon style={{ color: '#646464' }} />}</div>
-        </a>
+    <Link
+        href={href}
+        style={{
+            backgroundColor: isNew ? '#f0fafa' : 'unset',
+        }}
+        className={styles.scenarioCard}
+        tabIndex={0}
+    >
+        <Title variant="h3" color="primary">
+            {name}
+        </Title>
+        <p>{description}</p>
+        {questionsCount && <div style={{ color: '#646464' }}>{questionsCount}</div>}
+        <div className={styles.scenarioCard__arrow}>{<ChevronRightIcon style={{ color: '#646464' }} />}</div>
     </Link>
 );

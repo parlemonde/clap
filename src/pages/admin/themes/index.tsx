@@ -83,7 +83,7 @@ const ThemesPage = () => {
                 marginY="md"
                 title="Liste des thèmes"
                 actions={
-                    <Link href="/admin/themes/new" passHref>
+                    <Link href="/admin/themes/new" passHref legacyBehavior>
                         <Button
                             label="Ajouter un thème"
                             as="a"
@@ -152,7 +152,7 @@ const ThemesPage = () => {
                                         <th align="right" style={{ minWidth: '96px' }}>
                                             <Tooltip content="Modifier">
                                                 <span>
-                                                    <Link href={`/admin/themes/edit/${t.id}`} passHref>
+                                                    <Link href={`/admin/themes/edit/${t.id}`} passHref legacyBehavior>
                                                         <IconButton
                                                             as="a"
                                                             margin="xs"
@@ -185,10 +185,7 @@ const ThemesPage = () => {
                         <tbody>
                             <tr>
                                 <th colSpan={4} align="center" style={{ padding: '8px 0' }}>
-                                    Cette liste est vide !{' '}
-                                    <Link href="/admin/themes/new" passHref>
-                                        <a>Ajouter un thème ?</a>
-                                    </Link>
+                                    Cette liste est vide ! <Link href="/admin/themes/new">Ajouter un thème ?</Link>
                                 </th>
                             </tr>
                         </tbody>

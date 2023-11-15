@@ -18,32 +18,30 @@ type ProjectCardProps = {
 export const ProjectCard = ({ title = '', themeName = '', href, onClickEdit, className }: ProjectCardProps) => {
     const { t } = useTranslation();
     return (
-        <Link href={href} passHref>
-            <a className={classNames(styles.ProjectCard, className)}>
-                <Title color="primary" variant="h3" className="text-center">
-                    {title}
-                </Title>
-                {themeName !== '' && (
-                    <div className={styles.ProjectCard__ThemeName}>
-                        <label>{t('my_videos_themes')}</label> {themeName}
-                    </div>
-                )}
-                {onClickEdit !== undefined && (
-                    <div className={styles.ProjectCard__EditButton}>
-                        <IconButton
-                            color="primary"
-                            aria-label={t('delete')}
-                            size="sm"
-                            onClick={(event) => {
-                                event.preventDefault();
-                                event.stopPropagation();
-                                onClickEdit(event);
-                            }}
-                            icon={Pencil1Icon}
-                        ></IconButton>
-                    </div>
-                )}
-            </a>
+        <Link href={href} className={classNames(styles.ProjectCard, className)}>
+            <Title color="primary" variant="h3" className="text-center">
+                {title}
+            </Title>
+            {themeName !== '' && (
+                <div className={styles.ProjectCard__ThemeName}>
+                    <label>{t('my_videos_themes')}</label> {themeName}
+                </div>
+            )}
+            {onClickEdit !== undefined && (
+                <div className={styles.ProjectCard__EditButton}>
+                    <IconButton
+                        color="primary"
+                        aria-label={t('delete')}
+                        size="sm"
+                        onClick={(event) => {
+                            event.preventDefault();
+                            event.stopPropagation();
+                            onClickEdit(event);
+                        }}
+                        icon={Pencil1Icon}
+                    ></IconButton>
+                </div>
+            )}
         </Link>
     );
 };

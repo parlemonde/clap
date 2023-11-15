@@ -48,7 +48,7 @@ export const QuestionCard = ({ projectId, question, index = 0, onDelete, onIndex
                 <p>{question}</p>
             </div>
             <div className={styles.questionActions}>
-                <Link href={`/create/2-questions/edit${serializeToQueryUrl({ question: index, projectId })}`} passHref>
+                <Link href={`/create/2-questions/edit${serializeToQueryUrl({ question: index, projectId })}`} legacyBehavior passHref>
                     <IconButton as="a" aria-label="edit" size="sm" color="secondary" marginRight="sm" icon={Pencil1Icon}></IconButton>
                 </Link>
                 {onDelete && <IconButton aria-label="delete" size="sm" color="secondary" onClick={onDelete} icon={TrashIcon}></IconButton>}

@@ -25,8 +25,8 @@ export const Breadcrumbs = ({ links, currentLabel, className, ...marginProps }: 
                 {links.map((link, index) => (
                     <React.Fragment key={index}>
                         <li>
-                            <Link href={link.href} passHref>
-                                <a className={styles.link}>{typeof link.label === 'string' ? <Text>{link.label}</Text> : link.label}</a>
+                            <Link href={link.href} className={styles.link}>
+                                {typeof link.label === 'string' ? <Text>{link.label}</Text> : link.label}
                             </Link>
                         </li>
                         <li aria-hidden="true" className={styles.separator}>

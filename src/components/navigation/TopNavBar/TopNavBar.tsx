@@ -28,24 +28,23 @@ export const TopNavBar = () => {
             <div className={styles.header}>
                 <Container className={styles.container}>
                     <Flex flexDirection="row" alignItems="center" justifyContent="space-between" isFullHeight>
-                        <NextLink href="/create" passHref>
-                            <a
-                                className={styles.logo}
-                                data-active={currentPath === '/create' ? '' : undefined}
-                                aria-current={currentPath === '/create' ? 'page' : undefined}
-                                aria-label="logo"
-                            >
-                                <PelicoSVG style={{ height: '36px', width: 'auto' }} />
-                                <Box as="span" marginLeft="md">
-                                    Clap!
-                                </Box>
-                            </a>
+                        <NextLink
+                            href="/create"
+                            className={styles.logo}
+                            data-active={currentPath === '/create' ? '' : undefined}
+                            aria-current={currentPath === '/create' ? 'page' : undefined}
+                            aria-label="logo"
+                        >
+                            <PelicoSVG style={{ height: '36px', width: 'auto' }} />
+                            <Box as="span" marginLeft="md">
+                                Clap!
+                            </Box>
                         </NextLink>
                         <NavigationMenu.Root className={styles.navigation}>
                             <NavigationMenu.List>
                                 {tabs.map((tab) => (
                                     <NavigationMenu.Item key={tab.path}>
-                                        <NextLink href={tab.path} passHref>
+                                        <NextLink href={tab.path} passHref legacyBehavior>
                                             <NavigationMenu.Link active={tab.path === currentPath} className={styles.navigationButton}>
                                                 <span>{t(tab.label)}</span>
                                                 {tab.icon}

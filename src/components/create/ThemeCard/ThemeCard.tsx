@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 import Link from 'next/link';
 import * as React from 'react';
 
@@ -19,26 +19,24 @@ const ThemeCard = ({ index, imageUrl, name, href }: ThemeCardProps) => {
     const [showBackgroundColor, setShowBackgroundColor] = React.useState(true);
 
     return (
-        <Link href={href} passHref>
-            <a className={styles.themeCard}>
-                <KeepRatio ratio={0.7}>
-                    <div style={{ backgroundColor: showBackgroundColor ? COLORS[index % COLORS.length] : 'unset' }} className={styles.themeCardImage}>
-                        {imageUrl && (
-                            <Image
-                                onLoadingComplete={() => {
-                                    setShowBackgroundColor(false);
-                                }}
-                                layout="fill"
-                                src={imageUrl}
-                                unoptimized
-                            />
-                        )}
-                    </div>
-                </KeepRatio>
-                <Text variant="p" marginTop="xs">
-                    {name}
-                </Text>
-            </a>
+        <Link href={href} className={styles.themeCard}>
+            <KeepRatio ratio={0.7}>
+                <div style={{ backgroundColor: showBackgroundColor ? COLORS[index % COLORS.length] : 'unset' }} className={styles.themeCardImage}>
+                    {imageUrl && (
+                        <Image
+                            onLoadingComplete={() => {
+                                setShowBackgroundColor(false);
+                            }}
+                            layout="fill"
+                            src={imageUrl}
+                            unoptimized
+                        />
+                    )}
+                </div>
+            </KeepRatio>
+            <Text variant="p" marginTop="xs">
+                {name}
+            </Text>
         </Link>
     );
 };

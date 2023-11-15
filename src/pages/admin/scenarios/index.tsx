@@ -170,7 +170,7 @@ const AdminScenarios = () => {
                 }
                 actions={
                     scenariosData.length > 0 ? (
-                        <Link href="/admin/scenarios/new" passHref>
+                        <Link href="/admin/scenarios/new" passHref legacyBehavior>
                             <Button
                                 label="Ajouter un scénario"
                                 as="a"
@@ -225,7 +225,7 @@ const AdminScenarios = () => {
                                                     <th align="right" style={{ minWidth: '96px' }}>
                                                         <Tooltip content="Modifier">
                                                             <span>
-                                                                <Link href={`/admin/scenarios/edit/${s.id}`} passHref>
+                                                                <Link href={`/admin/scenarios/edit/${s.id}`} passHref legacyBehavior>
                                                                     <IconButton
                                                                         as="a"
                                                                         margin="xs"
@@ -258,8 +258,8 @@ const AdminScenarios = () => {
                                             <tr style={{ backgroundColor: 'white' }} key={`${data.themeIndex}_no_data`}>
                                                 <th colSpan={4} align="center" style={{ padding: '4px' }}>
                                                     {`Ce thème n'a pas de scénario ! `}
-                                                    <Link href={`/admin/scenarios/new?themeId=${themes[data.themeIndex].id}`} passHref>
-                                                        <a>Ajouter un scénario ?</a>
+                                                    <Link href={`/admin/scenarios/new?themeId=${themes[data.themeIndex].id}`}>
+                                                        Ajouter un scénario ?
                                                     </Link>
                                                 </th>
                                             </tr>
@@ -273,9 +273,7 @@ const AdminScenarios = () => {
                             <tr>
                                 <th colSpan={4} align="center">
                                     {"Vous n'avez pas de thème ! "}
-                                    <Link href="/admin/themes/new" passHref>
-                                        <a>Ajouter un thème ?</a>
-                                    </Link>
+                                    <Link href="/admin/themes/new">Ajouter un thème ?</Link>
                                 </th>
                             </tr>
                         </tbody>

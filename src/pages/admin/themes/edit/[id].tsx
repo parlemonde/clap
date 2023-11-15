@@ -240,7 +240,7 @@ const AdminEditTheme = () => {
                     </div>
                 </Form>
             </AdminTile>
-            <Link href="/admin/themes" passHref>
+            <Link href="/admin/themes" passHref legacyBehavior>
                 <Button label="Retour" as="a" variant="outlined" marginTop="md"></Button>
             </Link>
 

@@ -154,7 +154,7 @@ const EditProject: React.FC = () => {
                         </div>
                     </>
                 )}
-                <NextLink href={`/create/3-storyboard${serializeToQueryUrl({ projectId: project?.id || null })}`} passHref>
+                <NextLink href={`/create/3-storyboard${serializeToQueryUrl({ projectId: project?.id || null })}`} passHref legacyBehavior>
                     <Button
                         label={t('project_see_plans')}
                         as="a"

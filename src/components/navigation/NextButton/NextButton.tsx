@@ -20,7 +20,7 @@ export const NextButton = ({ label, backHref, type, onNext, ...marginProps }: Ne
     return (
         <Box as="div" className={styles.nextButton} {...marginProps}>
             {backHref && (
-                <Link href={backHref} passHref>
+                <Link href={backHref} passHref legacyBehavior>
                     <Button
                         className={styles.nextButton__back}
                         label={t('cancel')}

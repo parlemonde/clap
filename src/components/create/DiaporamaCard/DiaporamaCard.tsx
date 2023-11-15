@@ -66,40 +66,43 @@ export const DiaporamaCard = ({ projectId, questionIndex, sequence }: DiaporamaC
     }, [updateFrameIndex]);
 
     return (
-        <Link href={`/create/4-pre-mounting/edit${serializeToQueryUrl({ question: questionIndex, projectId })}`} passHref>
-            <a className={styles.DiaporamaCard} style={buttonStyle} ref={canvasRef}>
-                {frameIndex === 'title' && style && sequence.title && (
-                    <p
-                        className={styles.DiaporamaCard__title}
-                        style={
-                            style === null
-                                ? {}
-                                : {
-                                      fontSize: `${((style.fontSize || 8) * canvasHeight) / 100}px`,
-                                      lineHeight: `${((style.fontSize || 8) * canvasHeight) / 100}px`,
-                                      fontFamily: style.fontFamily || 'serif',
-                                      left: `${style.x ?? 15}%`,
-                                      top: `${style.y ?? 30}%`,
-                                      width: `${style.width ?? 70}%`,
-                                  }
-                        }
-                    >
-                        {sequence.title.text}
-                    </p>
-                )}
+        <Link
+            href={`/create/4-pre-mounting/edit${serializeToQueryUrl({ question: questionIndex, projectId })}`}
+            className={styles.DiaporamaCard}
+            style={buttonStyle}
+            ref={canvasRef}
+        >
+            {frameIndex === 'title' && style && sequence.title && (
+                <p
+                    className={styles.DiaporamaCard__title}
+                    style={
+                        style === null
+                            ? {}
+                            : {
+                                  fontSize: `${((style.fontSize || 8) * canvasHeight) / 100}px`,
+                                  lineHeight: `${((style.fontSize || 8) * canvasHeight) / 100}px`,
+                                  fontFamily: style.fontFamily || 'serif',
+                                  left: `${style.x ?? 15}%`,
+                                  top: `${style.y ?? 30}%`,
+                                  width: `${style.width ?? 70}%`,
+                              }
+                    }
+                >
+                    {sequence.title.text}
+                </p>
+            )}
 
-                <div className={styles.DiaporamaCard__editButton}>{t('edit')}</div>
-                <div className={classNames('pill', styles.DiaporamaCard__voice, { ['pill--green']: Boolean(sequence.voiceOff) })}>
-                    <FileTextIcon />
-                </div>
-                <div className={classNames('pill', styles.DiaporamaCard__sound, { ['pill--green']: Boolean(sequence.soundUrl) })}>
-                    <SpeakerLoudIcon />
-                </div>
-                <div className={classNames('pill', 'pill--purple', styles.DiaporamaCard__time)}>
-                    <TimerIcon style={{ height: '95%' }} />
-                    <span className={styles.DiaporamaCard__seconds}>{Math.round(duration / 1000)}s</span>
-                </div>
-            </a>
+            <div className={styles.DiaporamaCard__editButton}>{t('edit')}</div>
+            <div className={classNames('pill', styles.DiaporamaCard__voice, { ['pill--green']: Boolean(sequence.voiceOff) })}>
+                <FileTextIcon />
+            </div>
+            <div className={classNames('pill', styles.DiaporamaCard__sound, { ['pill--green']: Boolean(sequence.soundUrl) })}>
+                <SpeakerLoudIcon />
+            </div>
+            <div className={classNames('pill', 'pill--purple', styles.DiaporamaCard__time)}>
+                <TimerIcon style={{ height: '95%' }} />
+                <span className={styles.DiaporamaCard__seconds}>{Math.round(duration / 1000)}s</span>
+            </div>
         </Link>
     );
 };

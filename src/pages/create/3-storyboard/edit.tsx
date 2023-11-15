@@ -1,5 +1,5 @@
 import { LightningBoltIcon, ImageIcon, CameraIcon, UploadIcon, Pencil2Icon } from '@radix-ui/react-icons';
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 import { useRouter } from 'next/router';
 import React from 'react';
 import Camera from 'react-html5-camera-photo';

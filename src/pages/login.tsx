@@ -209,14 +209,14 @@ const LoginPage = () => {
                 />
                 <Button label={t('login_connect')} variant="contained" color="secondary" type="submit" value="Submit"></Button>
                 <div className="text-center">
-                    <Link href="/reset-password" passHref>
-                        <a className="color-primary">{t('login_forgot_password')}</a>
+                    <Link href="/reset-password" className="color-primary">
+                        {t('login_forgot_password')}
                     </Link>
                 </div>
                 <div className="text-center">
                     {t('login_new')}{' '}
-                    <Link href="/sign-up" passHref>
-                        <a className="color-primary">{t('login_signup')}</a>
+                    <Link href="/sign-up" className="color-primary">
+                        {t('login_signup')}
                     </Link>
                 </div>
             </Form>

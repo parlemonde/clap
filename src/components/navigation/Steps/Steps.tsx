@@ -95,8 +95,8 @@ export const Steps = ({ activeStep, backHref, themeId }: StepsProps) => {
                             : undefined;
                     if (href) {
                         return (
-                            <Link href={href} passHref key={step.name}>
-                                <a className={styles.step}>{stepContent}</a>
+                            <Link href={href} key={step.name} className={styles.step}>
+                                {stepContent}
                             </Link>
                         );
                     }
@@ -111,7 +111,7 @@ export const Steps = ({ activeStep, backHref, themeId }: StepsProps) => {
             {/* -- Steps (mobile only) -- */}
             <div className={styles.mobileSteps}>
                 {backHref && (
-                    <Link href={backHref} passHref>
+                    <Link href={backHref} passHref legacyBehavior>
                         <Button
                             as="a"
                             leftIcon={<ChevronLeftIcon />}

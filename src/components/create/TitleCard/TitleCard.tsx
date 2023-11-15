@@ -31,50 +31,52 @@ export const TitleCard = ({ projectId, questionIndex, title, onDelete = () => {}
     const [canvasRef, { height: canvasHeight }] = useResizeObserver<HTMLAnchorElement>();
 
     return (
-        <Link href={`/create/3-storyboard/title${serializeToQueryUrl({ question: questionIndex, projectId })}`} passHref>
-            <a className={styles.titleCard} ref={canvasRef}>
-                {title ? (
-                    <p
-                        className={styles.titleCard__title}
-                        style={
-                            style === null
-                                ? {}
-                                : {
-                                      fontSize: `${((style.fontSize || 8) * canvasHeight) / 100}px`,
-                                      lineHeight: `${((style.fontSize || 8) * canvasHeight) / 100}px`,
-                                      fontFamily: style.fontFamily || 'serif',
-                                      left: `${style.x ?? 15}%`,
-                                      top: `${style.y ?? 30}%`,
-                                      width: `${style.width ?? 70}%`,
-                                  }
-                        }
-                    >
-                        {title.text}
-                    </p>
-                ) : (
-                    <>
-                        <span className={styles.titleCard__placeholder}>T</span>
-                        <span className={styles.titleCard__placeholderDesc}>{t('part3_add_title')}</span>
-                    </>
-                )}
-                {title && (
-                    <>
-                        <div className={styles.titleCard__editButton}>{t('edit')}</div>
-                        <IconButton
-                            className={styles.titleCard__deleteButton}
-                            aria-label={t('delete')}
-                            icon={TrashIcon}
-                            color="error"
-                            variant="contained"
-                            onClick={(event) => {
-                                event.preventDefault();
-                                event.stopPropagation();
-                                onDelete();
-                            }}
-                        />
-                    </>
-                )}
-            </a>
+        <Link
+            href={`/create/3-storyboard/title${serializeToQueryUrl({ question: questionIndex, projectId })}`}
+            className={styles.titleCard}
+            ref={canvasRef}
+        >
+            {title ? (
+                <p
+                    className={styles.titleCard__title}
+                    style={
+                        style === null
+                            ? {}
+                            : {
+                                  fontSize: `${((style.fontSize || 8) * canvasHeight) / 100}px`,
+                                  lineHeight: `${((style.fontSize || 8) * canvasHeight) / 100}px`,
+                                  fontFamily: style.fontFamily || 'serif',
+                                  left: `${style.x ?? 15}%`,
+                                  top: `${style.y ?? 30}%`,
+                                  width: `${style.width ?? 70}%`,
+                              }
+                    }
+                >
+                    {title.text}
+                </p>
+            ) : (
+                <>
+                    <span className={styles.titleCard__placeholder}>T</span>
+                    <span className={styles.titleCard__placeholderDesc}>{t('part3_add_title')}</span>
+                </>
+            )}
+            {title && (
+                <>
+                    <div className={styles.titleCard__editButton}>{t('edit')}</div>
+                    <IconButton
+                        className={styles.titleCard__deleteButton}
+                        aria-label={t('delete')}
+                        icon={TrashIcon}
+                        color="error"
+                        variant="contained"
+                        onClick={(event) => {
+                            event.preventDefault();
+                            event.stopPropagation();
+                            onDelete();
+                        }}
+                    />
+                </>
+            )}
         </Link>
     );
 };

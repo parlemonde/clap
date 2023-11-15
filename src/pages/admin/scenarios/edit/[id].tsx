@@ -188,7 +188,7 @@ const AdminEditScenario = () => {
                     </div>
                 </Form>
             </AdminTile>
-            <Link href="/admin/scenarios" passHref>
+            <Link href="/admin/scenarios" passHref legacyBehavior>
                 <Button as="a" label="Retour" variant="outlined" marginTop="md"></Button>
             </Link>
 

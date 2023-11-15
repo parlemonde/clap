@@ -337,10 +337,7 @@ const SignupPage = () => {
             )}
 
             <div className="text-center" style={{ marginBottom: '2rem' }}>
-                {t('signup_already')}{' '}
-                <Link passHref href="/login">
-                    <a>{t('login_connect')}</a>
-                </Link>
+                {t('signup_already')} <Link href="/login">{t('login_connect')}</Link>
             </div>
             <Loader isLoading={isLoading} />
         </Container>

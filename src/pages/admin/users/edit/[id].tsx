@@ -181,7 +181,7 @@ const AdminEditUser = () => {
                     </Modal>
                 </AdminTile>
             )}
-            <Link href="/admin/users" passHref>
+            <Link href="/admin/users" passHref legacyBehavior>
                 <Button label="Retour" as="a" variant="outlined" marginTop="md"></Button>
             </Link>
             <Loader isLoading={isLoading} />

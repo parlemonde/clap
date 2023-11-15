@@ -98,7 +98,7 @@ const QuestionsPage = () => {
                 <Title color="inherit" variant="h2">
                     {t('part2_desc')}
                 </Title>
-                <Link href={`/create/2-questions/new${serializeToQueryUrl({ projectId: project?.id || null })}`} passHref>
+                <Link href={`/create/2-questions/new${serializeToQueryUrl({ projectId: project?.id || null })}`} passHref legacyBehavior>
                     <Button as="a" label={t('add_question')} variant="outlined" color="secondary" marginTop="lg" isUpperCase={false}></Button>
                 </Link>
                 {!isProjectLoading && (

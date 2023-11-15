@@ -46,7 +46,7 @@ export const AdminDrawer = () => {
                 <NavigationMenu.List>
                     {adminTabs.map((tab) => (
                         <NavigationMenu.Item key={tab.path}>
-                            <Link href={tab.path} passHref>
+                            <Link href={tab.path} legacyBehavior passHref>
                                 <NavigationMenu.Link active={router.asPath.startsWith(tab.path)} className={styles.AdminDrawer__NavigationButton}>
                                     {tab.label}
                                 </NavigationMenu.Link>

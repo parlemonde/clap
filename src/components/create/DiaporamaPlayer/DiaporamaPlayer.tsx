@@ -1,6 +1,6 @@
 import { MinusIcon, PlusIcon, SpeakerLoudIcon, ImageIcon, SpeakerQuietIcon, PlayIcon, PauseIcon } from '@radix-ui/react-icons';
 import Head from 'next/head';
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 import React from 'react';
 
 import { Frame } from './Frame';

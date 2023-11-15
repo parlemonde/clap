@@ -140,7 +140,7 @@ const AdminUsers = () => {
                                         <th align="right" style={{ minWidth: '96px' }}>
                                             <Tooltip content="Modifier">
                                                 <span>
-                                                    <Link href={`/admin/users/edit/${user.id}`} passHref>
+                                                    <Link href={`/admin/users/edit/${user.id}`} passHref legacyBehavior>
                                                         <IconButton
                                                             as="a"
                                                             margin="xs"

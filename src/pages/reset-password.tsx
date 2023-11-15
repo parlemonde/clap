@@ -79,9 +79,7 @@ const ResetPassword: React.FunctionComponent = () => {
                 ></Field>
                 <Button label={t('forgot_password_button')} variant="contained" color="secondary" type="submit"></Button>
                 <div className="text-center">
-                    <Link href="/login" passHref>
-                        <a>{t('login_connect')}</a>
-                    </Link>
+                    <Link href="/login">{t('login_connect')}</Link>
                 </div>
             </Form>
             <Loader isLoading={loading} />
