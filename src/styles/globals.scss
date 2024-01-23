@@ -328,7 +328,7 @@ p {
   display: grid;
   -ms-grid-columns: 1fr 16px 1fr 16px 1fr;
   grid-template-columns: repeat(4, 1fr);
-  grid-auto-rows: auto;
+  grid-auto-rows: 1fr;
   grid-gap: 16px;
   max-width: 1000px;
   margin: 2rem auto 2rem auto;
