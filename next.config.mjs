@@ -1,4 +1,21 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+import path from 'path';
+
+const nextConfig = {
+    poweredByHeader: false,
+    experimental: {
+        turbo: {
+            rules: {
+                '*.svg': {
+                    loaders: ['@svgr/webpack'],
+                    as: '*.js',
+                },
+            },
+        },
+    },
+    sassOptions: {
+        includePaths: [path.join('src', 'styles')],
+    },
+};
 
 export default nextConfig;
