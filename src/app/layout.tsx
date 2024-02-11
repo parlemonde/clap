@@ -8,6 +8,8 @@ import { openSansFont, alegreyaSansFont, littleDaysFont } from 'src/fonts';
 import 'normalize.css/normalize.css';
 import 'src/styles/globals.scss';
 
+export const runtime = 'edge';
+
 export const metadata: Metadata = {
     title: 'Clap!',
     description: 'Clap! is web application to create storyboard and videos script for an educational purpose.',

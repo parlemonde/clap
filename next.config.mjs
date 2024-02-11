@@ -2,6 +2,7 @@
 import path from 'path';
 
 const nextConfig = {
+    output: 'standalone',
     poweredByHeader: false,
     experimental: {
         turbo: {
