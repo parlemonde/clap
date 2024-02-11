@@ -1,0 +1,21 @@
+@use 'mixins';
+
+.container {
+  margin-left: auto;
+  box-sizing: border-box;
+  margin-right: auto;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+@include mixins.for-tablet-up {
+  .container {
+      padding-left: 24px;
+      padding-right: 24px;
+  }
+}
+@include mixins.for-desktop-up {
+  .container {
+      max-width: 1200px;
+  }
+}

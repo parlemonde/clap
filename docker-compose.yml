@@ -1,0 +1,13 @@
+version: "3.7"
+services:
+  mysql:
+    image: mysql:8
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      - MYSQL_ROOT_PASSWORD=my-secret-pw
+      - ON_CREATE_DB=clap
+    ports:
+      - "3306:3306"
+      - "33060:33060"
+    volumes:
+      - ./.mysql-data:/var/lib/mysql

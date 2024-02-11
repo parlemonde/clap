@@ -1,0 +1,23 @@
+.placeholder {
+    display: block;
+    background-color: rgba(0, 0, 0, 0.11);
+    animation: fan-in-out 1.5s ease-in-out 0.5s infinite;
+
+    &--text {
+      display: inline-block;
+      height: 1em;
+      border-radius: 4px;
+    }
+}
+
+@keyframes fan-in-out {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.4;
+    }
+    100% {
+        opacity: 1;
+    }
+}

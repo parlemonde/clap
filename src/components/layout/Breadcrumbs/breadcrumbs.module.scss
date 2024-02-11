@@ -1,0 +1,35 @@
+.breadcrumbs {
+  ol {
+    list-style-type: none;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin: 0;
+    padding: 0;
+  }
+
+  .separator {
+    font-size: 18px;
+    user-select: none;
+    margin-left: 8px;
+    margin-right: 8px;
+    color: rgba(0, 0, 0, 0.6);
+    display: inline-flex;
+
+    svg {
+      user-select: none;
+      width: 1em;
+      height: 1em;
+      display: inline-block;
+      fill: currentcolor;
+    }
+  }
+
+  .link {
+    text-decoration: none;
+    color: rgba(0, 0, 0, 0.6);
+  }
+  .link:hover {
+    text-decoration: underline;
+  }
+}

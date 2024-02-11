@@ -1,0 +1,43 @@
+@use 'variables' as *;
+
+.navigation {
+  flex: 0 0 auto;
+}
+
+.navigation ul {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.navigationButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 130px;
+  padding: 6px $sizeMD;
+  margin-left: $sizeLG;
+  font-family: var(--font-alegreya-sans), sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  text-decoration: none;
+  color: white;
+  cursor: pointer;
+}
+.navigationButton[data-active] {
+  background-color: white;
+  color: rgb(96, 101, 252);
+}
+.navigationButton:hover {
+  background-color: #ffffff22;
+}
+.navigationButton[data-active]:hover {
+  background-color: #e3e3e3;
+}
+.navigationButton > span {
+  margin-right: $sizeSM;
+}

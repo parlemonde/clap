@@ -1,0 +1,43 @@
+@use 'mixins';
+@use 'variables' as *;
+
+.topNavBar {
+  display: none;
+}
+@include mixins.for-tablet-up {
+  .topNavBar {
+    display: block;
+    height: 48px;
+  }
+}
+
+.container {
+  position: fixed;
+  z-index: 100;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 48px;
+  background-color: $primaryColor;
+  color: white;
+}
+
+.navItems {
+  margin-left: auto;
+  box-sizing: border-box;
+  margin-right: auto;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+@include mixins.for-tablet-up {
+  .navItems {
+      padding-left: 24px;
+      padding-right: 24px;
+  }
+}
+@include mixins.for-desktop-up {
+  .navItems {
+      max-width: 1200px;
+  }
+}
