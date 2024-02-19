@@ -14,7 +14,7 @@ export const getLocales = cache(async () => {
     try {
         const JSONlanguageBuffer = await getFile('locales', `${currentLocale}.json`).then(getBufferFromStream);
         if (JSONlanguageBuffer !== null) {
-            locales = JSON.parse(JSONlanguageBuffer.toString());
+            locales = { ...locales, ...JSON.parse(JSONlanguageBuffer.toString()) };
         }
     } catch (err) {
         console.error(err);
