@@ -134,7 +134,7 @@ userController.post({ path: '' }, async (req, res) => {
     const fromAdmin = req.user !== undefined && req.user.type === UserType.PLMO_ADMIN;
     if (!fromAdmin) {
         const invite = await getRepository(Invite).findOne({ where: { token: data.inviteCode } });
-        if (invite === undefined || invite.expired_at < new Date()) {
+        if (invite === undefined || invite.expiredAt < new Date()) {
             if (invite !== undefined) {
                 await getRepository(Invite).delete({ token: data.inviteCode });
             }
@@ -275,10 +275,10 @@ userController.delete({ path: '/:id' }, async (req, res) => {
 userController.get({ path: '/invite' }, async (req, res) => {
     const invite = new Invite();
     invite.token = generateToken(20);
-    invite.created_at = new Date();
-    const nextDay = invite.created_at.getDate() + 1;
-    invite.expired_at = new Date();
-    invite.expired_at.setDate(nextDay);
+    invite.createdAt = new Date();
+    const nextDay = invite.createdAt.getDate() + 1;
+    invite.expiredAt = new Date();
+    invite.expiredAt.setDate(nextDay);
     await getRepository(Invite).save(invite);
     res.sendJSON({ inviteCode: invite.token });
 });

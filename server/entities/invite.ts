@@ -9,8 +9,8 @@ export class Invite {
     public token: string;
 
     @CreateDateColumn()
-    public created_at: Date;
+    public createdAt: Date;
 
     @UpdateDateColumn()
-    public expired_at: Date;
+    public expiredAt: Date;
 }
