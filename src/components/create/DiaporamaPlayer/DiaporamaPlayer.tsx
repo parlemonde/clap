@@ -217,7 +217,6 @@ export const DiaporamaPlayer = ({
             newTitle = { ...newTitle, duration: newTitle.duration + delta };
         }
         const newPlans = plans.map((plan, index) => (index === plans.length - 1 ? { ...plan, duration: (plan.duration || 0) + delta } : plan));
-        console.log(delta, newPlans);
         const newQuestion = {
             ...questions[0],
             plans: newPlans,
