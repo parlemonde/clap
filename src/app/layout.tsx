@@ -17,20 +17,51 @@ import { TranslationContextProvider } from 'src/contexts/tanslationContext';
 import { UserContextProvider } from 'src/contexts/userContext';
 import { openSansFont, alegreyaSansFont, littleDaysFont } from 'src/fonts';
 
+const APP_URL = process.env.HOST_URL || 'https://clap.parlemonde.org';
+const APP_NAME = 'Clap!';
+const APP_DESCRIPTION = 'Clap! Une application pour créer de super vidéos.';
+
 export const metadata: Metadata = {
-    title: 'Clap!',
-    description: 'Clap! Une application pour créer de super vidéos.',
+    metadataBase: new URL(APP_URL),
+    title: APP_NAME,
+    description: APP_DESCRIPTION,
+    applicationName: APP_NAME,
+    twitter: {
+        card: 'summary_large_image',
+        site: APP_URL,
+        description: APP_DESCRIPTION,
+        title: APP_NAME,
+        images: '/static/images/android-chrome-192x192.png',
+        creator: 'ParLeMonde',
+    },
+    openGraph: {
+        type: 'website',
+        title: APP_NAME,
+        description: APP_DESCRIPTION,
+        siteName: APP_NAME,
+        url: APP_URL,
+        images: [{ url: '/static/images/apple-touch-icon.png', width: 180, height: 180 }],
+    },
+    icons: {
+        shortcut: '/favicon.ico',
+        icon: [
+            {
+                url: '/favicon-32x32.png',
+                sizes: '32x32',
+            },
+            { url: '/favicon-16x16.png', sizes: '16x16' },
+        ],
+        apple: '/static/images/apple-touch-icon.png',
+    },
+    manifest: '/static/manifest.json',
 };
 
 export const viewport: Viewport = {
     width: 'device-width',
     initialScale: 1,
     minimumScale: 1,
+    themeColor: '#6065fc',
 };
-
-const APP_URL = process.env.HOST_URL || 'https://clap.parlemonde.org';
-const APP_NAME = 'Clap!';
-const APP_DESCRIPTION = 'Clap! Une application pour créer de super vidéos.';
 
 export default async function RootLayout({ children }: React.PropsWithChildren) {
     const { currentLocale, locales } = await getLocales();
@@ -38,29 +69,6 @@ export default async function RootLayout({ children }: React.PropsWithChildren) 
 
     return (
         <html lang={currentLocale}>
-            <head>
-                <meta name="application-name" content={APP_NAME} />
-                <meta name="theme-color" content="#6065fc" />
-
-                <link rel="shortcut icon" href="/favicon.ico" />
-                <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-                <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-                <link rel="manifest" href="/static/manifest.json" />
-                <link rel="mask-icon" color="#6065fc" />
-
-                <meta name="twitter:card" content={APP_DESCRIPTION} />
-                <meta name="twitter:url" content={APP_URL} />
-                <meta name="twitter:title" content={APP_NAME} />
-                <meta name="twitter:description" content={APP_DESCRIPTION} />
-                <meta name="twitter:image" content={`${APP_URL}/static/images/android-chrome-192x192.png`} />
-                <meta name="twitter:creator" content="ParLeMonde" />
-                <meta property="og:type" content="website" />
-                <meta property="og:title" content={APP_NAME} />
-                <meta property="og:description" content={APP_DESCRIPTION} />
-                <meta property="og:site_name" content={APP_NAME} />
-                <meta property="og:url" content={APP_URL} />
-                <meta property="og:image" content={`${APP_URL}/static/images/apple-touch-icon.png`} />
-            </head>
             <body
                 className={classNames(openSansFont.className, styles.body, openSansFont.variable, alegreyaSansFont.variable, littleDaysFont.variable)}
             >
