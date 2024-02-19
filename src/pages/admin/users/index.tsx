@@ -134,7 +134,7 @@ const AdminUsers = () => {
                                                     alignItems: 'center',
                                                 }}
                                             >
-                                                {userTypeNames[user.type]}
+                                                {user.type === -1 ? 'Elève(s)' : userTypeNames[user.type]}
                                             </span>
                                         </th>
                                         <th align="right" style={{ minWidth: '96px' }}>

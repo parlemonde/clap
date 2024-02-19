@@ -8,7 +8,7 @@ import { QuestionStatus, type Question } from 'types/models/question.type';
 
 type onConfirmData = {
     question: Question;
-    status: QuestionStatus;
+    status?: QuestionStatus;
 };
 
 interface StatusModalProps {
@@ -41,8 +41,6 @@ export const StatusModal: React.FunctionComponent<StatusModalProps> = ({ questio
             title={t('sequency_status_modal_title')}
             cancelLabel={t('close')}
             confirmLabel={t('validate')}
-            ariaLabelledBy=""
-            ariaDescribedBy=""
         >
             <Field
                 name="sequency-status"

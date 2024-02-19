@@ -133,13 +133,12 @@ userController.post({ path: '' }, async (req, res) => {
 
     const fromAdmin = req.user !== undefined && req.user.type === UserType.PLMO_ADMIN;
     if (!fromAdmin) {
-        const isValid: boolean = (await getRepository(Invite).count({ where: { token: data.inviteCode } })) > 0;
-        if (!isValid) {
-            throw new AppError('forbidden', ['Invite code provided is invalid.']);
-        } else {
-            if (data.expired_at < new Date().toISOString()) {
+        const invite = await getRepository(Invite).findOne({ where: { token: data.inviteCode } });
+        if (invite === undefined || invite.expired_at < new Date()) {
+            if (invite !== undefined) {
                 await getRepository(Invite).delete({ token: data.inviteCode });
             }
+            throw new AppError('forbidden', ['Invite code provided is invalid.']);
         }
     }
 

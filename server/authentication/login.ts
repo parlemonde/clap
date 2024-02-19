@@ -73,7 +73,7 @@ export async function login(req: Request, res: Response): Promise<void> {
     await getConnection()
         .createQueryBuilder()
         .update(Project)
-        .set({ isCollaborationActive: false, joinCode: false })
+        .set({ isCollaborationActive: false, joinCode: null })
         .where({ userId: user.id, isCollaborationActive: true })
         .execute();
 

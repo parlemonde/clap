@@ -29,6 +29,7 @@ import { NextButton } from 'src/components/navigation/NextButton';
 import { Steps } from 'src/components/navigation/Steps';
 import { ThemeBreadcrumbs } from 'src/components/navigation/ThemeBreadcrumbs';
 import { Inverted } from 'src/components/ui/Inverted';
+import { Loader } from 'src/components/ui/Loader';
 import { sendToast } from 'src/components/ui/Toasts';
 import { Trans } from 'src/components/ui/Trans';
 import { useCollaboration } from 'src/hooks/useCollaboration';
@@ -238,7 +239,7 @@ const StoryboardPage = () => {
     const { socket, connectStudent, connectTeacher, updateProject: updateProjectSocket } = useSocket();
     const { isCollaborationActive } = useCollaboration();
     const { user } = React.useContext(userContext);
-    const [studentQuestion, setStudentQuestion] = React.useState(null);
+    const [studentQuestion, setStudentQuestion] = React.useState<Question | null>(null);
     const isStudent = user?.type === UserType.STUDENT;
     const sequencyId = isStudent ? getFromLocalStorage('student', undefined)?.sequencyId || null : null;
 
@@ -339,7 +340,6 @@ const StoryboardPage = () => {
                                         updateProjectSocket(updatedProject);
                                     }
                                 }}
-                                isAuthorized={!isStudent || sequencyId === question.id}
                                 isStudent={isStudent}
                                 isCollaborationActive={isCollaborationActive}
                             />
@@ -358,7 +358,7 @@ const StoryboardPage = () => {
                         ></Button>
                     </div>
                 )}
-                {isStudent && studentQuestion && studentQuestion.status === QuestionStatus.ONGOING && (
+                {isStudent && studentQuestion && studentQuestion.status === QuestionStatus.ONGOING && sequencyId && (
                     <NextStepButton sequencyId={sequencyId} newStatus={QuestionStatus.STORYBOARD} />
                 )}
                 <NextButton
@@ -367,6 +367,7 @@ const StoryboardPage = () => {
                     }}
                 />
             </div>
+            <Loader isLoading={isLoading} />
         </Container>
     );
 };

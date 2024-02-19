@@ -13,7 +13,7 @@ type PUTParams = {
     soundVolume?: number | null;
     musicBeginTime?: number;
     isCollaborationActive?: boolean;
-    joinCode?: number;
+    joinCode?: number | null;
 };
 
 export const updateProject = async ({ projectId, ...data }: PUTParams): Promise<PUTResponse> => {

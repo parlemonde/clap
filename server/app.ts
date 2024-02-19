@@ -134,7 +134,7 @@ async function startApp() {
     if (port === false) {
         logger.error(`Exiting. Invalid port to use: %s`, port);
     } else {
-        const server = Server(app);
+        const server = new Server(app);
         // --- Start socket server ---
         startSocketServer(server);
         server.listen(port);

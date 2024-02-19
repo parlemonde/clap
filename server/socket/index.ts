@@ -1,3 +1,4 @@
+import type { Server as HttpServer } from 'http';
 import type { Project } from 'server/entities/project';
 import type { Question } from 'server/entities/question';
 import type { Socket } from 'socket.io';
@@ -5,7 +6,7 @@ import { Server } from 'socket.io';
 
 import type { AlertStudentData, AlertTeacherData } from '../../types/models/socket.type';
 
-export function startSocketServer(server) {
+export function startSocketServer(server: HttpServer) {
     const io = new Server(server, {
         cors: {
             origin: '*',

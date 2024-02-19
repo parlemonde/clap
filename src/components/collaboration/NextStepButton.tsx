@@ -40,7 +40,10 @@ export const NextStepButton: React.FunctionComponent<NextStepButtonProps> = ({ s
                 if (updatedProject) {
                     updateProjectSocket(updatedProject);
                 }
-                alertTeacher({ projectId: project.id, sequencyId, sequencyOrder, status: newStatus });
+
+                if (project) {
+                    alertTeacher({ projectId: project.id, sequencyId, sequencyOrder, status: newStatus });
+                }
             }
         } catch (err) {
             console.error(err);

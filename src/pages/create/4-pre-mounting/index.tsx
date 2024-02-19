@@ -41,7 +41,7 @@ const PreMountingPage = () => {
     const { socket, connectStudent, connectTeacher } = useSocket();
 
     const [showFeedback, setShowFeedback] = React.useState(false);
-    const [studentQuestion, setStudentQuestion] = React.useState(null);
+    const [studentQuestion, setStudentQuestion] = React.useState<Question | null>(null);
 
     const { user } = React.useContext(userContext);
     const isStudent = user?.type === UserType.STUDENT;
@@ -112,7 +112,7 @@ const PreMountingPage = () => {
                         </div>
                     );
                 })}
-                {isStudent && studentQuestion && studentQuestion.status === QuestionStatus.PREMOUNTING && (
+                {isStudent && studentQuestion && studentQuestion.status === QuestionStatus.PREMOUNTING && sequencyId && (
                     <NextStepButton sequencyId={sequencyId} newStatus={QuestionStatus.SUBMITTED} />
                 )}
                 {!isStudent && (

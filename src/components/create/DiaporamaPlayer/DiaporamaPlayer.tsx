@@ -63,7 +63,9 @@ export const DiaporamaPlayer = ({
         if (
             isQuestionEditing &&
             currentQuestion &&
+            currentQuestion.soundUrl &&
             !audioRef.current?.src.includes(currentQuestion.soundUrl) &&
+            audioRef.current?.duration &&
             audioRef.current?.duration > 0 &&
             audioRef.current?.currentTime === 0
         ) {

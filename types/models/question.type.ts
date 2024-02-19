@@ -21,8 +21,8 @@ export interface Question {
     voiceOffBeginTime: number;
     soundUrl: string | null;
     soundVolume: number | null;
-    status: QuestionStatus;
-    feedback: string | null;
+    status?: QuestionStatus;
+    feedback?: string | null;
 }
 
 export interface QuestionTemplate {

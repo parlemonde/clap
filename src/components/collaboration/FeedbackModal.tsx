@@ -13,14 +13,7 @@ export const FeedbackModal: React.FunctionComponent<FeedbackModalProps> = ({ fee
     const { t } = useTranslation();
 
     return (
-        <Modal
-            isOpen={isOpen}
-            onClose={onClose}
-            title={t('collaboration_modal_feedback_title')}
-            cancelLabel={t('close')}
-            ariaLabelledBy=""
-            ariaDescribedBy=""
-        >
+        <Modal isOpen={isOpen} onClose={onClose} title={t('collaboration_modal_feedback_title')} cancelLabel={t('close')}>
             {feedback}
         </Modal>
     );

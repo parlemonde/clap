@@ -87,7 +87,7 @@ const AdminNewScenario = () => {
         // Check if name are not empty with blank space
         const scenarioNamesValue = Object.values(scenarioNames);
         const clearedScenarioNames = scenarioNamesValue.filter((lang) => lang.trim().length > 0);
-        if (scenarioNames.length === 0 || clearedScenarioNames.length !== scenarioNamesValue.length) {
+        if (scenarioNamesValue.length === 0 || clearedScenarioNames.length !== scenarioNamesValue.length) {
             sendToast({ message: 'Veuillez remplir correctement le nom pour chaque langue sélectionnée', type: 'error' });
         }
 

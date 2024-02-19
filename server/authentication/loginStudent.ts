@@ -52,6 +52,8 @@ export async function loginStudent(req: Request, res: Response): Promise<void> {
         project === undefined ||
         teacher === undefined ||
         sequency === undefined ||
+        sequency.project === undefined ||
+        sequency.project.user === undefined ||
         project.id !== sequency.project.id ||
         teacher.id !== sequency.project.user.id ||
         project.isCollaborationActive !== true

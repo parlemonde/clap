@@ -47,10 +47,10 @@ const QuestionsPage = () => {
     const { isCollaborationActive } = useCollaboration();
     const [deleteQuestionIndex, setDeleteQuestionIndex] = React.useState(-1);
     const [showSaveProjectModal, setShowSaveProjectModal] = React.useState(false);
-    const [showQRCode, setShowQRCode] = React.useState(null);
-    const [joinCode, setJoinCode] = React.useState(null);
+    const [showQRCode, setShowQRCode] = React.useState<boolean | null>(null);
+    const [joinCode, setJoinCode] = React.useState<number | null>(null);
     const [showStatusModal, setShowStatusModal] = React.useState(false);
-    const [selectedQuestion, setSelectedQuestion] = React.useState(undefined);
+    const [selectedQuestion, setSelectedQuestion] = React.useState<Question | undefined>(undefined);
 
     const styleList = {
         margin: '40px 0',
@@ -117,37 +117,41 @@ const QuestionsPage = () => {
     };
 
     const startCollaborationMode = async () => {
-        const code = project.joinCode || Math.floor(Math.random() * 1000000);
-        setJoinCode(code);
-        await updateProjectMutation.mutateAsync({
-            projectId: project.id,
-            isCollaborationActive: true,
-            joinCode: code,
-        });
-        setShowQRCode(true);
-        connectTeacher(project);
+        if (project) {
+            const code = project.joinCode || Math.floor(Math.random() * 1000000);
+            setJoinCode(code);
+            await updateProjectMutation.mutateAsync({
+                projectId: project.id,
+                isCollaborationActive: true,
+                joinCode: code,
+            });
+            setShowQRCode(true);
+            connectTeacher(project);
+        }
     };
     const stopCollaborationMode = async () => {
-        setJoinCode(null);
-        setShowQRCode(false);
-        await updateProjectMutation.mutateAsync({
-            projectId: project.id,
-            isCollaborationActive: false,
-            joinCode,
-        });
-        stopCollaboration(project);
+        if (project) {
+            setJoinCode(null);
+            setShowQRCode(false);
+            await updateProjectMutation.mutateAsync({
+                projectId: project.id,
+                isCollaborationActive: false,
+                joinCode,
+            });
+            stopCollaboration(project);
+        }
     };
 
     type onConfirmData = {
         question: Question;
-        status: QuestionStatus;
+        status?: QuestionStatus;
     };
     const updateSequenceMutation = useUpdateQuestionMutation();
     const updateStatus = async ({ question, status }: onConfirmData) => {
         try {
             await updateSequenceMutation.mutateAsync({
                 questionId: question.id,
-                status,
+                status: status !== undefined ? status : question.status,
             });
             // Update projects
             const newQuestions = [...questions];
@@ -190,7 +194,7 @@ const QuestionsPage = () => {
                     {project && project.id !== 0 && (
                         <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                             <Button
-                                component="a"
+                                as="button"
                                 variant="contained"
                                 color="secondary"
                                 marginTop="lg"
@@ -259,7 +263,7 @@ const QuestionsPage = () => {
                                             : undefined
                                     }
                                 />
-                                {showQRCode && (
+                                {showQRCode && user && project && (
                                     <div
                                         style={{
                                             display: 'flex',

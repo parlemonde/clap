@@ -28,7 +28,7 @@ const LoginPage = () => {
     const [isLoading, setIsLoading] = React.useState(false);
     const [showQrReader, setShowQrReader] = React.useState(false);
     const [joinCode, setJoinCode] = React.useState('');
-    const [project, setProject] = React.useState<Project>(undefined);
+    const [project, setProject] = React.useState<Project | undefined>(undefined);
 
     const { connectStudent } = useSocket();
 
@@ -44,9 +44,14 @@ const LoginPage = () => {
         color: string;
         user: User;
     };
-    const postLoginStudent = async (data) => {
+    type LoginStudentData = {
+        projectId: number;
+        sequencyId: number;
+        teacherId: number;
+    };
+    const postLoginStudent = async (data: LoginStudentData) => {
         setIsLoading(true);
-        const response = await httpRequest<any>({
+        const response = await httpRequest<never>({
             method: 'POST',
             url: `/login/student`,
             data,
@@ -68,7 +73,8 @@ const LoginPage = () => {
         setIsLoading(false);
     };
 
-    const QrReaderResult = async (result) => {
+    /* eslint-disable @typescript-eslint/no-explicit-any */
+    const QrReaderResult = async (result: any) => {
         if (result) {
             const loginData = JSON.parse(result);
 
@@ -130,7 +136,7 @@ const LoginPage = () => {
                                 id="joinCode"
                                 name="joinCode"
                                 type="number"
-                                min={10000}
+                                min={0}
                                 max={999999}
                                 color="secondary"
                                 value={joinCode}
@@ -161,17 +167,17 @@ const LoginPage = () => {
                             onClick={toggleShowQrReader}
                             label={t(`collaboration_qrcode_scan_${showQrReader ? 'hide' : 'show'}`)}
                         ></Button>
-                        {showQrReader && <QrReader onResult={QrReaderResult} style={{ width: '100%' }} constraints={{ facingMode: 'environment' }} />}
+                        {showQrReader && <QrReader onResult={QrReaderResult} constraints={{ facingMode: 'environment' }} />}
                     </MobileView>
                 </Form>
             )}
-            {project !== undefined && (
+            {project !== undefined && project.questions && (
                 <div className="sequency-list">
                     {project.questions.map((q, index) => {
                         return (
                             <div
                                 className="sequency-list__item"
-                                onClick={() => postLoginStudent({ projectId: project.id, sequencyId: q.id, teacherId: project.userId })}
+                                onClick={() => postLoginStudent({ projectId: project.id, sequencyId: q.id, teacherId: project?.userId || 0 })}
                                 key={index}
                             >
                                 <p>{t('collaboration_join_sequency_number', { sequency: index + 1 })}</p>

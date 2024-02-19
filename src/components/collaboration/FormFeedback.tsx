@@ -44,7 +44,9 @@ export const FormFeedback: React.FunctionComponent<FormFeedbackProps> = ({ quest
                 updateProjectSocket(updatedProject);
             }
 
-            alertStudentSocket({ room: `project-${project.id}_question-${question.id}`, feedback: feedbackData, projectId: project.id });
+            if (project) {
+                alertStudentSocket({ room: `project-${project.id}_question-${question.id}`, feedback: feedbackData, projectId: project.id });
+            }
         } catch (err) {
             console.error(err);
             sendToast({ message: t('unknown_error'), type: 'error' });
@@ -97,7 +99,7 @@ export const FormFeedback: React.FunctionComponent<FormFeedbackProps> = ({ quest
                 }}
             >
                 <Button
-                    component="a"
+                    as="a"
                     variant="contained"
                     color="secondary"
                     style={{
@@ -109,7 +111,7 @@ export const FormFeedback: React.FunctionComponent<FormFeedbackProps> = ({ quest
                     label={t('collaboration_form_feedback_btn_feedback')}
                 ></Button>
                 <Button
-                    component="a"
+                    as="a"
                     variant="contained"
                     color="secondary"
                     style={{

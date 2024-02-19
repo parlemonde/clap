@@ -7,6 +7,7 @@ import type { Title } from '../../types/models/title.type';
 import { Question } from '../entities/question';
 import { UserType } from '../entities/user';
 import { ajv, sendInvalidDataError } from '../lib/json-schema-validator';
+import { logger } from '../lib/logger';
 import { getQueryString } from '../utils/get-query-string';
 import { Controller } from './controller';
 
@@ -253,6 +254,7 @@ questionController.put({ path: '/:id', userType: UserType.CLASS }, async (req, r
     question.soundUrl = data.soundUrl !== undefined ? data.soundUrl : question.soundUrl;
     question.soundVolume = data.soundVolume !== undefined ? data.soundVolume : question.soundVolume;
     const dataStatus = data.status;
+    logger.info(`dataStatus: ${dataStatus}`);
     if (dataStatus !== undefined && dataStatus !== null) {
         question.status = dataStatus;
         question.feedback = [QuestionStatus.ONGOING, QuestionStatus.PREMOUNTING].includes(dataStatus) && data.feedback ? data.feedback : null;

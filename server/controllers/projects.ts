@@ -206,6 +206,7 @@ type PostProjectData = {
     soundUrl?: string | null;
     soundVolume?: number | null;
     musicBeginTime?: number;
+    videoJobId?: string | null;
 };
 const POST_PROJECT_SCHEMA: JSONSchemaType<PostProjectData> = {
     type: 'object',
@@ -265,7 +266,7 @@ projectController.post({ path: '/', userType: UserType.CLASS }, async (req, res,
     newProject.soundUrl = data.soundUrl || null;
     newProject.soundVolume = data.soundVolume || null;
     newProject.musicBeginTime = data.musicBeginTime || 0;
-    newProject.videoJobId = data.videoJobId || 0;
+    newProject.videoJobId = data.videoJobId || null;
     const languageCode = getQueryString(req.query.languageCode) || req.cookies?.['app-language'] || 'fr';
     newProject.languageCode = languageCode;
     const newQuestions: Question[] = [];
@@ -370,7 +371,7 @@ projectController.put({ path: '/:id', userType: UserType.CLASS }, async (req, re
         project.joinCode = null;
     } else if (data.isCollaborationActive === true) {
         project.isCollaborationActive = true;
-        project.joinCode = data.joinCode;
+        project.joinCode = data.joinCode || null;
         // set collaboration mode to false on each user project
         await getConnection()
             .createQueryBuilder()

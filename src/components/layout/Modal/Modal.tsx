@@ -9,7 +9,7 @@ import { CircularProgress } from '../CircularProgress';
 import { Title } from '../Typography';
 import styles from './modal.module.scss';
 
-type ModalProps = {
+export type ModalProps = {
     // --
     isOpen: boolean;
     onClose: () => void;
@@ -54,7 +54,6 @@ export const Modal = ({
                     onClose();
                 }
             }}
-            style={{ zIndex: '99999' }}
         >
             <Dialog.Portal>
                 <Dialog.Overlay className={styles.overlay} />

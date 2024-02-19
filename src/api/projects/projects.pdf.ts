@@ -11,8 +11,8 @@ export type GetPDFParams = {
     scenarioDescription: string;
     questions: Question[];
     languageCode: string;
-    soundUrl: string | null;
-    soundVolume: number | null;
+    soundUrl?: string | null;
+    soundVolume?: number | null;
     musicBeginTime?: number;
 };
 

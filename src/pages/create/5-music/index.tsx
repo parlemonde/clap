@@ -37,7 +37,7 @@ const MusicPage = () => {
         enabled: !isProjectLoading && project !== undefined,
     });
     const { isCollaborationActive } = useCollaboration();
-    const { socket, connectTeacher, updateProject: updateProjectSocket } = useSocket();
+    const { updateProject: updateProjectSocket } = useSocket();
 
     const [soundBlob, setSoundBlob] = React.useState<Blob | null>(null);
     const [volume, setVolume] = React.useState<number>(project?.soundVolume ?? 100);

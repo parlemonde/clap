@@ -1,6 +1,7 @@
 import type { UseMutationOptions } from 'react-query';
 import { useMutation, useQueryClient } from 'react-query';
 
+import type { HttpRequestError } from 'src/utils/http-request';
 import { httpRequest } from 'src/utils/http-request';
 import type { Question, QuestionStatus } from 'types/models/question.type';
 import type { Title } from 'types/models/title.type';
@@ -15,6 +16,7 @@ type PUTParams = {
     soundUrl?: string | null;
     soundVolume?: number | null;
     status?: QuestionStatus | null;
+    feedback?: string | null;
 };
 
 export const updateQuestion = async ({ questionId, ...data }: PUTParams): Promise<PUTResponse> => {

@@ -12,7 +12,7 @@ export const ButtonShowFeedback: React.FunctionComponent<ButtonShowFeedbackProps
 
     return (
         <Button
-            component="a"
+            as="a"
             variant="contained"
             color="secondary"
             style={{

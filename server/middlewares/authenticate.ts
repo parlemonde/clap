@@ -82,7 +82,6 @@ export function authenticate(userType: UserType | undefined = undefined): Reques
         if (data.isStudent) {
             const user: User = ANONYMOUS_USER;
             const teacher = await getRepository(User).findOne({ where: { id: data.teacherId } });
-            user.teacherId = teacher.id;
             const project = await getRepository(Project).findOne({ where: { id: data.projectId } });
             const sequency = await getRepository(Question).findOne({ where: { id: data.sequencyId }, relations: ['project', 'project.user'] });
 
@@ -97,6 +96,7 @@ export function authenticate(userType: UserType | undefined = undefined): Reques
             ) {
                 throw new AppError('forbidden');
             }
+            user.teacherId = teacher.id;
             req.user = user;
             next();
         } else {

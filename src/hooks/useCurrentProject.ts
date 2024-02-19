@@ -8,6 +8,7 @@ import { useTranslation } from 'src/i18n/useTranslation';
 import { getFromLocalStorage, setToLocalStorage } from 'src/utils/local-storage';
 import { useQueryId, useQueryNumber } from 'src/utils/useQueryId';
 import type { Project } from 'types/models/project.type';
+import { QuestionStatus } from 'types/models/question.type';
 
 const createProject = async (userId: number | null, themeId: string | number, scenarioId: string | number, currentLocale: string) => {
     const newProject: Project = {
@@ -22,6 +23,8 @@ const createProject = async (userId: number | null, themeId: string | number, sc
         musicBeginTime: 0,
         soundUrl: null,
         soundVolume: 100,
+        isCollaborationActive: false,
+        joinCode: null,
     };
     if (typeof scenarioId === 'number') {
         try {
@@ -48,6 +51,8 @@ const createProject = async (userId: number | null, themeId: string | number, sc
                         duration: 3000, // 3s
                     },
                 ],
+                status: QuestionStatus.ONGOING,
+                feedback: null,
             }));
         } catch (err) {
             console.error(err);

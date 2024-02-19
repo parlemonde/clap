@@ -40,10 +40,10 @@ export const useSocket = () => {
             if (window !== undefined) {
                 router.pathname = window.location.pathname;
             }
-            router.query.projectId = projectId;
+            router.query.projectId = projectId.toString();
             router.query.alert = 'teacher';
-            router.query.sequency = sequencyOrder;
-            router.query.status = status;
+            router.query.sequency = sequencyOrder.toString();
+            router.query.status = status.toString();
             router.push(router);
         };
 
@@ -76,7 +76,7 @@ export const useSocket = () => {
             if (window !== undefined) {
                 router.pathname = window.location.pathname;
             }
-            router.query.projectId = projectId;
+            router.query.projectId = projectId.toString();
             router.query.alert = 'student';
             router.query.type = feedback ? 'feedback' : 'validation';
             router.push(router);
