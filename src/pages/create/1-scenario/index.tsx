@@ -58,6 +58,7 @@ const ScenarioPage = () => {
                 {scenarios
                     .filter((s) => s.names[currentLocale] !== undefined || s.isDefault === false)
                     .map((s) => (
+                        s.names[currentLocale].trim().length > 0 &&
                         <ScenarioCard
                             key={s.id}
                             name={s.names[currentLocale] || s.names[Object.keys(s.names)[0]] || ''}

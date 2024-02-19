@@ -18,7 +18,9 @@ import { ThemeBreadcrumbs } from 'src/components/navigation/ThemeBreadcrumbs';
 import { Inverted } from 'src/components/ui/Inverted';
 import { Loader } from 'src/components/ui/Loader';
 import { sendToast } from 'src/components/ui/Toasts';
+import { useCollaboration } from 'src/hooks/useCollaboration';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
+import { useSocket } from 'src/hooks/useSocket';
 import { useTranslation } from 'src/i18n/useTranslation';
 import { getSounds } from 'src/lib/get-sounds';
 import { serializeToQueryUrl } from 'src/utils/serializeToQueryUrl';
@@ -34,6 +36,8 @@ const MusicPage = () => {
     const { scenario } = useScenario(project ? project.scenarioId : 0, {
         enabled: !isProjectLoading && project !== undefined,
     });
+    const { isCollaborationActive } = useCollaboration();
+    const { socket, connectTeacher, updateProject: updateProjectSocket } = useSocket();
 
     const [soundBlob, setSoundBlob] = React.useState<Blob | null>(null);
     const [volume, setVolume] = React.useState<number>(project?.soundVolume ?? 100);
@@ -98,11 +102,14 @@ const MusicPage = () => {
             }
 
             // [4] update project.
-            updateProject({
+            const updatedProject = updateProject({
                 musicBeginTime: soundBeginTime,
                 soundUrl: newSoundUrl,
                 soundVolume: volume,
             });
+            if (isCollaborationActive && updatedProject) {
+                updateProjectSocket(updatedProject);
+            }
             router.push(`/create/6-result${serializeToQueryUrl({ projectId: project.id || null })}`);
         } catch (err) {
             console.error(err);

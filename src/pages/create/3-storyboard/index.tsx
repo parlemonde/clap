@@ -2,11 +2,21 @@ import { PlusIcon } from '@radix-ui/react-icons';
 import { useRouter } from 'next/router';
 import React from 'react';
 
+import { type GetPDFParams, getProjectPdf } from '../../../api/projects/projects.pdf';
+import { Button } from '../../../components/layout/Button';
+import styles from '../../../components/navigation/NextButton/next-button.module.scss';
+import { userContext } from '../../../contexts/userContext';
+import PictureAsPdf from '../../../svg/pdf.svg';
 import { useDeletePlanMutation } from 'src/api/plans/plans.delete';
 import { useCreatePlanMutation } from 'src/api/plans/plans.post';
 import { useUpdateQuestionMutation } from 'src/api/questions/questions.put';
 import { useScenario } from 'src/api/scenarios/scenarios.get';
 import { useTheme } from 'src/api/themes/themes.get';
+import { ButtonShowFeedback } from 'src/components/collaboration/ButtonShowFeedback';
+import { FeedbackModal } from 'src/components/collaboration/FeedbackModal';
+import { FormFeedback } from 'src/components/collaboration/FormFeedback';
+import { GroupColorPill } from 'src/components/collaboration/GroupColorPill';
+import { NextStepButton } from 'src/components/collaboration/NextStepButton';
 import { PlanCard } from 'src/components/create/PlanCard';
 import { TitleCard } from 'src/components/create/TitleCard';
 import { IconButton } from 'src/components/layout/Button/IconButton';
@@ -21,11 +31,17 @@ import { ThemeBreadcrumbs } from 'src/components/navigation/ThemeBreadcrumbs';
 import { Inverted } from 'src/components/ui/Inverted';
 import { sendToast } from 'src/components/ui/Toasts';
 import { Trans } from 'src/components/ui/Trans';
+import { useCollaboration } from 'src/hooks/useCollaboration';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
+import { useSocket } from 'src/hooks/useSocket';
 import { useTranslation } from 'src/i18n/useTranslation';
+import { COLORS } from 'src/utils/colors';
+import { getFromLocalStorage } from 'src/utils/local-storage';
 import { serializeToQueryUrl } from 'src/utils/serializeToQueryUrl';
 import type { Plan } from 'types/models/plan.type';
 import type { Question } from 'types/models/question.type';
+import { QuestionStatus } from 'types/models/question.type';
+import { UserType } from 'types/models/user.type';
 
 type SequenceProps = {
     projectId: number | null;
@@ -34,8 +50,19 @@ type SequenceProps = {
     sequenceIndex: number;
     planStartIndex: number;
     onUpdateSequence(newSequence: Partial<Question>): void;
+    isStudent?: boolean;
+    isCollaborationActive?: boolean;
 };
-const Scenario = ({ projectId, isSavedProject, sequence, sequenceIndex, planStartIndex, onUpdateSequence }: SequenceProps) => {
+const Scenario = ({
+    projectId,
+    isSavedProject,
+    sequence,
+    sequenceIndex,
+    planStartIndex,
+    onUpdateSequence,
+    isStudent = false,
+    isCollaborationActive = false,
+}: SequenceProps) => {
     const { t } = useTranslation();
     const [deletePlanIndex, setDeletePlanIndex] = React.useState(-1);
     const [showDeleteTitle, setShowDeleteTitle] = React.useState(false);
@@ -44,6 +71,9 @@ const Scenario = ({ projectId, isSavedProject, sequence, sequenceIndex, planStar
     const updateQuestionMutation = useUpdateQuestionMutation();
 
     const plans = React.useMemo(() => sequence.plans || [], [sequence]);
+    const [showFeedback, setShowFeedback] = React.useState(false);
+    const showButtonFeedback = isStudent && sequence.feedback;
+    const studentColor = COLORS[sequenceIndex];
 
     const onAddPlan = async () => {
         const newPlans = [...plans];
@@ -110,8 +140,10 @@ const Scenario = ({ projectId, isSavedProject, sequence, sequenceIndex, planStar
 
     return (
         <>
-            <Title color="primary" variant="h2" marginTop="lg">
+            <Title color="primary" variant="h2" marginTop="lg" style={{ display: 'flex', alignItems: 'center' }}>
                 {sequenceIndex + 1}. {sequence.question}
+                {isCollaborationActive && studentColor && <GroupColorPill color={studentColor} />}
+                {showButtonFeedback && <ButtonShowFeedback onClick={() => setShowFeedback(true)} />}
             </Title>
             <div className="plans">
                 <TitleCard
@@ -121,6 +153,7 @@ const Scenario = ({ projectId, isSavedProject, sequence, sequenceIndex, planStar
                     onDelete={() => {
                         setShowDeleteTitle(true);
                     }}
+                    canEdit={sequence.status === QuestionStatus.ONGOING || !isStudent}
                 />
                 {plans.map((plan, planIndex) => (
                     <PlanCard
@@ -130,11 +163,12 @@ const Scenario = ({ projectId, isSavedProject, sequence, sequenceIndex, planStar
                         questionIndex={sequenceIndex}
                         planIndex={planIndex}
                         showNumber={planStartIndex + planIndex}
-                        canDelete={plans.length > 1}
+                        canDelete={true}
                         onDelete={() => setDeletePlanIndex(planIndex)}
+                        canEdit={sequence.status === QuestionStatus.ONGOING || !isStudent}
                     />
                 ))}
-                {plans.length < 5 && (
+                {(sequence.status === QuestionStatus.ONGOING || !isStudent) && plans.length < 5 && (
                     <div className="plan-button-container add">
                         {createPlanMutation.isLoading ? (
                             <CircularProgress color="primary" />
@@ -177,7 +211,15 @@ const Scenario = ({ projectId, isSavedProject, sequence, sequenceIndex, planStar
                 >
                     {t('part3_delete_plan_title_desc')}
                 </Modal>
+                <FeedbackModal
+                    isOpen={showFeedback}
+                    onClose={() => setShowFeedback(false)}
+                    feedback={sequence && sequence.feedback ? sequence.feedback : ''}
+                />
             </div>
+            {isCollaborationActive && !isStudent && sequence.status === QuestionStatus.STORYBOARD && (
+                <FormFeedback question={sequence} previousStatus={QuestionStatus.ONGOING} nextStatus={QuestionStatus.PREMOUNTING} />
+            )}
         </>
     );
 };
@@ -192,6 +234,30 @@ const StoryboardPage = () => {
     const { scenario } = useScenario(project ? project.scenarioId : 0, {
         enabled: !isProjectLoading && project !== undefined,
     });
+    const [isLoading, setIsLoading] = React.useState(false);
+    const { socket, connectStudent, connectTeacher, updateProject: updateProjectSocket } = useSocket();
+    const { isCollaborationActive } = useCollaboration();
+    const { user } = React.useContext(userContext);
+    const [studentQuestion, setStudentQuestion] = React.useState(null);
+    const isStudent = user?.type === UserType.STUDENT;
+    const sequencyId = isStudent ? getFromLocalStorage('student', undefined)?.sequencyId || null : null;
+
+    React.useEffect(() => {
+        if (isCollaborationActive && socket.connected === false && project !== undefined && project.id) {
+            if (isStudent && sequencyId) {
+                connectStudent(project.id, sequencyId);
+            } else if (!isStudent) {
+                connectTeacher(project);
+            }
+        }
+    }, [isCollaborationActive, socket, project, isStudent, sequencyId]);
+
+    React.useEffect(() => {
+        const question: Question | undefined = questions.find((q: Question) => q.id === sequencyId);
+        if (question) {
+            setStudentQuestion(question);
+        }
+    }, [questions, sequencyId]);
 
     const startIndexPerQuestion = React.useMemo(() => {
         const newStartIndexPerQuestion: Partial<Record<number, number>> = {};
@@ -202,9 +268,41 @@ const StoryboardPage = () => {
         return newStartIndexPerQuestion;
     }, [questions]);
 
+    const getData = (): GetPDFParams | undefined => {
+        if (!project) {
+            return;
+        }
+        return {
+            projectId: project.id,
+            projectTitle: project.title,
+            themeId: project.themeId,
+            themeName: theme?.names?.[currentLocale] || theme?.names?.fr || '',
+            scenarioId: project.scenarioId,
+            scenarioName: scenario ? scenario.names[currentLocale] || scenario.names[Object.keys(scenario.names)[0]] || '' : '',
+            scenarioDescription: scenario
+                ? scenario.descriptions[currentLocale] || scenario.descriptions[Object.keys(scenario.descriptions)[0]] || ''
+                : '',
+            questions,
+            languageCode: currentLocale,
+        };
+    };
+
+    const generatePDF = async () => {
+        const data = getData();
+        if (!data) {
+            return;
+        }
+        setIsLoading(true);
+        const url = await getProjectPdf(data);
+        setIsLoading(false);
+        if (url) {
+            window.open(`/static/pdf/${url}`);
+        }
+    };
+
     return (
         <Container>
-            <ThemeBreadcrumbs theme={theme} isLoading={isThemeLoading}></ThemeBreadcrumbs>
+            {!isStudent ? <ThemeBreadcrumbs theme={theme} isLoading={isThemeLoading}></ThemeBreadcrumbs> : <div style={{ marginTop: '10px' }}></div>}
             <Steps
                 activeStep={2}
                 themeId={project ? project.themeId : undefined}
@@ -220,24 +318,49 @@ const StoryboardPage = () => {
                 <Title color="inherit" variant="h2">
                     {t('part3_desc')}
                 </Title>
-                {questions.map((question, index) => (
-                    <Scenario
-                        projectId={project?.id || null}
-                        isSavedProject={project && project.id !== 0}
-                        key={question.id}
-                        sequence={question}
-                        sequenceIndex={index}
-                        planStartIndex={startIndexPerQuestion[index] || 0}
-                        onUpdateSequence={(updatedSequence) => {
-                            const newQuestions = [...questions];
-                            newQuestions[index] = {
-                                ...questions[index],
-                                ...updatedSequence,
-                            };
-                            updateProject({ questions: newQuestions });
-                        }}
-                    />
-                ))}
+                {questions.map(
+                    (question, index) =>
+                        (!isStudent || sequencyId === question.id) && (
+                            <Scenario
+                                projectId={project?.id || null}
+                                isSavedProject={project && project.id !== 0}
+                                key={question.id}
+                                sequence={question}
+                                sequenceIndex={index}
+                                planStartIndex={startIndexPerQuestion[index] || 0}
+                                onUpdateSequence={(updatedSequence) => {
+                                    const newQuestions = [...questions];
+                                    newQuestions[index] = {
+                                        ...questions[index],
+                                        ...updatedSequence,
+                                    };
+                                    const updatedProject = updateProject({ questions: newQuestions });
+                                    if (isCollaborationActive && updatedProject) {
+                                        updateProjectSocket(updatedProject);
+                                    }
+                                }}
+                                isAuthorized={!isStudent || sequencyId === question.id}
+                                isStudent={isStudent}
+                                isCollaborationActive={isCollaborationActive}
+                            />
+                        ),
+                )}
+                {!isStudent && (
+                    <div style={{ margin: '32px 0' }}>
+                        <Button
+                            className={styles.nextButton__next}
+                            label={t('part6_pdf_button')}
+                            leftIcon={<PictureAsPdf style={{ marginRight: '10px' }} />}
+                            variant="outlined"
+                            color="secondary"
+                            onClick={generatePDF}
+                            marginRight="md"
+                        ></Button>
+                    </div>
+                )}
+                {isStudent && studentQuestion && studentQuestion.status === QuestionStatus.ONGOING && (
+                    <NextStepButton sequencyId={sequencyId} newStatus={QuestionStatus.STORYBOARD} />
+                )}
                 <NextButton
                     onNext={() => {
                         router.push(`/create/4-pre-mounting${serializeToQueryUrl({ projectId: project?.id || null })}`);

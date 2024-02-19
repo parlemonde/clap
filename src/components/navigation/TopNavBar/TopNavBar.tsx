@@ -21,7 +21,8 @@ export const TopNavBar = () => {
 
     const currentPath = `/${router.asPath.split('/')[1]}`;
     const isOnAdmin = currentPath === '/admin';
-    const tabs = getTabs(user !== null, user !== null && user.type >= UserType.ADMIN, isOnAdmin);
+    const isStudent = user !== null && user.type === UserType.STUDENT;
+    const tabs = getTabs(user !== null, user !== null && user.type >= UserType.ADMIN, isOnAdmin, isStudent);
 
     return (
         <header className={classNames(styles.topNavBar, 'tablet-and-up-only')}>
@@ -34,6 +35,7 @@ export const TopNavBar = () => {
                             data-active={currentPath === '/create' ? '' : undefined}
                             aria-current={currentPath === '/create' ? 'page' : undefined}
                             aria-label="logo"
+                            style={{ pointerEvents: isStudent ? 'none' : 'auto' }}
                         >
                             <PelicoSVG style={{ height: '36px', width: 'auto' }} />
                             <Box as="span" marginLeft="md">

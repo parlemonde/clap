@@ -23,7 +23,9 @@ import { Loader } from 'src/components/ui/Loader';
 import { sendToast } from 'src/components/ui/Toasts';
 import { Trans } from 'src/components/ui/Trans';
 import { userContext } from 'src/contexts/userContext';
+import { useCollaboration } from 'src/hooks/useCollaboration';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
+import { useSocket } from 'src/hooks/useSocket';
 import { useTranslation } from 'src/i18n/useTranslation';
 import { getSounds } from 'src/lib/get-sounds';
 import PictureAsPdf from 'src/svg/pdf.svg';
@@ -78,6 +80,8 @@ const ResultPage = () => {
     const { scenario } = useScenario(project ? project.scenarioId : 0, {
         enabled: !isProjectLoading && project !== undefined,
     });
+    const { isCollaborationActive } = useCollaboration();
+    const { socket, connectTeacher } = useSocket();
     const [isLoading, setIsLoading] = React.useState(false);
     const [isVideoModalOpen, setIsVideoModalOpen] = React.useState(false);
     const {
@@ -98,6 +102,12 @@ const ResultPage = () => {
         }
         return () => {};
     }, [projectVideo, refetch]);
+
+    React.useEffect(() => {
+        if (isCollaborationActive && socket.connected === false && project !== undefined && project.id) {
+            connectTeacher(project);
+        }
+    }, [isCollaborationActive, socket, project]);
 
     const getData = (): GetPDFParams | undefined => {
         if (!project) {

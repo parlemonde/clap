@@ -94,10 +94,6 @@ export async function updatePassword(req: Request, res: Response): Promise<void>
         throw new AppError('loginError', ['Unauthorized - Invalid username.'], 0);
     }
 
-    if (user.accountRegistration === 10) {
-        throw new AppError('loginError', ['Unauthorized - Please use SSO.'], 2);
-    }
-
     // verify token
     let isverifyTokenCorrect: boolean = false;
     try {

@@ -6,6 +6,7 @@ import express, { Router } from 'express';
 import type { Request } from 'express';
 import RateLimit from 'express-rate-limit';
 import helmet from 'helmet';
+import { Server } from 'http';
 import morgan from 'morgan';
 import next from 'next';
 import path from 'path';
@@ -20,6 +21,7 @@ import { handleErrors } from './middlewares/handle-errors';
 import { jsonify } from './middlewares/jsonify';
 import { removeTrailingSlash } from './middlewares/remove-trailing-slash';
 import { routes } from './routes';
+import { startSocketServer } from './socket';
 import { getLocales } from './translations/getLocales';
 import { getDefaultDirectives } from './utils/get-default-directives';
 
@@ -132,7 +134,10 @@ async function startApp() {
     if (port === false) {
         logger.error(`Exiting. Invalid port to use: %s`, port);
     } else {
-        const server = app.listen(port);
+        const server = Server(app);
+        // --- Start socket server ---
+        startSocketServer(server);
+        server.listen(port);
         server.on('error', onError);
         server.on('listening', () => {
             logger.info(`App listening on port ${port}!`);

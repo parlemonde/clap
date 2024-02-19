@@ -4,7 +4,7 @@ import fs from 'fs-extra';
 import http from 'http';
 import * as path from 'path';
 import sanitize from 'sanitize-filename';
-import { getRepository } from 'typeorm';
+import { getRepository, getConnection } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 
 import type { Title } from '../../types/models/title.type';
@@ -154,15 +154,30 @@ projectController.get({ path: '', userType: UserType.CLASS }, async (req, res) =
     res.sendJSON(project);
 });
 
+projectController.get({ path: '/join/:joinCode(\\d+)' }, async (req, res, next) => {
+    const joinCode = parseInt(req.params.joinCode, 10) || 0;
+    const project: Project | undefined = await getRepository(Project).findOne({
+        where: { joinCode },
+        relations: ['questions'],
+    });
+    if (project === undefined) {
+        next();
+        return;
+    }
+
+    res.sendJSON(project);
+});
+
 projectController.get({ path: '/:id(\\d+)', userType: UserType.CLASS }, async (req, res, next) => {
-    if (!req.user) {
+    const user = req.user;
+    if (user === undefined) {
         next();
         return;
     }
     const id = parseInt(req.params.id, 10) || 0;
     const includes = new Set((getQueryString(req.query.include) || '').split(','));
     const project: Project | undefined = await getRepository(Project).findOne({
-        where: { id, userId: req.user.id },
+        where: { id, userId: user.teacherId ?? user.id },
         relations: getRelations(includes),
     });
     if (project === undefined) {
@@ -220,6 +235,10 @@ const POST_PROJECT_SCHEMA: JSONSchemaType<PostProjectData> = {
             type: 'number',
             nullable: true,
         },
+        videoJobId: {
+            type: 'string',
+            nullable: true,
+        },
     },
     required: ['title', 'themeId', 'scenarioId', 'questions'],
     additionalProperties: false,
@@ -246,6 +265,7 @@ projectController.post({ path: '/', userType: UserType.CLASS }, async (req, res,
     newProject.soundUrl = data.soundUrl || null;
     newProject.soundVolume = data.soundVolume || null;
     newProject.musicBeginTime = data.musicBeginTime || 0;
+    newProject.videoJobId = data.videoJobId || 0;
     const languageCode = getQueryString(req.query.languageCode) || req.cookies?.['app-language'] || 'fr';
     newProject.languageCode = languageCode;
     const newQuestions: Question[] = [];
@@ -280,6 +300,8 @@ type PutProjectData = {
     soundUrl?: string | null;
     soundVolume?: number | null;
     musicBeginTime?: number;
+    isCollaborationActive?: boolean;
+    joinCode?: number;
 };
 const PUT_PROJECT_SCHEMA: JSONSchemaType<PutProjectData> = {
     type: 'object',
@@ -303,9 +325,20 @@ const PUT_PROJECT_SCHEMA: JSONSchemaType<PutProjectData> = {
             type: 'number',
             nullable: true,
         },
+        isCollaborationActive: {
+            type: 'boolean',
+            nullable: true,
+        },
+        joinCode: {
+            type: 'number',
+            nullable: true,
+        },
     },
     required: [],
     additionalProperties: false,
+    dependentSchemas: {
+        isCollaborationActive: { required: ['joinCode'] },
+    },
 };
 const putProjectValidator = ajv.compile(PUT_PROJECT_SCHEMA);
 projectController.put({ path: '/:id', userType: UserType.CLASS }, async (req, res, next) => {
@@ -332,6 +365,20 @@ projectController.put({ path: '/:id', userType: UserType.CLASS }, async (req, re
     project.soundUrl = data.soundUrl !== undefined ? data.soundUrl : project.soundUrl;
     project.soundVolume = data.soundVolume !== undefined ? data.soundVolume : project.soundVolume;
     project.musicBeginTime = data.musicBeginTime ?? project.musicBeginTime;
+    if (data.isCollaborationActive === false) {
+        project.isCollaborationActive = false;
+        project.joinCode = null;
+    } else if (data.isCollaborationActive === true) {
+        project.isCollaborationActive = true;
+        project.joinCode = data.joinCode;
+        // set collaboration mode to false on each user project
+        await getConnection()
+            .createQueryBuilder()
+            .update(Project)
+            .set({ isCollaborationActive: false, joinCode: null })
+            .where({ userId: user.id, isCollaborationActive: true })
+            .execute();
+    }
     await getRepository(Project).save(project);
     res.sendJSON(project);
 });

@@ -13,6 +13,7 @@ import NProgress from 'nprogress';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
+import { AlertModal } from 'src/components/collaboration/AlertModal';
 import { AdminDrawer } from 'src/components/navigation/AdminDrawer';
 import { BottomNavBar } from 'src/components/navigation/BottomNavBar';
 import { TopNavBar } from 'src/components/navigation/TopNavBar';
@@ -88,6 +89,7 @@ const MyApp: React.FunctionComponent<MyAppProps> & {
                                 <Component {...pageProps} />
                             </main>
                             <BottomNavBar />
+                            <AlertModal />
                         </QueryClientProvider>
                     </UserContextProvider>
                 </TranslationContextProvider>

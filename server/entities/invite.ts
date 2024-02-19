@@ -1,4 +1,4 @@
-import { Column, Entity, CreateDateColumn, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, CreateDateColumn, UpdateDateColumn, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Invite {
@@ -9,5 +9,8 @@ export class Invite {
     public token: string;
 
     @CreateDateColumn()
-    public date: Date;
+    public created_at: Date;
+
+    @UpdateDateColumn()
+    public expired_at: Date;
 }

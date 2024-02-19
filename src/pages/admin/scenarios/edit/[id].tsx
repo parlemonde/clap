@@ -91,10 +91,16 @@ const AdminEditScenario = () => {
             return;
         }
 
-        const usedLanguages = Object.keys(scenarioNames);
-        if (usedLanguages.length === 0) {
-            sendToast({ message: 'Le nom du scénario ne peut pas être vide.', type: 'error' });
-            return;
+        // Check if name are not empty with blank space
+        const scenarioNamesValue = Object.values(scenarioNames);
+        const clearedScenarioNames = scenarioNamesValue.filter((lang) => lang.trim().length > 0);
+        if (scenarioNames.length === 0 || clearedScenarioNames.length !== scenarioNamesValue.length) {
+            sendToast({ message: 'Veuillez remplir correctement le nom pour chaque langue sélectionnée', type: 'error' });
+        }
+
+        // Clear blank spaces
+        for (const [key, value] of Object.entries(scenarioNames)) {
+            scenarioNames[key] = value.trim();
         }
 
         try {

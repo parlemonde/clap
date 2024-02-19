@@ -9,7 +9,7 @@ export function getSequenceDuration(sequence: Question) {
         return 0;
     }
     return (
-        Math.max(1000, sequence.title?.duration || 0) +
-        (sequence.plans || []).reduce<number>((acc, plan) => acc + Math.max(1000, plan.duration || 0), 0)
+        (sequence.title?.duration ? Math.max(1000, sequence.title.duration) : 0) +
+        (sequence.plans || []).reduce<number>((acc, plan) => (acc + plan?.duration ? Math.max(1000, plan.duration || 0) : 0), 0)
     );
 }

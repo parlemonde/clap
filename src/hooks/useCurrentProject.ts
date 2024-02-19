@@ -118,12 +118,28 @@ export const useCurrentProject = () => {
         }
     };
 
-    const updateProject = (updatedProject: Partial<Project>) => {
+    const updateProject = (updatedProject: Partial<Project>): Project | null => {
         if (project === undefined) {
-            return;
+            return null;
         }
-        setProject({ ...project, ...updatedProject });
+
+        const projectUpdated = { ...project, ...updatedProject };
+        setProject(projectUpdated);
+
+        return projectUpdated;
     };
 
     return { project, isLoading, questions, setProject, updateProject };
+};
+
+export const useClearLocalProject = () => {
+    const clearLocalProject = () => {
+        const project = getFromLocalStorage('project', undefined);
+        if (project) {
+            setToLocalStorage('project', undefined);
+            if (typeof window !== 'undefined') window.location.reload();
+        }
+    };
+
+    return { clearLocalProject };
 };

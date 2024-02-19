@@ -137,7 +137,9 @@ userController.post({ path: '' }, async (req, res) => {
         if (!isValid) {
             throw new AppError('forbidden', ['Invite code provided is invalid.']);
         } else {
-            await getRepository(Invite).delete({ token: data.inviteCode });
+            if (data.expired_at < new Date().toISOString()) {
+                await getRepository(Invite).delete({ token: data.inviteCode });
+            }
         }
     }
 
@@ -274,6 +276,10 @@ userController.delete({ path: '/:id' }, async (req, res) => {
 userController.get({ path: '/invite' }, async (req, res) => {
     const invite = new Invite();
     invite.token = generateToken(20);
+    invite.created_at = new Date();
+    const nextDay = invite.created_at.getDate() + 1;
+    invite.expired_at = new Date();
+    invite.expired_at.setDate(nextDay);
     await getRepository(Invite).save(invite);
     res.sendJSON({ inviteCode: invite.token });
 });

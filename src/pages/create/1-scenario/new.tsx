@@ -35,16 +35,17 @@ const NewScenario = () => {
     }, [router, theme, isThemeLoading]);
 
     const onCreateScenario = () => {
-        if (themeId === undefined || !name) {
+        if (themeId === undefined || !name || name.trim().length === 0) {
+            sendToast({ message: 'Le titre est obligatoire et ne doit pas être vide.', type: 'error' });
             return;
         }
         createScenarioMutation.mutate(
             {
                 names: {
-                    [currentLocale]: name,
+                    [currentLocale]: name.trim(),
                 },
                 descriptions: {
-                    [currentLocale]: description,
+                    [currentLocale]: description.trim(),
                 },
                 themeId,
             },

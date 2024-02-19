@@ -62,10 +62,18 @@ const ThemesPage = () => {
 
     const deleteThemeMutation = useDeleteThemeMutation();
     const onDeleteTheme = async () => {
-        const themeId = deleteIndex ? defaultThemes[deleteIndex].id : null;
+        const themeId = deleteIndex ? defaultThemes[deleteIndex].id : 0;
+
+        if (themeId === 0) {
+            sendToast({ message: 'Ce thème ne peut pas être supprimé.', type: 'error' });
+            setDeleteIndex(null);
+            return;
+        }
+
         if (!themeId || typeof themeId === 'string') {
             return;
         }
+
         try {
             await deleteThemeMutation.mutateAsync({ themeId });
             sendToast({ message: 'Thème supprimé avec succès!', type: 'success' });

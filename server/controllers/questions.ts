@@ -2,6 +2,7 @@ import type { JSONSchemaType } from 'ajv';
 import type { FindConditions } from 'typeorm';
 import { getManager, getRepository } from 'typeorm';
 
+import { QuestionStatus } from '../../types/models/question.type';
 import type { Title } from '../../types/models/title.type';
 import { Question } from '../entities/question';
 import { UserType } from '../entities/user';
@@ -173,6 +174,8 @@ type PutQuestionData = {
     voiceOffBeginTime?: number;
     soundUrl?: string | null;
     soundVolume?: number | null;
+    feedback?: string | null;
+    status?: QuestionStatus | null;
 };
 const PUT_QUESTION_SCHEMA: JSONSchemaType<PutQuestionData> = {
     type: 'object',
@@ -216,6 +219,14 @@ const PUT_QUESTION_SCHEMA: JSONSchemaType<PutQuestionData> = {
             minimum: 0,
             maximum: 200,
         },
+        feedback: {
+            type: 'string',
+            nullable: true,
+        },
+        status: {
+            type: 'number',
+            nullable: true,
+        },
     },
     required: [],
     additionalProperties: false,
@@ -241,6 +252,11 @@ questionController.put({ path: '/:id', userType: UserType.CLASS }, async (req, r
     question.voiceOffBeginTime = data.voiceOffBeginTime || 0;
     question.soundUrl = data.soundUrl !== undefined ? data.soundUrl : question.soundUrl;
     question.soundVolume = data.soundVolume !== undefined ? data.soundVolume : question.soundVolume;
+    const dataStatus = data.status;
+    if (dataStatus !== undefined && dataStatus !== null) {
+        question.status = dataStatus;
+        question.feedback = [QuestionStatus.ONGOING, QuestionStatus.PREMOUNTING].includes(dataStatus) && data.feedback ? data.feedback : null;
+    }
     await getRepository(Question).save(question);
     res.sendJSON(question);
 });

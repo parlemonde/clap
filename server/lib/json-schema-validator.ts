@@ -1,6 +1,6 @@
 import type { DefinedError, ValidateFunction } from 'ajv';
-import Ajv from 'ajv';
 import addFormats from 'ajv-formats';
+import Ajv from 'ajv/dist/2019';
 
 import { AppError } from '../middlewares/handle-errors';
 

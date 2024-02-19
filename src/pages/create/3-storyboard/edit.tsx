@@ -9,6 +9,8 @@ import { useCreateImageMutation } from 'src/api/images/images.post';
 import { useUpdatePlanMutation } from 'src/api/plans/plans.put';
 import { useScenario } from 'src/api/scenarios/scenarios.get';
 import { useTheme } from 'src/api/themes/themes.get';
+import { ButtonShowFeedback } from 'src/components/collaboration/ButtonShowFeedback';
+import { FeedbackModal } from 'src/components/collaboration/FeedbackModal';
 import { Canvas } from 'src/components/create/Canvas';
 import { Button } from 'src/components/layout/Button';
 import { Container } from 'src/components/layout/Container';
@@ -25,11 +27,16 @@ import { ImgCroppie } from 'src/components/ui/ImgCroppie';
 import { Inverted } from 'src/components/ui/Inverted';
 import { Loader } from 'src/components/ui/Loader';
 import { sendToast } from 'src/components/ui/Toasts';
+import { userContext } from 'src/contexts/userContext';
+import { useCollaboration } from 'src/hooks/useCollaboration';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
+import { useSocket } from 'src/hooks/useSocket';
 import { useTranslation } from 'src/i18n/useTranslation';
 import { serializeToQueryUrl } from 'src/utils/serializeToQueryUrl';
 import { isString } from 'src/utils/type-guards/is-string';
 import { useQueryNumber } from 'src/utils/useQueryId';
+import { QuestionStatus } from 'types/models/question.type';
+import { UserType } from 'types/models/user.type';
 
 const SecondaryColor = '#79C3A5';
 
@@ -119,6 +126,8 @@ const EditPlan = () => {
     const { scenario } = useScenario(project ? project.scenarioId : 0, {
         enabled: !isProjectLoading && project !== undefined,
     });
+    const { isCollaborationActive } = useCollaboration();
+    const { socket, connectStudent, connectTeacher, updateProject: updateProjectSocket } = useSocket();
 
     const questionIndex = useQueryNumber('question') ?? -1;
     const planIndex = useQueryNumber('plan') ?? -1;
@@ -140,6 +149,10 @@ const EditPlan = () => {
     const [description, setDescription] = React.useState(plan?.description || '');
     const [imageBlob, setImageBlob] = React.useState<Blob | null>(null);
     const [temporaryImageUrl, setTemporaryImageUrl] = React.useState<string | null>(null);
+    const { user } = React.useContext(userContext);
+    const isStudent = user?.type === UserType.STUDENT;
+    const [showButtonFeedback, setShowButtonFeedback] = React.useState(isStudent && sequence && sequence.feedback);
+    const [showFeedback, setShowFeedback] = React.useState(false);
     const imageUrl = React.useMemo(() => {
         if (imageBlob !== null) {
             return URL.createObjectURL(imageBlob);
@@ -148,11 +161,36 @@ const EditPlan = () => {
     }, [imageBlob, plan]);
 
     React.useEffect(() => {
+        if (isStudent && sequence && sequence.feedback) {
+            setShowButtonFeedback(true);
+        }
+    }, [isStudent, sequence]);
+
+    React.useEffect(() => {
         if (!plan) {
             return;
         }
         setDescription(plan.description || '');
     }, [plan]);
+
+    React.useEffect(() => {
+        if (isCollaborationActive && socket.connected === false && project !== undefined && project.id && questionIndex !== -1) {
+            if (isStudent) {
+                connectStudent(project.id, questionIndex);
+            } else if (!isStudent) {
+                connectTeacher(project);
+            }
+        }
+    }, [isCollaborationActive, socket, project, isStudent, questionIndex]);
+
+    const backUrl = `/create/3-storyboard${serializeToQueryUrl({ projectId: project?.id || null })}`;
+
+    React.useEffect(() => {
+        if (isStudent && sequence && sequence.status !== QuestionStatus.ONGOING) {
+            router.push(backUrl);
+        }
+        return;
+    }, [sequence, isStudent, backUrl, router]);
 
     const onInputUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files !== null && event.target.files.length > 0) {
@@ -166,7 +204,6 @@ const EditPlan = () => {
     const createImageMutation = useCreateImageMutation();
     const deleteImageMutation = useDeleteImageMutation();
     const updatePlanMutation = useUpdatePlanMutation();
-    const backUrl = `/create/3-storyboard${serializeToQueryUrl({ projectId: project?.id || null })}`;
 
     const onSubmit = async () => {
         if (!project || !plan) {
@@ -211,9 +248,12 @@ const EditPlan = () => {
                 ...newQuestions[questionIndex],
                 plans: newPlans,
             };
-            updateProject({
+            const updatedProject = updateProject({
                 questions: newQuestions,
             });
+            if (isCollaborationActive && updatedProject) {
+                updateProjectSocket(updatedProject);
+            }
             router.push(backUrl);
         } catch (err) {
             console.error(err);
@@ -235,6 +275,7 @@ const EditPlan = () => {
             <div style={{ maxWidth: '1000px', margin: 'auto', paddingBottom: '2rem' }}>
                 <Title color="primary" variant="h1" marginY="md">
                     <Inverted isRound>3</Inverted> {t('part3_edit_plan')}
+                    {showButtonFeedback && <ButtonShowFeedback onClick={() => setShowFeedback(true)} />}
                 </Title>
                 <Title color="inherit" variant="h2">
                     <span>{t('part3_question')}</span> {sequence?.question || ''}
@@ -452,6 +493,11 @@ const EditPlan = () => {
                 </Form>
             </div>
             <Loader isLoading={isLoading} />
+            <FeedbackModal
+                isOpen={showFeedback}
+                onClose={() => setShowFeedback(false)}
+                feedback={sequence && sequence.feedback ? sequence.feedback : ''}
+            />
         </Container>
     );
 };

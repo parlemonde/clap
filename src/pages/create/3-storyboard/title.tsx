@@ -4,6 +4,8 @@ import React from 'react';
 import { useUpdateQuestionMutation } from 'src/api/questions/questions.put';
 import { useScenario } from 'src/api/scenarios/scenarios.get';
 import { useTheme } from 'src/api/themes/themes.get';
+import { ButtonShowFeedback } from 'src/components/collaboration/ButtonShowFeedback';
+import { FeedbackModal } from 'src/components/collaboration/FeedbackModal';
 import { TitleCanvas } from 'src/components/create/TitleCanvas';
 import { Container } from 'src/components/layout/Container';
 import { Title as TitleComponent } from 'src/components/layout/Typography';
@@ -13,12 +15,16 @@ import { ThemeBreadcrumbs } from 'src/components/navigation/ThemeBreadcrumbs';
 import { Inverted } from 'src/components/ui/Inverted';
 import { Loader } from 'src/components/ui/Loader';
 import { sendToast } from 'src/components/ui/Toasts';
+import { userContext } from 'src/contexts/userContext';
+import { useCollaboration } from 'src/hooks/useCollaboration';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
+import { useSocket } from 'src/hooks/useSocket';
 import { useTranslation } from 'src/i18n/useTranslation';
 import { serializeToQueryUrl } from 'src/utils/serializeToQueryUrl';
 import { useQueryNumber } from 'src/utils/useQueryId';
-import type { Question } from 'types/models/question.type';
+import { QuestionStatus, type Question } from 'types/models/question.type';
 import type { Title } from 'types/models/title.type';
+import { UserType } from 'types/models/user.type';
 
 const EMPTY_TITLE: Title = {
     text: '',
@@ -56,15 +62,47 @@ const TitlePlan = () => {
         enabled: !isProjectLoading && project !== undefined,
     });
 
+    const { isCollaborationActive } = useCollaboration();
+    const { socket, connectStudent, connectTeacher, updateProject: updateProjectSocket } = useSocket();
+    const { user } = React.useContext(userContext);
+
     const questionIndex = useQueryNumber('question') ?? -1;
     const sequence = React.useMemo(() => (questionIndex !== -1 ? questions[questionIndex] : undefined), [questions, questionIndex]);
+
+    const isStudent = user?.type === UserType.STUDENT;
+    const [showButtonFeedback, setShowButtonFeedback] = React.useState(isStudent && sequence && sequence.feedback);
+    const [showFeedback, setShowFeedback] = React.useState(false);
+
+    React.useEffect(() => {
+        if (isStudent && sequence && sequence.feedback) {
+            setShowButtonFeedback(true);
+        }
+    }, [isStudent, sequence]);
+
+    React.useEffect(() => {
+        if (isCollaborationActive && socket.connected === false && project !== undefined && project.id && questionIndex !== -1) {
+            if (isStudent) {
+                connectStudent(project.id, questionIndex);
+            } else if (!isStudent) {
+                connectTeacher(project);
+            }
+        }
+    }, [isCollaborationActive, socket, project, isStudent, questionIndex]);
+
+    const backUrl = `/create/3-storyboard${serializeToQueryUrl({ projectId: project?.id || null })}`;
+
+    React.useEffect(() => {
+        if (isStudent && sequence && sequence.status !== QuestionStatus.ONGOING) {
+            router.push(backUrl);
+        }
+        return;
+    }, [sequence, isStudent, backUrl, router]);
 
     const [title, setTitle] = React.useState(getTitleToEdit(sequence));
     React.useEffect(() => {
         setTitle(getTitleToEdit(sequence));
     }, [sequence]);
 
-    const backUrl = `/create/3-storyboard${serializeToQueryUrl({ projectId: project?.id || null })}`;
     const updateQuestionMutation = useUpdateQuestionMutation();
     const onUpdateQuestion = async () => {
         if (project === undefined || questionIndex === -1) {
@@ -87,9 +125,12 @@ const TitlePlan = () => {
             ...newQuestions[questionIndex],
             title,
         };
-        updateProject({
+        const updatedProject = updateProject({
             questions: newQuestions,
         });
+        if (isCollaborationActive && updatedProject) {
+            updateProjectSocket(updatedProject);
+        }
         router.push(backUrl);
     };
 
@@ -105,6 +146,7 @@ const TitlePlan = () => {
             <div style={{ maxWidth: '1000px', margin: 'auto', paddingBottom: '2rem' }}>
                 <TitleComponent color="primary" variant="h1" marginY="md">
                     <Inverted isRound>3</Inverted> {t('part3_edit_title', { planNumber: questionIndex + 1 })}
+                    {showButtonFeedback && <ButtonShowFeedback onClick={() => setShowFeedback(true)} />}
                 </TitleComponent>
                 <TitleComponent color="inherit" variant="h2">
                     <span>{t('part3_question')}</span> {sequence?.question || ''}
@@ -118,6 +160,11 @@ const TitlePlan = () => {
                 <NextButton label={t('continue')} backHref={backUrl} onNext={onUpdateQuestion} />
             </div>
             <Loader isLoading={updateQuestionMutation.isLoading} />
+            <FeedbackModal
+                isOpen={showFeedback}
+                onClose={() => setShowFeedback(false)}
+                feedback={sequence && sequence.feedback ? sequence.feedback : ''}
+            />
         </Container>
     );
 };

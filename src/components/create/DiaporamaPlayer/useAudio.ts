@@ -21,7 +21,7 @@ export const useAudio = (soundUrl: string, initialVolume: number, sounds: Sound[
                 mediaElement: audioRef.current,
             });
             const gainNode = new GainNode(audioContext);
-            gainNode.gain.value = volumeRef.current / 100;
+            gainNode.gain.value = volumeRef.current / 1000;
             gainNodeRef.current = gainNode;
             track.connect(gainNode).connect(audioContext.destination);
         }
@@ -34,7 +34,7 @@ export const useAudio = (soundUrl: string, initialVolume: number, sounds: Sound[
                 mediaElement: audio,
             });
             const gainNode = new GainNode(audioContext);
-            gainNode.gain.value = sound.volume / 100;
+            gainNode.gain.value = sound.volume / 1000;
             track.connect(gainNode).connect(audioContext.destination);
             audioRefs.current.push(audio);
         }
@@ -46,7 +46,7 @@ export const useAudio = (soundUrl: string, initialVolume: number, sounds: Sound[
 
     const onUpdateVolume = React.useCallback((newVolume: number) => {
         if (gainNodeRef.current) {
-            gainNodeRef.current.gain.value = newVolume / 100;
+            gainNodeRef.current.gain.value = newVolume / 1000;
         }
     }, []);
 
@@ -114,5 +114,11 @@ export const useAudio = (soundUrl: string, initialVolume: number, sounds: Sound[
         [sounds],
     );
 
-    return { onPlay, onStop, onUpdateVolume, onUpdateCurrentTime };
+    return {
+        onPlay,
+        onStop,
+        onUpdateVolume,
+        onUpdateCurrentTime,
+        audioRef,
+    };
 };

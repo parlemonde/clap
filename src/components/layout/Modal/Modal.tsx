@@ -54,6 +54,7 @@ export const Modal = ({
                     onClose();
                 }
             }}
+            style={{ zIndex: '99999' }}
         >
             <Dialog.Portal>
                 <Dialog.Overlay className={styles.overlay} />
