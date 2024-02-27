@@ -73,7 +73,7 @@ const Scenario = ({
 
     const plans = React.useMemo(() => sequence.plans || [], [sequence]);
     const [showFeedback, setShowFeedback] = React.useState(false);
-    const showButtonFeedback = isStudent && sequence.feedback;
+    const showButtonFeedback = isStudent && sequence.feedback && QuestionStatus.ONGOING === sequence.status;
     const studentColor = COLORS[sequenceIndex];
 
     const onAddPlan = async () => {
@@ -143,7 +143,9 @@ const Scenario = ({
         <>
             <Title color="primary" variant="h2" marginTop="lg" style={{ display: 'flex', alignItems: 'center' }}>
                 {sequenceIndex + 1}. {sequence.question}
-                {isCollaborationActive && studentColor && <GroupColorPill color={studentColor} />}
+                {isCollaborationActive && studentColor && (
+                    <GroupColorPill color={studentColor} status={isStudent ? '' : t(`sequency_status_${sequence.status}`)} />
+                )}
                 {showButtonFeedback && <ButtonShowFeedback onClick={() => setShowFeedback(true)} />}
             </Title>
             <div className="plans">

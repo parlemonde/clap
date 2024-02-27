@@ -70,11 +70,13 @@ const TitlePlan = () => {
     const sequence = React.useMemo(() => (questionIndex !== -1 ? questions[questionIndex] : undefined), [questions, questionIndex]);
 
     const isStudent = user?.type === UserType.STUDENT;
-    const [showButtonFeedback, setShowButtonFeedback] = React.useState((isStudent && sequence && sequence.feedback) as boolean);
+    const [showButtonFeedback, setShowButtonFeedback] = React.useState(
+        (isStudent && sequence && sequence.feedback && QuestionStatus.ONGOING === sequence.status) as boolean,
+    );
     const [showFeedback, setShowFeedback] = React.useState(false);
 
     React.useEffect(() => {
-        if (isStudent && sequence && sequence.feedback) {
+        if (isStudent && sequence && sequence.feedback && QuestionStatus.ONGOING === sequence.status) {
             setShowButtonFeedback(true);
         }
     }, [isStudent, sequence]);

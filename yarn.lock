@@ -5958,7 +5958,6 @@ __metadata:
     cookie-parser: ^1.4.6
     cors: ^2.8.5
     cpx: 1.5.0
-    croppie: ^2.6.5
     csrf: ^3.1.0
     dotenv: ^16.3.1
     eslint: 8.48.0
@@ -5975,6 +5974,7 @@ __metadata:
     helmet: ^7.0.0
     json-stable-stringify: ^1.0.2
     jsonwebtoken: ^9.0.1
+    merge-images: ^2.0.0
     mime-types: ^2.1.35
     mlt-xml: ^2.0.2
     morgan: ^1.10.0
@@ -5995,6 +5995,7 @@ __metadata:
     react-charts: ^2.0.0-beta.7
     react-device-detect: ^2.2.3
     react-dom: ^18.2.0
+    react-easy-crop: ^5.0.5
     react-html5-camera-photo: ^1.5.11
     react-qr-code: ^2.0.12
     react-qr-reader: ^3.0.0-beta-1
@@ -6436,13 +6437,6 @@ __metadata:
     crc-32: ^1.2.0
     readable-stream: ^3.4.0
   checksum: 1099559283b86e8a55390228b57ff4d57a74cac6aa8086aa4730f84317c9f93e914aeece115352f2d706a9df7ed75327ffacd86cfe23f040aef821231b528e76
-  languageName: node
-  linkType: hard
-
-"croppie@npm:^2.6.5":
-  version: 2.6.5
-  resolution: "croppie@npm:2.6.5"
-  checksum: 898e3c8de92c210ba9db6659bf7c7b31b148ad1c3a6250c5e54dfc36660ca3b60489adfac3359ca921a7c784220d350b1e1ab717492c438170484a260fde3733
   languageName: node
   linkType: hard
 
@@ -10102,6 +10096,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"merge-images@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "merge-images@npm:2.0.0"
+  checksum: 7ccea583c221196377ea4de6a629496c559dcadf4b09f0ee058c960552bce1ab93406b2f5f66657c6bc9edaa4a8505b8cdaff155359946bf9c2e735fa0da6632
+  languageName: node
+  linkType: hard
+
 "merge-stream@npm:^2.0.0":
   version: 2.0.0
   resolution: "merge-stream@npm:2.0.0"
@@ -10767,6 +10768,13 @@ __metadata:
   version: 6.1.0
   resolution: "normalize-url@npm:6.1.0"
   checksum: 4a4944631173e7d521d6b80e4c85ccaeceb2870f315584fa30121f505a6dfd86439c5e3fdd8cd9e0e291290c41d0c3599f0cb12ab356722ed242584c30348e50
+  languageName: node
+  linkType: hard
+
+"normalize-wheel@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "normalize-wheel@npm:1.0.1"
+  checksum: 00b32efa040bad9438e732385a4ca27f8532fa2c8c06b54be43b9f75b2da6642bf41a0b4f81e542639dc8d682cde8b059b0a02ae0723fb8ebc3c8f036c8e51d8
   languageName: node
   linkType: hard
 
@@ -11824,6 +11832,19 @@ __metadata:
   peerDependencies:
     react: ^18.2.0
   checksum: 7d323310bea3a91be2965f9468d552f201b1c27891e45ddc2d6b8f717680c95a75ae0bc1e3f5cf41472446a2589a75aed4483aee8169287909fcd59ad149e8cc
+  languageName: node
+  linkType: hard
+
+"react-easy-crop@npm:^5.0.5":
+  version: 5.0.5
+  resolution: "react-easy-crop@npm:5.0.5"
+  dependencies:
+    normalize-wheel: ^1.0.1
+    tslib: 2.0.1
+  peerDependencies:
+    react: ">=16.4.0"
+    react-dom: ">=16.4.0"
+  checksum: 61776f43d3fe654a83d568ae2f1d10f86175120c81b227555620f64f6c0c14ab482081520a68e9069488397f3c345c9806c5ca81139e96ea32c9dc92a64bded3
   languageName: node
   linkType: hard
 
@@ -13533,6 +13554,13 @@ __metadata:
     minimist: ^1.2.6
     strip-bom: ^3.0.0
   checksum: a6162eaa1aed680537f93621b82399c7856afd10ec299867b13a0675e981acac4e0ec00896860480efc59fc10fd0b16fdc928c0b885865b52be62cadac692447
+  languageName: node
+  linkType: hard
+
+"tslib@npm:2.0.1":
+  version: 2.0.1
+  resolution: "tslib@npm:2.0.1"
+  checksum: 507f32fc24a614c5097d414b622373b6cbb99e305413517e7fd49bef1e63570c0dd15b417ae68152088c3496218e82a5d8c7cd6b48c7a32dcee1a3f7191fff74
   languageName: node
   linkType: hard
 

@@ -78,7 +78,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["cookie-parser", "npm:1.4.6"],\
             ["cors", "npm:2.8.5"],\
             ["cpx", "npm:1.5.0"],\
-            ["croppie", "npm:2.6.5"],\
             ["csrf", "npm:3.1.0"],\
             ["dotenv", "npm:16.3.1"],\
             ["eslint", "npm:8.48.0"],\
@@ -95,6 +94,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["helmet", "npm:7.0.0"],\
             ["json-stable-stringify", "npm:1.0.2"],\
             ["jsonwebtoken", "npm:9.0.1"],\
+            ["merge-images", "npm:2.0.0"],\
             ["mime-types", "npm:2.1.35"],\
             ["mlt-xml", "npm:2.0.2"],\
             ["morgan", "npm:1.10.0"],\
@@ -115,6 +115,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["react-charts", "virtual:9524d3ef040c4bb9c1c826ae580f2180f1712a13ae6ac3e341a6833fb294feeed8d810e5c764dbbac52bd49f9c3019cf11a3f5270e36f3c88d5546b8a37dc3cf#npm:2.1.0"],\
             ["react-device-detect", "virtual:9524d3ef040c4bb9c1c826ae580f2180f1712a13ae6ac3e341a6833fb294feeed8d810e5c764dbbac52bd49f9c3019cf11a3f5270e36f3c88d5546b8a37dc3cf#npm:2.2.3"],\
             ["react-dom", "virtual:9524d3ef040c4bb9c1c826ae580f2180f1712a13ae6ac3e341a6833fb294feeed8d810e5c764dbbac52bd49f9c3019cf11a3f5270e36f3c88d5546b8a37dc3cf#npm:18.2.0"],\
+            ["react-easy-crop", "virtual:9524d3ef040c4bb9c1c826ae580f2180f1712a13ae6ac3e341a6833fb294feeed8d810e5c764dbbac52bd49f9c3019cf11a3f5270e36f3c88d5546b8a37dc3cf#npm:5.0.5"],\
             ["react-html5-camera-photo", "virtual:9524d3ef040c4bb9c1c826ae580f2180f1712a13ae6ac3e341a6833fb294feeed8d810e5c764dbbac52bd49f9c3019cf11a3f5270e36f3c88d5546b8a37dc3cf#npm:1.5.11"],\
             ["react-qr-code", "virtual:9524d3ef040c4bb9c1c826ae580f2180f1712a13ae6ac3e341a6833fb294feeed8d810e5c764dbbac52bd49f9c3019cf11a3f5270e36f3c88d5546b8a37dc3cf#npm:2.0.12"],\
             ["react-qr-reader", "virtual:9524d3ef040c4bb9c1c826ae580f2180f1712a13ae6ac3e341a6833fb294feeed8d810e5c764dbbac52bd49f9c3019cf11a3f5270e36f3c88d5546b8a37dc3cf#npm:3.0.0-beta-1"],\
@@ -8118,7 +8119,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["cookie-parser", "npm:1.4.6"],\
             ["cors", "npm:2.8.5"],\
             ["cpx", "npm:1.5.0"],\
-            ["croppie", "npm:2.6.5"],\
             ["csrf", "npm:3.1.0"],\
             ["dotenv", "npm:16.3.1"],\
             ["eslint", "npm:8.48.0"],\
@@ -8135,6 +8135,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["helmet", "npm:7.0.0"],\
             ["json-stable-stringify", "npm:1.0.2"],\
             ["jsonwebtoken", "npm:9.0.1"],\
+            ["merge-images", "npm:2.0.0"],\
             ["mime-types", "npm:2.1.35"],\
             ["mlt-xml", "npm:2.0.2"],\
             ["morgan", "npm:1.10.0"],\
@@ -8155,6 +8156,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["react-charts", "virtual:9524d3ef040c4bb9c1c826ae580f2180f1712a13ae6ac3e341a6833fb294feeed8d810e5c764dbbac52bd49f9c3019cf11a3f5270e36f3c88d5546b8a37dc3cf#npm:2.1.0"],\
             ["react-device-detect", "virtual:9524d3ef040c4bb9c1c826ae580f2180f1712a13ae6ac3e341a6833fb294feeed8d810e5c764dbbac52bd49f9c3019cf11a3f5270e36f3c88d5546b8a37dc3cf#npm:2.2.3"],\
             ["react-dom", "virtual:9524d3ef040c4bb9c1c826ae580f2180f1712a13ae6ac3e341a6833fb294feeed8d810e5c764dbbac52bd49f9c3019cf11a3f5270e36f3c88d5546b8a37dc3cf#npm:18.2.0"],\
+            ["react-easy-crop", "virtual:9524d3ef040c4bb9c1c826ae580f2180f1712a13ae6ac3e341a6833fb294feeed8d810e5c764dbbac52bd49f9c3019cf11a3f5270e36f3c88d5546b8a37dc3cf#npm:5.0.5"],\
             ["react-html5-camera-photo", "virtual:9524d3ef040c4bb9c1c826ae580f2180f1712a13ae6ac3e341a6833fb294feeed8d810e5c764dbbac52bd49f9c3019cf11a3f5270e36f3c88d5546b8a37dc3cf#npm:1.5.11"],\
             ["react-qr-code", "virtual:9524d3ef040c4bb9c1c826ae580f2180f1712a13ae6ac3e341a6833fb294feeed8d810e5c764dbbac52bd49f9c3019cf11a3f5270e36f3c88d5546b8a37dc3cf#npm:2.0.12"],\
             ["react-qr-reader", "virtual:9524d3ef040c4bb9c1c826ae580f2180f1712a13ae6ac3e341a6833fb294feeed8d810e5c764dbbac52bd49f9c3019cf11a3f5270e36f3c88d5546b8a37dc3cf#npm:3.0.0-beta-1"],\
@@ -8646,15 +8648,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["crc32-stream", "npm:4.0.2"],\
             ["crc-32", "npm:1.2.2"],\
             ["readable-stream", "npm:3.6.0"]\
-          ],\
-          "linkType": "HARD"\
-        }]\
-      ]],\
-      ["croppie", [\
-        ["npm:2.6.5", {\
-          "packageLocation": "./.yarn/cache/croppie-npm-2.6.5-0495568803-898e3c8de9.zip/node_modules/croppie/",\
-          "packageDependencies": [\
-            ["croppie", "npm:2.6.5"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -12871,6 +12864,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["merge-images", [\
+        ["npm:2.0.0", {\
+          "packageLocation": "./.yarn/cache/merge-images-npm-2.0.0-eb34a975ac-7ccea583c2.zip/node_modules/merge-images/",\
+          "packageDependencies": [\
+            ["merge-images", "npm:2.0.0"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["merge-stream", [\
         ["npm:2.0.0", {\
           "packageLocation": "./.yarn/cache/merge-stream-npm-2.0.0-2ac83efea5-6fa4dcc8d8.zip/node_modules/merge-stream/",\
@@ -13578,6 +13580,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/normalize-url-npm-6.1.0-b95bc12ece-4a49446311.zip/node_modules/normalize-url/",\
           "packageDependencies": [\
             ["normalize-url", "npm:6.1.0"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["normalize-wheel", [\
+        ["npm:1.0.1", {\
+          "packageLocation": "./.yarn/cache/normalize-wheel-npm-1.0.1-86fe373cbe-00b32efa04.zip/node_modules/normalize-wheel/",\
+          "packageDependencies": [\
+            ["normalize-wheel", "npm:1.0.1"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -14821,6 +14832,34 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           ],\
           "packagePeers": [\
             "@types/react",\
+            "react"\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["react-easy-crop", [\
+        ["npm:5.0.5", {\
+          "packageLocation": "./.yarn/cache/react-easy-crop-npm-5.0.5-ef4de2d1e3-61776f43d3.zip/node_modules/react-easy-crop/",\
+          "packageDependencies": [\
+            ["react-easy-crop", "npm:5.0.5"]\
+          ],\
+          "linkType": "SOFT"\
+        }],\
+        ["virtual:9524d3ef040c4bb9c1c826ae580f2180f1712a13ae6ac3e341a6833fb294feeed8d810e5c764dbbac52bd49f9c3019cf11a3f5270e36f3c88d5546b8a37dc3cf#npm:5.0.5", {\
+          "packageLocation": "./.yarn/__virtual__/react-easy-crop-virtual-e9e35b801b/0/cache/react-easy-crop-npm-5.0.5-ef4de2d1e3-61776f43d3.zip/node_modules/react-easy-crop/",\
+          "packageDependencies": [\
+            ["react-easy-crop", "virtual:9524d3ef040c4bb9c1c826ae580f2180f1712a13ae6ac3e341a6833fb294feeed8d810e5c764dbbac52bd49f9c3019cf11a3f5270e36f3c88d5546b8a37dc3cf#npm:5.0.5"],\
+            ["@types/react", "npm:18.2.0"],\
+            ["@types/react-dom", null],\
+            ["normalize-wheel", "npm:1.0.1"],\
+            ["react", "npm:18.2.0"],\
+            ["react-dom", "virtual:9524d3ef040c4bb9c1c826ae580f2180f1712a13ae6ac3e341a6833fb294feeed8d810e5c764dbbac52bd49f9c3019cf11a3f5270e36f3c88d5546b8a37dc3cf#npm:18.2.0"],\
+            ["tslib", "npm:2.0.1"]\
+          ],\
+          "packagePeers": [\
+            "@types/react-dom",\
+            "@types/react",\
+            "react-dom",\
             "react"\
           ],\
           "linkType": "HARD"\
@@ -16784,6 +16823,13 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/tslib-npm-1.14.1-102499115e-dbe628ef87.zip/node_modules/tslib/",\
           "packageDependencies": [\
             ["tslib", "npm:1.14.1"]\
+          ],\
+          "linkType": "HARD"\
+        }],\
+        ["npm:2.0.1", {\
+          "packageLocation": "./.yarn/cache/tslib-npm-2.0.1-26f70961f9-507f32fc24.zip/node_modules/tslib/",\
+          "packageDependencies": [\
+            ["tslib", "npm:2.0.1"]\
           ],\
           "linkType": "HARD"\
         }],\

@@ -85,12 +85,15 @@ const PreMountingPage = () => {
                 {questions.map((q, index) => {
                     if (isStudent && sequencyId !== q.id) return null;
                     const hasBeenEdited = q.title !== null || (q.plans || []).some((plan) => plan.description || plan.imageUrl);
+                    const showButtonFeedback = isStudent && q.id === sequencyId && q.feedback && QuestionStatus.PREMOUNTING === q.status;
                     return (
                         <div key={index}>
                             <Title color="primary" variant="h2" marginTop="lg" style={{ marginTop: '2rem', display: 'flex', alignItems: 'center' }}>
                                 {index + 1}. {q.question}
-                                {isCollaborationActive && <GroupColorPill color={COLORS[index]} />}
-                                {isStudent && q.id === sequencyId && q.feedback && <ButtonShowFeedback onClick={() => setShowFeedback(true)} />}
+                                {isCollaborationActive && (
+                                    <GroupColorPill color={COLORS[index]} status={isStudent ? '' : t(`sequency_status_${q.status}`)} />
+                                )}
+                                {showButtonFeedback && <ButtonShowFeedback onClick={() => setShowFeedback(true)} />}
                             </Title>
                             {hasBeenEdited ? (
                                 <div className="plans">

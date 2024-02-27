@@ -62,10 +62,10 @@ export const DiaporamaPlayer = ({
     React.useEffect(() => {
         if (
             isQuestionEditing &&
-            currentQuestion &&
-            currentQuestion.soundUrl &&
-            !audioRef.current?.src.includes(currentQuestion.soundUrl) &&
-            audioRef.current?.duration &&
+            currentQuestion !== null &&
+            (currentQuestion.soundUrl === null || !audioRef.current?.src.includes(currentQuestion.soundUrl)) &&
+            audioRef.current?.duration !== undefined &&
+            audioRef.current?.duration !== null &&
             audioRef.current?.duration > 0 &&
             audioRef.current?.currentTime === 0
         ) {

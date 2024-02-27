@@ -24,7 +24,12 @@ export const FormFeedback: React.FunctionComponent<FormFeedbackProps> = ({ quest
     const updateSequenceMutation = useUpdateQuestionMutation();
     const [feedback, setFeedback] = React.useState('');
 
-    const alertStudent = async (question: Question, status: QuestionStatus) => {
+    const alertStudent = async (question: Question, status: QuestionStatus, checkFeedback: boolean = false) => {
+        if (checkFeedback && !feedback) {
+            sendToast({ message: t('collaboration_form_feedback_error'), type: 'error' });
+            return;
+        }
+
         try {
             const feedbackData = status === previousStatus ? feedback : null;
             await updateSequenceMutation.mutateAsync({
@@ -45,7 +50,12 @@ export const FormFeedback: React.FunctionComponent<FormFeedbackProps> = ({ quest
             }
 
             if (project) {
-                alertStudentSocket({ room: `project-${project.id}_question-${question.id}`, feedback: feedbackData, projectId: project.id });
+                alertStudentSocket({
+                    room: `project-${project.id}_question-${question.id}`,
+                    feedback: feedbackData,
+                    projectId: project.id,
+                    sequencyId: question.index,
+                });
             }
         } catch (err) {
             console.error(err);
@@ -107,7 +117,7 @@ export const FormFeedback: React.FunctionComponent<FormFeedbackProps> = ({ quest
                         marginTop: '2rem',
                         marginLeft: '2rem',
                     }}
-                    onClick={() => alertStudent(question, previousStatus)}
+                    onClick={() => alertStudent(question, previousStatus, true)}
                     label={t('collaboration_form_feedback_btn_feedback')}
                 ></Button>
                 <Button

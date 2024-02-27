@@ -11,4 +11,5 @@ export type AlertStudentData = {
     room: string;
     feedback?: string | null;
     projectId: number;
+    sequencyId: number;
 };

@@ -273,6 +273,18 @@ userController.delete({ path: '/:id' }, async (req, res) => {
 });
 
 userController.get({ path: '/invite' }, async (req, res) => {
+    try {
+        const invite = await getRepository(Invite).createQueryBuilder().orderBy('id', 'DESC').getOne();
+        if (invite !== undefined && invite.expiredAt < new Date()) {
+            await getRepository(Invite).delete({ id: invite.id });
+        } else if (invite !== undefined) {
+            res.sendJSON({ inviteCode: invite.token });
+            return;
+        }
+    } catch (e) {
+        throw new AppError('forbidden', ['Invite code provided is invalid.']);
+    }
+
     const invite = new Invite();
     invite.token = generateToken(20);
     invite.createdAt = new Date();

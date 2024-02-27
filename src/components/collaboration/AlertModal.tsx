@@ -3,6 +3,7 @@ import React from 'react';
 
 import { Modal } from '../layout/Modal';
 import type { ModalProps } from '../layout/Modal/Modal';
+import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import { useTranslation } from 'src/i18n/useTranslation';
 import { COLORS } from 'src/utils/colors';
 import { useQueryNumber, useQueryString } from 'src/utils/useQueryId';
@@ -10,6 +11,8 @@ import { QuestionStatus } from 'types/models/question.type';
 
 export const AlertModal: React.FunctionComponent = () => {
     const { t } = useTranslation();
+
+    const { project } = useCurrentProject();
 
     const [showModal, setShowModal] = React.useState(false);
     const [modalTitle, setModalTitle] = React.useState('');
@@ -23,10 +26,9 @@ export const AlertModal: React.FunctionComponent = () => {
     const sequency: number | undefined = useQueryNumber('sequency');
     const type: string | undefined = useQueryString('type');
     const status: number | undefined = useQueryNumber('status');
-    const projectId: string | undefined = useQueryString('projectId');
 
     React.useEffect(() => {
-        if (alert !== undefined && alert === 'teacher' && sequency !== undefined && projectId !== undefined && status !== undefined) {
+        if (alert !== undefined && alert === 'teacher' && sequency !== undefined && status !== undefined) {
             setModalForTeacher();
         } else if (alert !== undefined && alert == 'student' && type !== undefined) {
             setModalForStudent();
@@ -37,16 +39,36 @@ export const AlertModal: React.FunctionComponent = () => {
 
     const setModalForStudent = () => {
         const isFeedback = type === 'feedback';
-        setModalTitle(t(`collaboration_alert_modal_student_title_${isFeedback ? 'feedback' : 'ok'}`));
-        setModalContent(t(`collaboration_alert_modal_student_content_${isFeedback ? 'feedback' : 'ok'}`));
+        if (isFeedback) {
+            setModalTitle(t('collaboration_alert_modal_student_title_feedback'));
+            setModalContent(t('collaboration_alert_modal_student_content_feedback'));
+        } else {
+            setModalTitle(t('collaboration_alert_modal_student_title_ok'));
+            const status =
+                project !== undefined && sequency !== undefined && project.questions !== undefined
+                    ? project?.questions[sequency]?.status || QuestionStatus.ONGOING
+                    : QuestionStatus.ONGOING;
+            setModalContent(t(`collaboration_alert_modal_student_content_${status === QuestionStatus.ONGOING ? 'storyboard' : 'premounting'}`));
+        }
         setShowModal(true);
     };
 
     const setModalForTeacher = () => {
         setModalTitle(t('collaboration_alert_modal_teacher_title'));
 
+        const status =
+            project !== undefined && sequency !== undefined && project.questions !== undefined
+                ? project?.questions[sequency]?.status || QuestionStatus.STORYBOARD
+                : QuestionStatus.STORYBOARD;
+
         if (sequency !== undefined) {
-            setModalContent(t('collaboration_alert_modal_teacher_content', { color: COLORS[sequency], sequency: sequency + 1 }));
+            setModalContent(
+                t('collaboration_alert_modal_teacher_content', {
+                    color: COLORS[sequency],
+                    sequency: sequency + 1,
+                    step: t(`step${status === QuestionStatus.STORYBOARD ? 3 : 4}`),
+                }),
+            );
         } else {
             setModalContent(t('collaboration_alert_modal_teacher_content_empty'));
         }
@@ -54,8 +76,8 @@ export const AlertModal: React.FunctionComponent = () => {
         setHasConfirmButton(true);
         setRoute(
             status === QuestionStatus.STORYBOARD
-                ? `/create/3-storyboard?projectId=${projectId}`
-                : `/create/4-pre-mounting/edit?question=${sequency}&projectId=${projectId}`,
+                ? `/create/3-storyboard?projectId=${project?.id || 0}`
+                : `/create/4-pre-mounting/edit?question=${sequency}&projectId=${project?.id || 0}`,
         );
         setShowModal(true);
     };

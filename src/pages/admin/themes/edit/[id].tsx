@@ -1,4 +1,3 @@
-import { UploadIcon } from '@radix-ui/react-icons';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React from 'react';
@@ -16,8 +15,7 @@ import { Field, Form } from 'src/components/layout/Form';
 import { Select } from 'src/components/layout/Form/Select';
 import { Modal } from 'src/components/layout/Modal';
 import { Title } from 'src/components/layout/Typography';
-import type { ImgCroppieRef } from 'src/components/ui/ImgCroppie';
-import { ImgCroppie } from 'src/components/ui/ImgCroppie';
+import { ImageCropper } from 'src/components/ui/ImageCropper/ImageCropper';
 import { Loader } from 'src/components/ui/Loader';
 import { sendToast } from 'src/components/ui/Toasts';
 import { useTranslation } from 'src/i18n/useTranslation';
@@ -37,15 +35,12 @@ const AdminEditTheme = () => {
         [languages],
     );
 
-    const croppieRef = React.useRef<ImgCroppieRef | null>(null);
-    const inputRef = React.useRef<HTMLInputElement>(null);
     const [themeNames, setThemeNames] = React.useState<Theme['names']>({
         fr: '',
     });
     const [showModal, setShowModal] = React.useState<boolean>(false);
     const [languageToAdd, setLanguageToAdd] = React.useState<number>(0);
     const [selectedLanguages, setSelectedLanguages] = React.useState<number[]>([]);
-    const [imageUrl, setImageUrl] = React.useState<string | null>(null);
     const [imageBlob, setImageBlob] = React.useState<Blob | null | undefined>(undefined); // undefined: no set. null: deleted.
     const availableLanguages = languages.filter((l, index) => l.value !== 'fr' && !selectedLanguages.includes(index));
 
@@ -77,27 +72,6 @@ const AdminEditTheme = () => {
             ...prev,
             [languageValue]: event.target.value,
         }));
-    };
-
-    const onImageInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (event.target.files !== null && event.target.files.length > 0) {
-            const url = URL.createObjectURL(event.target.files[0]);
-            setImageUrl(url);
-        } else {
-            setImageUrl(null);
-        }
-    };
-    const onImageUrlClear = () => {
-        setImageUrl(null);
-        if (inputRef.current !== undefined && inputRef.current !== null) {
-            inputRef.current.value = '';
-        }
-    };
-    const onSetImageBlob = async () => {
-        if (croppieRef.current) {
-            setImageBlob(await croppieRef.current.getBlob());
-        }
-        onImageUrlClear();
     };
 
     const createImageMutation = useCreateImageMutation();
@@ -193,48 +167,8 @@ const AdminEditTheme = () => {
                         ></Button>
                     )}
 
-                    <Title variant="h3" color="primary" marginTop="lg">
-                        Image :
-                    </Title>
-                    <div style={{ marginTop: '0.5rem' }}>{imageSrc && <img width="300px" src={imageSrc} />}</div>
-                    <input
-                        id="theme-image-upload"
-                        ref={inputRef}
-                        type="file"
-                        style={{ display: 'none' }}
-                        onChange={onImageInputChange}
-                        accept="image/*"
-                    />
-                    <Button
-                        label={imageBlob ? "Changer d'image" : 'Choisir une image'}
-                        variant="outlined"
-                        color="secondary"
-                        as="label"
-                        isUpperCase={false}
-                        role="button"
-                        aria-controls="filename"
-                        tabIndex={0}
-                        onKeyPress={(event) => {
-                            if (event.key === 'Enter' || event.key === ' ') {
-                                document.getElementById('theme-image-upload')?.click();
-                            }
-                        }}
-                        htmlFor={'theme-image-upload'}
-                        leftIcon={<UploadIcon style={{ width: '16px', height: '16px', marginRight: '8px' }} />}
-                        marginTop="sm"
-                    ></Button>
-                    {imageSrc && (
-                        <Button
-                            label="Supprimer l'image"
-                            variant="outlined"
-                            color="secondary"
-                            marginTop="sm"
-                            marginLeft="sm"
-                            onClick={() => {
-                                setImageBlob(null);
-                            }}
-                        ></Button>
-                    )}
+                    <ImageCropper image={imageSrc} setImage={setImageBlob} />
+
                     <div style={{ width: '100%', textAlign: 'center', marginTop: '16px' }}>
                         <Button label="Modifier le thème !" color="secondary" variant="contained" type="submit"></Button>
                     </div>
@@ -283,23 +217,6 @@ const AdminEditTheme = () => {
                 )}
             </Modal>
 
-            {/* image modal */}
-            <Modal
-                isOpen={imageUrl !== null}
-                onClose={onImageUrlClear}
-                onConfirm={onSetImageBlob}
-                confirmLabel="Valider"
-                cancelLabel="Annuler"
-                title="Redimensionner l'image"
-            >
-                {imageUrl !== null && (
-                    <div className="text-center">
-                        <div style={{ width: '500px', height: '400px', marginBottom: '2rem' }}>
-                            <ImgCroppie src={imageUrl} alt="Plan image" ref={croppieRef} imgWidth={420} imgHeight={308} />
-                        </div>
-                    </div>
-                )}
-            </Modal>
             <Loader isLoading={isLoading} />
         </div>
     );

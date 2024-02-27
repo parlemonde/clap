@@ -82,11 +82,13 @@ const PreMountSequence = () => {
 
     const { user } = React.useContext(userContext);
     const isStudent = user?.type === UserType.STUDENT;
-    const [showButtonFeedback, setShowButtonFeedback] = React.useState((isStudent && sequence && sequence.feedback) as boolean);
+    const [showButtonFeedback, setShowButtonFeedback] = React.useState(
+        (isStudent && sequence && sequence.feedback && QuestionStatus.PREMOUNTING === sequence.status) as boolean,
+    );
     const [showFeedback, setShowFeedback] = React.useState(false);
 
     React.useEffect(() => {
-        if (isStudent && sequence && sequence.feedback) {
+        if (isStudent && sequence && sequence.feedback && QuestionStatus.PREMOUNTING === sequence.status) {
             setShowButtonFeedback(true);
         }
     }, [isStudent, sequence]);

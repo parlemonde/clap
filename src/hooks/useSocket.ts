@@ -72,13 +72,14 @@ export const useSocket = () => {
         };
         socket.off('stopCollaboration', stopCollaboration).on('stopCollaboration', stopCollaboration);
 
-        const sendFeedback = ({ feedback, projectId }: AlertStudentData) => {
+        const sendFeedback = ({ feedback, projectId, sequencyId }: AlertStudentData) => {
             if (window !== undefined) {
                 router.pathname = window.location.pathname;
             }
             router.query.projectId = projectId.toString();
             router.query.alert = 'student';
             router.query.type = feedback ? 'feedback' : 'validation';
+            router.query.sequency = sequencyId.toString();
             router.push(router);
         };
         socket.off('alertStudent', sendFeedback).on('alertStudent', sendFeedback);

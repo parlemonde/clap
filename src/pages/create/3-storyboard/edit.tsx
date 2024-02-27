@@ -1,7 +1,10 @@
 import { LightningBoltIcon, ImageIcon, CameraIcon, UploadIcon, Pencil2Icon } from '@radix-ui/react-icons';
+import mergeImages from 'merge-images';
 import Image from 'next/legacy/image';
 import { useRouter } from 'next/router';
 import React from 'react';
+import Cropper from 'react-easy-crop';
+import type { Area } from 'react-easy-crop';
 import Camera from 'react-html5-camera-photo';
 
 import { useDeleteImageMutation } from 'src/api/images/images.delete';
@@ -22,8 +25,6 @@ import { Title } from 'src/components/layout/Typography';
 import { NextButton } from 'src/components/navigation/NextButton';
 import { Steps } from 'src/components/navigation/Steps';
 import { ThemeBreadcrumbs } from 'src/components/navigation/ThemeBreadcrumbs';
-import type { ImgCroppieRef } from 'src/components/ui/ImgCroppie';
-import { ImgCroppie } from 'src/components/ui/ImgCroppie';
 import { Inverted } from 'src/components/ui/Inverted';
 import { Loader } from 'src/components/ui/Loader';
 import { sendToast } from 'src/components/ui/Toasts';
@@ -32,6 +33,7 @@ import { useCollaboration } from 'src/hooks/useCollaboration';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import { useSocket } from 'src/hooks/useSocket';
 import { useTranslation } from 'src/i18n/useTranslation';
+import getCroppedImg, { getMeta } from 'src/utils/crop-image';
 import { serializeToQueryUrl } from 'src/utils/serializeToQueryUrl';
 import { isString } from 'src/utils/type-guards/is-string';
 import { useQueryNumber } from 'src/utils/useQueryId';
@@ -141,7 +143,6 @@ const EditPlan = () => {
 
     // --- local image variables ---
     const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
-    const croppieRef = React.useRef<ImgCroppieRef | null>(null);
     const [isCreatingBlob, setIsCreatingBlob] = React.useState(false);
     const [showChangeModal, setShowChangeModal] = React.useState(false);
     const [showCameraModal, setShowCameraModal] = React.useState(false);
@@ -151,8 +152,13 @@ const EditPlan = () => {
     const [temporaryImageUrl, setTemporaryImageUrl] = React.useState<string | null>(null);
     const { user } = React.useContext(userContext);
     const isStudent = user?.type === UserType.STUDENT;
-    const [showButtonFeedback, setShowButtonFeedback] = React.useState((isStudent && sequence && sequence.feedback) as boolean);
+    const [showButtonFeedback, setShowButtonFeedback] = React.useState(
+        (isStudent && sequence && sequence.feedback && QuestionStatus.ONGOING === sequence.status) as boolean,
+    );
     const [showFeedback, setShowFeedback] = React.useState(false);
+    const [crop, setCrop] = React.useState({ x: 0, y: 0 });
+    const [zoom, setZoom] = React.useState(1);
+    const [croppedAreaPixels, setCroppedAreaPixels] = React.useState<Area | null>(null);
     const imageUrl = React.useMemo(() => {
         if (imageBlob !== null) {
             return URL.createObjectURL(imageBlob);
@@ -161,7 +167,7 @@ const EditPlan = () => {
     }, [imageBlob, plan]);
 
     React.useEffect(() => {
-        if (isStudent && sequence && sequence.feedback) {
+        if (isStudent && sequence && sequence.feedback && QuestionStatus.ONGOING === sequence.status) {
             setShowButtonFeedback(true);
         }
     }, [isStudent, sequence]);
@@ -193,6 +199,34 @@ const EditPlan = () => {
     }, [sequence, isStudent, backUrl, router]);
 
     const onInputUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setZoom(1);
+        setCrop({ x: 0, y: 0 });
+        if (event.target.files !== null && event.target.files.length > 0) {
+            const url = URL.createObjectURL(event.target.files[0]);
+
+            try {
+                getMeta(url, (err, img) => {
+                    if (err) throw new Error(err instanceof Event ? err.toString() : err);
+                    if (img === null) return;
+
+                    const imgHeight = img.naturalHeight;
+                    const imgWidth = img.naturalWidth;
+
+                    const params = [
+                        { src: '/black.jpg', x: 0, y: 0 }, // 1920 * 1080
+                        { src: url, x: imgWidth < 1920 ? (1920 - imgWidth) / 2 : imgWidth, y: imgHeight < 1080 ? (1080 - imgHeight) / 2 : imgHeight },
+                    ];
+
+                    mergeImages(params).then((base64: string) => setTemporaryImageUrl(base64));
+                });
+            } catch (error) {
+                console.error(error);
+                setTemporaryImageUrl(url);
+            }
+        } else {
+            setTemporaryImageUrl(null);
+        }
+
         if (event.target.files !== null && event.target.files.length > 0) {
             setTemporaryImageUrl(URL.createObjectURL(event.target.files[0]));
         }
@@ -262,6 +296,25 @@ const EditPlan = () => {
     };
 
     const isLoading = createImageMutation.isLoading || deleteImageMutation.isLoading || updatePlanMutation.isLoading;
+
+    const onCropComplete = (_croppedArea: Area, croppedAreaPixels: Area) => {
+        setCroppedAreaPixels(croppedAreaPixels);
+    };
+
+    const onSetImageBlob = async () => {
+        if (temporaryImageUrl === null || croppedAreaPixels === null) return;
+        setIsCreatingBlob(true);
+        try {
+            const blob = await getCroppedImg(temporaryImageUrl, croppedAreaPixels, 0);
+            if (blob) {
+                setImageBlob(blob);
+            }
+        } catch (e) {
+            console.error(e);
+        }
+        setTemporaryImageUrl(null);
+        setIsCreatingBlob(false);
+    };
 
     return (
         <Container>
@@ -465,14 +518,7 @@ const EditPlan = () => {
                                 onClose={() => {
                                     setTemporaryImageUrl(null);
                                 }}
-                                onConfirm={async () => {
-                                    setIsCreatingBlob(true);
-                                    if (croppieRef.current) {
-                                        setImageBlob(await croppieRef.current.getBlob());
-                                    }
-                                    setTemporaryImageUrl(null);
-                                    setIsCreatingBlob(false);
-                                }}
+                                onConfirm={onSetImageBlob}
                                 isLoading={isCreatingBlob}
                                 confirmLabel={t('validate')}
                                 cancelLabel={t('cancel')}
@@ -481,8 +527,34 @@ const EditPlan = () => {
                             >
                                 {temporaryImageUrl !== null && (
                                     <div className="text-center">
-                                        <div style={{ display: 'inline-block', width: '640px', height: '360px', marginBottom: '2rem' }}>
-                                            <ImgCroppie src={temporaryImageUrl} alt="Plan image" ref={croppieRef} imgWidth={560} imgHeight={315} />
+                                        <div style={{ width: '100%', height: '560px', marginBottom: '2rem', position: 'relative' }}>
+                                            <Cropper
+                                                image={temporaryImageUrl}
+                                                crop={crop}
+                                                zoom={zoom}
+                                                aspect={4 / 3}
+                                                onCropChange={setCrop}
+                                                onCropComplete={onCropComplete}
+                                                onZoomChange={setZoom}
+                                                minZoom={1}
+                                                maxZoom={5}
+                                                zoomSpeed={0.5}
+                                                cropSize={{ height: 360, width: 640 }}
+                                            />
+                                            <div style={{ position: 'absolute', bottom: '-30px', width: '100%' }}>
+                                                <input
+                                                    type="range"
+                                                    value={zoom}
+                                                    min={1}
+                                                    max={5}
+                                                    step={0.1}
+                                                    aria-labelledby="Zoom"
+                                                    onChange={(e) => {
+                                                        setZoom(parseInt(e.target.value));
+                                                    }}
+                                                    className="zoom-range"
+                                                />
+                                            </div>
                                         </div>
                                     </div>
                                 )}

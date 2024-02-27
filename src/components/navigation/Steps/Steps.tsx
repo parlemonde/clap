@@ -109,7 +109,7 @@ export const Steps = ({ activeStep, backHref, themeId }: StepsProps) => {
                             : undefined;
                     if (href && step.active) {
                         const onClick = () => {
-                            if (['step1', 'step2'].includes(step.name)) {
+                            if (['step1'].includes(step.name)) {
                                 if (confirm(t('validation_return_back'))) {
                                     router.push(href);
                                 }
