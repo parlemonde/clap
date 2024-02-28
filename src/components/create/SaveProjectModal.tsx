@@ -5,6 +5,7 @@ import { Field, Form, Input } from '../layout/Form';
 import { Modal } from '../layout/Modal';
 import { sendToast } from '../ui/Toasts';
 import { useCreateProjectMutation } from 'src/api/projects/projects.post';
+import { useCollaboration } from 'src/hooks/useCollaboration';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import { useTranslation } from 'src/i18n/useTranslation';
 
@@ -19,6 +20,7 @@ export const SaveProjectModal = ({ isOpen, onClose }: SaveProjectModalProps) => 
 
     const [title, setTitle] = React.useState('');
     const createProjectMutation = useCreateProjectMutation();
+    const { setIsCollaborationActive } = useCollaboration();
 
     const onCreateProject = async () => {
         if (!project) {
@@ -32,6 +34,7 @@ export const SaveProjectModal = ({ isOpen, onClose }: SaveProjectModalProps) => 
         }
 
         try {
+            setIsCollaborationActive(false);
             const newProject = await createProjectMutation.mutateAsync({
                 title,
                 themeId: project.themeId,

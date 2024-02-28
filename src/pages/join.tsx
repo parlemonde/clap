@@ -75,30 +75,22 @@ const LoginPage = () => {
 
     /* eslint-disable @typescript-eslint/no-explicit-any */
     const QrReaderResult = async (result: any) => {
-        if (result) {
-            const loginData = JSON.parse(result);
+        if (result && result.text) {
+            try {
+                const loginData = JSON.parse(result.text);
 
-            if (loginData.projectId && loginData.sequencyId && loginData.teacherId) {
-                postLoginStudent({
-                    projectId: loginData.projectId,
-                    sequencyId: loginData.sequencyId,
-                    teacherId: loginData.teacherId,
-                });
+                if (loginData.projectId && loginData.sequencyId && loginData.teacherId) {
+                    postLoginStudent({
+                        projectId: loginData.projectId,
+                        sequencyId: loginData.sequencyId,
+                        teacherId: loginData.teacherId,
+                    });
+                }
+            } catch (e) {
+                console.error(e);
             }
         }
     };
-
-    // TODO: Remove this code before MEP - START
-    // const testStudentLogin = async (e: Event) => {
-    //     e.preventDefault();
-    //     // change this with your ids to test
-    //     postLoginStudent({
-    //         projectId: 1,
-    //         sequencyId: 1,
-    //         teacherId: 2,
-    //     });
-    // };
-    // TODO: Remove this code before MEP - STOP
 
     const toggleShowQrReader = () => {
         setShowQrReader(!showQrReader);
@@ -145,20 +137,11 @@ const LoginPage = () => {
                                 }}
                                 isFullWidth
                                 required
+                                className="inputNumber-withoutArrow"
                             />
                         }
                     ></Field>
                     <Button label="Rejoindre" variant="contained" color="secondary" type="submit" value="Submit"></Button>
-                    {/* // TODO: Remove this code before MEP - START */}
-                    {/* <Button
-                        variant="outlined"
-                        color="secondary"
-                        type="submit"
-                        value="button"
-                        onClick={testStudentLogin}
-                        label="Simulation de connexion par QRCode"
-                    ></Button> */}
-                    {/* // TODO: Remove this code before MEP - STOP */}
                     <MobileView>
                         <Button
                             variant="outlined"
@@ -166,6 +149,7 @@ const LoginPage = () => {
                             type="button"
                             onClick={toggleShowQrReader}
                             label={t(`collaboration_qrcode_scan_${showQrReader ? 'hide' : 'show'}`)}
+                            style={{ width: '100%', marginBottom: '10px' }}
                         ></Button>
                         {showQrReader && <QrReader onResult={QrReaderResult} constraints={{ facingMode: 'environment' }} />}
                     </MobileView>
@@ -181,6 +165,7 @@ const LoginPage = () => {
                                 key={index}
                             >
                                 <p>{t('collaboration_join_sequency_number', { sequency: index + 1 })}</p>
+                                <p>{q.question}</p>
                                 <div style={{ height: '150px', width: '150px', backgroundColor: COLORS[index] }}></div>
                             </div>
                         );

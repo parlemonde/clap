@@ -284,7 +284,7 @@ const QuestionsPage = () => {
                                             <QRCode
                                                 size={256}
                                                 style={{ height: 'auto', maxWidth: '100%', width: '100%' }}
-                                                value={`{ teacherId: ${user.id}, sequencyId: ${q.id}, projectId: ${project.id} }`}
+                                                value={`{ "teacherId": ${user.id}, "sequencyId": ${q.id}, "projectId": ${project.id} }`}
                                                 viewBox={`0 0 256 256`}
                                             />
                                         </div>

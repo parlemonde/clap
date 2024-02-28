@@ -7,6 +7,7 @@ import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import { useTranslation } from 'src/i18n/useTranslation';
 import { COLORS } from 'src/utils/colors';
 import { useQueryNumber, useQueryString } from 'src/utils/useQueryId';
+import type { Question } from 'types/models/question.type';
 import { QuestionStatus } from 'types/models/question.type';
 
 export const AlertModal: React.FunctionComponent = () => {
@@ -44,11 +45,16 @@ export const AlertModal: React.FunctionComponent = () => {
             setModalContent(t('collaboration_alert_modal_student_content_feedback'));
         } else {
             setModalTitle(t('collaboration_alert_modal_student_title_ok'));
-            const status =
-                project !== undefined && sequency !== undefined && project.questions !== undefined
-                    ? project?.questions[sequency]?.status || QuestionStatus.ONGOING
-                    : QuestionStatus.ONGOING;
-            setModalContent(t(`collaboration_alert_modal_student_content_${status === QuestionStatus.ONGOING ? 'storyboard' : 'premounting'}`));
+
+            let status = 'storyboard';
+            if (project !== undefined && sequency !== undefined && project.questions !== undefined) {
+                const questions: Question[] = project.questions;
+                const question: Question | undefined = questions.find((q) => q.index === sequency);
+                if (question !== undefined) {
+                    status = question.status !== undefined && question.status < QuestionStatus.SUBMITTED ? 'storyboard' : 'premounting';
+                }
+            }
+            setModalContent(t(`collaboration_alert_modal_student_content_${status}`));
         }
         setShowModal(true);
     };

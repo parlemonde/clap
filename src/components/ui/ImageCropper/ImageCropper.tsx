@@ -7,7 +7,7 @@ import Cropper from 'react-easy-crop';
 import { Button } from 'src/components/layout/Button';
 import { Modal } from 'src/components/layout/Modal';
 import { Title } from 'src/components/layout/Typography';
-import getCroppedImg, { getMeta } from 'src/utils/crop-image';
+import getCroppedImg, { getMergeImagesParams, getMeta } from 'src/utils/crop-image';
 
 type ImageCropperProps = {
     image: string | null;
@@ -43,15 +43,7 @@ export const ImageCropper: React.FunctionComponent<ImageCropperProps> = ({ image
                     if (err) throw new Error(err instanceof Event ? err.toString() : err);
                     if (img === null) return;
 
-                    const imgHeight = img.naturalHeight;
-                    const imgWidth = img.naturalWidth;
-
-                    const params = [
-                        { src: '/black.jpg', x: 0, y: 0 }, // 1920 * 1080
-                        { src: url, x: imgWidth < 1920 ? (1920 - imgWidth) / 2 : imgWidth, y: imgHeight < 1080 ? (1080 - imgHeight) / 2 : imgHeight },
-                    ];
-
-                    mergeImages(params).then((base64: string) => setImageUrl(base64));
+                    mergeImages(getMergeImagesParams(img, url)).then((base64: string) => setImageUrl(base64));
                 });
             } catch (error) {
                 console.error(error);

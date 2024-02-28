@@ -284,8 +284,8 @@ export const locales = {
     validation_return_back: "Êtes-vous sûr de vouloir retourner à l'étape précédente ? Vous risquez de perdre le travail en cours.",
     // -- Collaboration -- 
     collaboration_alert_modal_student_content_feedback: 'Le professeur vous a fait des retours. Regardez les et modifiez votre travail, puis renvoyer le à validation.',
-    collaboration_alert_modal_student_content_premounting: 'Le professeur à valider votre travail. Vous avez terminé, bravo !',
-    collaboration_alert_modal_student_content_storyboard: 'Le professeur à valider votre travail. Vous pouvez passer à l\'étape n°4.',
+    collaboration_alert_modal_student_content_premounting: 'Le professeur a validé votre travail. Vous avez terminé, bravo !',
+    collaboration_alert_modal_student_content_storyboard: 'Le professeur a validé votre travail. Vous pouvez passer à l\'étape suivante !',
     collaboration_alert_modal_student_title_feedback: 'Retour du professeur',
     collaboration_alert_modal_student_title_ok: 'Validation du professeur',
     collaboration_alert_modal_teacher_content: 'Le groupe d\'élèves affecté à la <span style="color: {{color}}">séquence n° {{sequency}}</span> a terminé la partie <b>{{step}}</b>. Vous pouvez vérifier leur travail.',

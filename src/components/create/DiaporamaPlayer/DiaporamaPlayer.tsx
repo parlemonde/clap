@@ -391,13 +391,13 @@ export const DiaporamaPlayer = ({
                                         if (Math.abs(delta) < 1000 * count) {
                                             updateLastDuration(delta);
                                         } else {
-                                            const dt = delta / count;
+                                            const dt = newDuration / count;
                                             const plans = question.plans || [];
                                             const newTitle = question.title;
                                             if (newTitle) {
-                                                newTitle.duration += dt;
+                                                newTitle.duration = dt;
                                             }
-                                            const newPlans = plans.map((plan) => ({ ...plan, duration: (plan.duration || 0) + dt }));
+                                            const newPlans = plans.map((plan) => ({ ...plan, duration: dt }));
                                             const newQuestion = {
                                                 ...questions[0],
                                                 plans: newPlans,

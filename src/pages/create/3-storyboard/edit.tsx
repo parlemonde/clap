@@ -33,7 +33,7 @@ import { useCollaboration } from 'src/hooks/useCollaboration';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import { useSocket } from 'src/hooks/useSocket';
 import { useTranslation } from 'src/i18n/useTranslation';
-import getCroppedImg, { getMeta } from 'src/utils/crop-image';
+import getCroppedImg, { getMergeImagesParams, getMeta } from 'src/utils/crop-image';
 import { serializeToQueryUrl } from 'src/utils/serializeToQueryUrl';
 import { isString } from 'src/utils/type-guards/is-string';
 import { useQueryNumber } from 'src/utils/useQueryId';
@@ -209,15 +209,7 @@ const EditPlan = () => {
                     if (err) throw new Error(err instanceof Event ? err.toString() : err);
                     if (img === null) return;
 
-                    const imgHeight = img.naturalHeight;
-                    const imgWidth = img.naturalWidth;
-
-                    const params = [
-                        { src: '/black.jpg', x: 0, y: 0 }, // 1920 * 1080
-                        { src: url, x: imgWidth < 1920 ? (1920 - imgWidth) / 2 : imgWidth, y: imgHeight < 1080 ? (1080 - imgHeight) / 2 : imgHeight },
-                    ];
-
-                    mergeImages(params).then((base64: string) => setTemporaryImageUrl(base64));
+                    mergeImages(getMergeImagesParams(img, url)).then((base64: string) => setTemporaryImageUrl(base64));
                 });
             } catch (error) {
                 console.error(error);

@@ -252,6 +252,14 @@ projectController.post({ path: '/', userType: UserType.CLASS }, async (req, res,
         return;
     }
 
+    // set collaboration mode to false on each user project
+    await getConnection()
+        .createQueryBuilder()
+        .update(Project)
+        .set({ isCollaborationActive: false, joinCode: null })
+        .where({ userId: user.id, isCollaborationActive: true })
+        .execute();
+
     const data = req.body;
     if (!postProjectValidator(data)) {
         sendInvalidDataError(postProjectValidator);
