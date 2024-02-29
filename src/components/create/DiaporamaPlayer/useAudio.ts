@@ -77,7 +77,7 @@ export const useAudio = (soundUrl: string, initialVolume: number, sounds: Sound[
                 continue;
             }
             if (audio.paused && time >= sound.beginTime && time - sound.beginTime < Math.min((audio.duration || 0) * 1000, sound.maxDuration)) {
-                audio.currentTime = (time - sound.beginTime) / 1000;
+                audio.currentTime = (time - sound.beginTime + sound.deltaBeginTime) / 1000;
                 audio.play();
             } else if (
                 !audio.paused &&
