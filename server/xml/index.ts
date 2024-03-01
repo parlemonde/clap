@@ -38,6 +38,35 @@ const toLocalUrl = (url: string) => {
     return url.replace('/api/images/', '').replace('/api/audios/', '');
 };
 
+const MAX_CHAR = 27; // max char on one line
+const formatQuestionTitle = (title: string): string => {
+    const nbChar = title.length;
+
+    // If text is too long then we must split it and add \r\n
+    if (nbChar > MAX_CHAR && title.includes(' ')) {
+        let formattedQuestionTitle = '';
+        const words = title.split(' ');
+        const nbWords = words.length;
+
+        for (let i = 0; i < nbWords; i++) {
+            let line = words[i];
+            let nextWord = i < nbWords - 1 ? words[i + 1] : null;
+            let nbLineChar = line.length;
+            while (nextWord && nbLineChar + nextWord.length < MAX_CHAR) {
+                line += ` ${nextWord}`;
+                nbLineChar = line.length;
+                i++;
+                nextWord = i < nbWords - 1 ? words[i + 1] : null;
+            }
+            formattedQuestionTitle += `${line}\r\n`;
+        }
+
+        return formattedQuestionTitle;
+    }
+
+    return title;
+};
+
 export function projectToMlt(allQuestions: Question[], project: Project, urlTransform: (url: string) => string = toFullUrl) {
     const questions = allQuestions.filter((q) => q.title !== null || (q.plans || []).some((plan) => plan.description || plan.imageUrl));
     const totalFrames = getFramesCount(
@@ -119,12 +148,17 @@ export function projectToMlt(allQuestions: Question[], project: Project, urlTran
                 style = {};
             }
 
-            const x = clamp(0, WIDTH, Math.round((WIDTH * Number(style.x ?? 15) || 0) / 100));
-            const y = clamp(0, HEIGHT, Math.round((HEIGHT * Number(style.y ?? 30) || 0) / 100));
-            const width = clamp(0, WIDTH - x, Math.round((WIDTH * Number(style.width ?? 70) || 0) / 100));
-            const height = HEIGHT - y;
+            // const x = clamp(0, WIDTH, Math.round((WIDTH * Number(style.x ?? 15) || 0) / 100));
+            // const y = clamp(0, HEIGHT, Math.round((HEIGHT * Number(style.y ?? 30) || 0) / 100));
+            // const width = clamp(0, WIDTH - x, Math.round((WIDTH * Number(style.width ?? 70) || 0) / 100));
+            // const height = HEIGHT - y;
+            // const fontSize = clamp(10, HEIGHT / 4, Math.round((HEIGHT * Number(style.fontSize ?? 8) || 0) / 100));
 
-            const fontSize = clamp(10, HEIGHT / 4, Math.round((HEIGHT * Number(style.fontSize ?? 8) || 0) / 100));
+            const x = WIDTH / 4;
+            const y = 0;
+            const width = WIDTH / 2;
+            const height = HEIGHT;
+            const fontSize = 64;
 
             producerId += 1;
             mlt.elements.push({
@@ -145,7 +179,7 @@ export function projectToMlt(allQuestions: Question[], project: Project, urlTran
                         name: 'filter',
                         attributes: {
                             id: `filterForProducer${producerId}`,
-                            argument: question.title.text,
+                            argument: formatQuestionTitle(question.title.text),
                             geometry: `${x} ${y} ${width} ${height} 1`,
                             size: fontSize,
                             weight: '500',
@@ -154,7 +188,7 @@ export function projectToMlt(allQuestions: Question[], project: Project, urlTran
                             bgcolour: '#00000000',
                             olcolour: '#aa000000',
                             halign: 'center',
-                            valign: 'top',
+                            valign: 'middle',
                             mlt_service: 'dynamictext',
                             family: style.fontFamily === 'sans-serif' ? 'Arial' : 'Times New Roman',
                             'shotcut:filter': 'dynamicText',
