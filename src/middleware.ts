@@ -2,7 +2,9 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
 export function middleware(request: NextRequest) {
-    if (process.env.NODE_ENV !== 'production') {
+    const isStaticPath = request.nextUrl.pathname.startsWith('/_next/static');
+    const isApiPath = request.nextUrl.pathname.startsWith('/api');
+    if (process.env.NODE_ENV !== 'production' || isStaticPath || isApiPath) {
         return NextResponse.next();
     }
 

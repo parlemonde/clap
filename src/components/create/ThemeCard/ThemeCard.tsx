@@ -1,6 +1,6 @@
 'use client';
 
-import Image from 'next/legacy/image';
+import Image from 'next/image';
 import * as React from 'react';
 
 import styles from './theme-card.module.scss';
@@ -30,8 +30,7 @@ export const ThemeCard = ({ index, imageUrl, name, href }: ThemeCardProps) => {
                             }}
                             layout="fill"
                             src={imageUrl}
-                            unoptimized
-                            alt=""
+                            alt="theme image"
                         />
                     )}
                 </div>

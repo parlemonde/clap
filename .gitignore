@@ -37,6 +37,5 @@ next-env.d.ts
 
 .mysql-data
 .minio-data
-.vscode
 .env
 drizzle

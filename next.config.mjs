@@ -24,6 +24,10 @@ const nextConfig = {
     sassOptions: {
         includePaths: [path.join('src', 'styles')],
     },
+    images: {
+        loader: 'custom',
+        loaderFile: './src/image-loader.js',
+    },
 };
 
 export default nextConfig;
