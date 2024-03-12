@@ -23,4 +23,5 @@ export const poolConnection = mysql.createPool({
     user: process.env.DB_USER,
     connectionLimit: 10,
 });
+
 export const db = registerService('db', () => drizzle(poolConnection, { logger: process.env.NODE_ENV !== 'production' }));

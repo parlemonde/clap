@@ -33,9 +33,13 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
-next-env.d.ts
 
 .mysql-data
 .minio-data
 .env
+.env.*
+.aws-sam
+dist
 drizzle
+.open-next
+deploy.sh

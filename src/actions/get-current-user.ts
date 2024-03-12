@@ -1,5 +1,3 @@
-'use server';
-
 import { eq } from 'drizzle-orm';
 import jwt from 'jsonwebtoken';
 import { cookies } from 'next/headers';

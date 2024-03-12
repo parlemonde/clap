@@ -1,5 +1,3 @@
-'use server';
-
 import { cookies } from 'next/headers';
 import { cache } from 'react';
 
