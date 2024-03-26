@@ -68,6 +68,7 @@ export const getTabs = (
     isLoggedIn: boolean,
     isAdmin: boolean,
     isOnAdminPages: boolean,
+    isStudent: boolean,
 ): Array<{
     icon: JSX.Element | null;
     label: string;
@@ -75,6 +76,10 @@ export const getTabs = (
 }> => {
     if (!isLoggedIn) {
         return defaultTabs;
+    }
+
+    if (isStudent) {
+        return [];
     }
 
     if (isOnAdminPages) {

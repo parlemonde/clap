@@ -37,4 +37,6 @@ export class User implements UserInterface {
         default: 0,
     })
     type: UserType;
+
+    teacherId?: number | undefined;
 }

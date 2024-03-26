@@ -10,6 +10,7 @@ import { Checkbox, Field, Form, Input } from 'src/components/layout/Form';
 import { Title } from 'src/components/layout/Typography';
 import { Loader } from 'src/components/ui/Loader';
 import { userContext } from 'src/contexts/userContext';
+import { useCollaboration } from 'src/hooks/useCollaboration';
 import { useTranslation } from 'src/i18n/useTranslation';
 import { generateTemporaryToken } from 'src/utils/generate-temporary-token';
 import { httpRequest } from 'src/utils/http-request';
@@ -48,12 +49,14 @@ const LoginPage = () => {
 
     const stateQueryParam = useQueryString('state');
     const codeQueryParam = useQueryString('code');
+    const { setIsCollaborationActive } = useCollaboration();
 
     const firstCall = React.useRef(false);
     const loginSSO = React.useCallback(
         async (code: string) => {
             if (firstCall.current === false) {
                 firstCall.current = true;
+                setIsCollaborationActive(false);
                 setIsLoading(true);
                 const response = await httpRequest<{ user: User }>({
                     method: 'POST',
@@ -90,6 +93,7 @@ const LoginPage = () => {
     }
 
     const onLogin = async () => {
+        setIsCollaborationActive(false);
         setIsLoading(true);
         const response = await httpRequest<{ user: User }>({
             method: 'POST',
@@ -208,6 +212,7 @@ const LoginPage = () => {
                     label={t('login_remember_me')}
                 />
                 <Button label={t('login_connect')} variant="contained" color="secondary" type="submit" value="Submit"></Button>
+                <Button label={t('login_student')} variant="outlined" color="secondary" type="button" onClick={() => router.push('/join')}></Button>
                 <div className="text-center">
                     <Link href="/reset-password" className="color-primary">
                         {t('login_forgot_password')}

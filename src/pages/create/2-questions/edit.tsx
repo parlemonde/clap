@@ -14,7 +14,9 @@ import { Inverted } from 'src/components/ui/Inverted';
 import { Loader } from 'src/components/ui/Loader';
 import { sendToast } from 'src/components/ui/Toasts';
 import { Trans } from 'src/components/ui/Trans';
+import { useCollaboration } from 'src/hooks/useCollaboration';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
+import { useSocket } from 'src/hooks/useSocket';
 import { useTranslation } from 'src/i18n/useTranslation';
 import { serializeToQueryUrl } from 'src/utils/serializeToQueryUrl';
 import { useQueryNumber } from 'src/utils/useQueryId';
@@ -30,6 +32,8 @@ const EditQuestion = () => {
         enabled: !isProjectLoading && project !== undefined,
     });
     const questionIndex = useQueryNumber('question') ?? -1;
+    const { socket, connectTeacher, updateProject: updateProjectSocket } = useSocket();
+    const { isCollaborationActive } = useCollaboration();
 
     const [question, setQuestion] = React.useState('');
 
@@ -42,6 +46,12 @@ const EditQuestion = () => {
             router.replace('/create');
         }
     }, [router, project, isProjectLoading]);
+
+    React.useEffect(() => {
+        if (isCollaborationActive && socket.connected === false && project !== undefined && project.id) {
+            connectTeacher(project);
+        }
+    }, [isCollaborationActive, socket, project]);
 
     const updateQuestionMutation = useUpdateQuestionMutation();
 
@@ -71,9 +81,12 @@ const EditQuestion = () => {
             ...newQuestions[questionIndex],
             question,
         };
-        updateProject({
+        const updatedProject = updateProject({
             questions: newQuestions,
         });
+        if (isCollaborationActive && updatedProject) {
+            updateProjectSocket(updatedProject);
+        }
         router.push(backUrl);
     };
 

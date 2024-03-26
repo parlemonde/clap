@@ -33,6 +33,7 @@ type DiaporamaPlayerProps = {
     setQuestion?: (newQuestion: Question) => void;
     setSoundBeginTime: (newSoundBeginTime: number) => void;
     setVolume: (newVolume: number) => void;
+    isQuestionEditing?: boolean;
 };
 export const DiaporamaPlayer = ({
     questions: allQuestions,
@@ -45,16 +46,33 @@ export const DiaporamaPlayer = ({
     setQuestion = () => {},
     setSoundBeginTime,
     setVolume,
+    isQuestionEditing = false,
 }: DiaporamaPlayerProps) => {
     const [isPlaying, setIsPlaying] = React.useState(false);
     const [time, setTime] = React.useState<number>(0);
-    const { onPlay: onPlayAudio, onStop: onStopAudio, onUpdateVolume, onUpdateCurrentTime } = useAudio(soundUrl, volume, sounds);
+    const { onPlay: onPlayAudio, onStop: onStopAudio, onUpdateVolume, onUpdateCurrentTime, audioRef } = useAudio(soundUrl, volume, sounds);
     const [mountingTableRef, { width: mountingTableWidth }] = useResizeObserver<HTMLDivElement>();
     const mountingPlansWidth = mountingTableWidth - 4; // 2 borders of 2px.
     const animationFrameRef = React.useRef<number | null>(null);
     const previousTimeRef = React.useRef<number | null>(null);
     const questions = React.useMemo(() => allQuestions.filter((q) => isSequenceAvailable(q)), [allQuestions]);
     const duration = React.useMemo(() => getProjectDuration(questions), [questions]);
+    const currentQuestion = isQuestionEditing ? allQuestions[0] : null;
+
+    React.useEffect(() => {
+        if (
+            isQuestionEditing &&
+            currentQuestion !== null &&
+            (currentQuestion.soundUrl === null || !audioRef.current?.src.includes(currentQuestion.soundUrl)) &&
+            audioRef.current?.duration !== undefined &&
+            audioRef.current?.duration !== null &&
+            audioRef.current?.duration > 0 &&
+            audioRef.current?.currentTime === 0
+        ) {
+            updateLastDuration(Math.floor(audioRef.current?.duration) * 1000 - duration);
+        }
+        return;
+    }, [audioRef.current?.duration]);
 
     // Edit global time
     const [globalTime, setGlobalTime] = React.useState(getFormatedTime(duration));
@@ -373,13 +391,13 @@ export const DiaporamaPlayer = ({
                                         if (Math.abs(delta) < 1000 * count) {
                                             updateLastDuration(delta);
                                         } else {
-                                            const dt = delta / count;
+                                            const dt = newDuration / count;
                                             const plans = question.plans || [];
                                             const newTitle = question.title;
                                             if (newTitle) {
-                                                newTitle.duration += dt;
+                                                newTitle.duration = dt;
                                             }
-                                            const newPlans = plans.map((plan) => ({ ...plan, duration: (plan.duration || 0) + dt }));
+                                            const newPlans = plans.map((plan) => ({ ...plan, duration: dt }));
                                             const newQuestion = {
                                                 ...questions[0],
                                                 plans: newPlans,

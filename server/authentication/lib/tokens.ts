@@ -62,3 +62,17 @@ export async function revokeRefreshToken(refreshToken: string): Promise<void> {
         id: parseInt(refreshTokenID, 10) || 0,
     });
 }
+
+export async function getStudentAccessToken(
+    projectId: number,
+    sequencyId: number,
+    teacherId: number,
+): Promise<{
+    accessToken: string;
+}> {
+    const accessToken = jwt.sign({ projectId, sequencyId, teacherId, isStudent: true }, APP_SECRET, { expiresIn: '4h' });
+
+    return {
+        accessToken,
+    };
+}

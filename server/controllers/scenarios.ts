@@ -93,6 +93,7 @@ const POST_SCENARIO_SCHEMA: JSONSchemaType<PostScenarioData> = {
             type: 'object',
             additionalProperties: {
                 type: 'string',
+                pattern: '([^\\s]*)',
             },
             required: [],
         },
@@ -155,6 +156,7 @@ const PUT_SCENARIO_SCHEMA: JSONSchemaType<PutScenarioData> = {
             type: 'object',
             additionalProperties: {
                 type: 'string',
+                pattern: '([^\\s]*)',
             },
             required: [],
             nullable: true,

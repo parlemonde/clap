@@ -1,46 +1,23 @@
 import { ChevronLeftIcon } from '@radix-ui/react-icons';
 import classNames from 'classnames';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 
 import styles from './steps.module.scss';
 import { Button } from 'src/components/layout/Button';
 import { Text } from 'src/components/layout/Typography';
+import { userContext } from 'src/contexts/userContext';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import { useTranslation } from 'src/i18n/useTranslation';
 import { serializeToQueryUrl } from 'src/utils/serializeToQueryUrl';
+import { UserType } from 'types/models/user.type';
 
 type StepData = {
     name: string;
     href: (args: { themeId?: string | number; projectId?: number | null }) => string;
+    active: boolean;
 };
-
-const STEPS: StepData[] = [
-    {
-        name: 'step1',
-        href: ({ themeId }) => `/create/1-scenario${serializeToQueryUrl({ themeId })}`,
-    },
-    {
-        name: 'step2',
-        href: ({ projectId }) => `/create/2-questions${serializeToQueryUrl({ projectId })}`,
-    },
-    {
-        name: 'step3',
-        href: ({ projectId }) => `/create/3-storyboard${serializeToQueryUrl({ projectId })}`,
-    },
-    {
-        name: 'step4',
-        href: ({ projectId }) => `/create/4-pre-mounting${serializeToQueryUrl({ projectId })}`,
-    },
-    {
-        name: 'step5',
-        href: ({ projectId }) => `/create/5-music${serializeToQueryUrl({ projectId })}`,
-    },
-    {
-        name: 'step6',
-        href: ({ projectId }) => `/create/6-result${serializeToQueryUrl({ projectId })}`,
-    },
-];
 
 type StepsProps = {
     activeStep: number;
@@ -52,6 +29,43 @@ export const Steps = ({ activeStep, backHref, themeId }: StepsProps) => {
     const { t } = useTranslation();
     const { project } = useCurrentProject();
     const projectId = project ? project.id : undefined;
+    const router = useRouter();
+
+    const { user } = React.useContext(userContext);
+    const isStudent = user?.type === UserType.STUDENT;
+
+    const STEPS: StepData[] = [
+        {
+            name: 'step1',
+            href: ({ themeId }) => `/create/1-scenario${serializeToQueryUrl({ themeId })}`,
+            active: !isStudent,
+        },
+        {
+            name: 'step2',
+            href: ({ projectId }) => `/create/2-questions${serializeToQueryUrl({ projectId })}`,
+            active: !isStudent,
+        },
+        {
+            name: 'step3',
+            href: ({ projectId }) => `/create/3-storyboard${serializeToQueryUrl({ projectId })}`,
+            active: true,
+        },
+        {
+            name: 'step4',
+            href: ({ projectId }) => `/create/4-pre-mounting${serializeToQueryUrl({ projectId })}`,
+            active: true,
+        },
+        {
+            name: 'step5',
+            href: ({ projectId }) => `/create/5-music${serializeToQueryUrl({ projectId })}`,
+            active: !isStudent,
+        },
+        {
+            name: 'step6',
+            href: ({ projectId }) => `/create/6-result${serializeToQueryUrl({ projectId })}`,
+            active: !isStudent,
+        },
+    ];
 
     return (
         <>
@@ -93,11 +107,21 @@ export const Steps = ({ activeStep, backHref, themeId }: StepsProps) => {
                             : activeStep !== 0
                             ? step.href({ themeId, projectId: projectId || null })
                             : undefined;
-                    if (href) {
+                    if (href && step.active) {
+                        const onClick = () => {
+                            if (['step1'].includes(step.name)) {
+                                if (confirm(t('validation_return_back'))) {
+                                    router.push(href);
+                                }
+                                return;
+                            }
+                            router.push(href);
+                        };
+
                         return (
-                            <Link href={href} key={step.name} className={styles.step}>
+                            <a key={step.name} className={styles.step} onClick={onClick}>
                                 {stepContent}
-                            </Link>
+                            </a>
                         );
                     }
                     return (

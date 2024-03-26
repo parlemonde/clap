@@ -9,7 +9,7 @@ import { CircularProgress } from '../CircularProgress';
 import { Title } from '../Typography';
 import styles from './modal.module.scss';
 
-type ModalProps = {
+export type ModalProps = {
     // --
     isOpen: boolean;
     onClose: () => void;

@@ -133,11 +133,12 @@ userController.post({ path: '' }, async (req, res) => {
 
     const fromAdmin = req.user !== undefined && req.user.type === UserType.PLMO_ADMIN;
     if (!fromAdmin) {
-        const isValid: boolean = (await getRepository(Invite).count({ where: { token: data.inviteCode } })) > 0;
-        if (!isValid) {
+        const invite = await getRepository(Invite).findOne({ where: { token: data.inviteCode } });
+        if (invite === undefined || invite.expiredAt < new Date()) {
+            if (invite !== undefined) {
+                await getRepository(Invite).delete({ token: data.inviteCode });
+            }
             throw new AppError('forbidden', ['Invite code provided is invalid.']);
-        } else {
-            await getRepository(Invite).delete({ token: data.inviteCode });
         }
     }
 
@@ -272,8 +273,24 @@ userController.delete({ path: '/:id' }, async (req, res) => {
 });
 
 userController.get({ path: '/invite' }, async (req, res) => {
+    try {
+        const invite = await getRepository(Invite).createQueryBuilder().orderBy('id', 'DESC').getOne();
+        if (invite !== undefined && invite.expiredAt < new Date()) {
+            await getRepository(Invite).delete({ id: invite.id });
+        } else if (invite !== undefined) {
+            res.sendJSON({ inviteCode: invite.token });
+            return;
+        }
+    } catch (e) {
+        throw new AppError('forbidden', ['Invite code provided is invalid.']);
+    }
+
     const invite = new Invite();
     invite.token = generateToken(20);
+    invite.createdAt = new Date();
+    const nextDay = invite.createdAt.getDate() + 1;
+    invite.expiredAt = new Date();
+    invite.expiredAt.setDate(nextDay);
     await getRepository(Invite).save(invite);
     res.sendJSON({ inviteCode: invite.token });
 });

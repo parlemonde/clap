@@ -17,7 +17,8 @@ export const BottomNavBar = () => {
 
     const currentPath = `/${router.asPath.split('/')[1]}`;
     const isOnAdmin = currentPath === '/admin';
-    const tabs = getTabs(user !== null, user !== null && user.type >= UserType.ADMIN, isOnAdmin);
+    const isStudent = user !== null && user.type === UserType.STUDENT;
+    const tabs = getTabs(user !== null, user !== null && user.type >= UserType.ADMIN, isOnAdmin, isStudent);
 
     if (isOnAdmin) {
         return null;

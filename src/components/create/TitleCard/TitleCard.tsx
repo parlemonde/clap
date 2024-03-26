@@ -14,9 +14,10 @@ type TitleCardProps = {
     questionIndex: number;
     title?: Title | null;
     onDelete?(): void;
+    canEdit?: boolean;
 };
 
-export const TitleCard = ({ projectId, questionIndex, title, onDelete = () => {} }: TitleCardProps) => {
+export const TitleCard = ({ projectId, questionIndex, title, onDelete = () => {}, canEdit = true }: TitleCardProps) => {
     const { t } = useTranslation();
     const style = React.useMemo(() => {
         if (!title || title.style === '') {
@@ -29,12 +30,14 @@ export const TitleCard = ({ projectId, questionIndex, title, onDelete = () => {}
         }
     }, [title]);
     const [canvasRef, { height: canvasHeight }] = useResizeObserver<HTMLAnchorElement>();
+    const buttonStyle: React.CSSProperties = { width: '100%', height: '100%', pointerEvents: canEdit ? 'auto' : 'none' };
 
     return (
         <Link
             href={`/create/3-storyboard/title${serializeToQueryUrl({ question: questionIndex, projectId })}`}
             className={styles.titleCard}
             ref={canvasRef}
+            style={buttonStyle}
         >
             {title ? (
                 <p

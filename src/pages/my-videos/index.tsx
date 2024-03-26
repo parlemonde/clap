@@ -34,7 +34,7 @@ const VideosPage = () => {
                                 key={p.id}
                                 title={p.title || ''}
                                 themeName={p.theme?.names?.[currentLocale] || p.theme?.names?.fr || ''}
-                                href={`/create/3-storyboard${serializeToQueryUrl({ projectId: p.id || null })}`}
+                                href={`/create/2-questions${serializeToQueryUrl({ projectId: p.id || null })}`}
                                 onClickEdit={handleWipProjectClickEdit(p.id)}
                             />
                         ))}

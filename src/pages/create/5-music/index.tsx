@@ -18,7 +18,9 @@ import { ThemeBreadcrumbs } from 'src/components/navigation/ThemeBreadcrumbs';
 import { Inverted } from 'src/components/ui/Inverted';
 import { Loader } from 'src/components/ui/Loader';
 import { sendToast } from 'src/components/ui/Toasts';
+import { useCollaboration } from 'src/hooks/useCollaboration';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
+import { useSocket } from 'src/hooks/useSocket';
 import { useTranslation } from 'src/i18n/useTranslation';
 import { getSounds } from 'src/lib/get-sounds';
 import { serializeToQueryUrl } from 'src/utils/serializeToQueryUrl';
@@ -34,6 +36,8 @@ const MusicPage = () => {
     const { scenario } = useScenario(project ? project.scenarioId : 0, {
         enabled: !isProjectLoading && project !== undefined,
     });
+    const { isCollaborationActive } = useCollaboration();
+    const { updateProject: updateProjectSocket } = useSocket();
 
     const [soundBlob, setSoundBlob] = React.useState<Blob | null>(null);
     const [volume, setVolume] = React.useState<number>(project?.soundVolume ?? 100);
@@ -53,7 +57,12 @@ const MusicPage = () => {
 
     const onInputUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files !== null && event.target.files.length > 0) {
-            setSoundBlob(event.target.files[0]);
+            const file = event.target.files[0];
+            if (!['audio/acc', 'audio/mpeg', 'audio/ogg', 'audio/opus', 'audio/wav', 'audio/x-wav'].includes(file.type)) {
+                sendToast({ message: "Ce type de format audio n'est pas accepté.", type: 'error' });
+                return;
+            }
+            setSoundBlob(file);
         }
         event.target.value = ''; // clear input
     };
@@ -98,11 +107,14 @@ const MusicPage = () => {
             }
 
             // [4] update project.
-            updateProject({
+            const updatedProject = updateProject({
                 musicBeginTime: soundBeginTime,
                 soundUrl: newSoundUrl,
                 soundVolume: volume,
             });
+            if (isCollaborationActive && updatedProject) {
+                updateProjectSocket(updatedProject);
+            }
             router.push(`/create/6-result${serializeToQueryUrl({ projectId: project.id || null })}`);
         } catch (err) {
             console.error(err);
@@ -143,6 +155,9 @@ const MusicPage = () => {
                     </div>
 
                     <div className="text-center">
+                        <label htmlFor="sequence-sound-upload" className="text-center" style={{ marginBottom: '10px' }}>
+                            Format accepté: .acc, .ogg, .opus, .mp3, .wav
+                        </label>
                         <Button
                             label={t('import_music')}
                             variant="outlined"
@@ -161,7 +176,13 @@ const MusicPage = () => {
                             leftIcon={<UploadIcon style={{ width: '16px', height: '16px', marginRight: '8px' }} />}
                         ></Button>
                     </div>
-                    <input id="project-sound-upload" type="file" accept="audio/*" onChange={onInputUpload} style={{ display: 'none' }} />
+                    <input
+                        id="project-sound-upload"
+                        type="file"
+                        accept="audio/acc, audio/mpeg, audio/ogg, audio/opus, audio/wav, audio/x-wav"
+                        onChange={onInputUpload}
+                        style={{ display: 'none' }}
+                    />
 
                     <NextButton type="submit" />
                 </Form>

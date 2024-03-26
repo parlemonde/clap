@@ -15,12 +15,14 @@ type DiaporamaCardProps = {
     projectId: number | null;
     questionIndex: number;
     sequence: Question;
+    isAuthorized?: boolean;
 };
-export const DiaporamaCard = ({ projectId, questionIndex, sequence }: DiaporamaCardProps) => {
+export const DiaporamaCard = ({ projectId, questionIndex, sequence, isAuthorized = true }: DiaporamaCardProps) => {
     const { t } = useTranslation();
     const [frameIndex, setFrameIndex] = React.useState<'title' | number>(sequence.title !== null ? 'title' : 0);
     const [canvasRef, { height: canvasHeight }] = useResizeObserver<HTMLAnchorElement>();
 
+    const baseButtonStyle: React.CSSProperties = { width: '100%', height: '100%', pointerEvents: isAuthorized ? 'auto' : 'none' };
     const buttonStyle = React.useMemo(() => {
         const plan = frameIndex !== 'title' ? (sequence.plans || [])[frameIndex] : undefined;
         if (plan && plan.imageUrl) {
@@ -69,7 +71,7 @@ export const DiaporamaCard = ({ projectId, questionIndex, sequence }: DiaporamaC
         <Link
             href={`/create/4-pre-mounting/edit${serializeToQueryUrl({ question: questionIndex, projectId })}`}
             className={styles.DiaporamaCard}
-            style={buttonStyle}
+            style={{ ...baseButtonStyle, ...buttonStyle }}
             ref={canvasRef}
         >
             {frameIndex === 'title' && style && sequence.title && (

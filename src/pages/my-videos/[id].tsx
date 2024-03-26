@@ -17,7 +17,9 @@ import { Title } from 'src/components/layout/Typography';
 import { sendToast } from 'src/components/ui/Toasts';
 import { Trans } from 'src/components/ui/Trans';
 import { userContext } from 'src/contexts/userContext';
+import { useCollaboration } from 'src/hooks/useCollaboration';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
+import { useSocket } from 'src/hooks/useSocket';
 import { useTranslation } from 'src/i18n/useTranslation';
 import { getQueryString } from 'src/utils/get-query-string';
 import { serializeToQueryUrl } from 'src/utils/serializeToQueryUrl';
@@ -36,6 +38,8 @@ const EditProject: React.FC = () => {
     const { scenario } = useScenario(project ? project.scenarioId : 0, {
         enabled: !isProjectLoading && project !== undefined,
     });
+    const { isCollaborationActive } = useCollaboration();
+    const { updateProject: updateProjectSocket } = useSocket();
 
     const [projectTitle, setProjectTitle] = React.useState<string>('');
     const [showTitleModal, setShowTitleModal] = React.useState(false);
@@ -58,7 +62,10 @@ const EditProject: React.FC = () => {
                 title: projectTitle,
             });
             if (localProject && localProject.id === projectId) {
-                updateProject({ title: projectTitle });
+                const updatedProject = updateProject({ title: projectTitle });
+                if (isCollaborationActive && updatedProject) {
+                    updateProjectSocket(updatedProject);
+                }
             }
             sendToast({ message: t('project_saved'), type: 'success' });
         } catch (err) {

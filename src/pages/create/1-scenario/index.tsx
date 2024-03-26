@@ -57,15 +57,18 @@ const ScenarioPage = () => {
                 />
                 {scenarios
                     .filter((s) => s.names[currentLocale] !== undefined || s.isDefault === false)
-                    .map((s) => (
-                        <ScenarioCard
-                            key={s.id}
-                            name={s.names[currentLocale] || s.names[Object.keys(s.names)[0]] || ''}
-                            description={s.descriptions[currentLocale] || s.descriptions[Object.keys(s.descriptions)[0]] || ''}
-                            questionsCount={getQuestionCountString(s.questionsCount)}
-                            href={`/create/2-questions${serializeToQueryUrl({ themeId, scenarioId: s.id })}`}
-                        />
-                    ))}
+                    .map(
+                        (s) =>
+                            s.names[currentLocale].trim().length > 0 && (
+                                <ScenarioCard
+                                    key={s.id}
+                                    name={s.names[currentLocale] || s.names[Object.keys(s.names)[0]] || ''}
+                                    description={s.descriptions[currentLocale] || s.descriptions[Object.keys(s.descriptions)[0]] || ''}
+                                    questionsCount={getQuestionCountString(s.questionsCount)}
+                                    href={`/create/2-questions${serializeToQueryUrl({ themeId, scenarioId: s.id })}`}
+                                />
+                            ),
+                    )}
             </div>
         </Container>
     );

@@ -3,8 +3,11 @@ import jwt from 'jsonwebtoken';
 import { getRepository } from 'typeorm';
 
 import { getNewAccessToken } from '../authentication/lib/tokens';
+import { Project } from '../entities/project';
+import { Question } from '../entities/question';
 import type { UserType } from '../entities/user';
 import { User } from '../entities/user';
+import { ANONYMOUS_USER } from '../utils/anonymous-user';
 import { getHeader } from '../utils/get-header';
 import { AppError } from './handle-errors';
 
@@ -53,12 +56,20 @@ export function authenticate(userType: UserType | undefined = undefined): Reques
             throw new AppError('forbidden');
         }
 
+        type AccessTokenType = {
+            userId?: number;
+            teacherId?: number;
+            sequencyId?: number;
+            projectId?: number;
+            isStudent?: boolean;
+            iat: number;
+            exp: number;
+        };
+
         // authenticate
-        let data: { userId: number; iat: number; exp: number };
+        let data: AccessTokenType;
         try {
-            const decoded: string | { userId: number; iat: number; exp: number } = jwt.verify(token, APP_SECRET) as
-                | string
-                | { userId: number; iat: number; exp: number };
+            const decoded: string | AccessTokenType = jwt.verify(token, APP_SECRET) as string | AccessTokenType;
             if (typeof decoded === 'string') {
                 data = JSON.parse(decoded);
             } else {
@@ -67,11 +78,34 @@ export function authenticate(userType: UserType | undefined = undefined): Reques
         } catch (e) {
             throw new AppError('forbidden');
         }
-        const user = await getRepository(User).findOne({ where: { id: data.userId } });
-        if (userType !== undefined && (user === undefined || user.type < userType)) {
-            throw new AppError('forbidden');
+
+        if (data.isStudent) {
+            const user: User = ANONYMOUS_USER;
+            const teacher = await getRepository(User).findOne({ where: { id: data.teacherId } });
+            const project = await getRepository(Project).findOne({ where: { id: data.projectId } });
+            const sequency = await getRepository(Question).findOne({ where: { id: data.sequencyId }, relations: ['project', 'project.user'] });
+
+            // Check if data are valid before continue
+            if (
+                teacher === undefined ||
+                project === undefined ||
+                sequency === undefined ||
+                project.id !== sequency.project?.id ||
+                teacher.id !== sequency.project?.user?.id ||
+                project.isCollaborationActive !== true
+            ) {
+                throw new AppError('forbidden');
+            }
+            user.teacherId = teacher.id;
+            req.user = user;
+            next();
+        } else {
+            const user = await getRepository(User).findOne({ where: { id: data.userId } });
+            if (userType !== undefined && (user === undefined || user.type < userType)) {
+                throw new AppError('forbidden');
+            }
+            req.user = user;
+            next();
         }
-        req.user = user;
-        next();
     };
 }

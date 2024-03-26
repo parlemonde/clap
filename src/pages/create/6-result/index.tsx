@@ -3,7 +3,6 @@ import React from 'react';
 
 import { getProjectMlt } from 'src/api/projects/projects.mlt';
 import type { GetPDFParams } from 'src/api/projects/projects.pdf';
-import { getProjectPdf } from 'src/api/projects/projects.pdf';
 import { useProjectVideo } from 'src/api/projects/projects.video.get';
 import { useCreateProjectVideoMutation } from 'src/api/projects/projects.video.post';
 import { useScenario } from 'src/api/scenarios/scenarios.get';
@@ -23,10 +22,11 @@ import { Loader } from 'src/components/ui/Loader';
 import { sendToast } from 'src/components/ui/Toasts';
 import { Trans } from 'src/components/ui/Trans';
 import { userContext } from 'src/contexts/userContext';
+import { useCollaboration } from 'src/hooks/useCollaboration';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
+import { useSocket } from 'src/hooks/useSocket';
 import { useTranslation } from 'src/i18n/useTranslation';
 import { getSounds } from 'src/lib/get-sounds';
-import PictureAsPdf from 'src/svg/pdf.svg';
 import VideoFile from 'src/svg/plan.svg';
 
 const styles: Record<'verticalLine' | 'horizontalLine', React.CSSProperties> = {
@@ -78,6 +78,8 @@ const ResultPage = () => {
     const { scenario } = useScenario(project ? project.scenarioId : 0, {
         enabled: !isProjectLoading && project !== undefined,
     });
+    const { isCollaborationActive } = useCollaboration();
+    const { socket, connectTeacher } = useSocket();
     const [isLoading, setIsLoading] = React.useState(false);
     const [isVideoModalOpen, setIsVideoModalOpen] = React.useState(false);
     const {
@@ -88,16 +90,29 @@ const ResultPage = () => {
         enabled: project !== undefined && project.id !== 0,
     });
     const sounds = React.useMemo(() => getSounds(questions), [questions]);
+    const [isDownloading, setIsDownloading] = React.useState<boolean>((projectVideo !== undefined && projectVideo.progress < 100) as boolean);
 
     React.useEffect(() => {
-        if (projectVideo !== undefined && projectVideo.progress < 100) {
-            const timeout = window.setTimeout(refetch, 1000);
-            return () => {
-                window.clearTimeout(timeout);
-            };
+        setIsDownloading((projectVideo !== undefined && projectVideo.progress < 100) as boolean);
+        if (projectVideo !== undefined && isDownloading) {
+            if (projectVideo.progress > 99) {
+                setIsDownloading(false);
+                return;
+            }
+
+            setTimeout(() => {
+                refetch();
+            }, 1000);
         }
+
         return () => {};
-    }, [projectVideo, refetch]);
+    }, [projectVideo, isDownloading, refetch]);
+
+    React.useEffect(() => {
+        if (isCollaborationActive && socket.connected === false && project !== undefined && project.id) {
+            connectTeacher(project);
+        }
+    }, [isCollaborationActive, socket, project]);
 
     const getData = (): GetPDFParams | undefined => {
         if (!project) {
@@ -119,19 +134,6 @@ const ResultPage = () => {
             soundVolume: project.soundVolume,
             musicBeginTime: project.musicBeginTime,
         };
-    };
-
-    const generatePDF = async () => {
-        const data = getData();
-        if (!data) {
-            return;
-        }
-        setIsLoading(true);
-        const url = await getProjectPdf(data);
-        setIsLoading(false);
-        if (url) {
-            window.open(`/static/pdf/${url}`);
-        }
     };
 
     const generateMLT = async () => {
@@ -164,6 +166,7 @@ const ResultPage = () => {
             {
                 onSettled: () => {
                     setIsVideoModalOpen(false);
+                    setIsDownloading(true);
                 },
                 onError: () => {
                     sendToast({ message: t('unknown_error'), type: 'error' });
@@ -273,16 +276,6 @@ const ResultPage = () => {
                             )}
                         </>
                     )}
-                    <Or />
-                    <Button
-                        label={t('part6_pdf_button')}
-                        leftIcon={<PictureAsPdf style={{ marginRight: '10px' }} />}
-                        className="full-width"
-                        variant="contained"
-                        color="secondary"
-                        onClick={generatePDF}
-                        style={{ width: '100%' }}
-                    ></Button>
                     <Or />
                     <Button
                         label={t('part6_mlt_button')}

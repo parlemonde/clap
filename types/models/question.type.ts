@@ -1,6 +1,14 @@
 import type { Plan } from './plan.type';
 import type { Title } from './title.type';
 
+export enum QuestionStatus {
+    ONGOING = 0,
+    STORYBOARD = 1,
+    PREMOUNTING = 2,
+    SUBMITTED = 3,
+    VALIDATED = 4,
+}
+
 export interface Question {
     id: number;
     question: string;
@@ -13,6 +21,8 @@ export interface Question {
     voiceOffBeginTime: number;
     soundUrl: string | null;
     soundVolume: number | null;
+    status?: QuestionStatus;
+    feedback?: string | null;
 }
 
 export interface QuestionTemplate {

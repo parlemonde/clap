@@ -62,12 +62,14 @@ const ThemesPage = () => {
 
     const deleteThemeMutation = useDeleteThemeMutation();
     const onDeleteTheme = async () => {
-        const themeId = deleteIndex ? defaultThemes[deleteIndex].id : null;
-        if (!themeId || typeof themeId === 'string') {
+        if (deleteIndex === null || typeof defaultThemes[deleteIndex].id === 'string') {
             return;
         }
+
+        const themeId = defaultThemes[deleteIndex].id;
+
         try {
-            await deleteThemeMutation.mutateAsync({ themeId });
+            await deleteThemeMutation.mutateAsync({ themeId: typeof themeId === 'string' ? parseInt(themeId) : themeId });
             sendToast({ message: 'Thème supprimé avec succès!', type: 'success' });
         } catch (err) {
             console.error(err);

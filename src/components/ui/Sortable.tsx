@@ -13,9 +13,10 @@ type SortableProps<T extends SortableItem> = {
     // options
     component?: React.ElementType;
     handle?: string;
+    style?: object;
 };
 
-export const Sortable = <T extends SortableItem>({ list, setList = () => {}, handle, component, children }: SortableProps<T>) => {
+export const Sortable = <T extends SortableItem>({ list, setList = () => {}, handle, component, children, style = {} }: SortableProps<T>) => {
     const elRef = React.useRef<HTMLElement | null>(null);
     const ListRoot: React.ElementType = component || 'ul';
 
@@ -59,7 +60,7 @@ export const Sortable = <T extends SortableItem>({ list, setList = () => {}, han
     }, [handle]);
 
     return (
-        <ListRoot ref={elRef} style={{ margin: 0, padding: 0 }}>
+        <ListRoot ref={elRef} style={{ margin: 0, padding: 0, ...style }}>
             {children}
         </ListRoot>
     );

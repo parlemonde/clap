@@ -17,10 +17,20 @@ type PlanCardProps = {
     showNumber: number;
     canDelete?: boolean;
     onDelete?(): void;
+    canEdit?: boolean;
 };
-export const PlanCard = ({ projectId, plan, questionIndex, planIndex, showNumber, canDelete = false, onDelete = () => {} }: PlanCardProps) => {
+export const PlanCard = ({
+    projectId,
+    plan,
+    questionIndex,
+    planIndex,
+    showNumber,
+    canDelete = false,
+    onDelete = () => {},
+    canEdit = true,
+}: PlanCardProps) => {
     const { t } = useTranslation();
-    const buttonStyle: React.CSSProperties = { width: '100%', height: '100%' };
+    const buttonStyle: React.CSSProperties = { width: '100%', height: '100%', pointerEvents: canEdit ? 'auto' : 'none' };
     if (plan.imageUrl) {
         buttonStyle.backgroundImage = `url('${plan.imageUrl}')`;
         buttonStyle.backgroundPosition = 'center'; /* Center the image */

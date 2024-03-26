@@ -1,8 +1,9 @@
 import type { JSONSchemaType } from 'ajv';
 import * as argon2 from 'argon2';
 import type { Request, Response } from 'express';
-import { getRepository } from 'typeorm';
+import { getRepository, getConnection } from 'typeorm';
 
+import { Project } from '../entities/project';
 import { User } from '../entities/user';
 import { ajv, sendInvalidDataError } from '../lib/json-schema-validator';
 import { logger } from '../lib/logger';
@@ -59,10 +60,6 @@ export async function login(req: Request, res: Response): Promise<void> {
         throw new AppError('forbidden', ['Unauthorized - Account blocked. Please reset password.'], 3);
     }
 
-    if (user.accountRegistration === 10) {
-        throw new AppError('loginError', ['Unauthorized - Please use SSO.'], 5);
-    }
-
     if (!isPasswordCorrect) {
         user.accountRegistration += 1;
         await getRepository(User).save(user);
@@ -71,6 +68,14 @@ export async function login(req: Request, res: Response): Promise<void> {
         user.accountRegistration = 0;
         await getRepository(User).save(user);
     }
+
+    // set collaboration mode to false on each user project
+    await getConnection()
+        .createQueryBuilder()
+        .update(Project)
+        .set({ isCollaborationActive: false, joinCode: null })
+        .where({ userId: user.id, isCollaborationActive: true })
+        .execute();
 
     const { accessToken, refreshToken } = await getAccessToken(user.id, !!data.getRefreshToken);
     res.cookie('access-token', accessToken, {

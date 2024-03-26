@@ -8,6 +8,9 @@ import { useUpdatePlanMutation } from 'src/api/plans/plans.put';
 import { useUpdateQuestionMutation } from 'src/api/questions/questions.put';
 import { useScenario } from 'src/api/scenarios/scenarios.get';
 import { useTheme } from 'src/api/themes/themes.get';
+import { ButtonShowFeedback } from 'src/components/collaboration/ButtonShowFeedback';
+import { FeedbackModal } from 'src/components/collaboration/FeedbackModal';
+import { FormFeedback } from 'src/components/collaboration/FormFeedback';
 import { DiaporamaPlayer } from 'src/components/create/DiaporamaPlayer';
 import { Button } from 'src/components/layout/Button';
 import { Container } from 'src/components/layout/Container';
@@ -20,14 +23,18 @@ import { ThemeBreadcrumbs } from 'src/components/navigation/ThemeBreadcrumbs';
 import { Inverted } from 'src/components/ui/Inverted';
 import { Loader } from 'src/components/ui/Loader';
 import { sendToast } from 'src/components/ui/Toasts';
+import { userContext } from 'src/contexts/userContext';
+import { useCollaboration } from 'src/hooks/useCollaboration';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
+import { useSocket } from 'src/hooks/useSocket';
 import { useTranslation } from 'src/i18n/useTranslation';
 import type { Sound } from 'src/lib/get-sounds';
 import TimerIcon from 'src/svg/timer.svg';
 import { serializeToQueryUrl } from 'src/utils/serializeToQueryUrl';
 import { isString } from 'src/utils/type-guards/is-string';
 import { useQueryNumber } from 'src/utils/useQueryId';
-import type { Question } from 'types/models/question.type';
+import { QuestionStatus, type Question } from 'types/models/question.type';
+import { UserType } from 'types/models/user.type';
 
 const DEFAULT_SEQUENCE: Question = {
     id: 0,
@@ -52,6 +59,8 @@ const PreMountSequence = () => {
     const { scenario } = useScenario(project ? project.scenarioId : 0, {
         enabled: !isProjectLoading && project !== undefined,
     });
+    const { isCollaborationActive } = useCollaboration();
+    const { socket, connectStudent, connectTeacher, updateProject: updateProjectSocket } = useSocket();
 
     const questionIndex = useQueryNumber('question') ?? -1;
     const currentSequence = React.useMemo(() => (questionIndex !== -1 ? questions[questionIndex] : undefined), [questions, questionIndex]);
@@ -71,6 +80,36 @@ const PreMountSequence = () => {
     }, [soundBlob, sequence.soundUrl]);
     const sounds = React.useMemo<Sound[]>(() => [], []);
 
+    const { user } = React.useContext(userContext);
+    const isStudent = user?.type === UserType.STUDENT;
+    const [showButtonFeedback, setShowButtonFeedback] = React.useState(
+        (isStudent && sequence && sequence.feedback && QuestionStatus.PREMOUNTING === sequence.status) as boolean,
+    );
+    const [showFeedback, setShowFeedback] = React.useState(false);
+
+    React.useEffect(() => {
+        if (isStudent && sequence && sequence.feedback && QuestionStatus.PREMOUNTING === sequence.status) {
+            setShowButtonFeedback(true);
+        }
+    }, [isStudent, sequence]);
+
+    React.useEffect(() => {
+        if (isCollaborationActive && socket.connected === false && project !== undefined && project.id && questionIndex !== -1) {
+            if (isStudent) {
+                connectStudent(project.id, questionIndex);
+            } else if (!isStudent) {
+                connectTeacher(project);
+            }
+        }
+    }, [isCollaborationActive, socket, project, isStudent, questionIndex]);
+
+    React.useEffect(() => {
+        if (isStudent && sequence && sequence.status !== QuestionStatus.PREMOUNTING) {
+            router.push(backUrl);
+        }
+        return;
+    }, [sequence, isStudent, backUrl, router]);
+
     // On external change, update the sequence.
     React.useEffect(() => {
         setSequence(JSON.parse(JSON.stringify(currentSequence || DEFAULT_SEQUENCE)));
@@ -81,7 +120,12 @@ const PreMountSequence = () => {
 
     const onInputUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files !== null && event.target.files.length > 0) {
-            setSoundBlob(event.target.files[0]);
+            const file = event.target.files[0];
+            if (!['audio/acc', 'audio/mpeg', 'audio/ogg', 'audio/opus', 'audio/wav', 'audio/x-wav'].includes(file.type)) {
+                sendToast({ message: "Ce type de format audio n'est pas accepté.", type: 'error' });
+                return;
+            }
+            setSoundBlob(file);
         }
         event.target.value = ''; // clear input
     };
@@ -152,9 +196,10 @@ const PreMountSequence = () => {
                 soundUrl: newSoundUrl,
                 soundVolume: volume,
             };
-            updateProject({
-                questions: newQuestions,
-            });
+            const updatedProject = updateProject({ questions: newQuestions });
+            if (isCollaborationActive && updatedProject) {
+                updateProjectSocket(updatedProject);
+            }
             router.push(backUrl);
         } catch (err) {
             console.error(err);
@@ -177,6 +222,7 @@ const PreMountSequence = () => {
                 <Title color="primary" variant="h1" marginY="md">
                     <Inverted isRound>4</Inverted>
                     {t('pre_mount_title', { number: questionIndex + 1 })}
+                    {showButtonFeedback && <ButtonShowFeedback onClick={() => setShowFeedback(true)} />}
                 </Title>
                 <Title variant="h2">{t('pre_mount_title_desc')}</Title>
 
@@ -235,6 +281,7 @@ const PreMountSequence = () => {
                                 soundBeginTime={soundBeginTime}
                                 setSoundBeginTime={setSoundBeginTime}
                                 sounds={sounds}
+                                isQuestionEditing={true}
                             />
                         </>
                     )}
@@ -251,6 +298,9 @@ const PreMountSequence = () => {
                         </FlexItem>
                     </Flex>
                     <div className="text-center">
+                        <label htmlFor="sequence-sound-upload" className="text-center" style={{ marginBottom: '10px' }}>
+                            Format accepté: .acc, .ogg, .opus, .mp3, .wav
+                        </label>
                         <Button
                             label={t('import_voice_off')}
                             variant="outlined"
@@ -269,12 +319,26 @@ const PreMountSequence = () => {
                             leftIcon={<UploadIcon style={{ width: '16px', height: '16px', marginRight: '8px' }} />}
                         ></Button>
                     </div>
-                    <input id="sequence-sound-upload" type="file" accept="audio/*" onChange={onInputUpload} style={{ display: 'none' }} />
+                    <input
+                        id="sequence-sound-upload"
+                        type="file"
+                        accept="audio/acc, audio/mpeg, audio/ogg, audio/opus, audio/wav, audio/x-wav"
+                        onChange={onInputUpload}
+                        style={{ display: 'none' }}
+                    />
 
+                    {isCollaborationActive && !isStudent && currentSequence && currentSequence.status === QuestionStatus.SUBMITTED && (
+                        <FormFeedback question={sequence} previousStatus={QuestionStatus.PREMOUNTING} nextStatus={QuestionStatus.VALIDATED} />
+                    )}
                     <NextButton backHref={backUrl} label={t('continue')} type="submit" />
                 </Form>
             </div>
             <Loader isLoading={isLoading} />
+            <FeedbackModal
+                isOpen={showFeedback}
+                onClose={() => setShowFeedback(false)}
+                feedback={sequence && sequence.feedback ? sequence.feedback : ''}
+            />
         </Container>
     );
 };

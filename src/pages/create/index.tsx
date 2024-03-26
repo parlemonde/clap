@@ -6,11 +6,16 @@ import { Container } from 'src/components/layout/Container';
 import { Title } from 'src/components/layout/Typography';
 import { Inverted } from 'src/components/ui/Inverted';
 import { Trans } from 'src/components/ui/Trans';
+import { useClearLocalProject } from 'src/hooks/useCurrentProject';
 import { useTranslation } from 'src/i18n/useTranslation';
 
 const CreatePage = () => {
     const { t, currentLocale } = useTranslation();
     const { themes, isLoading } = useThemes({ isDefault: true, self: true });
+    const { clearLocalProject } = useClearLocalProject();
+
+    // We must clear project from local storage to prevent wrong questions list
+    clearLocalProject();
 
     return (
         <Container>

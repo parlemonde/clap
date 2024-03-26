@@ -20,4 +20,6 @@ export interface Project {
     musicBeginTime: number;
     soundUrl: string | null;
     soundVolume: number | null;
+    isCollaborationActive: boolean;
+    joinCode: number | null;
 }

@@ -9,23 +9,24 @@
     text-decoration: none;
     color: inherit;
 
+    .themeCardImage {
+        overflow: hidden;
+        height: 100%;
+        width: 100%;
+        border-radius: 10px;
+        transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+        box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.08), 0 5px 6px 0 rgba(0, 0, 0, 0.04), 0 1px 10px 0 rgba(0, 0, 0, 0.02);
+
+        & img {
+            border-radius: 10px;
+        }
+    }
+
     &:hover,
     &:focus-visible {
         text-decoration: underline;
         .themeCardImage {
             box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.18), 0 5px 6px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12);
         }
-    }
-}
-
-.themeCardImage {
-    overflow: hidden;
-    height: 100%;
-    width: 100%;
-    border-radius: 10px;
-    transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-
-    & img {
-        border-radius: 10px;
     }
 }

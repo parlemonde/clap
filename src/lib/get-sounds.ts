@@ -5,6 +5,7 @@ export type Sound = {
     soundUrl: string;
     volume: number;
     beginTime: number;
+    deltaBeginTime: number;
     maxDuration: number;
 };
 
@@ -17,12 +18,27 @@ export function getSounds(questions: Question[]): Sound[] {
             continue;
         }
         if (question.soundUrl) {
-            sounds.push({
+            const defaultSoundParams = {
                 soundUrl: question.soundUrl,
                 volume: question.soundVolume || 100,
-                beginTime: time + question.voiceOffBeginTime,
-                maxDuration: Math.max(0, questionDuration - question.voiceOffBeginTime),
-            });
+            };
+
+            const soundBeginTime = question.voiceOffBeginTime;
+            if (soundBeginTime < 0) {
+                sounds.push({
+                    ...defaultSoundParams,
+                    beginTime: time,
+                    maxDuration: Math.max(0, questionDuration),
+                    deltaBeginTime: Math.abs(soundBeginTime),
+                });
+            } else {
+                sounds.push({
+                    ...defaultSoundParams,
+                    beginTime: time + soundBeginTime,
+                    maxDuration: Math.max(0, questionDuration - soundBeginTime),
+                    deltaBeginTime: 0,
+                });
+            }
         }
         time += questionDuration;
     }

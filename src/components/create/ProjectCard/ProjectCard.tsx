@@ -6,6 +6,7 @@ import * as React from 'react';
 import styles from './project-card.module.scss';
 import { IconButton } from 'src/components/layout/Button/IconButton';
 import { Title } from 'src/components/layout/Typography';
+import { useCollaboration } from 'src/hooks/useCollaboration';
 import { useTranslation } from 'src/i18n/useTranslation';
 
 type ProjectCardProps = {
@@ -17,8 +18,10 @@ type ProjectCardProps = {
 };
 export const ProjectCard = ({ title = '', themeName = '', href, onClickEdit, className }: ProjectCardProps) => {
     const { t } = useTranslation();
+    const { setIsCollaborationActive } = useCollaboration();
+
     return (
-        <Link href={href} className={classNames(styles.ProjectCard, className)}>
+        <Link href={href} className={classNames(styles.ProjectCard, className)} onClick={() => setIsCollaborationActive(false)}>
             <Title color="primary" variant="h3" className="text-center">
                 {title}
             </Title>

@@ -15,9 +15,12 @@ import { Inverted } from 'src/components/ui/Inverted';
 import { Loader } from 'src/components/ui/Loader';
 import { sendToast } from 'src/components/ui/Toasts';
 import { Trans } from 'src/components/ui/Trans';
+import { useCollaboration } from 'src/hooks/useCollaboration';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
+import { useSocket } from 'src/hooks/useSocket';
 import { useTranslation } from 'src/i18n/useTranslation';
 import { serializeToQueryUrl } from 'src/utils/serializeToQueryUrl';
+import type { Project } from 'types/models/project.type';
 
 const NewQuestion = () => {
     const router = useRouter();
@@ -29,6 +32,8 @@ const NewQuestion = () => {
     const { scenario } = useScenario(project ? project.scenarioId : 0, {
         enabled: !isProjectLoading && project !== undefined,
     });
+    const { socket, connectTeacher, updateProject: updateProjectSocket } = useSocket();
+    const { isCollaborationActive } = useCollaboration();
 
     const [question, setQuestion] = React.useState('');
 
@@ -71,7 +76,7 @@ const NewQuestion = () => {
                                 duration: 3000, // 3 seconds
                             })
                             .then((plan) => {
-                                updateProject({
+                                updateStoredProject({
                                     questions: [
                                         ...questions,
                                         {
@@ -82,7 +87,7 @@ const NewQuestion = () => {
                                 });
                             })
                             .catch(() => {
-                                updateProject({
+                                updateStoredProject({
                                     questions: [...questions, newQuestion],
                                 });
                             })
@@ -93,7 +98,7 @@ const NewQuestion = () => {
                 },
             );
         } else {
-            updateProject({
+            updateStoredProject({
                 questions: [
                     ...questions,
                     {
@@ -121,6 +126,19 @@ const NewQuestion = () => {
             router.push(backUrl);
         }
     };
+
+    const updateStoredProject = (data: Partial<Project>) => {
+        const updatedProject = updateProject(data);
+        if (isCollaborationActive && updatedProject) {
+            updateProjectSocket(updatedProject);
+        }
+    };
+
+    React.useEffect(() => {
+        if (isCollaborationActive && socket.connected === false && project !== undefined && project.id) {
+            connectTeacher(project);
+        }
+    }, [isCollaborationActive, socket, project]);
 
     return (
         <Container>

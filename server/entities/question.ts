@@ -1,6 +1,7 @@
+import type { Relation } from 'typeorm';
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
-import type { Question as QuestionInterface } from '../../types/models/question.type';
+import { QuestionStatus, type Question as QuestionInterface } from '../../types/models/question.type';
 import type { Title } from '../../types/models/title.type';
 import { Plan } from './plan';
 import { Project } from './project';
@@ -18,7 +19,7 @@ export class Question implements QuestionInterface {
 
     @ManyToOne(() => Project, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'projectId' })
-    public project?: Project;
+    public project?: Relation<Project>;
 
     @Column({ nullable: false })
     public projectId: number;
@@ -40,4 +41,14 @@ export class Question implements QuestionInterface {
 
     @Column({ type: 'integer', nullable: true })
     public soundVolume: number | null;
+
+    @Column({
+        type: 'enum',
+        enum: QuestionStatus,
+        default: 0,
+    })
+    status: QuestionStatus;
+
+    @Column({ type: 'varchar', length: 2000, nullable: true })
+    public feedback: string | null;
 }

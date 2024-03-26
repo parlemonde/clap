@@ -1,7 +1,10 @@
 import { LightningBoltIcon, ImageIcon, CameraIcon, UploadIcon, Pencil2Icon } from '@radix-ui/react-icons';
+import mergeImages from 'merge-images';
 import Image from 'next/legacy/image';
 import { useRouter } from 'next/router';
 import React from 'react';
+import Cropper from 'react-easy-crop';
+import type { Area } from 'react-easy-crop';
 import Camera from 'react-html5-camera-photo';
 
 import { useDeleteImageMutation } from 'src/api/images/images.delete';
@@ -9,6 +12,8 @@ import { useCreateImageMutation } from 'src/api/images/images.post';
 import { useUpdatePlanMutation } from 'src/api/plans/plans.put';
 import { useScenario } from 'src/api/scenarios/scenarios.get';
 import { useTheme } from 'src/api/themes/themes.get';
+import { ButtonShowFeedback } from 'src/components/collaboration/ButtonShowFeedback';
+import { FeedbackModal } from 'src/components/collaboration/FeedbackModal';
 import { Canvas } from 'src/components/create/Canvas';
 import { Button } from 'src/components/layout/Button';
 import { Container } from 'src/components/layout/Container';
@@ -20,16 +25,20 @@ import { Title } from 'src/components/layout/Typography';
 import { NextButton } from 'src/components/navigation/NextButton';
 import { Steps } from 'src/components/navigation/Steps';
 import { ThemeBreadcrumbs } from 'src/components/navigation/ThemeBreadcrumbs';
-import type { ImgCroppieRef } from 'src/components/ui/ImgCroppie';
-import { ImgCroppie } from 'src/components/ui/ImgCroppie';
 import { Inverted } from 'src/components/ui/Inverted';
 import { Loader } from 'src/components/ui/Loader';
 import { sendToast } from 'src/components/ui/Toasts';
+import { userContext } from 'src/contexts/userContext';
+import { useCollaboration } from 'src/hooks/useCollaboration';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
+import { useSocket } from 'src/hooks/useSocket';
 import { useTranslation } from 'src/i18n/useTranslation';
+import getCroppedImg, { getMergeImagesParams, getMeta } from 'src/utils/crop-image';
 import { serializeToQueryUrl } from 'src/utils/serializeToQueryUrl';
 import { isString } from 'src/utils/type-guards/is-string';
 import { useQueryNumber } from 'src/utils/useQueryId';
+import { QuestionStatus } from 'types/models/question.type';
+import { UserType } from 'types/models/user.type';
 
 const SecondaryColor = '#79C3A5';
 
@@ -119,6 +128,8 @@ const EditPlan = () => {
     const { scenario } = useScenario(project ? project.scenarioId : 0, {
         enabled: !isProjectLoading && project !== undefined,
     });
+    const { isCollaborationActive } = useCollaboration();
+    const { socket, connectStudent, connectTeacher, updateProject: updateProjectSocket } = useSocket();
 
     const questionIndex = useQueryNumber('question') ?? -1;
     const planIndex = useQueryNumber('plan') ?? -1;
@@ -132,7 +143,6 @@ const EditPlan = () => {
 
     // --- local image variables ---
     const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
-    const croppieRef = React.useRef<ImgCroppieRef | null>(null);
     const [isCreatingBlob, setIsCreatingBlob] = React.useState(false);
     const [showChangeModal, setShowChangeModal] = React.useState(false);
     const [showCameraModal, setShowCameraModal] = React.useState(false);
@@ -140,6 +150,15 @@ const EditPlan = () => {
     const [description, setDescription] = React.useState(plan?.description || '');
     const [imageBlob, setImageBlob] = React.useState<Blob | null>(null);
     const [temporaryImageUrl, setTemporaryImageUrl] = React.useState<string | null>(null);
+    const { user } = React.useContext(userContext);
+    const isStudent = user?.type === UserType.STUDENT;
+    const [showButtonFeedback, setShowButtonFeedback] = React.useState(
+        (isStudent && sequence && sequence.feedback && QuestionStatus.ONGOING === sequence.status) as boolean,
+    );
+    const [showFeedback, setShowFeedback] = React.useState(false);
+    const [crop, setCrop] = React.useState({ x: 0, y: 0 });
+    const [zoom, setZoom] = React.useState(1);
+    const [croppedAreaPixels, setCroppedAreaPixels] = React.useState<Area | null>(null);
     const imageUrl = React.useMemo(() => {
         if (imageBlob !== null) {
             return URL.createObjectURL(imageBlob);
@@ -148,13 +167,58 @@ const EditPlan = () => {
     }, [imageBlob, plan]);
 
     React.useEffect(() => {
+        if (isStudent && sequence && sequence.feedback && QuestionStatus.ONGOING === sequence.status) {
+            setShowButtonFeedback(true);
+        }
+    }, [isStudent, sequence]);
+
+    React.useEffect(() => {
         if (!plan) {
             return;
         }
         setDescription(plan.description || '');
     }, [plan]);
 
+    React.useEffect(() => {
+        if (isCollaborationActive && socket.connected === false && project !== undefined && project.id && questionIndex !== -1) {
+            if (isStudent) {
+                connectStudent(project.id, questionIndex);
+            } else if (!isStudent) {
+                connectTeacher(project);
+            }
+        }
+    }, [isCollaborationActive, socket, project, isStudent, questionIndex]);
+
+    const backUrl = `/create/3-storyboard${serializeToQueryUrl({ projectId: project?.id || null })}`;
+
+    React.useEffect(() => {
+        if (isStudent && sequence && sequence.status !== QuestionStatus.ONGOING) {
+            router.push(backUrl);
+        }
+        return;
+    }, [sequence, isStudent, backUrl, router]);
+
     const onInputUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setZoom(1);
+        setCrop({ x: 0, y: 0 });
+        if (event.target.files !== null && event.target.files.length > 0) {
+            const url = URL.createObjectURL(event.target.files[0]);
+
+            try {
+                getMeta(url, (err, img) => {
+                    if (err) throw new Error(err instanceof Event ? err.toString() : err);
+                    if (img === null) return;
+
+                    mergeImages(getMergeImagesParams(img, url)).then((base64: string) => setTemporaryImageUrl(base64));
+                });
+            } catch (error) {
+                console.error(error);
+                setTemporaryImageUrl(url);
+            }
+        } else {
+            setTemporaryImageUrl(null);
+        }
+
         if (event.target.files !== null && event.target.files.length > 0) {
             setTemporaryImageUrl(URL.createObjectURL(event.target.files[0]));
         }
@@ -166,7 +230,6 @@ const EditPlan = () => {
     const createImageMutation = useCreateImageMutation();
     const deleteImageMutation = useDeleteImageMutation();
     const updatePlanMutation = useUpdatePlanMutation();
-    const backUrl = `/create/3-storyboard${serializeToQueryUrl({ projectId: project?.id || null })}`;
 
     const onSubmit = async () => {
         if (!project || !plan) {
@@ -211,9 +274,12 @@ const EditPlan = () => {
                 ...newQuestions[questionIndex],
                 plans: newPlans,
             };
-            updateProject({
+            const updatedProject = updateProject({
                 questions: newQuestions,
             });
+            if (isCollaborationActive && updatedProject) {
+                updateProjectSocket(updatedProject);
+            }
             router.push(backUrl);
         } catch (err) {
             console.error(err);
@@ -222,6 +288,25 @@ const EditPlan = () => {
     };
 
     const isLoading = createImageMutation.isLoading || deleteImageMutation.isLoading || updatePlanMutation.isLoading;
+
+    const onCropComplete = (_croppedArea: Area, croppedAreaPixels: Area) => {
+        setCroppedAreaPixels(croppedAreaPixels);
+    };
+
+    const onSetImageBlob = async () => {
+        if (temporaryImageUrl === null || croppedAreaPixels === null) return;
+        setIsCreatingBlob(true);
+        try {
+            const blob = await getCroppedImg(temporaryImageUrl, croppedAreaPixels, 0);
+            if (blob) {
+                setImageBlob(blob);
+            }
+        } catch (e) {
+            console.error(e);
+        }
+        setTemporaryImageUrl(null);
+        setIsCreatingBlob(false);
+    };
 
     return (
         <Container>
@@ -235,6 +320,7 @@ const EditPlan = () => {
             <div style={{ maxWidth: '1000px', margin: 'auto', paddingBottom: '2rem' }}>
                 <Title color="primary" variant="h1" marginY="md">
                     <Inverted isRound>3</Inverted> {t('part3_edit_plan')}
+                    {showButtonFeedback && <ButtonShowFeedback onClick={() => setShowFeedback(true)} />}
                 </Title>
                 <Title color="inherit" variant="h2">
                     <span>{t('part3_question')}</span> {sequence?.question || ''}
@@ -424,14 +510,7 @@ const EditPlan = () => {
                                 onClose={() => {
                                     setTemporaryImageUrl(null);
                                 }}
-                                onConfirm={async () => {
-                                    setIsCreatingBlob(true);
-                                    if (croppieRef.current) {
-                                        setImageBlob(await croppieRef.current.getBlob());
-                                    }
-                                    setTemporaryImageUrl(null);
-                                    setIsCreatingBlob(false);
-                                }}
+                                onConfirm={onSetImageBlob}
                                 isLoading={isCreatingBlob}
                                 confirmLabel={t('validate')}
                                 cancelLabel={t('cancel')}
@@ -440,8 +519,34 @@ const EditPlan = () => {
                             >
                                 {temporaryImageUrl !== null && (
                                     <div className="text-center">
-                                        <div style={{ display: 'inline-block', width: '640px', height: '360px', marginBottom: '2rem' }}>
-                                            <ImgCroppie src={temporaryImageUrl} alt="Plan image" ref={croppieRef} imgWidth={560} imgHeight={315} />
+                                        <div style={{ width: '100%', height: '560px', marginBottom: '2rem', position: 'relative' }}>
+                                            <Cropper
+                                                image={temporaryImageUrl}
+                                                crop={crop}
+                                                zoom={zoom}
+                                                aspect={4 / 3}
+                                                onCropChange={setCrop}
+                                                onCropComplete={onCropComplete}
+                                                onZoomChange={setZoom}
+                                                minZoom={1}
+                                                maxZoom={5}
+                                                zoomSpeed={0.5}
+                                                cropSize={{ height: 360, width: 640 }}
+                                            />
+                                            <div style={{ position: 'absolute', bottom: '-30px', width: '100%' }}>
+                                                <input
+                                                    type="range"
+                                                    value={zoom}
+                                                    min={1}
+                                                    max={5}
+                                                    step={0.1}
+                                                    aria-labelledby="Zoom"
+                                                    onChange={(e) => {
+                                                        setZoom(parseInt(e.target.value));
+                                                    }}
+                                                    className="zoom-range"
+                                                />
+                                            </div>
                                         </div>
                                     </div>
                                 )}
@@ -452,6 +557,11 @@ const EditPlan = () => {
                 </Form>
             </div>
             <Loader isLoading={isLoading} />
+            <FeedbackModal
+                isOpen={showFeedback}
+                onClose={() => setShowFeedback(false)}
+                feedback={sequence && sequence.feedback ? sequence.feedback : ''}
+            />
         </Container>
     );
 };

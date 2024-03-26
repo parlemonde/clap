@@ -36,7 +36,8 @@ const getDBConfig = (): ConnectionOptions | null => {
     }
 
     const options = {
-        logging: process.env.NODE_ENV !== 'production',
+        logging: false,
+        // logging: process.env.NODE_ENV !== 'production',
         entities: [path.join(__dirname, '../entities/*.js')],
         migrations: [path.join(__dirname, '../migration/**/*.js')],
         synchronize: true,

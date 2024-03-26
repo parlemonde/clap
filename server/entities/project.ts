@@ -74,6 +74,13 @@ export class Project implements ProjectInterface {
     public questions?: Question[];
 
     // -- video generation job id --
-    @Column({ type: 'varchar', length: 36, select: false })
+    @Column({ type: 'varchar', length: 36, select: false, nullable: true })
     public videoJobId: string | null;
+
+    // -- isCollaborationActive --
+    @Column({ type: 'boolean', default: false })
+    public isCollaborationActive: boolean;
+
+    @Column({ type: 'integer', default: null, nullable: true })
+    public joinCode: number | null;
 }

@@ -1,4 +1,4 @@
-import { DragHandleDots2Icon, Pencil1Icon, TrashIcon, ArrowUpIcon, ArrowDownIcon } from '@radix-ui/react-icons';
+import { DragHandleDots2Icon, Pencil1Icon, TrashIcon, ArrowUpIcon, ArrowDownIcon, GearIcon } from '@radix-ui/react-icons';
 import Link from 'next/link';
 import React from 'react';
 
@@ -13,9 +13,10 @@ type QuestionCardProps = {
     onDelete?(): void;
     onIndexUp?(): void;
     onIndexDown?(): void;
+    onEditStatus?(): void;
 };
 
-export const QuestionCard = ({ projectId, question, index = 0, onDelete, onIndexUp, onIndexDown }: QuestionCardProps) => {
+export const QuestionCard = ({ projectId, question, index = 0, onDelete, onIndexUp, onIndexDown, onEditStatus }: QuestionCardProps) => {
     return (
         <div className={styles.questionContainer}>
             <div className={styles.questionIndex}>
@@ -52,6 +53,9 @@ export const QuestionCard = ({ projectId, question, index = 0, onDelete, onIndex
                     <IconButton as="a" aria-label="edit" size="sm" color="secondary" marginRight="sm" icon={Pencil1Icon}></IconButton>
                 </Link>
                 {onDelete && <IconButton aria-label="delete" size="sm" color="secondary" onClick={onDelete} icon={TrashIcon}></IconButton>}
+                {onEditStatus && (
+                    <IconButton aria-label="delete" size="sm" color="secondary" marginLeft="sm" onClick={onEditStatus} icon={GearIcon}></IconButton>
+                )}
             </div>
         </div>
     );
