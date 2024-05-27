@@ -17,6 +17,8 @@ const getStyle = (style: string) => {
     }
 };
 
+type TextAlign = 'left' | 'center' | 'right';
+
 type TitleCanvasProps = {
     title: Title;
     onChange: React.Dispatch<React.SetStateAction<Title>>;
@@ -29,6 +31,7 @@ export function TitleCanvas({ title, onChange }: TitleCanvasProps) {
     const [titleText, setTitleText] = React.useState(title.text || '');
     const [fontFamily, setFontFamily] = React.useState<string>(style.fontFamily || 'serif');
     const [fontSize, setFontSize] = React.useState<number>(style.fontSize || 8); // %
+    const [textAlign, setTextAlign] = React.useState<TextAlign>(style.textAlign || 'center');
     // relative pos
     const [textXPer, setTextXPer] = React.useState<number>(style.x ?? 15); // %
     const [textYPer, setTextYPer] = React.useState<number>(style.y ?? 30); // %
@@ -42,6 +45,7 @@ export function TitleCanvas({ title, onChange }: TitleCanvasProps) {
         setTextXPer(style.x ?? 25);
         setTextYPer(style.y ?? 35);
         setTextWidthPer(style.width || 50);
+        setTextAlign(style.textAlign || 'center');
     }, [title, style]);
 
     const onChangeStyle = (newPartialSyle: Record<string, string | number>) => {
@@ -65,7 +69,7 @@ export function TitleCanvas({ title, onChange }: TitleCanvasProps) {
         if (textAreaRef.current) {
             setTextAreaRefHeight(textAreaRef.current.scrollHeight);
         }
-    }, [titleText, textWidthPer, canvasWidth, fontSize, fontFamily]); // update textAreaRefHeight on title change.
+    }, [titleText, textWidthPer, canvasWidth, fontSize, fontFamily, textAlign]); // update textAreaRefHeight on title change.
 
     // Absolute pos
     const { textX, textY, textWidth } = React.useMemo(
@@ -205,6 +209,26 @@ export function TitleCanvas({ title, onChange }: TitleCanvasProps) {
                             <option value={8}>{t('medium')}</option>
                             <option value={10}>{t('big')}</option>
                         </select>
+                        <select
+                            value={textAlign}
+                            onChange={(event) => {
+                                const newTextAlign = event.target.value as TextAlign;
+                                setTextAlign(newTextAlign);
+                                onChangeStyle({ textAlign: newTextAlign });
+                            }}
+                            style={{
+                                margin: '0 0.5rem',
+                                backgroundColor: PrimaryColor,
+                                color: '#fff',
+                                border: 'none',
+                                outline: 'none',
+                                cursor: 'pointer',
+                            }}
+                        >
+                            <option value={'left'}>{t('left')}</option>
+                            <option value={'center'}>{t('center')}</option>
+                            <option value={'right'}>{t('right')}</option>
+                        </select>
                     </div>
                     <textarea
                         value={titleText}
@@ -229,7 +253,7 @@ export function TitleCanvas({ title, onChange }: TitleCanvasProps) {
                             fontSize: `${(fontSize * canvasHeight) / 100}px`,
                             lineHeight: `${(fontSize * canvasHeight) / 100}px`,
                             fontFamily: fontFamily,
-                            textAlign: 'center',
+                            textAlign: textAlign,
                             resize: 'none',
                         }}
                     />
@@ -251,7 +275,7 @@ export function TitleCanvas({ title, onChange }: TitleCanvasProps) {
                             fontSize: `${(fontSize * canvasHeight) / 100}px`,
                             lineHeight: `${(fontSize * canvasHeight) / 100}px`,
                             fontFamily: fontFamily,
-                            textAlign: 'center',
+                            textAlign: textAlign,
                             resize: 'none',
                             whiteSpace: 'pre-wrap',
                             wordBreak: 'break-word',

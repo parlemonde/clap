@@ -1,4 +1,13 @@
-import { Pencil1Icon, TrashIcon, PlusCircledIcon, ChevronLeftIcon, ChevronRightIcon, ArrowUpIcon, ArrowDownIcon } from '@radix-ui/react-icons';
+import {
+    Pencil1Icon,
+    TrashIcon,
+    PlusCircledIcon,
+    ChevronLeftIcon,
+    ChevronRightIcon,
+    ArrowUpIcon,
+    ArrowDownIcon,
+    MagnifyingGlassIcon,
+} from '@radix-ui/react-icons';
 import Link from 'next/link';
 import React from 'react';
 
@@ -10,6 +19,7 @@ import { DeleteUserModal } from 'src/components/admin/users/DeleteUserModal';
 import { InviteUserModal } from 'src/components/admin/users/InviteUserModal';
 import { Button } from 'src/components/layout/Button';
 import { IconButton } from 'src/components/layout/Button/IconButton';
+import { Input } from 'src/components/layout/Form';
 import { Select } from 'src/components/layout/Form/Select';
 import { Tooltip } from 'src/components/layout/Tooltip';
 import { Title } from 'src/components/layout/Typography';
@@ -38,7 +48,7 @@ const AdminUsers = () => {
         setArgs({ ...args, page: 1, limit: parseInt(event.target.value, 10) });
     };
 
-    const onHeaderClick = (name: 'id' | 'email' | 'pseudo' | 'school' | 'level') => () => {
+    const onHeaderClick = (name: 'id' | 'email' | 'pseudo' | 'school' | 'level' | 'createDate') => () => {
         if (args.order === name) {
             setArgs({ ...args, page: 1, sort: args.sort === 'asc' ? 'desc' : 'asc' });
         } else {
@@ -49,6 +59,16 @@ const AdminUsers = () => {
     const closeInviteOpen = React.useCallback(() => {
         setInviteOpen(false);
     }, []);
+
+    const [searchValue, setSearchValue] = React.useState('');
+
+    const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchValue(event.target.value);
+    };
+
+    const handleSearchClick = () => {
+        setArgs({ ...args, search: searchValue });
+    };
 
     return (
         <div style={{ margin: '24px 32px' }}>
@@ -68,6 +88,18 @@ const AdminUsers = () => {
                     />
                 }
             >
+                <div style={{ display: 'flex', margin: '16px', gap: '1rem' }}>
+                    <Input size="sm" color="secondary" type="search" value={searchValue} onChange={handleSearchChange} placeholder="Rechercher..." />
+                    <Button
+                        label="Rechercher"
+                        onClick={() => {
+                            handleSearchClick();
+                        }}
+                        variant="contained"
+                        color="light-grey"
+                        leftIcon={<MagnifyingGlassIcon style={{ width: '20px', height: '20px', marginRight: '8px' }} />}
+                    />
+                </div>
                 <Table aria-label="toutes les utilisateurs">
                     {users.length > 0 ? (
                         <>
@@ -114,6 +146,27 @@ const AdminUsers = () => {
                                         </Tooltip>
                                     </th>
                                     <th align="left">Compte</th>
+                                    <th align="left">
+                                        <Tooltip content="Trier par date de création">
+                                            <Button
+                                                label="Date création"
+                                                variant="borderless"
+                                                style={{ padding: '4px', fontWeight: 600, transform: 'translateX(-4px)' }}
+                                                isUpperCase={false}
+                                                onClick={onHeaderClick('createDate')}
+                                                rightIcon={
+                                                    args.order === 'createDate' ? (
+                                                        args.sort === 'asc' ? (
+                                                            <ArrowUpIcon style={{ height: '20px', width: '20px', marginLeft: 8 }} />
+                                                        ) : (
+                                                            <ArrowDownIcon style={{ height: '20px', width: '20px', marginLeft: 8 }} />
+                                                        )
+                                                    ) : undefined
+                                                }
+                                            ></Button>
+                                        </Tooltip>
+                                    </th>
+                                    <th align="left">Nombre de connexion</th>
                                     <th align="right">Actions</th>
                                 </tr>
                             </thead>
@@ -137,6 +190,8 @@ const AdminUsers = () => {
                                                 {user.type === -1 ? 'Elève(s)' : userTypeNames[user.type]}
                                             </span>
                                         </th>
+                                        <th style={{ padding: '0 16px' }}>{new Date(user.createDate).toLocaleDateString('fr-FR')}</th>
+                                        <th style={{ padding: '0 16px' }}>{user.loginCount}</th>
                                         <th align="right" style={{ minWidth: '96px' }}>
                                             <Tooltip content="Modifier">
                                                 <span>

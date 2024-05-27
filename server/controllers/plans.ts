@@ -1,5 +1,5 @@
 import type { JSONSchemaType } from 'ajv';
-import { getRepository } from 'typeorm';
+import { getManager, getRepository } from 'typeorm';
 
 import { Plan } from '../entities/plan';
 import { UserType } from '../entities/user';
@@ -77,6 +77,43 @@ planController.post({ path: '/', userType: UserType.CLASS }, async (req, res, ne
     newPlan.duration = data.duration ?? null;
     await getRepository(Plan).insert(newPlan);
     res.sendJSON(newPlan);
+});
+
+type PutPlanOrderData = {
+    order: number[];
+};
+const PUT_PLAN_ORDER_SCHEMA: JSONSchemaType<PutPlanOrderData> = {
+    type: 'object',
+    properties: {
+        order: {
+            type: 'array',
+            items: {
+                type: 'number',
+            },
+        },
+    },
+    required: ['order'],
+    additionalProperties: false,
+};
+const putPlanOrderValidator = ajv.compile(PUT_PLAN_ORDER_SCHEMA);
+planController.put({ path: '/order', userType: UserType.CLASS }, async (req, res) => {
+    const data = req.body;
+    if (!putPlanOrderValidator(data)) {
+        sendInvalidDataError(putPlanOrderValidator);
+        return;
+    }
+
+    const plans: Plan[] = [];
+    for (let i = 0; i < data.order.length; i++) {
+        const plan = new Plan();
+        plan.id = data.order[i];
+        plan.index = i;
+        plans.push(plan);
+    }
+    await getManager().transaction(async (transactionalEntityManager) => {
+        await transactionalEntityManager.save(plans);
+    });
+    res.status(204).send();
 });
 
 type PutPlanData = {

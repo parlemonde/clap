@@ -8,10 +8,10 @@ type PUTParams = {
     order: number[];
 };
 
-export const reorderQuestions = async (data: PUTParams): Promise<void> => {
+export const reorderPlans = async (data: PUTParams): Promise<void> => {
     const response = await httpRequest<void>({
         method: 'PUT',
-        url: `/questions/order`,
+        url: `/plans/order`,
         data,
     });
     if (response.success) {
@@ -21,13 +21,13 @@ export const reorderQuestions = async (data: PUTParams): Promise<void> => {
     }
 };
 
-export const useReorderQuestionsMutation = (mutationOpts: Omit<UseMutationOptions<void, HttpRequestError, PUTParams>, 'mutationFn'> = {}) => {
+export const useReorderPlansMutation = (mutationOpts: Omit<UseMutationOptions<void, HttpRequestError, PUTParams>, 'mutationFn'> = {}) => {
     const queryClient = useQueryClient();
-    return useMutation(reorderQuestions, {
+    return useMutation(reorderPlans, {
         ...mutationOpts,
         onSuccess: (data, variables, context) => {
-            queryClient.invalidateQueries('questions');
-            queryClient.invalidateQueries('question');
+            queryClient.invalidateQueries('plans');
+            queryClient.invalidateQueries('plan');
             if (mutationOpts.onSuccess !== undefined) {
                 mutationOpts.onSuccess(data, variables, context);
             }

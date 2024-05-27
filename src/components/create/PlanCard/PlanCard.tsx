@@ -35,7 +35,7 @@ export const PlanCard = ({
         buttonStyle.backgroundImage = `url('${plan.imageUrl}')`;
         buttonStyle.backgroundPosition = 'center'; /* Center the image */
         buttonStyle.backgroundRepeat = 'no-repeat'; /* Do not repeat the image */
-        buttonStyle.backgroundSize = 'cover';
+        buttonStyle.backgroundSize = 'contain';
         buttonStyle.borderRadius = '5px';
     }
 

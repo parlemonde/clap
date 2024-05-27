@@ -10,7 +10,6 @@ import { useTheme } from 'src/api/themes/themes.get';
 import { DiaporamaPlayer } from 'src/components/create/DiaporamaPlayer';
 import { Button } from 'src/components/layout/Button';
 import { Container } from 'src/components/layout/Container';
-import { Form } from 'src/components/layout/Form';
 import { Title } from 'src/components/layout/Typography';
 import { NextButton } from 'src/components/navigation/NextButton';
 import { Steps } from 'src/components/navigation/Steps';
@@ -55,10 +54,10 @@ const MusicPage = () => {
         setSoundBeginTime(project?.musicBeginTime || 0);
     }, [project]);
 
-    const onInputUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const onInputUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files !== null && event.target.files.length > 0) {
             const file = event.target.files[0];
-            if (!['audio/acc', 'audio/mpeg', 'audio/ogg', 'audio/opus', 'audio/wav', 'audio/x-wav'].includes(file.type)) {
+            if (!['audio/acc', 'audio/mpeg', 'audio/ogg', 'audio/opus', 'audio/wav', 'audio/x-wav', 'audio/x-m4a', 'audio/mp4'].includes(file.type)) {
                 sendToast({ message: "Ce type de format audio n'est pas accepté.", type: 'error' });
                 return;
             }
@@ -73,54 +72,42 @@ const MusicPage = () => {
     const updateProjectMutation = useUpdateProjectMutation();
     const isLoading = deleteSoundMutation.isLoading || createSoundMutation.isLoading || updateProjectMutation.isLoading;
 
-    const onSubmit = async () => {
-        if (!project) {
-            return;
-        }
-
-        // [1] delete previous sound if any.
-        if (soundBlob !== null && project.soundUrl && isString(project.soundUrl) && project.soundUrl.startsWith('/api/sounds')) {
-            try {
-                await deleteSoundMutation.mutateAsync({ soundUrl: project.soundUrl });
-            } catch (err) {
-                // ignore delete error
-                console.error(err);
-            }
-        }
-
-        try {
-            // [2] upload new sound if any.
-            let newSoundUrl: string | null = project.soundUrl;
-            if (soundBlob !== null) {
+    React.useEffect(() => {
+        if (soundBlob) {
+            const updateSound = async () => {
+                if (project && project.soundUrl && isString(project.soundUrl) && project.soundUrl.startsWith('/api/audios')) {
+                    try {
+                        await deleteSoundMutation.mutateAsync({ soundUrl: project.soundUrl });
+                    } catch (err) {
+                        // ignore delete error
+                        console.error(err);
+                    }
+                }
                 const soundResponse = await createSoundMutation.mutateAsync({ sound: soundBlob });
-                newSoundUrl = soundResponse.url;
-            }
+                const newSoundUrl = soundResponse.url;
 
-            // [3] update project data.
-            if (project.id !== 0) {
-                await updateProjectMutation.mutateAsync({
-                    projectId: project.id,
-                    musicBeginTime: Math.round(soundBeginTime),
+                if (project && project.id !== 0) {
+                    await updateProjectMutation.mutateAsync({
+                        projectId: project.id,
+                        musicBeginTime: Math.round(soundBeginTime),
+                        soundUrl: newSoundUrl,
+                        soundVolume: volume,
+                    });
+                }
+
+                const updatedProject = updateProject({
+                    musicBeginTime: soundBeginTime,
                     soundUrl: newSoundUrl,
                     soundVolume: volume,
                 });
-            }
+                if (isCollaborationActive && updatedProject) {
+                    updateProjectSocket(updatedProject);
+                }
+            };
 
-            // [4] update project.
-            const updatedProject = updateProject({
-                musicBeginTime: soundBeginTime,
-                soundUrl: newSoundUrl,
-                soundVolume: volume,
-            });
-            if (isCollaborationActive && updatedProject) {
-                updateProjectSocket(updatedProject);
-            }
-            router.push(`/create/6-result${serializeToQueryUrl({ projectId: project.id || null })}`);
-        } catch (err) {
-            console.error(err);
-            sendToast({ message: t('unknown_error'), type: 'error' });
+            updateSound();
         }
-    };
+    }, [soundBlob]);
 
     return (
         <Container>
@@ -138,54 +125,60 @@ const MusicPage = () => {
                     {t('part5_subtitle1')}
                 </Title>
 
-                <Form onSubmit={onSubmit} marginTop="lg">
-                    <div style={{ marginBottom: '16px' }}>
-                        {!isProjectLoading && (
-                            <DiaporamaPlayer
-                                canEdit
-                                questions={questions}
-                                soundUrl={soundUrl}
-                                volume={volume}
-                                setVolume={setVolume}
-                                soundBeginTime={soundBeginTime}
-                                setSoundBeginTime={setSoundBeginTime}
-                                sounds={sounds}
-                            />
-                        )}
-                    </div>
+                <div style={{ marginBottom: '16px' }}>
+                    {!isProjectLoading && (
+                        <DiaporamaPlayer
+                            canEdit
+                            questions={questions}
+                            soundUrl={soundUrl}
+                            volume={volume}
+                            setVolume={setVolume}
+                            soundBeginTime={soundBeginTime}
+                            setSoundBeginTime={setSoundBeginTime}
+                            sounds={sounds}
+                        />
+                    )}
+                </div>
 
-                    <div className="text-center">
-                        <label htmlFor="sequence-sound-upload" className="text-center" style={{ marginBottom: '10px' }}>
-                            Format accepté: .acc, .ogg, .opus, .mp3, .wav
-                        </label>
-                        <Button
-                            label={t('import_music')}
-                            variant="outlined"
-                            color="secondary"
-                            as="label"
-                            isUpperCase={false}
-                            role="button"
-                            aria-controls="filename"
-                            tabIndex={0}
-                            onKeyPress={(event) => {
-                                if (event.key === 'Enter' || event.key === ' ') {
-                                    document.getElementById('sequence-sound-upload')?.click();
-                                }
-                            }}
-                            htmlFor={'project-sound-upload'}
-                            leftIcon={<UploadIcon style={{ width: '16px', height: '16px', marginRight: '8px' }} />}
-                        ></Button>
-                    </div>
-                    <input
-                        id="project-sound-upload"
-                        type="file"
-                        accept="audio/acc, audio/mpeg, audio/ogg, audio/opus, audio/wav, audio/x-wav"
-                        onChange={onInputUpload}
-                        style={{ display: 'none' }}
-                    />
+                <div className="text-center">
+                    <label htmlFor="sequence-sound-upload" className="text-center" style={{ marginBottom: '10px' }}>
+                        Format accepté: .acc, .ogg, .opus, .mp3, .wav, .m4a
+                    </label>
+                    <Button
+                        label={t('import_music')}
+                        variant="outlined"
+                        color="secondary"
+                        as="label"
+                        isUpperCase={false}
+                        role="button"
+                        aria-controls="filename"
+                        tabIndex={0}
+                        onKeyPress={(event) => {
+                            if (event.key === 'Enter' || event.key === ' ') {
+                                document.getElementById('sequence-sound-upload')?.click();
+                            }
+                        }}
+                        htmlFor={'project-sound-upload'}
+                        leftIcon={<UploadIcon style={{ width: '16px', height: '16px', marginRight: '8px' }} />}
+                    ></Button>
+                </div>
+                <input
+                    id="project-sound-upload"
+                    type="file"
+                    accept="audio/acc, audio/mpeg, audio/ogg, audio/opus, audio/wav, audio/x-wav, audio/x-m4a, audio/mp4"
+                    onChange={onInputUpload}
+                    style={{ display: 'none' }}
+                />
 
-                    <NextButton type="submit" />
-                </Form>
+                <NextButton
+                    onNext={() => {
+                        if (!project) {
+                            return;
+                        }
+
+                        router.push(`/create/6-result${serializeToQueryUrl({ projectId: project.id || null })}`);
+                    }}
+                />
             </div>
             <Loader isLoading={isLoading} />
         </Container>

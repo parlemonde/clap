@@ -77,6 +77,9 @@ export const locales = {
     small: "petit",
     medium: "moyen",
     big: "grand",
+    left: "gauche",
+    center: "centre",
+    right: "droite",
     //--- part4 ---
     part4_title: 'Prémontez votre <1>film</1>',
     part4_subtitle1: 'Pour chaque séquence vous pouvez écrire et enregistrer une voix-off.',
@@ -114,7 +117,7 @@ export const locales = {
     part6_mp4_user_disabled: 'Connectez-vous et créez un projet pour générer une vidéo.',
     part6_mp4_project_disabled: 'Créez un projet pour générer une vidéo.',
     part6_subtitle2:
-        'Vous pouvez également télécharger ce diaporama sonore comme film, télécharger le storyboard ainsi qu’un fichier de montage pour y intégrer vos plans vidéos.',
+        'Vous pouvez maintenant télécharger ce diaporama ou son fichier de montage pour y intégrer vos plans vidéos.',
     //--- project ---
     project: 'Projet :',
     project_name: 'Nom du projet',

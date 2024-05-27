@@ -112,10 +112,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["qrcode", "npm:1.5.3"],\
             ["query-string", "npm:8.1.0"],\
             ["react", "npm:18.2.0"],\
+            ["react-advanced-cropper", "virtual:9524d3ef040c4bb9c1c826ae580f2180f1712a13ae6ac3e341a6833fb294feeed8d810e5c764dbbac52bd49f9c3019cf11a3f5270e36f3c88d5546b8a37dc3cf#npm:0.19.6"],\
             ["react-charts", "virtual:9524d3ef040c4bb9c1c826ae580f2180f1712a13ae6ac3e341a6833fb294feeed8d810e5c764dbbac52bd49f9c3019cf11a3f5270e36f3c88d5546b8a37dc3cf#npm:2.1.0"],\
             ["react-device-detect", "virtual:9524d3ef040c4bb9c1c826ae580f2180f1712a13ae6ac3e341a6833fb294feeed8d810e5c764dbbac52bd49f9c3019cf11a3f5270e36f3c88d5546b8a37dc3cf#npm:2.2.3"],\
             ["react-dom", "virtual:9524d3ef040c4bb9c1c826ae580f2180f1712a13ae6ac3e341a6833fb294feeed8d810e5c764dbbac52bd49f9c3019cf11a3f5270e36f3c88d5546b8a37dc3cf#npm:18.2.0"],\
-            ["react-easy-crop", "virtual:9524d3ef040c4bb9c1c826ae580f2180f1712a13ae6ac3e341a6833fb294feeed8d810e5c764dbbac52bd49f9c3019cf11a3f5270e36f3c88d5546b8a37dc3cf#npm:5.0.5"],\
             ["react-html5-camera-photo", "virtual:9524d3ef040c4bb9c1c826ae580f2180f1712a13ae6ac3e341a6833fb294feeed8d810e5c764dbbac52bd49f9c3019cf11a3f5270e36f3c88d5546b8a37dc3cf#npm:1.5.11"],\
             ["react-qr-code", "virtual:9524d3ef040c4bb9c1c826ae580f2180f1712a13ae6ac3e341a6833fb294feeed8d810e5c764dbbac52bd49f9c3019cf11a3f5270e36f3c88d5546b8a37dc3cf#npm:2.0.12"],\
             ["react-qr-reader", "virtual:9524d3ef040c4bb9c1c826ae580f2180f1712a13ae6ac3e341a6833fb294feeed8d810e5c764dbbac52bd49f9c3019cf11a3f5270e36f3c88d5546b8a37dc3cf#npm:3.0.0-beta-1"],\
@@ -6855,6 +6855,16 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["advanced-cropper", [\
+        ["npm:0.18.0", {\
+          "packageLocation": "./.yarn/cache/advanced-cropper-npm-0.18.0-725117dde9-89b92511fe.zip/node_modules/advanced-cropper/",\
+          "packageDependencies": [\
+            ["advanced-cropper", "npm:0.18.0"],\
+            ["tslib", "npm:2.6.2"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["agent-base", [\
         ["npm:6.0.2", {\
           "packageLocation": "./.yarn/cache/agent-base-npm-6.0.2-428f325a93-f52b6872cc.zip/node_modules/agent-base/",\
@@ -8153,10 +8163,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["qrcode", "npm:1.5.3"],\
             ["query-string", "npm:8.1.0"],\
             ["react", "npm:18.2.0"],\
+            ["react-advanced-cropper", "virtual:9524d3ef040c4bb9c1c826ae580f2180f1712a13ae6ac3e341a6833fb294feeed8d810e5c764dbbac52bd49f9c3019cf11a3f5270e36f3c88d5546b8a37dc3cf#npm:0.19.6"],\
             ["react-charts", "virtual:9524d3ef040c4bb9c1c826ae580f2180f1712a13ae6ac3e341a6833fb294feeed8d810e5c764dbbac52bd49f9c3019cf11a3f5270e36f3c88d5546b8a37dc3cf#npm:2.1.0"],\
             ["react-device-detect", "virtual:9524d3ef040c4bb9c1c826ae580f2180f1712a13ae6ac3e341a6833fb294feeed8d810e5c764dbbac52bd49f9c3019cf11a3f5270e36f3c88d5546b8a37dc3cf#npm:2.2.3"],\
             ["react-dom", "virtual:9524d3ef040c4bb9c1c826ae580f2180f1712a13ae6ac3e341a6833fb294feeed8d810e5c764dbbac52bd49f9c3019cf11a3f5270e36f3c88d5546b8a37dc3cf#npm:18.2.0"],\
-            ["react-easy-crop", "virtual:9524d3ef040c4bb9c1c826ae580f2180f1712a13ae6ac3e341a6833fb294feeed8d810e5c764dbbac52bd49f9c3019cf11a3f5270e36f3c88d5546b8a37dc3cf#npm:5.0.5"],\
             ["react-html5-camera-photo", "virtual:9524d3ef040c4bb9c1c826ae580f2180f1712a13ae6ac3e341a6833fb294feeed8d810e5c764dbbac52bd49f9c3019cf11a3f5270e36f3c88d5546b8a37dc3cf#npm:1.5.11"],\
             ["react-qr-code", "virtual:9524d3ef040c4bb9c1c826ae580f2180f1712a13ae6ac3e341a6833fb294feeed8d810e5c764dbbac52bd49f9c3019cf11a3f5270e36f3c88d5546b8a37dc3cf#npm:2.0.12"],\
             ["react-qr-reader", "virtual:9524d3ef040c4bb9c1c826ae580f2180f1712a13ae6ac3e341a6833fb294feeed8d810e5c764dbbac52bd49f9c3019cf11a3f5270e36f3c88d5546b8a37dc3cf#npm:3.0.0-beta-1"],\
@@ -8204,6 +8214,13 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/classnames-npm-2.3.2-d2fdae468d-2c62199789.zip/node_modules/classnames/",\
           "packageDependencies": [\
             ["classnames", "npm:2.3.2"]\
+          ],\
+          "linkType": "HARD"\
+        }],\
+        ["npm:2.5.1", {\
+          "packageLocation": "./.yarn/cache/classnames-npm-2.5.1-c7273f3423-da424a8a6f.zip/node_modules/classnames/",\
+          "packageDependencies": [\
+            ["classnames", "npm:2.5.1"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -13584,15 +13601,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
-      ["normalize-wheel", [\
-        ["npm:1.0.1", {\
-          "packageLocation": "./.yarn/cache/normalize-wheel-npm-1.0.1-86fe373cbe-00b32efa04.zip/node_modules/normalize-wheel/",\
-          "packageDependencies": [\
-            ["normalize-wheel", "npm:1.0.1"]\
-          ],\
-          "linkType": "HARD"\
-        }]\
-      ]],\
       ["normalize.css", [\
         ["npm:8.0.1", {\
           "packageLocation": "./.yarn/cache/normalize.css-npm-8.0.1-6124fb39b6-4698cae88e.zip/node_modules/normalize.css/",\
@@ -14756,6 +14764,31 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["react-advanced-cropper", [\
+        ["npm:0.19.6", {\
+          "packageLocation": "./.yarn/cache/react-advanced-cropper-npm-0.19.6-1358e6e074-f49cb8b9d9.zip/node_modules/react-advanced-cropper/",\
+          "packageDependencies": [\
+            ["react-advanced-cropper", "npm:0.19.6"]\
+          ],\
+          "linkType": "SOFT"\
+        }],\
+        ["virtual:9524d3ef040c4bb9c1c826ae580f2180f1712a13ae6ac3e341a6833fb294feeed8d810e5c764dbbac52bd49f9c3019cf11a3f5270e36f3c88d5546b8a37dc3cf#npm:0.19.6", {\
+          "packageLocation": "./.yarn/__virtual__/react-advanced-cropper-virtual-647c50f514/0/cache/react-advanced-cropper-npm-0.19.6-1358e6e074-f49cb8b9d9.zip/node_modules/react-advanced-cropper/",\
+          "packageDependencies": [\
+            ["react-advanced-cropper", "virtual:9524d3ef040c4bb9c1c826ae580f2180f1712a13ae6ac3e341a6833fb294feeed8d810e5c764dbbac52bd49f9c3019cf11a3f5270e36f3c88d5546b8a37dc3cf#npm:0.19.6"],\
+            ["@types/react", "npm:18.2.0"],\
+            ["advanced-cropper", "npm:0.18.0"],\
+            ["classnames", "npm:2.5.1"],\
+            ["react", "npm:18.2.0"],\
+            ["tslib", "npm:2.6.2"]\
+          ],\
+          "packagePeers": [\
+            "@types/react",\
+            "react"\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["react-charts", [\
         ["npm:2.1.0", {\
           "packageLocation": "./.yarn/cache/react-charts-npm-2.1.0-2146bb8484-538f2eeae5.zip/node_modules/react-charts/",\
@@ -14832,34 +14865,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           ],\
           "packagePeers": [\
             "@types/react",\
-            "react"\
-          ],\
-          "linkType": "HARD"\
-        }]\
-      ]],\
-      ["react-easy-crop", [\
-        ["npm:5.0.5", {\
-          "packageLocation": "./.yarn/cache/react-easy-crop-npm-5.0.5-ef4de2d1e3-61776f43d3.zip/node_modules/react-easy-crop/",\
-          "packageDependencies": [\
-            ["react-easy-crop", "npm:5.0.5"]\
-          ],\
-          "linkType": "SOFT"\
-        }],\
-        ["virtual:9524d3ef040c4bb9c1c826ae580f2180f1712a13ae6ac3e341a6833fb294feeed8d810e5c764dbbac52bd49f9c3019cf11a3f5270e36f3c88d5546b8a37dc3cf#npm:5.0.5", {\
-          "packageLocation": "./.yarn/__virtual__/react-easy-crop-virtual-e9e35b801b/0/cache/react-easy-crop-npm-5.0.5-ef4de2d1e3-61776f43d3.zip/node_modules/react-easy-crop/",\
-          "packageDependencies": [\
-            ["react-easy-crop", "virtual:9524d3ef040c4bb9c1c826ae580f2180f1712a13ae6ac3e341a6833fb294feeed8d810e5c764dbbac52bd49f9c3019cf11a3f5270e36f3c88d5546b8a37dc3cf#npm:5.0.5"],\
-            ["@types/react", "npm:18.2.0"],\
-            ["@types/react-dom", null],\
-            ["normalize-wheel", "npm:1.0.1"],\
-            ["react", "npm:18.2.0"],\
-            ["react-dom", "virtual:9524d3ef040c4bb9c1c826ae580f2180f1712a13ae6ac3e341a6833fb294feeed8d810e5c764dbbac52bd49f9c3019cf11a3f5270e36f3c88d5546b8a37dc3cf#npm:18.2.0"],\
-            ["tslib", "npm:2.0.1"]\
-          ],\
-          "packagePeers": [\
-            "@types/react-dom",\
-            "@types/react",\
-            "react-dom",\
             "react"\
           ],\
           "linkType": "HARD"\
@@ -16823,13 +16828,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/tslib-npm-1.14.1-102499115e-dbe628ef87.zip/node_modules/tslib/",\
           "packageDependencies": [\
             ["tslib", "npm:1.14.1"]\
-          ],\
-          "linkType": "HARD"\
-        }],\
-        ["npm:2.0.1", {\
-          "packageLocation": "./.yarn/cache/tslib-npm-2.0.1-26f70961f9-507f32fc24.zip/node_modules/tslib/",\
-          "packageDependencies": [\
-            ["tslib", "npm:2.0.1"]\
           ],\
           "linkType": "HARD"\
         }],\

@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, CreateDateColumn } from 'typeorm';
 
 import type { User as UserInterface } from '../../types/models/user.type';
 import { UserType } from '../../types/models/user.type';
@@ -25,6 +25,9 @@ export class User implements UserInterface {
     @Column({ default: 0 })
     public accountRegistration: number; // 0 to 3 -> Ok, 4 -> Account blocked, 10 -> Account use PLM SSO
 
+    @Column({ default: 0 })
+    public loginCount: number;
+
     @Column({ type: 'varchar', length: 180, select: false })
     public passwordHash?: string;
 
@@ -39,4 +42,7 @@ export class User implements UserInterface {
     type: UserType;
 
     teacherId?: number | undefined;
+
+    @CreateDateColumn()
+    public createDate: string;
 }
