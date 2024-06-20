@@ -1,7 +1,7 @@
 'use server';
 
 import * as argon2 from 'argon2';
-import { sql, or, eq } from 'drizzle-orm';
+import { sql, eq } from 'drizzle-orm';
 import jwt from 'jsonwebtoken';
 import { cookies } from 'next/headers';
 import { RedirectType, redirect } from 'next/navigation';
@@ -23,14 +23,10 @@ const getString = (value: unknown): string => {
 };
 
 export async function login(_previousState: string, formData: FormData): Promise<string> {
-    const username = getString(formData.get('username'));
+    const email = getString(formData.get('email'));
     const password = getString(formData.get('password'));
 
-    const userResults = await db
-        .select()
-        .from(users)
-        .where(or(eq(users.email, username), eq(users.name, username)))
-        .limit(1);
+    const userResults = await db.select().from(users).where(eq(users.email, email)).limit(1);
     const user = userResults[0];
 
     if (!user) {

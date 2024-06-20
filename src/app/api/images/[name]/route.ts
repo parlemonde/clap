@@ -18,7 +18,7 @@ const getContentTypeFromFileName = (filename: string): string | null => mime.loo
 export async function GET(request: NextRequest, { params }: { params: { name: string } }) {
     const data = await getFileData('images', params.name);
 
-    if (!data) {
+    if (!data || data.ContentLength === 0) {
         return notFoundResponse();
     }
 
@@ -30,11 +30,6 @@ export async function GET(request: NextRequest, { params }: { params: { name: st
             : data.ContentType ?? 'application/octet-stream';
     const width = Number(request.nextUrl.searchParams.get('w'));
     const quality = Number(request.nextUrl.searchParams.get('q'));
-
-    // file does not exists
-    if (size === 0) {
-        return notFoundResponse();
-    }
 
     const readable = (await getFile('images', params.name, range || undefined))?.on('error', () => {
         return notFoundResponse();
@@ -103,27 +98,31 @@ export async function GET(request: NextRequest, { params }: { params: { name: st
 
 export async function HEAD(request: NextRequest, { params }: { params: { name: string } }) {
     const data = await getFileData('images', params.name);
-    if (!data) {
+    if (!data || data.ContentLength === 0) {
         return notFoundResponse();
     }
 
-    const size = data.ContentLength;
     const contentType =
         data.ContentType.length === 0 || data.ContentType === 'application/octet-stream'
             ? getContentTypeFromFileName(params.name) ?? 'application/octet-stream'
             : data.ContentType ?? 'application/octet-stream';
     const width = Number(request.nextUrl.searchParams.get('w'));
-
-    // file does not exists
-    if (size === 0) {
-        return notFoundResponse();
-    }
+    const quality = Number(request.nextUrl.searchParams.get('q'));
 
     const response = new NextResponse(null, {
         status: 200,
     });
-    if (!width) {
-        // if width, response will be resized image, so no range and not content length info
+    if (width) {
+        const readable = (await getFile('images', params.name))?.on('error', () => {
+            return notFoundResponse();
+        });
+        if (!readable) {
+            return notFoundResponse();
+        }
+        const resizedImage = await getResizedImageBuffer(readable, width, quality || 75, contentType.slice(6));
+        // if width, response will be resized image, so no range support
+        response.headers.set('Content-Length', `${resizedImage.byteLength}`);
+    } else {
         response.headers.set('Accept-Ranges', 'bytes');
         response.headers.set('Content-Length', `${data.ContentLength}`);
     }

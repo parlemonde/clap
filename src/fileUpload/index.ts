@@ -7,8 +7,8 @@ import { s3StorageProvider } from './s3';
 
 export type FileType = 'images' | 'audios' | 'locales';
 
-const STOCKAGE_PROVIDER_NAME = (process.env.STOCKAGE_PROVIDER_NAME || 'local').toLowerCase();
-const USE_S3 = STOCKAGE_PROVIDER_NAME === 's3' || STOCKAGE_PROVIDER_NAME === 'minio';
+const PROVIDER_NAME = (process.env.PROVIDER_NAME || 'local').toLowerCase();
+const USE_S3 = PROVIDER_NAME === 's3' || PROVIDER_NAME === 'minio';
 
 const getFileName = (fileType: FileType, name: string) => `${fileType}/${sanitize(name)}`;
 

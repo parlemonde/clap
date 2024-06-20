@@ -4,7 +4,7 @@ import type { Readable } from 'stream';
 
 import type { FileStorageProvider, FileData } from './provider';
 
-const STOCKAGE_PROVIDER_NAME = (process.env.STOCKAGE_PROVIDER_NAME || 'local').toLowerCase();
+const PROVIDER_NAME = (process.env.PROVIDER_NAME || 'local').toLowerCase();
 const S3_BUCKET_NAME = process.env.S3_BUCKET_NAME || 'clap';
 const S3_CONFIG: S3ClientConfig = {};
 if (process.env.S3_ACCESS_KEY) {
@@ -16,18 +16,14 @@ if (process.env.S3_ACCESS_KEY) {
 if (process.env.S3_REGION) {
     S3_CONFIG.region = process.env.S3_REGION;
 }
-if (STOCKAGE_PROVIDER_NAME === 'minio') {
+if (PROVIDER_NAME === 'minio') {
     S3_CONFIG.endpoint = 'http://localhost:9000'; // TODO: replace localhost
     S3_CONFIG.forcePathStyle = true;
 }
 const S3_CLIENT = new S3Client(S3_CONFIG);
 
-// eslint-disable-next-line no-console
-console.log('S3_CONFIG', JSON.stringify(S3_CONFIG, null, 2));
-
 export const s3StorageProvider: FileStorageProvider = {
     getFileData: async function (fileUrl: string): Promise<FileData | null> {
-        return null;
         try {
             const headObjectCommand = new HeadObjectCommand({ Bucket: S3_BUCKET_NAME, Key: fileUrl });
             const response = await S3_CLIENT.send(headObjectCommand, { requestTimeout: 1000 });
@@ -43,16 +39,9 @@ export const s3StorageProvider: FileStorageProvider = {
         }
     },
     getFile: async function (fileUrl: string, range?: string): Promise<Readable | null> {
-        return null;
         try {
-            // eslint-disable-next-line no-console
-            console.log('Get file for s3', fileUrl);
             const getObjectCommand = new GetObjectCommand({ Bucket: S3_BUCKET_NAME, Key: fileUrl, Range: range });
-            // eslint-disable-next-line no-console
-            console.log('init GetObjectCommand');
             const response = await S3_CLIENT.send(getObjectCommand, { requestTimeout: 1000 });
-            // eslint-disable-next-line no-console
-            console.log('Got file');
             return response.Body as Readable;
         } catch (e) {
             console.error(e);

@@ -22,12 +22,12 @@ export default function LoginPage() {
             <p>LOGIN</p>
             <form action={formAction}>
                 <div>
-                    <label htmlFor="username">Username</label>
-                    <input type="text" name="username" />
+                    <label htmlFor="email">Email</label>
+                    <input type="text" name="email" id="email" autoComplete="email" />
                 </div>
                 <div>
                     <label htmlFor="password">Password</label>
-                    <input type="password" name="password" />
+                    <input type="password" name="password" id="password" />
                 </div>
 
                 <button type="submit">{t('login')}</button>
