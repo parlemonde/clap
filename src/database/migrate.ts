@@ -1,33 +1,23 @@
 import * as argon2 from 'argon2';
 import { eq } from 'drizzle-orm';
-import { migrate } from 'drizzle-orm/mysql2/migrator';
-import mysql from 'mysql2';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import { migrate } from 'drizzle-orm/postgres-js/migrator';
+import postgres from 'postgres';
 
-import { db, poolConnection } from './database';
+import { db } from './database';
 import type { NewUser } from './schema/users';
 import { users } from './schema/users';
 
+const DATABASE_URL = process.env.DATABASE_URL || '';
+
 async function createDatabase(): Promise<void> {
     try {
-        const connection = mysql.createConnection({
-            charset: 'utf8mb4_unicode_ci',
-            host: process.env.DB_HOST,
-            password: process.env.DB_PASSWORD,
-            user: process.env.DB_USER,
-        });
-        await new Promise<void>((resolve, reject) => {
-            connection.query(
-                `CREATE DATABASE IF NOT EXISTS ${process.env.DB_NAME || ''} CHARACTER SET = 'utf8mb4' COLLATE = 'utf8mb4_unicode_ci';`,
-                (error: Error) => {
-                    if (error) {
-                        reject(error);
-                        return;
-                    }
-                    resolve();
-                },
-            );
-        });
-        connection.end();
+        const client = postgres(DATABASE_URL.replace(/\/[^/]*$/, ''), { debug: true });
+        const res = await client`SELECT datname FROM pg_catalog.pg_database WHERE datname = ${'clap'}`;
+        if (res.length === 0) {
+            await client`CREATE DATABASE clap`;
+        }
+        await client.end();
     } catch (e) {
         console.error(e);
     }
@@ -60,9 +50,12 @@ async function createAdminUser(): Promise<void> {
 
 const start = async () => {
     await createDatabase();
+    const migrationClient = postgres(DATABASE_URL, { max: 1 });
+    const db = drizzle(migrationClient, { logger: process.env.NODE_ENV !== 'production' });
     await migrate(db, { migrationsFolder: './drizzle' });
     await createAdminUser();
-    poolConnection.end();
+    await migrationClient.end();
+    process.exit();
 };
 
 start().catch(console.error);

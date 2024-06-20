@@ -1,16 +1,15 @@
 version: "3.7"
 services:
-  mysql:
-    image: mysql:8
-    command: --default-authentication-plugin=mysql_native_password
+  postgres:
+    image: postgres
+    # set shared memory limit when using docker-compose
+    shm_size: 128mb
     environment:
-      - MYSQL_ROOT_PASSWORD=my-secret-pw
-      - ON_CREATE_DB=clap
+      POSTGRES_PASSWORD: example
     ports:
-      - "3306:3306"
-      - "33060:33060"
+      - "5432:5432"
     volumes:
-      - ./.mysql-data:/var/lib/mysql
+      - ./.postgres-data:/var/lib/postgresql/data
 
   minio:
     image: minio/minio
