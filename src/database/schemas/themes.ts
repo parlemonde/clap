@@ -7,7 +7,7 @@ export const themes = pgTable('themes', {
     id: serial('id').primaryKey(),
     order: integer('order'),
     isDefault: boolean('isDefault').default(false),
-    imageUrl: varchar('imageUrl', { length: 4000 }),
+    imageUrl: varchar('imageUrl', { length: 2000 }),
     names: json<'names', Record<string, string>>('names').notNull(),
     userId: integer('userId').references(() => users.id, {
         onDelete: 'cascade',

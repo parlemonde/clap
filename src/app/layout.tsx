@@ -14,7 +14,7 @@ import { NProgressDone } from 'src/components/navigation/NProgress';
 import { TopNavBar } from 'src/components/navigation/TopNavBar';
 import { Toasts } from 'src/components/ui/Toasts';
 import { TooltipProvider } from 'src/contexts/TooltipProvider';
-import { TranslationContextProvider } from 'src/contexts/tanslationContext';
+import { TranslationContextProvider } from 'src/contexts/translationContext';
 import { UserContextProvider } from 'src/contexts/userContext';
 import { openSansFont, alegreyaSansFont, littleDaysFont } from 'src/fonts';
 

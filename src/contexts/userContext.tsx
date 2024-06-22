@@ -2,23 +2,23 @@
 
 import React from 'react';
 
-import type { User } from 'src/database/schema/users';
+import type { User } from 'src/database/schemas/users';
 
 type UserContext = {
-    user: User | null;
-    setUser: React.Dispatch<React.SetStateAction<User | null>>;
+    user?: User;
+    setUser: React.Dispatch<React.SetStateAction<User | undefined>>;
 };
 
 export const userContext = React.createContext<UserContext>({
-    user: null,
+    user: undefined,
     setUser: () => {},
 });
 
 type UserContextProviderProps = {
-    initialUser: User | null;
+    initialUser?: User;
 };
 export const UserContextProvider = ({ initialUser, children }: React.PropsWithChildren<UserContextProviderProps>) => {
-    const [user, setUser] = React.useState<User | null>(initialUser);
+    const [user, setUser] = React.useState<User | undefined>(initialUser);
 
     if (user?.id !== initialUser?.id) {
         setUser(initialUser);

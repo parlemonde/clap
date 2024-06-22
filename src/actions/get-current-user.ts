@@ -4,17 +4,12 @@ import { cookies } from 'next/headers';
 import { cache } from 'react';
 
 import { db } from 'src/database';
-import { users } from 'src/database/schema/users';
+import type { User } from 'src/database/schemas/users';
+import { users } from 'src/database/schemas/users';
 
 const APP_SECRET: string = process.env.APP_SECRET || '';
 
-export const getCurrentUser = cache(async () => {
-    const accessToken = cookies().get('access-token')?.value || '';
-
-    if (!accessToken.length) {
-        return null;
-    }
-
+const getUser = cache(async (accessToken: string): Promise<User | undefined> => {
     try {
         let data: { userId: number; iat: number; exp: number };
         const decoded: string | { userId: number; iat: number; exp: number } = jwt.verify(accessToken, APP_SECRET) as
@@ -25,18 +20,19 @@ export const getCurrentUser = cache(async () => {
         } else {
             data = decoded;
         }
-
-        const results = await db
-            .select({ id: users.id, name: users.name, email: users.email, isAdmin: users.isAdmin })
-            .from(users)
-            .where(eq(users.id, data.userId))
-            .limit(1);
-        if (results.length === 1) {
-            return results[0];
-        }
+        return await db.query.users.findFirst({
+            columns: { id: true, name: true, email: true, role: true },
+            where: eq(users.id, data.userId),
+        });
     } catch (e) {
         // do nothing
     }
-
-    return null;
 });
+
+export async function getCurrentUser(): Promise<User | undefined> {
+    const accessToken = cookies().get('access-token')?.value;
+    if (!accessToken) {
+        return;
+    }
+    return getUser(accessToken);
+}

@@ -4,8 +4,8 @@ import { redirect } from 'next/navigation';
 import * as React from 'react';
 import { useFormState } from 'react-dom';
 
-import { login } from 'src/actions/login';
-import { useTranslation } from 'src/contexts/tanslationContext';
+import { login } from 'src/actions/authentication/login';
+import { useTranslation } from 'src/contexts/translationContext';
 import { userContext } from 'src/contexts/userContext';
 
 export default function LoginPage() {

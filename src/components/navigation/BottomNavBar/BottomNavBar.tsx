@@ -7,7 +7,7 @@ import * as React from 'react';
 
 import styles from './bottom-nav-bar.module.scss';
 import { Link as NextLink, startNProgress } from 'src/components/navigation/Link';
-import { useTranslation } from 'src/contexts/tanslationContext';
+import { useTranslation } from 'src/contexts/translationContext';
 import { userContext } from 'src/contexts/userContext';
 import { getTabs } from 'src/utils/tabs';
 
@@ -18,7 +18,7 @@ export const BottomNavBar = () => {
     const currentPathName = usePathname().split('/')[1];
     const currentPath = currentPathName && currentPathName !== 'create' ? `/${currentPathName}` : '/';
     const isOnAdmin = currentPath === '/admin';
-    const tabs = getTabs(user !== null, false, isOnAdmin);
+    const tabs = getTabs(user !== undefined, false, isOnAdmin);
 
     if (isOnAdmin) {
         return null;

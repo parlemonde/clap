@@ -5,8 +5,8 @@ import { migrate } from 'drizzle-orm/postgres-js/migrator';
 import postgres from 'postgres';
 
 import { db } from './database';
-import type { NewUser } from './schema/users';
-import { users } from './schema/users';
+import type { NewUser } from './schemas/users';
+import { users } from './schemas/users';
 
 const DATABASE_URL = process.env.DATABASE_URL || '';
 
@@ -40,7 +40,7 @@ async function createAdminUser(): Promise<void> {
             name: adminName,
             email: process.env.ADMIN_EMAIL || 'admin@clap.parlemonde.org',
             passwordHash: await argon2.hash(adminPassword),
-            isAdmin: true,
+            role: 'admin',
         };
         await db.insert(users).values(user);
     } catch {

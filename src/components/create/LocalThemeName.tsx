@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 
-import { useTranslation } from 'src/contexts/tanslationContext';
+import { useTranslation } from 'src/contexts/translationContext';
 import { useLocalStorage } from 'src/hooks/useLocalStorage';
 
 type LocalThemeNameProps = {

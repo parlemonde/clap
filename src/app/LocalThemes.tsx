@@ -3,7 +3,7 @@
 import * as React from 'react';
 
 import { ThemeCard } from 'src/components/create/ThemeCard';
-import { useTranslation } from 'src/contexts/tanslationContext';
+import { useTranslation } from 'src/contexts/translationContext';
 import { useLocalStorage } from 'src/hooks/useLocalStorage';
 
 export const LocalThemes = () => {

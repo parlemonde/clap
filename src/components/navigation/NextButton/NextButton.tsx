@@ -7,7 +7,7 @@ import type { MarginProps } from 'src/components/layout';
 import { Box } from 'src/components/layout/Box';
 import { Button } from 'src/components/layout/Button';
 import { Link, startNProgress } from 'src/components/navigation/Link';
-import { useTranslation } from 'src/contexts/tanslationContext';
+import { useTranslation } from 'src/contexts/translationContext';
 
 type NextButtonProps = {
     label?: string;

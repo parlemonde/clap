@@ -1,10 +1,28 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
+export const config = {
+    matcher: [
+        /*
+         * Match all request paths except for the ones starting with:
+         * - api (API routes)
+         * - static (public static files)
+         * - _next/static (next static files)
+         * - _next/image (next image optimization files)
+         * - favicon (favicon files)
+         */
+        {
+            source: '/((?!api|static|_next/static|_next/image|favicon).*)',
+            missing: [
+                { type: 'header', key: 'next-router-prefetch' },
+                { type: 'header', key: 'purpose', value: 'prefetch' },
+            ],
+        },
+    ],
+};
+
 export function middleware(request: NextRequest) {
-    const isStaticPath = request.nextUrl.pathname.startsWith('/_next/static');
-    const isApiPath = request.nextUrl.pathname.startsWith('/api');
-    if (process.env.NODE_ENV !== 'production' || isStaticPath || isApiPath) {
+    if (process.env.NODE_ENV !== 'production') {
         return NextResponse.next();
     }
 
@@ -27,7 +45,6 @@ export function middleware(request: NextRequest) {
 
     const requestHeaders = new Headers(request.headers);
     requestHeaders.set('x-nonce', nonce);
-
     requestHeaders.set('Content-Security-Policy', contentSecurityPolicyHeaderValue);
 
     const response = NextResponse.next({

@@ -1,6 +1,6 @@
 'use client';
 
-import type { Theme } from 'src/database/schema/themes';
+import type { Theme } from 'src/database/schemas/themes';
 
 export type LocalTheme = Omit<Theme, 'id'> & {
     id: string;

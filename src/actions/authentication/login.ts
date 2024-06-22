@@ -1,13 +1,13 @@
 'use server';
 
 import * as argon2 from 'argon2';
-import { sql, eq } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import jwt from 'jsonwebtoken';
 import { cookies } from 'next/headers';
 import { RedirectType, redirect } from 'next/navigation';
 
 import { db } from 'src/database';
-import { users } from 'src/database/schema/users';
+import { users } from 'src/database/schemas/users';
 
 const APP_SECRET: string = process.env.APP_SECRET || '';
 
@@ -26,8 +26,10 @@ export async function login(_previousState: string, formData: FormData): Promise
     const email = getString(formData.get('email'));
     const password = getString(formData.get('password'));
 
-    const userResults = await db.select().from(users).where(eq(users.email, email)).limit(1);
-    const user = userResults[0];
+    const user = await db.query.users.findFirst({
+        columns: { id: true, passwordHash: true, accountRegistration: true },
+        where: eq(users.email, email),
+    });
 
     if (!user) {
         return 'Unauthorized - Invalid credentials.';
@@ -41,16 +43,26 @@ export async function login(_previousState: string, formData: FormData): Promise
 
     let isPasswordCorrect: boolean = false;
     try {
-        isPasswordCorrect = await argon2.verify(user.passwordHash || '', password);
+        isPasswordCorrect = await argon2.verify((user.passwordHash || '').trim(), password);
     } catch (e) {
         return 'Unauthorized - Invalid credentials.';
     }
 
     if (!isPasswordCorrect) {
-        await db.execute(sql`UPDATE ${users} SET \`accountRegistration\` = ${user.accountRegistration + 1} WHERE ${users.id} = ${user.id}`);
+        await db
+            .update(users)
+            .set({
+                accountRegistration: user.accountRegistration + 1,
+            })
+            .where(eq(users.id, user.id));
         return 'Unauthorized - Invalid credentials.';
-    } else if (user.accountRegistration > 0 && user.accountRegistration < 4) {
-        await db.execute(sql`UPDATE ${users} SET \`accountRegistration\` = ${0} WHERE ${users.id} = ${user.id}`);
+    } else if (user.accountRegistration > 0) {
+        await db
+            .update(users)
+            .set({
+                accountRegistration: 0,
+            })
+            .where(eq(users.id, user.id));
     }
 
     const accessToken = getAccessToken(user.id);

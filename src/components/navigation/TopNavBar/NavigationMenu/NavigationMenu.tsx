@@ -6,7 +6,7 @@ import * as React from 'react';
 
 import styles from './navigation-menu.module.scss';
 import { Link as NextLink, startNProgress } from 'src/components/navigation/Link';
-import { useTranslation } from 'src/contexts/tanslationContext';
+import { useTranslation } from 'src/contexts/translationContext';
 import { userContext } from 'src/contexts/userContext';
 import { getTabs } from 'src/utils/tabs';
 
@@ -17,7 +17,7 @@ export const NavigationMenu = () => {
     const currentPathName = usePathname().split('/')[1];
     const currentPath = currentPathName && currentPathName !== 'create' ? `/${currentPathName}` : '/';
     const isOnAdmin = currentPath === '/admin';
-    const tabs = getTabs(user !== null, user !== null /* && user.type >= UserType.ADMIN */, isOnAdmin);
+    const tabs = getTabs(user !== undefined, user?.role === 'admin', isOnAdmin);
 
     return (
         <RadixNavigationMenu.Root className={styles.navigation}>

@@ -11,12 +11,12 @@ import { Link } from 'src/components/navigation/Link';
 const COLORS = ['rgb(96, 105, 243)', 'rgb(213, 89, 84)', 'rgb(250, 225, 108)', 'rgb(62, 65, 87)', 'rgb(215, 213, 209)', 'rgb(162, 220, 174)'];
 
 type ThemeCardProps = {
-    index: number;
+    index?: number;
     imageUrl?: string | null;
     name: string;
     href: string;
 };
-export const ThemeCard = ({ index, imageUrl, name, href }: ThemeCardProps) => {
+export const ThemeCard = ({ index = 0, imageUrl, name, href }: ThemeCardProps) => {
     const [showBackgroundColor, setShowBackgroundColor] = React.useState(true);
 
     return (

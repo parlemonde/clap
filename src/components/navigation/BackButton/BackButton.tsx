@@ -7,7 +7,7 @@ import * as React from 'react';
 import styles from './back-button.module.scss';
 import { Button } from 'src/components/layout/Button';
 import { Link, startNProgress } from 'src/components/navigation/Link';
-import { useTranslation } from 'src/contexts/tanslationContext';
+import { useTranslation } from 'src/contexts/translationContext';
 
 type BackButtonProps = {
     href: string;
