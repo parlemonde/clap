@@ -4640,6 +4640,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/croppie@npm:^2":
+  version: 2.6.4
+  resolution: "@types/croppie@npm:2.6.4"
+  checksum: 10c0/68a67ee13a0ae8d749b0473b2dc407c5a4bf0c94f976b4d5f32b54bb8e7961e319c07e8cbe051ca84d8cedf8bf6fa7a599d1d5eb66e985a2a9b579164afe2e8a
+  languageName: node
+  linkType: hard
+
 "@types/fs-extra@npm:^11.0.4":
   version: 11.0.4
   resolution: "@types/fs-extra@npm:11.0.4"
@@ -5599,6 +5606,7 @@ __metadata:
     "@radix-ui/react-visually-hidden": "npm:^1.0.3"
     "@svgr/webpack": "npm:^8.1.0"
     "@types/aws-lambda": "npm:^8.10.140"
+    "@types/croppie": "npm:^2"
     "@types/fs-extra": "npm:^11.0.4"
     "@types/jsonwebtoken": "npm:^9.0.6"
     "@types/mime-types": "npm:^2.1.4"
@@ -5612,6 +5620,7 @@ __metadata:
     "@typescript-eslint/parser": "npm:6.21.0"
     argon2: "npm:^0.40.3"
     classnames: "npm:^2.5.1"
+    croppie: "npm:^2.6.5"
     drizzle-kit: "npm:^0.22.7"
     drizzle-orm: "npm:^0.31.2"
     eslint: "npm:8.56.0"
@@ -5833,6 +5842,13 @@ __metadata:
     typescript:
       optional: true
   checksum: 10c0/0382a9ed13208f8bfc22ca2f62b364855207dffdb73dc26e150ade78c3093f1cf56172df2dd460c8caf2afa91c0ed4ec8a88c62f8f9cd1cf423d26506aa8797a
+  languageName: node
+  linkType: hard
+
+"croppie@npm:^2.6.5":
+  version: 2.6.5
+  resolution: "croppie@npm:2.6.5"
+  checksum: 10c0/bdfe61858c5fbac91c672a2877531083deeef5b5ecf32c8ed015de2770adf6f33eb5c12aa3efc36e86176d4793e2ac043fd3cb08c88ab52e0be8283ae1587793
   languageName: node
   linkType: hard
 

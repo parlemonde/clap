@@ -20,11 +20,11 @@ export default async function Page() {
                 </Trans>
             </Title>
             <div className="themes-grid">
+                <ThemeCard href="/create/new-theme" name={t('create_new_theme')} />
                 <React.Suspense fallback={<ThemeCardPlaceholder />}>
-                    <ThemeCard href="/create/new-theme" name={t('create_new_theme')} />
                     <Themes />
-                    <LocalThemes />
                 </React.Suspense>
+                <LocalThemes />
             </div>
         </Container>
     );

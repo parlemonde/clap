@@ -1,5 +1,3 @@
-'use client';
-
 import * as Dialog from '@radix-ui/react-dialog';
 import { Cross2Icon } from '@radix-ui/react-icons';
 import classNames from 'classnames';
@@ -9,7 +7,6 @@ import styles from './modal.module.scss';
 import { Button } from '../Button';
 import { IconButton } from '../Button/IconButton';
 import { CircularProgress } from '../CircularProgress';
-import { Title } from '../Typography';
 
 type ModalProps = {
     // --
@@ -72,11 +69,7 @@ export const Modal = ({
                               }
                     }
                 >
-                    <Dialog.Title className={styles.title} asChild>
-                        <Title variant="h2" color="inherit">
-                            {title}
-                        </Title>
-                    </Dialog.Title>
+                    <Dialog.Title className={styles.title}>{title}</Dialog.Title>
                     <div className={styles.content}>{children}</div>
                     <div className={styles.footer}>
                         {hasCancelButton && <Button label={cancelLabel} onClick={onClose} color={cancelLevel} variant="outlined"></Button>}

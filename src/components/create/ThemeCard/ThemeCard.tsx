@@ -25,10 +25,11 @@ export const ThemeCard = ({ index = 0, imageUrl, name, href }: ThemeCardProps) =
                 <div style={{ backgroundColor: showBackgroundColor ? COLORS[index % COLORS.length] : 'unset' }} className={styles.themeCardImage}>
                     {imageUrl && (
                         <Image
-                            onLoadingComplete={() => {
+                            onLoad={() => {
                                 setShowBackgroundColor(false);
                             }}
-                            layout="fill"
+                            fill
+                            sizes="256px"
                             src={imageUrl}
                             alt="theme image"
                         />
