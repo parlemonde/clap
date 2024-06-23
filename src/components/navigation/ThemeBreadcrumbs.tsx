@@ -1,41 +1,47 @@
-'use client';
+'use server';
 
 import React from 'react';
 
+import { getTranslation } from 'src/actions/get-translation';
+import { getTheme } from 'src/actions/themes/get-theme';
+import { LocalThemeName } from 'src/components/create/LocalThemeName';
 import { Breadcrumbs } from 'src/components/layout/Breadcrumbs';
 import { Placeholder } from 'src/components/layout/Placeholder';
-import { useTranslation } from 'src/contexts/translationContext';
-import type { Theme } from 'src/database/schemas/themes';
-import { useLocalStorage } from 'src/hooks/useLocalStorage';
 
 type ThemeBreadcrumbsProps = {
-    theme?: Theme;
-    themeId?: string;
+    themeId: string;
 };
-export const ThemeBreadcrumbs = ({ theme, themeId }: ThemeBreadcrumbsProps) => {
-    const { t, currentLocale } = useTranslation();
-    const localThemes = useLocalStorage('themes');
-    const currentTheme = theme || (localThemes || []).find((t) => t.id === themeId);
+const ThemeBreadcrumbsWithTheme = async ({ themeId }: ThemeBreadcrumbsProps) => {
+    const { t, currentLocale } = await getTranslation();
+
+    const isLocalTheme = themeId.startsWith('local_');
+    const theme = isLocalTheme ? undefined : await getTheme(Number(themeId) ?? -1);
 
     return (
         <Breadcrumbs
             marginTop="sm"
             links={[{ href: '/', label: t('all_themes') }]}
-            currentLabel={currentTheme?.names[currentLocale] || currentTheme?.names.fr || ''}
+            currentLabel={isLocalTheme ? <LocalThemeName themeId={themeId} /> : theme?.names[currentLocale] || theme?.names.fr || ''}
             className="for-tablet-up-only"
         />
     );
 };
 
-export const ThemeBreadcrumbsPlaceholder = () => {
-    const { t } = useTranslation();
+export const ThemeBreadcrumbs = async ({ themeId }: ThemeBreadcrumbsProps) => {
+    const { t } = await getTranslation();
 
     return (
-        <Breadcrumbs
-            marginTop="sm"
-            links={[{ href: '/', label: t('all_themes') }]}
-            currentLabel={<Placeholder variant="text" width="100px" style={{ verticalAlign: 'bottom' }} />}
-            className="for-tablet-up-only"
-        />
+        <React.Suspense
+            fallback={
+                <Breadcrumbs
+                    marginTop="sm"
+                    links={[{ href: '/', label: t('all_themes') }]}
+                    currentLabel={<Placeholder variant="text" width="100px" style={{ verticalAlign: 'bottom' }} />}
+                    className="for-tablet-up-only"
+                />
+            }
+        >
+            <ThemeBreadcrumbsWithTheme themeId={themeId}></ThemeBreadcrumbsWithTheme>
+        </React.Suspense>
     );
 };

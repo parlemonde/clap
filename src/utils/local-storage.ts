@@ -1,5 +1,6 @@
 'use client';
 
+import type { Scenario } from 'src/database/schemas/scenarios';
 import type { Theme } from 'src/database/schemas/themes';
 
 export type LocalTheme = Omit<Theme, 'id'> & {
@@ -7,8 +8,13 @@ export type LocalTheme = Omit<Theme, 'id'> & {
 };
 export const isLocalTheme = (theme: Theme | LocalTheme): theme is LocalTheme => typeof theme.id === 'string';
 
-export type LocalStorageKey = 'themes';
-export type ObjectType<T extends LocalStorageKey> = T extends 'themes' ? LocalTheme[] : never;
+export type LocalScenario = Omit<Scenario, 'id'> & {
+    id: string;
+};
+export const isLocalScenario = (scenario: Scenario | LocalScenario): scenario is LocalScenario => typeof scenario.id === 'string';
+
+export type LocalStorageKey = 'themes' | 'scenarios';
+export type ObjectType<T extends LocalStorageKey> = T extends 'themes' ? LocalTheme[] : T extends 'scenarios' ? LocalScenario[] : never;
 
 export function getFromLocalStorage<T extends LocalStorageKey>(key: T): ObjectType<T> | undefined {
     try {
