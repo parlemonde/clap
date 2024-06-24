@@ -13,5 +13,7 @@ export interface User {
     school: string;
     type: UserType;
     accountRegistration: number;
+    loginCount: number;
     teacherId?: number;
+    createDate: string;
 }

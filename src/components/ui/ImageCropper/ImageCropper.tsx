@@ -1,13 +1,14 @@
 import { UploadIcon } from '@radix-ui/react-icons';
 import mergeImages from 'merge-images';
 import React from 'react';
-import type { Area } from 'react-easy-crop';
-import Cropper from 'react-easy-crop';
+import type { CropperRef } from 'react-advanced-cropper';
+import { Cropper } from 'react-advanced-cropper';
 
 import { Button } from 'src/components/layout/Button';
 import { Modal } from 'src/components/layout/Modal';
 import { Title } from 'src/components/layout/Typography';
-import getCroppedImg, { getMergeImagesParams, getMeta } from 'src/utils/crop-image';
+import { getMergeImagesParams, getMeta } from 'src/utils/crop-image';
+import 'react-advanced-cropper/dist/style.css';
 
 type ImageCropperProps = {
     image: string | null;
@@ -17,10 +18,8 @@ type ImageCropperProps = {
 export const ImageCropper: React.FunctionComponent<ImageCropperProps> = ({ image, setImage }: ImageCropperProps) => {
     const [imageUrl, setImageUrl] = React.useState<string | null>(null);
     const [imageBlob, setImageBlob] = React.useState<Blob | null>(null);
-    const [crop, setCrop] = React.useState({ x: 0, y: 0 });
-    const [zoom, setZoom] = React.useState(1);
-    const [croppedAreaPixels, setCroppedAreaPixels] = React.useState<Area | null>(null);
     const inputRef = React.useRef<HTMLInputElement>(null);
+    const cropperRef = React.useRef<CropperRef>(null);
 
     React.useEffect(() => {
         if (image) {
@@ -33,8 +32,6 @@ export const ImageCropper: React.FunctionComponent<ImageCropperProps> = ({ image
     }, [image]);
 
     const onImageInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setZoom(1);
-        setCrop({ x: 0, y: 0 });
         if (event.target.files !== null && event.target.files.length > 0) {
             const url = URL.createObjectURL(event.target.files[0]);
 
@@ -61,17 +58,16 @@ export const ImageCropper: React.FunctionComponent<ImageCropperProps> = ({ image
         }
     };
 
-    const onCropComplete = (_croppedArea: Area, croppedAreaPixels: Area) => {
-        setCroppedAreaPixels(croppedAreaPixels);
-    };
-
     const onSetImageBlob = async () => {
-        if (imageUrl === null || croppedAreaPixels === null) return;
+        if (imageUrl === null) return;
         try {
-            const blob = await getCroppedImg(imageUrl, croppedAreaPixels, 0);
-            if (blob) {
-                setImageBlob(blob);
-                setImage(blob);
+            if (cropperRef.current) {
+                cropperRef.current.getCanvas()?.toBlob((blob) => {
+                    if (blob) {
+                        setImageBlob(blob);
+                        setImage(blob);
+                    }
+                });
             }
         } catch (e) {
             console.error(e);
@@ -129,34 +125,8 @@ export const ImageCropper: React.FunctionComponent<ImageCropperProps> = ({ image
             >
                 {imageUrl !== null && (
                     <div className="text-center">
-                        <div style={{ width: '100%', height: '560px', marginBottom: '2rem', position: 'relative' }}>
-                            <Cropper
-                                image={imageUrl}
-                                crop={crop}
-                                zoom={zoom}
-                                aspect={4 / 3}
-                                onCropChange={setCrop}
-                                onCropComplete={onCropComplete}
-                                onZoomChange={setZoom}
-                                minZoom={1}
-                                maxZoom={5}
-                                zoomSpeed={0.3}
-                                cropSize={{ height: 360, width: 640 }}
-                            />
-                            <div style={{ position: 'absolute', bottom: '-30px', width: '100%' }}>
-                                <input
-                                    type="range"
-                                    value={zoom}
-                                    min={1}
-                                    max={5}
-                                    step={0.1}
-                                    aria-labelledby="Zoom"
-                                    onChange={(e) => {
-                                        setZoom(parseInt(e.target.value));
-                                    }}
-                                    className="zoom-range"
-                                />
-                            </div>
+                        <div style={{ width: '100%', height: '460px', marginBottom: '2rem', position: 'relative' }}>
+                            <Cropper src={imageUrl} ref={cropperRef} />
                         </div>
                     </div>
                 )}

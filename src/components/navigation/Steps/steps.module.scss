@@ -8,6 +8,7 @@
     flex-direction: row;
     align-self: stretch;
     padding: 24px 0;
+    cursor: pointer;
 }
 @include mixins.for-tablet-up {
     .steps {

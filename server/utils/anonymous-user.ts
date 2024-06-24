@@ -9,4 +9,6 @@ export const ANONYMOUS_USER: User = {
     school: '',
     type: UserType.STUDENT,
     accountRegistration: 0,
+    loginCount: 0,
+    createDate: '',
 };

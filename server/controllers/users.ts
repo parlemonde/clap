@@ -47,7 +47,14 @@ userController.get({ path: '' }, async (req, res) => {
     }
     if (req.query.order !== undefined || req.query.orderBy !== undefined) {
         const orderBy = (req.query.order as string) || (req.query.orderBy as string);
-        if (orderBy === 'id' || orderBy === 'pseudo' || orderBy === 'email' || orderBy === 'level' || orderBy === 'school') {
+        if (
+            orderBy === 'id' ||
+            orderBy === 'pseudo' ||
+            orderBy === 'email' ||
+            orderBy === 'level' ||
+            orderBy === 'school' ||
+            orderBy === 'createDate'
+        ) {
             queryParams.order = {
                 [orderBy]: direction,
             };
@@ -58,7 +65,6 @@ userController.get({ path: '' }, async (req, res) => {
             { pseudo: Like(`%${req.query.search}%`) },
             { email: Like(`%${req.query.search}%`) },
             { school: Like(`%${req.query.search}%`) },
-            { level: Like(`%${req.query.search}%`) },
         ];
     }
     const users: User[] = await getRepository(User).find(queryParams);

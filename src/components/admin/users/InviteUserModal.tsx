@@ -41,7 +41,7 @@ export const InviteUserModal = ({ open = false, onClose = () => {} }: InviteUser
                 </div>
                 <div style={{ margin: '0.4rem 0 0.8rem 0' }}>
                     <label style={{ fontWeight: 'bold' }}>{"Lien d'invitation :"}</label>
-                    <SharedLink link={`${window.location.origin}/sign-up?inviteCode=${inviteCode}`} />
+                    <SharedLink link={`${process.env.NEXT_PUBLIC_HOST_URL}/sign-up?inviteCode=${inviteCode}`} />
                 </div>
             </div>
         </Modal>

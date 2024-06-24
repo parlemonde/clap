@@ -8,6 +8,7 @@ import styles from '../../../components/navigation/NextButton/next-button.module
 import { userContext } from '../../../contexts/userContext';
 import PictureAsPdf from '../../../svg/pdf.svg';
 import { useDeletePlanMutation } from 'src/api/plans/plans.delete';
+import { useReorderPlansMutation } from 'src/api/plans/plans.order';
 import { useCreatePlanMutation } from 'src/api/plans/plans.post';
 import { useUpdateQuestionMutation } from 'src/api/questions/questions.put';
 import { useScenario } from 'src/api/scenarios/scenarios.get';
@@ -30,6 +31,7 @@ import { Steps } from 'src/components/navigation/Steps';
 import { ThemeBreadcrumbs } from 'src/components/navigation/ThemeBreadcrumbs';
 import { Inverted } from 'src/components/ui/Inverted';
 import { Loader } from 'src/components/ui/Loader';
+import { Sortable } from 'src/components/ui/Sortable';
 import { sendToast } from 'src/components/ui/Toasts';
 import { Trans } from 'src/components/ui/Trans';
 import { useCollaboration } from 'src/hooks/useCollaboration';
@@ -75,6 +77,9 @@ const Scenario = ({
     const [showFeedback, setShowFeedback] = React.useState(false);
     const showButtonFeedback = isStudent && sequence.feedback && QuestionStatus.ONGOING === sequence.status;
     const studentColor = COLORS[sequenceIndex];
+
+    const { project, isLoading: isProjectLoading, questions, updateProject } = useCurrentProject();
+    const { updateProject: updateProjectSocket } = useSocket();
 
     const onAddPlan = async () => {
         const newPlans = [...plans];
@@ -139,6 +144,35 @@ const Scenario = ({
         onUpdateSequence({ title: null });
     };
 
+    const reorderPlansMutation = useReorderPlansMutation();
+
+    const onReorderPlans = (order: number[]) => {
+        if (!project || project.id === 0) {
+            return;
+        }
+        reorderPlansMutation.mutate(
+            {
+                order,
+            },
+            {
+                onError(error) {
+                    console.error(error);
+                    sendToast({ message: t('unknown_error'), type: 'error' });
+                },
+            },
+        );
+    };
+
+    const storyboardStyle: React.CSSProperties = {
+        gridTemplateColumns: `repeat(${Math.min(2 + plans.length, 6)}, 1fr)`,
+    };
+
+    const plansStyle: React.CSSProperties = {
+        gridColumnEnd: `span ${plans.length}`,
+        display: 'flex',
+        gap: '1rem',
+    };
+
     return (
         <>
             <Title color="primary" variant="h2" marginTop="lg" style={{ display: 'flex', alignItems: 'center' }}>
@@ -148,7 +182,7 @@ const Scenario = ({
                 )}
                 {showButtonFeedback && <ButtonShowFeedback onClick={() => setShowFeedback(true)} />}
             </Title>
-            <div className="plans">
+            <div className={`plans`} style={storyboardStyle}>
                 <TitleCard
                     projectId={projectId}
                     questionIndex={sequenceIndex}
@@ -158,19 +192,35 @@ const Scenario = ({
                     }}
                     canEdit={sequence.status === QuestionStatus.ONGOING || !isStudent}
                 />
-                {plans.map((plan, planIndex) => (
-                    <PlanCard
-                        projectId={projectId}
-                        key={`${sequenceIndex}_${planIndex}`}
-                        plan={plan}
-                        questionIndex={sequenceIndex}
-                        planIndex={planIndex}
-                        showNumber={planStartIndex + planIndex}
-                        canDelete={true}
-                        onDelete={() => setDeletePlanIndex(planIndex)}
-                        canEdit={sequence.status === QuestionStatus.ONGOING || !isStudent}
-                    />
-                ))}
+                {!isProjectLoading && plans.length > 0 && (
+                    <Sortable
+                        list={plans}
+                        setList={(newPlans) => {
+                            questions[sequenceIndex].plans = newPlans;
+                            const updatedProject = updateProject({ questions });
+                            if (isCollaborationActive && updatedProject) {
+                                updateProjectSocket(updatedProject);
+                            }
+                            onReorderPlans(newPlans.map((q) => q.id));
+                        }}
+                        style={plansStyle}
+                        component={'div'}
+                    >
+                        {plans.map((plan, planIndex) => (
+                            <PlanCard
+                                projectId={projectId}
+                                key={`${sequenceIndex}_${planIndex}`}
+                                plan={plan}
+                                questionIndex={sequenceIndex}
+                                planIndex={planIndex}
+                                showNumber={planStartIndex + planIndex}
+                                canDelete={true}
+                                onDelete={() => setDeletePlanIndex(planIndex)}
+                                canEdit={sequence.status === QuestionStatus.ONGOING || !isStudent}
+                            />
+                        ))}
+                    </Sortable>
+                )}
                 {(sequence.status === QuestionStatus.ONGOING || !isStudent) && plans.length < 5 && (
                     <div className="plan-button-container add">
                         {createPlanMutation.isLoading ? (

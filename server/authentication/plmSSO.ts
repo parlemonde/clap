@@ -1,6 +1,8 @@
 import type { JSONSchemaType } from 'ajv';
 import type { NextFunction, Request, Response } from 'express';
+import { getRepository } from 'typeorm';
 
+import { User } from '../entities/user';
 import { getUserFromPLM } from '../legacy-plm/api';
 import { ajv, sendInvalidDataError } from '../lib/json-schema-validator';
 import { AppError } from '../middlewares/handle-errors';
@@ -40,6 +42,8 @@ export async function loginWithPlmSSO(req: Request, res: Response, next: NextFun
         throw new AppError('forbidden', ['Please use normal login'], 6);
     }
     const { accessToken, refreshToken } = await getAccessToken(user.id, true);
+    user.loginCount += 1;
+    await getRepository(User).save(user);
     res.cookie('access-token', accessToken, {
         maxAge: 4 * 60 * 60000,
         expires: new Date(Date.now() + 4 * 60 * 60000),

@@ -3,8 +3,8 @@ import mergeImages from 'merge-images';
 import Image from 'next/legacy/image';
 import { useRouter } from 'next/router';
 import React from 'react';
-import Cropper from 'react-easy-crop';
-import type { Area } from 'react-easy-crop';
+import type { CropperRef } from 'react-advanced-cropper';
+import { Cropper } from 'react-advanced-cropper';
 import Camera from 'react-html5-camera-photo';
 
 import { useDeleteImageMutation } from 'src/api/images/images.delete';
@@ -33,12 +33,13 @@ import { useCollaboration } from 'src/hooks/useCollaboration';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import { useSocket } from 'src/hooks/useSocket';
 import { useTranslation } from 'src/i18n/useTranslation';
-import getCroppedImg, { getMergeImagesParams, getMeta } from 'src/utils/crop-image';
+import { getMergeImagesParams, getMeta } from 'src/utils/crop-image';
 import { serializeToQueryUrl } from 'src/utils/serializeToQueryUrl';
 import { isString } from 'src/utils/type-guards/is-string';
 import { useQueryNumber } from 'src/utils/useQueryId';
 import { QuestionStatus } from 'types/models/question.type';
 import { UserType } from 'types/models/user.type';
+import 'react-advanced-cropper/dist/style.css';
 
 const SecondaryColor = '#79C3A5';
 
@@ -156,9 +157,6 @@ const EditPlan = () => {
         (isStudent && sequence && sequence.feedback && QuestionStatus.ONGOING === sequence.status) as boolean,
     );
     const [showFeedback, setShowFeedback] = React.useState(false);
-    const [crop, setCrop] = React.useState({ x: 0, y: 0 });
-    const [zoom, setZoom] = React.useState(1);
-    const [croppedAreaPixels, setCroppedAreaPixels] = React.useState<Area | null>(null);
     const imageUrl = React.useMemo(() => {
         if (imageBlob !== null) {
             return URL.createObjectURL(imageBlob);
@@ -199,8 +197,6 @@ const EditPlan = () => {
     }, [sequence, isStudent, backUrl, router]);
 
     const onInputUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setZoom(1);
-        setCrop({ x: 0, y: 0 });
         if (event.target.files !== null && event.target.files.length > 0) {
             const url = URL.createObjectURL(event.target.files[0]);
 
@@ -289,17 +285,18 @@ const EditPlan = () => {
 
     const isLoading = createImageMutation.isLoading || deleteImageMutation.isLoading || updatePlanMutation.isLoading;
 
-    const onCropComplete = (_croppedArea: Area, croppedAreaPixels: Area) => {
-        setCroppedAreaPixels(croppedAreaPixels);
-    };
+    const cropperRef = React.useRef<CropperRef>(null);
 
     const onSetImageBlob = async () => {
-        if (temporaryImageUrl === null || croppedAreaPixels === null) return;
+        if (temporaryImageUrl === null) return;
         setIsCreatingBlob(true);
         try {
-            const blob = await getCroppedImg(temporaryImageUrl, croppedAreaPixels, 0);
-            if (blob) {
-                setImageBlob(blob);
+            if (cropperRef.current) {
+                cropperRef.current.getCanvas()?.toBlob((blob) => {
+                    if (blob) {
+                        setImageBlob(blob);
+                    }
+                });
             }
         } catch (e) {
             console.error(e);
@@ -519,34 +516,8 @@ const EditPlan = () => {
                             >
                                 {temporaryImageUrl !== null && (
                                     <div className="text-center">
-                                        <div style={{ width: '100%', height: '560px', marginBottom: '2rem', position: 'relative' }}>
-                                            <Cropper
-                                                image={temporaryImageUrl}
-                                                crop={crop}
-                                                zoom={zoom}
-                                                aspect={4 / 3}
-                                                onCropChange={setCrop}
-                                                onCropComplete={onCropComplete}
-                                                onZoomChange={setZoom}
-                                                minZoom={1}
-                                                maxZoom={5}
-                                                zoomSpeed={0.5}
-                                                cropSize={{ height: 360, width: 640 }}
-                                            />
-                                            <div style={{ position: 'absolute', bottom: '-30px', width: '100%' }}>
-                                                <input
-                                                    type="range"
-                                                    value={zoom}
-                                                    min={1}
-                                                    max={5}
-                                                    step={0.1}
-                                                    aria-labelledby="Zoom"
-                                                    onChange={(e) => {
-                                                        setZoom(parseInt(e.target.value));
-                                                    }}
-                                                    className="zoom-range"
-                                                />
-                                            </div>
+                                        <div style={{ width: '100%', height: '460px', marginBottom: '2rem', position: 'relative' }}>
+                                            <Cropper src={temporaryImageUrl} ref={cropperRef} />
                                         </div>
                                     </div>
                                 )}

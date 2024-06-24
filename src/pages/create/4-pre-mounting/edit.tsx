@@ -148,7 +148,7 @@ const PreMountSequence = () => {
             soundBlob !== null &&
             currentSequence.soundUrl &&
             isString(currentSequence.soundUrl) &&
-            currentSequence.soundUrl.startsWith('/api/sounds')
+            currentSequence.soundUrl.startsWith('/api/audios')
         ) {
             try {
                 await deleteSoundMutation.mutateAsync({ soundUrl: currentSequence.soundUrl });

@@ -96,7 +96,7 @@ const PreMountingPage = () => {
                                 {showButtonFeedback && <ButtonShowFeedback onClick={() => setShowFeedback(true)} />}
                             </Title>
                             {hasBeenEdited ? (
-                                <div className="plans">
+                                <div className="plans-pre-mounting">
                                     <DiaporamaCard
                                         projectId={project?.id || null}
                                         sequence={q}

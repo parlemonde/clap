@@ -78,6 +78,8 @@ export async function login(req: Request, res: Response): Promise<void> {
         .execute();
 
     const { accessToken, refreshToken } = await getAccessToken(user.id, !!data.getRefreshToken);
+    user.loginCount += 1;
+    await getRepository(User).save(user);
     res.cookie('access-token', accessToken, {
         maxAge: 4 * 60 * 60000,
         expires: new Date(Date.now() + 4 * 60 * 60000),
