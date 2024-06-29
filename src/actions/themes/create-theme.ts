@@ -1,6 +1,7 @@
 'use server';
 
 import { and, desc, eq, isNull } from 'drizzle-orm';
+import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 
 import { getCurrentUser } from '../get-current-user';
@@ -27,6 +28,8 @@ export async function createTheme(themeName: string): Promise<Theme | undefined>
         .returning();
 
     // Return new theme
+    revalidatePath('/');
+    revalidatePath('/admin/themes');
     return newThemes[0];
 }
 
@@ -50,5 +53,7 @@ export async function createDefaultTheme(newTheme: Omit<NewTheme, 'order' | 'use
         .returning();
 
     // Return new theme
+    revalidatePath('/');
+    revalidatePath('/admin/themes');
     return newThemes[0];
 }

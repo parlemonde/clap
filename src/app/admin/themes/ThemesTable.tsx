@@ -1,14 +1,18 @@
 'use client';
 
 import { DragHandleDots2Icon, Pencil1Icon, TrashIcon } from '@radix-ui/react-icons';
+import Image from 'next/image';
 import * as React from 'react';
 
+import { deleteTheme } from 'src/actions/themes/delete-theme';
+import { updateThemesOrder } from 'src/actions/themes/update-themes-order';
 import { Table } from 'src/components/admin/Table';
 import { IconButton } from 'src/components/layout/Button/IconButton';
 import { Select } from 'src/components/layout/Form/Select';
 import { Modal } from 'src/components/layout/Modal';
 import { Tooltip } from 'src/components/layout/Tooltip';
 import { Link } from 'src/components/navigation/Link';
+import { Sortable } from 'src/components/ui/Sortable';
 import type { Theme } from 'src/database/schemas/themes';
 
 type ThemesTableWithDataProps = {
@@ -28,6 +32,11 @@ export const ThemesTable = ({ defaultThemes }: ThemesTableWithDataProps) => {
     ];
     const [selectedLanguage, setSelectedLanguage] = React.useState('fr');
     const [deleteIndex, setDeleteIndex] = React.useState<number | null>(null);
+    const [isDeleting, setIsDeleting] = React.useState(false);
+
+    const setThemesOrder = (themes: Theme[]) => {
+        updateThemesOrder(themes.map((t) => t.id));
+    };
 
     return (
         <>
@@ -70,7 +79,7 @@ export const ThemesTable = ({ defaultThemes }: ThemesTableWithDataProps) => {
                     </tr>
                 </thead>
                 {defaultThemes.length > 0 ? (
-                    <tbody>
+                    <Sortable component="tbody" list={defaultThemes} setList={setThemesOrder} handle=".theme-index">
                         {defaultThemes.map((t, index) => (
                             <tr key={t.id}>
                                 <th className="theme-index">
@@ -82,7 +91,13 @@ export const ThemesTable = ({ defaultThemes }: ThemesTableWithDataProps) => {
                                 <th style={{ color: t.names[selectedLanguage] ? 'inherit' : 'grey' }}>
                                     {t.names[selectedLanguage] || `${t.names.fr} (non traduit)`}
                                 </th>
-                                <th>{t.imageUrl ? <img style={{ display: 'table-cell' }} height="40" src={t.imageUrl} /> : 'Aucune image'}</th>
+                                <th>
+                                    {t.imageUrl ? (
+                                        <Image alt={'theme image'} width={60} height={40} style={{ display: 'table-cell' }} src={t.imageUrl} />
+                                    ) : (
+                                        'Aucune image'
+                                    )}
+                                </th>
                                 <th align="right" style={{ minWidth: '96px' }}>
                                     <Tooltip content="Modifier">
                                         <span>
@@ -107,7 +122,7 @@ export const ThemesTable = ({ defaultThemes }: ThemesTableWithDataProps) => {
                                 </th>
                             </tr>
                         ))}
-                    </tbody>
+                    </Sortable>
                 ) : (
                     <tbody>
                         <tr>
@@ -123,15 +138,21 @@ export const ThemesTable = ({ defaultThemes }: ThemesTableWithDataProps) => {
                 onClose={() => {
                     setDeleteIndex(null);
                 }}
-                onConfirm={() => {
-                    // TODO
+                onConfirm={async () => {
+                    if (deleteIndex === null) {
+                        return;
+                    }
+                    setIsDeleting(true);
+                    await deleteTheme(defaultThemes[deleteIndex].id);
+                    setIsDeleting(false);
+                    setDeleteIndex(null);
                 }}
                 confirmLabel="Supprimer"
                 confirmLevel="error"
                 cancelLabel="Annuler"
                 title="Supprimer le thème ?"
                 isFullWidth
-                isLoading={false} // TODO
+                isLoading={isDeleting}
             >
                 <p>
                     Voulez-vous vraiment supprimer le thème <strong>{deleteIndex !== null && defaultThemes[deleteIndex].names.fr}</strong> ?

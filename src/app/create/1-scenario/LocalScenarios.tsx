@@ -17,7 +17,7 @@ export const LocalScenarios = ({ themeId }: LocalScenariosProps) => {
     return (
         <>
             {scenarios
-                .filter((s) => s.names[currentLocale] !== undefined || s.isDefault === false)
+                .filter((s) => s.names[currentLocale] !== undefined && s.themeId === themeId)
                 .map((s) => (
                     <ScenarioCard
                         key={s.id}

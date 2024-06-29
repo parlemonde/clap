@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 
-import { createDefaultTheme } from 'src/actions/themes/create-theme';
+import { updateDefaultTheme } from 'src/actions/themes/update-theme';
 import { uploadImage } from 'src/actions/upload-image';
 import { NameInput } from 'src/components/admin/NameInput';
 import { Button } from 'src/components/layout/Button';
@@ -23,7 +23,11 @@ type Language = {
     value: string;
 };
 
-export const NewThemeForm = () => {
+type EditThemeFormProps = {
+    theme: Theme;
+};
+
+export const EditThemeForm = ({ theme }: EditThemeFormProps) => {
     const router = useRouter();
 
     const languages: Language[] = [
@@ -43,14 +47,12 @@ export const NewThemeForm = () => {
 
     const croppieRef = React.useRef<ImgCroppieRef | null>(null);
     const inputRef = React.useRef<HTMLInputElement>(null);
-    const [themeNames, setThemeNames] = React.useState<Theme['names']>({
-        fr: '',
-    });
+    const [themeNames, setThemeNames] = React.useState(theme.names);
     const [showModal, setShowModal] = React.useState<boolean>(false);
     const [languageToAdd, setLanguageToAdd] = React.useState<number>(0);
     const [selectedLanguages, setSelectedLanguages] = React.useState<number[]>([]);
     const [imageUrl, setImageUrl] = React.useState<string | null>(null);
-    const [imageBlob, setImageBlob] = React.useState<Blob | null>(null);
+    const [imageBlob, setImageBlob] = React.useState<Blob | null | undefined>(undefined);
     const availableLanguages = languages.filter((l, index) => l.value !== 'fr' && !selectedLanguages.includes(index));
 
     const [isLoading, setIsLoading] = React.useState(false);
@@ -111,20 +113,22 @@ export const NewThemeForm = () => {
             setIsLoading(true);
 
             // 1. Upload image.
-            let imageUrl: string | undefined = undefined;
-            if (imageBlob !== null) {
-                imageUrl = await uploadImage(imageBlob);
+            let imageUrl: string | undefined | null = undefined;
+            if (imageBlob === null) {
+                imageUrl = null; // delete image
+            } else if (imageBlob !== undefined) {
+                imageUrl = await uploadImage(imageBlob); // upload new image
             }
 
-            // 2. Create theme.
-            await createDefaultTheme({
+            // 2. Update theme.
+            await updateDefaultTheme({
+                themeId: theme.id,
                 names: themeNames,
-                isDefault: true,
                 imageUrl,
             });
 
             // 3. Redirect to list.
-            sendToast({ message: 'Thème créé avec succès!', type: 'success' });
+            sendToast({ message: 'Thème mis à jour avec succès!', type: 'success' });
             setIsLoading(false);
             router.push('/admin/themes');
         } catch (err) {
@@ -133,6 +137,8 @@ export const NewThemeForm = () => {
             setIsLoading(false);
         }
     };
+
+    const imageSrc = imageBlob === null ? null : imageBlob ? window.URL.createObjectURL(imageBlob) : theme.imageUrl;
 
     return (
         <>
@@ -154,9 +160,7 @@ export const NewThemeForm = () => {
                 {availableLanguages.length > 0 && (
                     <Button
                         label="Ajouter une langue"
-                        isUpperCase={false}
                         variant="outlined"
-                        color="secondary"
                         onClick={() => {
                             setShowModal(true);
                         }}
@@ -165,9 +169,7 @@ export const NewThemeForm = () => {
                 <Title variant="h3" color="primary" marginTop="lg">
                     Image :
                 </Title>
-                <div style={{ marginTop: '0.5rem' }}>
-                    {imageBlob && <Image alt="theme image" width={300} height={200} src={window.URL.createObjectURL(imageBlob)} />}
-                </div>
+                <div style={{ marginTop: '0.5rem' }}>{imageSrc && <Image alt="theme image" width={300} height={200} src={imageSrc} />}</div>
                 <input
                     id="theme-image-upload"
                     ref={inputRef}
@@ -194,7 +196,7 @@ export const NewThemeForm = () => {
                     leftIcon={<UploadIcon style={{ width: '16px', height: '16px', marginRight: '8px' }} />}
                     marginTop="sm"
                 ></Button>
-                {imageBlob && (
+                {imageSrc && (
                     <Button
                         label="Supprimer l'image"
                         variant="outlined"
@@ -207,7 +209,7 @@ export const NewThemeForm = () => {
                     ></Button>
                 )}
                 <div style={{ width: '100%', textAlign: 'center', marginTop: '16px' }}>
-                    <Button label="Créer le thème !" color="secondary" variant="contained" type="submit"></Button>
+                    <Button label="Modifier le thème !" color="secondary" variant="contained" type="submit"></Button>
                 </div>
             </Form>
             {/* language modal */}
@@ -222,7 +224,7 @@ export const NewThemeForm = () => {
                 title="Ajouter une langue"
             >
                 {availableLanguages.length > 0 && (
-                    <Form preventSubmit>
+                    <Form>
                         <Field
                             name="languages"
                             label="Langages"

@@ -8,8 +8,9 @@ export type LocalTheme = Omit<Theme, 'id'> & {
 };
 export const isLocalTheme = (theme: Theme | LocalTheme): theme is LocalTheme => typeof theme.id === 'string';
 
-export type LocalScenario = Omit<Scenario, 'id'> & {
+export type LocalScenario = Omit<Scenario, 'id' | 'themeId'> & {
     id: string;
+    themeId: string | number;
 };
 export const isLocalScenario = (scenario: Scenario | LocalScenario): scenario is LocalScenario => typeof scenario.id === 'string';
 

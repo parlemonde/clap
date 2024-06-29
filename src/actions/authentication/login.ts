@@ -3,6 +3,7 @@
 import * as argon2 from 'argon2';
 import { eq } from 'drizzle-orm';
 import jwt from 'jsonwebtoken';
+import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 import { RedirectType, redirect } from 'next/navigation';
 
@@ -76,5 +77,6 @@ export async function login(_previousState: string, formData: FormData): Promise
         sameSite: 'strict',
     });
 
+    revalidatePath('/', 'layout');
     redirect(`/`, RedirectType.push);
 }

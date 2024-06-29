@@ -29,7 +29,7 @@ export const ThemeCard = ({ index = 0, imageUrl, name, href }: ThemeCardProps) =
                                 setShowBackgroundColor(false);
                             }}
                             fill
-                            sizes="256px"
+                            sizes="(max-width: 900px) 50vw, 33vw"
                             src={imageUrl}
                             alt="theme image"
                         />

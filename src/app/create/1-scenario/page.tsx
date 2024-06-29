@@ -11,11 +11,13 @@ import { Steps } from 'src/components/navigation/Steps';
 import { ThemeBreadcrumbs } from 'src/components/navigation/ThemeBreadcrumbs';
 import { Inverted } from 'src/components/ui/Inverted';
 import { Trans } from 'src/components/ui/Trans';
+import { getThemeId } from 'src/utils/search-params/get-theme-id';
+import type { SearchParams } from 'src/utils/search-params/search-params.types';
 import { serializeToQueryUrl } from 'src/utils/serialize-to-query-url';
 
-export default async function ScenarioPage({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) {
+export default async function ScenarioPage({ searchParams }: { searchParams: SearchParams }) {
+    const themeId = getThemeId(searchParams);
     const { t } = await getTranslation();
-    const themeId = typeof searchParams.themeId === 'string' ? searchParams.themeId : '';
 
     return (
         <Container paddingBottom="xl">
@@ -36,9 +38,11 @@ export default async function ScenarioPage({ searchParams }: { searchParams: { [
                 description={t('new_scenario_card_desc')}
                 href={`/create/1-scenario/new${serializeToQueryUrl({ themeId })}`}
             />
-            <React.Suspense fallback={<ScenarioCardPlaceholder />}>
-                <Scenarios themeId={Number(themeId)}></Scenarios>
-            </React.Suspense>
+            {typeof themeId === 'number' && (
+                <React.Suspense fallback={<ScenarioCardPlaceholder />}>
+                    <Scenarios themeId={themeId}></Scenarios>
+                </React.Suspense>
+            )}
             <LocalScenarios themeId={themeId}></LocalScenarios>
         </Container>
     );

@@ -9,19 +9,17 @@ import { Breadcrumbs } from 'src/components/layout/Breadcrumbs';
 import { Placeholder } from 'src/components/layout/Placeholder';
 
 type ThemeBreadcrumbsProps = {
-    themeId: string;
+    themeId: string | number;
 };
 const ThemeBreadcrumbsWithTheme = async ({ themeId }: ThemeBreadcrumbsProps) => {
     const { t, currentLocale } = await getTranslation();
-
-    const isLocalTheme = themeId.startsWith('local_');
-    const theme = isLocalTheme ? undefined : await getTheme(Number(themeId) ?? -1);
+    const theme = typeof themeId === 'number' ? await getTheme(themeId) : null;
 
     return (
         <Breadcrumbs
             marginTop="sm"
             links={[{ href: '/', label: t('all_themes') }]}
-            currentLabel={isLocalTheme ? <LocalThemeName themeId={themeId} /> : theme?.names[currentLocale] || theme?.names.fr || ''}
+            currentLabel={theme ? theme?.names[currentLocale] || theme?.names.fr || '' : <LocalThemeName themeId={`${themeId}`} />}
             className="for-tablet-up-only"
         />
     );
