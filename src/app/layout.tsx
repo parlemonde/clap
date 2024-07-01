@@ -1,7 +1,7 @@
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import classNames from 'classnames';
 import type { Metadata, Viewport } from 'next';
 import * as React from 'react';
-
 import 'normalize.css/normalize.css';
 import 'nprogress/nprogress.css';
 import 'src/styles/globals.scss';
@@ -85,6 +85,7 @@ export default async function RootLayout({ children }: React.PropsWithChildren) 
                 </TooltipProvider>
                 <Toasts />
                 <NProgressDone />
+                <SpeedInsights />
             </body>
         </html>
     );

@@ -32,6 +32,7 @@ export const ThemeCard = ({ index = 0, imageUrl, name, href }: ThemeCardProps) =
                             sizes="(max-width: 900px) 50vw, 33vw"
                             src={imageUrl}
                             alt="theme image"
+                            loading="eager" // no preloading, the image is not visible on the page load
                         />
                     )}
                 </div>

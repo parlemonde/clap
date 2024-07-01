@@ -4995,6 +4995,33 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@vercel/speed-insights@npm:^1.0.12":
+  version: 1.0.12
+  resolution: "@vercel/speed-insights@npm:1.0.12"
+  peerDependencies:
+    "@sveltejs/kit": ^1 || ^2
+    next: ">= 13"
+    react: ^18 || ^19
+    svelte: ^4
+    vue: ^3
+    vue-router: ^4
+  peerDependenciesMeta:
+    "@sveltejs/kit":
+      optional: true
+    next:
+      optional: true
+    react:
+      optional: true
+    svelte:
+      optional: true
+    vue:
+      optional: true
+    vue-router:
+      optional: true
+  checksum: 10c0/d1cc16952fdaddf8aff76e6c5909e8417cf11efe2458c70392e5172da620bcca39aea9eeaa8eb83b77fb2cb072a69047d62ba890f0c3a75cb110e3edb35b1648
+  languageName: node
+  linkType: hard
+
 "abbrev@npm:1":
   version: 1.1.1
   resolution: "abbrev@npm:1.1.1"
@@ -5669,6 +5696,7 @@ __metadata:
     "@types/uuid": "npm:^9.0.8"
     "@typescript-eslint/eslint-plugin": "npm:6.21.0"
     "@typescript-eslint/parser": "npm:6.21.0"
+    "@vercel/speed-insights": "npm:^1.0.12"
     argon2: "npm:0.31.2"
     classnames: "npm:^2.5.1"
     croppie: "npm:^2.6.5"
