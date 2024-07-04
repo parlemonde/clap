@@ -166,7 +166,7 @@ export const NewThemeForm = () => {
                     Image :
                 </Title>
                 <div style={{ marginTop: '0.5rem' }}>
-                    {imageBlob && <Image alt="theme image" width={300} height={200} src={window.URL.createObjectURL(imageBlob)} />}
+                    {imageBlob && <Image alt="theme image" width={300} height={210} src={window.URL.createObjectURL(imageBlob)} />}
                 </div>
                 <input
                     id="theme-image-upload"
@@ -261,7 +261,7 @@ export const NewThemeForm = () => {
                 {imageUrl !== null && (
                     <div className="text-center">
                         <div style={{ width: '500px', height: '400px', marginBottom: '2rem' }}>
-                            <ImgCroppie src={imageUrl} alt="Plan image" ref={croppieRef} imgWidth={420} imgHeight={308} />
+                            <ImgCroppie src={imageUrl} alt="Plan image" ref={croppieRef} imgWidth={420} imgHeight={294} />
                         </div>
                     </div>
                 )}

@@ -169,7 +169,7 @@ export const EditThemeForm = ({ theme }: EditThemeFormProps) => {
                 <Title variant="h3" color="primary" marginTop="lg">
                     Image :
                 </Title>
-                <div style={{ marginTop: '0.5rem' }}>{imageSrc && <Image alt="theme image" width={300} height={200} src={imageSrc} />}</div>
+                <div style={{ marginTop: '0.5rem' }}>{imageSrc && <Image alt="theme image" width={300} height={210} src={imageSrc} />}</div>
                 <input
                     id="theme-image-upload"
                     ref={inputRef}
@@ -263,7 +263,7 @@ export const EditThemeForm = ({ theme }: EditThemeFormProps) => {
                 {imageUrl !== null && (
                     <div className="text-center">
                         <div style={{ width: '500px', height: '400px', marginBottom: '2rem' }}>
-                            <ImgCroppie src={imageUrl} alt="Plan image" ref={croppieRef} imgWidth={420} imgHeight={308} />
+                            <ImgCroppie src={imageUrl} alt="Plan image" ref={croppieRef} imgWidth={420} imgHeight={294} />
                         </div>
                     </div>
                 )}

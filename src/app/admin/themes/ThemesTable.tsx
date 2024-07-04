@@ -93,7 +93,7 @@ export const ThemesTable = ({ defaultThemes }: ThemesTableWithDataProps) => {
                                 </th>
                                 <th>
                                     {t.imageUrl ? (
-                                        <Image alt={'theme image'} width={60} height={40} style={{ display: 'table-cell' }} src={t.imageUrl} />
+                                        <Image alt={'theme image'} width={60} height={42} style={{ display: 'table-cell' }} src={t.imageUrl} />
                                     ) : (
                                         'Aucune image'
                                     )}
