@@ -3872,6 +3872,62 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@redis/bloom@npm:1.2.0":
+  version: 1.2.0
+  resolution: "@redis/bloom@npm:1.2.0"
+  peerDependencies:
+    "@redis/client": ^1.0.0
+  checksum: 10c0/7dde8e67188164e96226c8a5c78ebd2801f1662947371e78fb95fb180c1e9ddff8d237012eb5e9182775be61cb546f67f759927cdaee0d178d863ee290e1fb27
+  languageName: node
+  linkType: hard
+
+"@redis/client@npm:1.5.17":
+  version: 1.5.17
+  resolution: "@redis/client@npm:1.5.17"
+  dependencies:
+    cluster-key-slot: "npm:1.1.2"
+    generic-pool: "npm:3.9.0"
+    yallist: "npm:4.0.0"
+  checksum: 10c0/967ea3e00b5471de4f5b9aeec4fcc29ad6890deccea197731e891c99edc8ed1e43ad02480a4ed6aac50b29bf337421d893f2d8393271a27d510c644fe92647a7
+  languageName: node
+  linkType: hard
+
+"@redis/graph@npm:1.1.1":
+  version: 1.1.1
+  resolution: "@redis/graph@npm:1.1.1"
+  peerDependencies:
+    "@redis/client": ^1.0.0
+  checksum: 10c0/64199db2cb3669c4911af8aba3b7116c4c2c1df37ca74b2a65555e62c863935a0cea74bc41bd92acf2e551074eb2a30c75f54a9f439b40e0f9bb67fc5fb66614
+  languageName: node
+  linkType: hard
+
+"@redis/json@npm:1.0.6":
+  version: 1.0.6
+  resolution: "@redis/json@npm:1.0.6"
+  peerDependencies:
+    "@redis/client": ^1.0.0
+  checksum: 10c0/ac6072c33ac4552cf4748b6b2dc5fdc63f7a9396e6453b59ee03831cdde8d495caa90786e04036633d058c39cdf5c6fce903272c43ff942941b15c157ac34498
+  languageName: node
+  linkType: hard
+
+"@redis/search@npm:1.1.6":
+  version: 1.1.6
+  resolution: "@redis/search@npm:1.1.6"
+  peerDependencies:
+    "@redis/client": ^1.0.0
+  checksum: 10c0/690b30dc914f013c10c03899ddc5585194e891323c14f4d974d51d912944e50b5f21208e0fc5eed958dde87b730254846e9ffe5caf0b54ff1ff2c64a051df057
+  languageName: node
+  linkType: hard
+
+"@redis/time-series@npm:1.0.5":
+  version: 1.0.5
+  resolution: "@redis/time-series@npm:1.0.5"
+  peerDependencies:
+    "@redis/client": ^1.0.0
+  checksum: 10c0/3c7f31f64a5f215534db6f0a10845be046ffee2928972037713acdd72cdb9ccc4a476ecce70d896333346a8f4081bd2139a4d50da4d19b9d61a6836066188d68
+  languageName: node
+  linkType: hard
+
 "@rushstack/eslint-patch@npm:^1.3.3":
   version: 1.10.3
   resolution: "@rushstack/eslint-patch@npm:1.10.3"
@@ -5719,6 +5775,7 @@ __metadata:
     prettier: "npm:2.7.1"
     react: "npm:^18.3.1"
     react-dom: "npm:^18.3.1"
+    redis: "npm:^4.6.15"
     sanitize-filename: "npm:^1.6.3"
     sass: "npm:^1.77.6"
     sharp: "npm:^0.33.4"
@@ -5777,6 +5834,13 @@ __metadata:
   version: 1.0.4
   resolution: "clone@npm:1.0.4"
   checksum: 10c0/2176952b3649293473999a95d7bebfc9dc96410f6cbd3d2595cf12fd401f63a4bf41a7adbfd3ab2ff09ed60cb9870c58c6acdd18b87767366fabfc163700f13b
+  languageName: node
+  linkType: hard
+
+"cluster-key-slot@npm:1.1.2":
+  version: 1.1.2
+  resolution: "cluster-key-slot@npm:1.1.2"
+  checksum: 10c0/d7d39ca28a8786e9e801eeb8c770e3c3236a566625d7299a47bb71113fb2298ce1039596acb82590e598c52dbc9b1f088c8f587803e697cb58e1867a95ff94d3
   languageName: node
   linkType: hard
 
@@ -7448,6 +7512,13 @@ __metadata:
     strip-ansi: "npm:^6.0.1"
     wide-align: "npm:^1.1.2"
   checksum: 10c0/75230ccaf216471e31025c7d5fcea1629596ca20792de50c596eb18ffb14d8404f927cd55535aab2eeecd18d1e11bd6f23ec3c2e9878d2dda1dc74bccc34b913
+  languageName: node
+  linkType: hard
+
+"generic-pool@npm:3.9.0":
+  version: 3.9.0
+  resolution: "generic-pool@npm:3.9.0"
+  checksum: 10c0/6b314d0d71170d5cbaf7162c423f53f8d6556b2135626a65bcdc03c089840b0a2f59eeb2d907939b8200e945eaf71ceb6630426f22d2128a1d242aec4b232aa7
   languageName: node
   linkType: hard
 
@@ -9548,6 +9619,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"redis@npm:^4.6.15":
+  version: 4.6.15
+  resolution: "redis@npm:4.6.15"
+  dependencies:
+    "@redis/bloom": "npm:1.2.0"
+    "@redis/client": "npm:1.5.17"
+    "@redis/graph": "npm:1.1.1"
+    "@redis/json": "npm:1.0.6"
+    "@redis/search": "npm:1.1.6"
+    "@redis/time-series": "npm:1.0.5"
+  checksum: 10c0/6c8e3fd5af8154686c2a4320728a1f032f11fea1d57b66ad6dc7ef9e3e67fc9656d5d52445bb38b574cfc8598e88703178f1d42d388cfd392c2e7a66631aa189
+  languageName: node
+  linkType: hard
+
 "reflect.getprototypeof@npm:^1.0.4":
   version: 1.0.6
   resolution: "reflect.getprototypeof@npm:1.0.6"
@@ -10888,17 +10973,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"yallist@npm:4.0.0, yallist@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "yallist@npm:4.0.0"
+  checksum: 10c0/2286b5e8dbfe22204ab66e2ef5cc9bbb1e55dfc873bbe0d568aa943eb255d131890dfd5bf243637273d31119b870f49c18fcde2c6ffbb7a7a092b870dc90625a
+  languageName: node
+  linkType: hard
+
 "yallist@npm:^3.0.2":
   version: 3.1.1
   resolution: "yallist@npm:3.1.1"
   checksum: 10c0/c66a5c46bc89af1625476f7f0f2ec3653c1a1791d2f9407cfb4c2ba812a1e1c9941416d71ba9719876530e3340a99925f697142989371b72d93b9ee628afd8c1
-  languageName: node
-  linkType: hard
-
-"yallist@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "yallist@npm:4.0.0"
-  checksum: 10c0/2286b5e8dbfe22204ab66e2ef5cc9bbb1e55dfc873bbe0d568aa943eb255d131890dfd5bf243637273d31119b870f49c18fcde2c6ffbb7a7a092b870dc90625a
   languageName: node
   linkType: hard
 

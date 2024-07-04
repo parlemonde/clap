@@ -37,6 +37,7 @@
     "postgres": "^3.4.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "redis": "^4.6.15",
     "sanitize-filename": "^1.6.3",
     "sass": "^1.77.6",
     "sharp": "^0.33.4",
