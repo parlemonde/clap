@@ -22,7 +22,6 @@ export const DiaporamaCard = ({ projectId, questionIndex, sequence, isAuthorized
     const [frameIndex, setFrameIndex] = React.useState<'title' | number>(sequence.title !== null ? 'title' : 0);
     const [canvasRef, { height: canvasHeight }] = useResizeObserver<HTMLAnchorElement>();
 
-    const baseButtonStyle: React.CSSProperties = { width: '100%', height: '100%', pointerEvents: isAuthorized ? 'auto' : 'none' };
     const buttonStyle = React.useMemo(() => {
         const plan = frameIndex !== 'title' ? (sequence.plans || [])[frameIndex] : undefined;
         if (plan && plan.imageUrl) {
@@ -47,6 +46,14 @@ export const DiaporamaCard = ({ projectId, questionIndex, sequence, isAuthorized
             return null;
         }
     }, [sequence]);
+
+    const baseButtonStyle: React.CSSProperties = {
+        width: '100%',
+        height: '100%',
+        pointerEvents: isAuthorized ? 'auto' : 'none',
+        backgroundColor: style.backgroundColor || 'white',
+        color: style.color || 'black',
+    };
 
     const updateFrameIndex = React.useCallback(() => {
         setFrameIndex((prevFrame) => {
@@ -87,6 +94,9 @@ export const DiaporamaCard = ({ projectId, questionIndex, sequence, isAuthorized
                                   left: `${style.x ?? 15}%`,
                                   top: `${style.y ?? 30}%`,
                                   width: `${style.width ?? 70}%`,
+                                  backgroundColor: style.backgroundColor || 'white',
+                                  textAlign: style.textAlign || 'center',
+                                  color: style.color || 'black',
                               }
                     }
                 >

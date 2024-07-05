@@ -83,12 +83,12 @@ const PreMountSequence = () => {
     const { user } = React.useContext(userContext);
     const isStudent = user?.type === UserType.STUDENT;
     const [showButtonFeedback, setShowButtonFeedback] = React.useState(
-        (isStudent && sequence && sequence.feedback && QuestionStatus.PREMOUNTING === sequence.status) as boolean,
+        (isStudent && sequence && sequence.feedbacks && QuestionStatus.PREMOUNTING === sequence.status) as boolean,
     );
     const [showFeedback, setShowFeedback] = React.useState(false);
 
     React.useEffect(() => {
-        if (isStudent && sequence && sequence.feedback && QuestionStatus.PREMOUNTING === sequence.status) {
+        if (isStudent && sequence && sequence.feedbacks && QuestionStatus.PREMOUNTING === sequence.status) {
             setShowButtonFeedback(true);
         }
     }, [isStudent, sequence]);
@@ -337,7 +337,7 @@ const PreMountSequence = () => {
             <FeedbackModal
                 isOpen={showFeedback}
                 onClose={() => setShowFeedback(false)}
-                feedback={sequence && sequence.feedback ? sequence.feedback : ''}
+                feedback={sequence && sequence.feedbacks && sequence.feedbacks.length > 0 ? sequence.feedbacks[sequence.feedbacks.length - 1] : ''}
             />
         </Container>
     );

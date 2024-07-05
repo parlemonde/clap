@@ -30,7 +30,13 @@ export const TitleCard = ({ projectId, questionIndex, title, onDelete = () => {}
         }
     }, [title]);
     const [canvasRef, { height: canvasHeight }] = useResizeObserver<HTMLAnchorElement>();
-    const buttonStyle: React.CSSProperties = { width: '100%', height: '100%', pointerEvents: canEdit ? 'auto' : 'none' };
+    const buttonStyle: React.CSSProperties = {
+        width: '100%',
+        height: '100%',
+        pointerEvents: canEdit ? 'auto' : 'none',
+        backgroundColor: style ? style.backgroundColor : 'white',
+        color: style ? style.color : 'black',
+    };
 
     return (
         <Link
@@ -52,6 +58,9 @@ export const TitleCard = ({ projectId, questionIndex, title, onDelete = () => {}
                                   left: `${style.x ?? 15}%`,
                                   top: `${style.y ?? 30}%`,
                                   width: `${style.width ?? 70}%`,
+                                  backgroundColor: style.backgroundColor || 'white',
+                                  textAlign: style.textAlign || 'center',
+                                  color: style.color || 'black',
                               }
                     }
                 >

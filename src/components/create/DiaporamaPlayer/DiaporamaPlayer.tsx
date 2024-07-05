@@ -542,7 +542,7 @@ export const DiaporamaPlayer = ({
                                         setVolume(newValue);
                                         onUpdateVolume(newValue);
                                     }}
-                                    max={200}
+                                    max={300}
                                     min={0}
                                     orientation="vertical"
                                 />

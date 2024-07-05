@@ -75,7 +75,7 @@ const Scenario = ({
 
     const plans = React.useMemo(() => sequence.plans || [], [sequence]);
     const [showFeedback, setShowFeedback] = React.useState(false);
-    const showButtonFeedback = isStudent && sequence.feedback && QuestionStatus.ONGOING === sequence.status;
+    const showButtonFeedback = isStudent && sequence.feedbacks && QuestionStatus.ONGOING === sequence.status;
     const studentColor = COLORS[sequenceIndex];
 
     const { project, isLoading: isProjectLoading, questions, updateProject } = useCurrentProject();
@@ -267,7 +267,9 @@ const Scenario = ({
                 <FeedbackModal
                     isOpen={showFeedback}
                     onClose={() => setShowFeedback(false)}
-                    feedback={sequence && sequence.feedback ? sequence.feedback : ''}
+                    feedback={
+                        sequence && sequence.feedbacks && sequence.feedbacks.length > 0 ? sequence.feedbacks[sequence.feedbacks.length - 1] : ''
+                    }
                 />
             </div>
             {isCollaborationActive && !isStudent && sequence.status === QuestionStatus.STORYBOARD && (

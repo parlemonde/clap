@@ -42,7 +42,7 @@ export const FormFeedback: React.FunctionComponent<FormFeedbackProps> = ({ quest
             newQuestions[question.index] = {
                 ...newQuestions[question.index],
                 status,
-                feedback: feedbackData,
+                feedbacks: feedbackData ? [...(question.feedbacks ?? []), feedbackData] : question.feedbacks,
             };
             const updatedProject = updateProject({ questions: newQuestions });
             if (updatedProject) {
@@ -86,6 +86,17 @@ export const FormFeedback: React.FunctionComponent<FormFeedbackProps> = ({ quest
             >
                 {t('collaboration_form_feedback_title')}
             </h2>
+
+            {question.feedbacks && question.feedbacks.length > 0 && (
+                <div>
+                    <div style={{ fontSize: '14px' }}>{t('collaboration_previous_feedbacks_label')} :</div>
+                    <ul>
+                        {question.feedbacks.map((feedbackItem, index) => (
+                            <li key={index}>{feedbackItem}</li>
+                        ))}
+                    </ul>
+                </div>
+            )}
 
             <Field
                 marginTop="sm"
