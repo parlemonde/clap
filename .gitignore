@@ -37,6 +37,7 @@ yarn-error.log*
 .mysql-data
 .postgres-data
 .minio-data
+.redis-data
 .env
 .env.*
 .aws-sam

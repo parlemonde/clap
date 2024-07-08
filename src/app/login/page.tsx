@@ -11,6 +11,7 @@ import { IconButton } from 'src/components/layout/Button/IconButton';
 import { Container } from 'src/components/layout/Container';
 import { Field, Form, Input } from 'src/components/layout/Form';
 import { Title } from 'src/components/layout/Typography';
+import { FormLoader } from 'src/components/ui/Loader';
 import { useTranslation } from 'src/contexts/translationContext';
 import { userContext } from 'src/contexts/userContext';
 
@@ -64,6 +65,9 @@ export default function LoginPage() {
                     }
                 ></Field>
                 <Button label={t('login_connect')} variant="contained" color="secondary" type="submit" value="Submit"></Button>
+                <div className="loader-wrapper">
+                    <FormLoader />
+                </div>
             </Form>
         </Container>
     );

@@ -46,6 +46,12 @@ p {
   }
 }
 
+@media only screen and (max-width: 600px) {
+  .mobile-full-width {
+    width: 100%;
+  }
+}
+
 #nprogress .bar {
   z-index: 2000;
   background-color: $primaryColor;
@@ -69,7 +75,7 @@ p {
     margin-bottom: 24px;
 }
 
-.login-form > div,
+.login-form > div:not(.loader-wrapper),
 .login-form > button,
 .login-form > label,
 .signup-form > div,
