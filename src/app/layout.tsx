@@ -1,10 +1,10 @@
+import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import classNames from 'classnames';
 import type { Metadata, Viewport } from 'next';
 import * as React from 'react';
 import 'normalize.css/normalize.css';
 import 'nprogress/nprogress.css';
-import { Analytics } from '@vercel/analytics/react';
 import 'src/styles/globals.scss';
 
 import styles from './app.module.scss';
