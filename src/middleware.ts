@@ -50,6 +50,7 @@ export function middleware(request: NextRequest) {
 // https://nextjs.org/docs/app/building-your-application/configuring/content-security-policy
 export const createCspHeaders = (nonce: string) => {
     const defaultsCSPHeaders = `
+      default-src 'self';
       style-src 'self' 'unsafe-inline';
       font-src 'self';
       object-src 'none';
@@ -68,7 +69,6 @@ export const createCspHeaders = (nonce: string) => {
     if (process.env?.VERCEL_ENV === 'preview') {
         return `
         ${defaultsCSPHeaders}
-        default-src 'none';
         script-src 'self' https://vercel.live/ https://vercel.com 'unsafe-inline' https: http:;
         connect-src 'self' https://vercel.live/ https://vercel.com https://vitals.vercel-insights.com https://sockjs-mt1.pusher.com/ wss://ws-mt1.pusher.com/;
         img-src 'self' https://vercel.live/ https://vercel.com https://sockjs-mt1.pusher.com/ data: blob:;
@@ -80,7 +80,6 @@ export const createCspHeaders = (nonce: string) => {
     // based on: https://vercel.com/docs/speed-insights#content-security-policy
     return `
         ${defaultsCSPHeaders}
-        default-src 'none';
         script-src 'self' 'nonce-${nonce}' 'strict-dynamic' 'unsafe-inline' https: http:;
         img-src 'self' blob: data:;
         connect-src 'self' https://vitals.vercel-insights.com;

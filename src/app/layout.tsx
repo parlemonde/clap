@@ -4,6 +4,7 @@ import type { Metadata, Viewport } from 'next';
 import * as React from 'react';
 import 'normalize.css/normalize.css';
 import 'nprogress/nprogress.css';
+import { Analytics } from '@vercel/analytics/react';
 import 'src/styles/globals.scss';
 
 import styles from './app.module.scss';
@@ -85,6 +86,7 @@ export default async function RootLayout({ children }: React.PropsWithChildren) 
                 </TooltipProvider>
                 <Toasts />
                 <NProgressDone />
+                <Analytics />
                 <SpeedInsights />
             </body>
         </html>
