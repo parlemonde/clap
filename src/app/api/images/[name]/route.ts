@@ -6,8 +6,6 @@ import { Readable } from 'stream';
 
 import { getFile, getFileData } from 'src/fileUpload';
 
-export const dynamic = 'force-dynamic';
-
 const notFoundResponse = () => {
     return new NextResponse('Error 404, not found.', {
         status: 404,
