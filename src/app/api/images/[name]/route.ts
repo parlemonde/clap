@@ -38,7 +38,7 @@ export async function GET(request: NextRequest, { params }: { params: { name: st
     const headers = new Headers({
         'Last-Modified': data.LastModified.toISOString(),
         'Content-Type': contentType,
-        'Cache-Control': 'public, max-age=31536000, immutable', // 1 year
+        'Cache-Control': 'public, s-maxage=604800, max-age=2678400, immutable',
     });
 
     /** Check for Range header */

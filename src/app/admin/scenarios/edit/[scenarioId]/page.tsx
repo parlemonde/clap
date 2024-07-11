@@ -1,18 +1,17 @@
 import * as React from 'react';
 
-import { EditThemeForm } from './EditThemeForm';
 import { getLocales } from 'src/actions/get-locales';
-import { getTheme } from 'src/actions/themes/get-theme';
+import { getScenario } from 'src/actions/scenarios/get-scenario';
 import { AdminTile } from 'src/components/admin/AdminTile';
 import { Breadcrumbs } from 'src/components/layout/Breadcrumbs';
 import { Container } from 'src/components/layout/Container';
 import { Title } from 'src/components/layout/Typography';
 
-export default async function AdminEditThemePage({ params }: { params: { themeId: string } }) {
-    const theme = await getTheme(Number(params.themeId) ?? 0);
+export default async function AdminEditThemePage({ params }: { params: { scenarioId: string } }) {
+    const scenario = await getScenario(Number(params.scenarioId) ?? 0);
     const { currentLocale } = await getLocales();
 
-    if (!theme) {
+    if (!scenario) {
         return null;
     }
 
@@ -22,14 +21,14 @@ export default async function AdminEditThemePage({ params }: { params: { themeId
                 marginTop="md"
                 links={[
                     {
-                        href: '/admin/themes',
-                        label: <Title style={{ display: 'inline' }}>Thèmes</Title>,
+                        href: '/admin/scenarios',
+                        label: <Title style={{ display: 'inline' }}>Scénarios</Title>,
                     },
                 ]}
-                currentLabel={<Title style={{ display: 'inline' }}>{theme.names[currentLocale]}</Title>}
+                currentLabel={<Title style={{ display: 'inline' }}>{scenario.names[currentLocale]}</Title>}
             />
-            <AdminTile marginY="md" title="Modifier le thème">
-                <EditThemeForm theme={theme} />
+            <AdminTile marginY="md" title="Modifier le scénario">
+                TODO
             </AdminTile>
         </Container>
     );
