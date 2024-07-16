@@ -66,8 +66,7 @@ export const viewport: Viewport = {
 };
 
 export default async function RootLayout({ children }: React.PropsWithChildren) {
-    const { currentLocale, locales } = await getLocales();
-    const user = await getCurrentUser();
+    const [{ currentLocale, locales }, user] = await Promise.all([getLocales(), getCurrentUser()]);
 
     return (
         <html lang={currentLocale}>

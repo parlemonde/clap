@@ -1,5 +1,6 @@
 'use server';
 
+import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 
 import { getCurrentUser } from '../get-current-user';
@@ -34,6 +35,33 @@ export async function createScenario(newUserScenario: NewUserScenario): Promise<
         })
         .returning();
 
-    // Return new theme
+    // Return new scenario
+    revalidatePath('/');
+    revalidatePath('/admin/scenarios');
+    return newScenarios[0];
+}
+
+type NewAdminScenario = {
+    names: Record<string, string>;
+    descriptions: Record<string, string>;
+    themeId: number;
+};
+export async function createAdminScenario(newScenario: NewAdminScenario): Promise<Scenario | undefined> {
+    const user = await getCurrentUser();
+    if (!user || user.role !== 'admin') {
+        return;
+    }
+
+    const newScenarios = await db
+        .insert(scenarios)
+        .values({
+            ...newScenario,
+            isDefault: true,
+        })
+        .returning();
+
+    // Return new scenario
+    revalidatePath('/');
+    revalidatePath('/admin/scenarios');
     return newScenarios[0];
 }
