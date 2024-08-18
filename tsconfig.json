@@ -30,6 +30,7 @@
   },
   "include": [
     "next-env.d.ts",
+    "src/image-loader.js",
     "**/*.ts",
     "./src/**/*.tsx",
     ".next/types/**/*.ts"
