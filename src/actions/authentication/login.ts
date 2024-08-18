@@ -45,7 +45,7 @@ export async function login(_previousState: string, formData: FormData): Promise
     let isPasswordCorrect: boolean = false;
     try {
         isPasswordCorrect = await argon2.verify((user.passwordHash || '').trim(), password);
-    } catch (e) {
+    } catch {
         return 'Unauthorized - Invalid credentials.';
     }
 

@@ -16,6 +16,8 @@ const getUser = cache(async (accessToken: string): Promise<User | undefined> => 
             | string
             | { userId: number; iat: number; exp: number };
         if (typeof decoded === 'string') {
+            // TODO: check the type of the decoded data
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             data = JSON.parse(decoded);
         } else {
             data = decoded;
@@ -24,7 +26,7 @@ const getUser = cache(async (accessToken: string): Promise<User | undefined> => 
             columns: { id: true, name: true, email: true, role: true },
             where: eq(users.id, data.userId),
         });
-    } catch (e) {
+    } catch {
         // do nothing
     }
 });

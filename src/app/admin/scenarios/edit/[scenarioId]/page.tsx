@@ -10,7 +10,7 @@ import { Container } from 'src/components/layout/Container';
 import { Title } from 'src/components/layout/Typography';
 
 export default async function AdminEditThemePage({ params }: { params: { scenarioId: string } }) {
-    const [{ currentLocale }, scenario, themes] = await Promise.all([getLocales(), getScenario(Number(params.scenarioId) ?? 0), listThemes()]);
+    const [{ currentLocale }, scenario, themes] = await Promise.all([getLocales(), getScenario(Number(params.scenarioId) || 0), listThemes()]);
 
     if (!scenario) {
         return null;

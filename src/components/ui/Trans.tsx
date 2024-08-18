@@ -14,8 +14,12 @@ function getTranslatedChild(child: React.ReactNode, childIndex: number, str: str
         return str;
     }
     if (React.isValidElement(child)) {
-        const childChildren = child.props.children;
-        return React.cloneElement(child, { ...child.props, key: childIndex }, getTranslatedChild(childChildren, childIndex, str));
+        const childChildren = (child.props as React.PropsWithChildren).children;
+        return React.cloneElement(
+            child,
+            { ...(child.props as React.PropsWithChildren), key: childIndex },
+            getTranslatedChild(childChildren, childIndex, str),
+        );
     }
     return null;
 }
@@ -26,7 +30,7 @@ export const Trans = ({ i18nKey, i18nParams = {}, children }: React.PropsWithChi
         return t(i18nKey, i18nParams).split(/<\/?\w*?>/gm);
     }, [t, i18nKey, i18nParams]);
 
-    const newChildren = (Array.isArray(children) ? children : [children])
+    const newChildren = (Array.isArray(children) ? (children as React.ReactNode[]) : [children])
         .slice(0, translatedStrings.length)
         .map((child, childIndex) => getTranslatedChild(child, childIndex, translatedStrings[childIndex]));
     return <>{newChildren}</>;

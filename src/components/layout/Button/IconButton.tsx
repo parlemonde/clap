@@ -6,8 +6,10 @@ import type { ButtonProps } from './Button';
 import { Button } from './Button';
 import styles from './icon-button.module.scss';
 
+export type SVGIcon = React.ForwardRefExoticComponent<IconProps & React.RefAttributes<SVGSVGElement>>;
+
 type IconButtonProps = Omit<ButtonProps, 'label' | 'leftIcon' | 'rightIcon'> & {
-    icon: React.ForwardRefExoticComponent<IconProps & React.RefAttributes<SVGSVGElement>>;
+    icon: SVGIcon;
     iconProps?: IconProps & React.RefAttributes<SVGSVGElement>;
 };
 const IconButtonWithRef = (

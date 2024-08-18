@@ -9,7 +9,7 @@ import { Container } from 'src/components/layout/Container';
 import { Title } from 'src/components/layout/Typography';
 
 export default async function AdminEditThemePage({ params }: { params: { themeId: string } }) {
-    const theme = await getTheme(Number(params.themeId) ?? 0);
+    const theme = await getTheme(Number(params.themeId) || 0);
     const { currentLocale } = await getLocales();
 
     if (!theme) {

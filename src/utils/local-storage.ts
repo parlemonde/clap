@@ -20,8 +20,8 @@ export type ObjectType<T extends LocalStorageKey> = T extends 'themes' ? LocalTh
 export function getFromLocalStorage<T extends LocalStorageKey>(key: T): ObjectType<T> | undefined {
     try {
         const localItem = localStorage.getItem(key);
-        return localItem ? JSON.parse(localItem) : undefined;
-    } catch (e) {
+        return localItem ? (JSON.parse(localItem) as ObjectType<T>) : undefined;
+    } catch {
         return undefined;
     }
 }
@@ -29,7 +29,7 @@ export function getFromLocalStorage<T extends LocalStorageKey>(key: T): ObjectTy
 export function setToLocalStorage<T extends LocalStorageKey>(key: T, item: ObjectType<T>) {
     try {
         localStorage.setItem(key, JSON.stringify(item));
-    } catch (e) {
+    } catch {
         // do nothing...
     }
 }

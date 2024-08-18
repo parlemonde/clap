@@ -13,6 +13,7 @@ import { Modal } from 'src/components/layout/Modal';
 import { Tooltip } from 'src/components/layout/Tooltip';
 import { Link } from 'src/components/navigation/Link';
 import { Sortable } from 'src/components/ui/Sortable';
+import { sendToast } from 'src/components/ui/Toasts';
 import type { Theme } from 'src/database/schemas/themes';
 
 type ThemesTableWithDataProps = {
@@ -35,7 +36,10 @@ export const ThemesTable = ({ defaultThemes }: ThemesTableWithDataProps) => {
     const [isDeleting, setIsDeleting] = React.useState(false);
 
     const setThemesOrder = (themes: Theme[]) => {
-        updateThemesOrder(themes.map((t) => t.id));
+        updateThemesOrder(themes.map((t) => t.id)).catch((error) => {
+            console.error(error);
+            sendToast({ message: "Erreur lors de la mise à jour de l'ordre des thèmes...", type: 'error' });
+        });
     };
 
     return (

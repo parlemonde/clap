@@ -5,6 +5,7 @@ import * as React from 'react';
 
 import styles from './checkbox.module.scss';
 import { IconButton } from '../Button/IconButton';
+import type { SVGIcon } from '../Button/IconButton';
 import CheckedIcon from 'src/svg/checkedIcon.svg';
 import UncheckedIcon from 'src/svg/uncheckedIcon.svg';
 
@@ -19,7 +20,7 @@ export const Checkbox = ({ name, label, isChecked, onChange }: CheckboxProps) =>
         <div className={styles.Checkbox}>
             <RadixCheckbox.Root asChild checked={isChecked} onCheckedChange={onChange} id={name} name={name}>
                 <IconButton
-                    icon={isChecked ? CheckedIcon : UncheckedIcon}
+                    icon={(isChecked ? CheckedIcon : UncheckedIcon) as SVGIcon}
                     variant="borderless"
                     marginRight="xs"
                     marginLeft={-8}

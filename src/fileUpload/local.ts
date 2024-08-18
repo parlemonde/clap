@@ -17,14 +17,14 @@ export const localStorageProvider: FileStorageProvider = {
                 ContentType: mime.lookup(fileUrl) || '',
                 LastModified: stats.mtime,
             };
-        } catch (e) {
+        } catch {
             return null;
         }
     },
     getFile: async function (fileUrl: string): Promise<Readable | null> {
         try {
             return fs.createReadStream(getFilePath(fileUrl));
-        } catch (e) {
+        } catch {
             console.error(`File ${fileUrl} not found !`);
         }
         return null;

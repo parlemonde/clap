@@ -6,7 +6,7 @@ export function getBufferFromStream(stream: Readable | null): Promise<Buffer | n
     }
     return new Promise<Buffer | null>((resolve) => {
         const chunks: Buffer[] = [];
-        stream.on('data', (chunk) => chunks.push(chunk));
+        stream.on('data', (chunk) => chunks.push(chunk as Buffer));
         stream.once('end', () => resolve(Buffer.concat(chunks)));
         stream.once('error', () => resolve(null));
     });

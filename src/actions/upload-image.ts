@@ -11,6 +11,6 @@ export async function uploadImage(file: File | Blob): Promise<string> {
     if (!response.ok) {
         throw new Error('Failed to upload image');
     }
-    const { url } = await response.json();
+    const { url } = (await response.json()) as { url: string };
     return url;
 }

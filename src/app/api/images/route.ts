@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
 
         const url = await uploadFile('images', filename, imageBuffer);
         return Response.json({ url });
-    } catch (error) {
+    } catch {
         return new NextResponse('Unknown error happened', {
             status: 500,
         });

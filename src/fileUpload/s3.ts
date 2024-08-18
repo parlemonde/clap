@@ -33,7 +33,7 @@ export const s3StorageProvider: FileStorageProvider = {
                 ContentLength: response.ContentLength || 0,
                 ContentType: response.ContentType || '',
             };
-        } catch (e) {
+        } catch {
             console.error(`Could not get data for ${fileUrl}.`);
             return null;
         }
