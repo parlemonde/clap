@@ -23,7 +23,7 @@ const SelectComponent = (
     return (
         <div
             style={{ width: isFullWidth ? undefined : width }}
-            className={classNames(styles.select__container, { [styles['select__container--is-full-width']!]: isFullWidth })}
+            className={classNames(styles.select__container, { [styles['select__container--is-full-width']]: isFullWidth })}
         >
             <select
                 ref={ref}

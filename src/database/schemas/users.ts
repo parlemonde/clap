@@ -2,7 +2,7 @@ import { pgTable, serial, varchar, char, smallint } from 'drizzle-orm/pg-core';
 
 const ROLES_ENUM = ['admin', 'teacher'] as const;
 
-export type Role = typeof ROLES_ENUM[number];
+export type Role = (typeof ROLES_ENUM)[number];
 
 export const users = pgTable('users', {
     id: serial('id').primaryKey(),

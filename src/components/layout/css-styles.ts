@@ -45,7 +45,6 @@ export const getMarginAndPaddingProps = <T>(
         | 'marginY'
         | 'margin'
         | 'paddingTop'
-        | 'paddingTop'
         | 'paddingBottom'
         | 'paddingLeft'
         | 'paddingRight'

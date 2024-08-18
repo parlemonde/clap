@@ -28,6 +28,6 @@ export const Trans = ({ i18nKey, i18nParams = {}, children }: React.PropsWithChi
 
     const newChildren = (Array.isArray(children) ? children : [children])
         .slice(0, translatedStrings.length)
-        .map((child, childIndex) => getTranslatedChild(child, childIndex, translatedStrings[childIndex]!));
+        .map((child, childIndex) => getTranslatedChild(child, childIndex, translatedStrings[childIndex]));
     return <>{newChildren}</>;
 };

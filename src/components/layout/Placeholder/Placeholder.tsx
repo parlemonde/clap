@@ -14,7 +14,7 @@ export const Placeholder = ({ variant = 'block', width, height, className, style
     return (
         <span
             className={classNames(styles.placeholder, className, {
-                [styles['placeholder--text']!]: variant === 'text',
+                [styles['placeholder--text']]: variant === 'text',
             })}
             style={{ width, height, ...style }}
         />

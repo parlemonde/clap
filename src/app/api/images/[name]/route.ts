@@ -24,8 +24,8 @@ export async function GET(request: NextRequest, { params }: { params: { name: st
     const range = request.headers.get('range');
     const contentType =
         data.ContentType.length === 0 || data.ContentType === 'application/octet-stream'
-            ? getContentTypeFromFileName(params.name) ?? 'application/octet-stream'
-            : data.ContentType ?? 'application/octet-stream';
+            ? (getContentTypeFromFileName(params.name) ?? 'application/octet-stream')
+            : (data.ContentType ?? 'application/octet-stream');
     const width = Number(request.nextUrl.searchParams.get('w'));
     const quality = Number(request.nextUrl.searchParams.get('q'));
 
@@ -102,8 +102,8 @@ export async function HEAD(request: NextRequest, { params }: { params: { name: s
 
     const contentType =
         data.ContentType.length === 0 || data.ContentType === 'application/octet-stream'
-            ? getContentTypeFromFileName(params.name) ?? 'application/octet-stream'
-            : data.ContentType ?? 'application/octet-stream';
+            ? (getContentTypeFromFileName(params.name) ?? 'application/octet-stream')
+            : (data.ContentType ?? 'application/octet-stream');
     const width = Number(request.nextUrl.searchParams.get('w'));
     const quality = Number(request.nextUrl.searchParams.get('q'));
 

@@ -11,7 +11,7 @@ export const Inverted = ({ children, isRound = false, color = 'primary' }: React
     return (
         <span
             className={classNames(styles.inverted, styles[`inverted__${color}`], {
-                [styles.inverted__round!]: isRound,
+                [styles.inverted__round]: isRound,
             })}
         >
             {children}

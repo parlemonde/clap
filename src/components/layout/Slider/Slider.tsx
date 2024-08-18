@@ -36,7 +36,7 @@ export const Slider = ({
         value={[value]}
         onValueChange={(newValues: number[]) => {
             if (newValues.length === 1) {
-                onChange(newValues[0]!);
+                onChange(newValues[0]);
             }
         }}
         min={min}

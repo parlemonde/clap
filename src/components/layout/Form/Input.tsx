@@ -42,15 +42,15 @@ const InputComponent = (
     ) : null;
 
     return (
-        <div className={classNames(styles.inputContainer, { [styles[`inputContainer--is-full-width`]!]: isFullWidth })}>
+        <div className={classNames(styles.inputContainer, { [styles[`inputContainer--is-full-width`]]: isFullWidth })}>
             {inputIconPosition === 'left' && inputIcon}
             <input
                 ref={ref}
                 {...otherProps}
                 className={classNames(styles.input, styles[`input--${color}`], styles[`input--${size}`], className, {
-                    [styles['input--has-error']!]: hasError || isInvalid,
-                    [styles['input--with-left-icon']!]: iconAdornment && inputIconPosition === 'left',
-                    [styles['input--with-right-icon']!]: iconAdornment && inputIconPosition === 'right',
+                    [styles['input--has-error']]: hasError || isInvalid,
+                    [styles['input--with-left-icon']]: iconAdornment && inputIconPosition === 'left',
+                    [styles['input--with-right-icon']]: iconAdornment && inputIconPosition === 'right',
                 })}
                 style={{ ...style, ...getMarginAndPaddingStyle(marginAndPaddingProps) }}
                 onInvalid={() => {

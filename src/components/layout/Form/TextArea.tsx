@@ -21,8 +21,8 @@ export const TextArea = ({ color = 'primary', isFullWidth, size = 'md', hasError
             <textarea
                 {...otherProps}
                 className={classNames(styles.input, styles[`input--${color}`], styles[`input--${size}`], className, {
-                    [styles[`input--is-full-width`]!]: isFullWidth,
-                    [styles[`input--has-error`]!]: hasError || isInvalid,
+                    [styles[`input--is-full-width`]]: isFullWidth,
+                    [styles[`input--has-error`]]: hasError || isInvalid,
                 })}
                 style={{ ...style, ...getMarginAndPaddingStyle(marginAndPaddingProps) }}
                 onInvalid={() => {

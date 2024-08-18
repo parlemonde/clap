@@ -91,8 +91,8 @@ export const Steps = async ({ activeStep, backHref, themeId }: StepsProps) => {
                         index === activeStep && backHref
                             ? backHref
                             : activeStep !== 0
-                            ? step.href({ themeId, projectId: projectId || null })
-                            : undefined;
+                              ? step.href({ themeId, projectId: projectId || null })
+                              : undefined;
                     if (href) {
                         return (
                             <Link href={href} key={step.name} className={styles.step}>

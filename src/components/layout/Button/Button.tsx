@@ -54,11 +54,11 @@ const ButtonWithRef = (
                 styles[`button--${size}`],
                 className,
                 {
-                    [styles[`button--is-full-width`]!]: isFullWidth,
-                    [styles[`button--is-uppercase`]!]: isUpperCase,
-                    [styles[`button--hidden`]!]: isVisuallyHidden,
-                    [styles[`button--mobile-only`]!]: isMobileOnly,
-                    [styles[`button--tablet-up-only`]!]: isTabletUpOnly,
+                    [styles[`button--is-full-width`]]: isFullWidth,
+                    [styles[`button--is-uppercase`]]: isUpperCase,
+                    [styles[`button--hidden`]]: isVisuallyHidden,
+                    [styles[`button--mobile-only`]]: isMobileOnly,
+                    [styles[`button--tablet-up-only`]]: isTabletUpOnly,
                 },
             ),
             style: {
