@@ -46,14 +46,14 @@
     "uuid": "^10.0.0"
   },
   "devDependencies": {
-    "@dotenvx/dotenvx": "0.45.0",
+    "@dotenvx/dotenvx": "1.7.0",
     "@svgr/webpack": "^8.1.0",
     "@types/aws-lambda": "^8.10.143",
     "@types/croppie": "^2.6.4",
     "@types/fs-extra": "^11.0.4",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/mime-types": "^2.1.4",
-    "@types/node": "^20.15.0",
+    "@types/node": "^20.16.0",
     "@types/nprogress": "^0.2.3",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
