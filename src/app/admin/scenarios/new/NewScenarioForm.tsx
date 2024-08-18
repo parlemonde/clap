@@ -23,10 +23,11 @@ type Language = {
 };
 
 type NewScenarioFormProps = {
+    defaultThemeId?: number;
     themes: Theme[];
 };
 
-export const NewScenarioForm = ({ themes }: NewScenarioFormProps) => {
+export const NewScenarioForm = ({ themes, defaultThemeId = -1 }: NewScenarioFormProps) => {
     const router = useRouter();
 
     const languages = [
@@ -44,7 +45,7 @@ export const NewScenarioForm = ({ themes }: NewScenarioFormProps) => {
         {},
     );
 
-    const [themeId, setThemeId] = React.useState(-1);
+    const [themeId, setThemeId] = React.useState(defaultThemeId);
     const [scenarioNames, setScenarioNames] = React.useState<Scenario['names']>({});
     const [scenarioDescriptions, setScenarioDescriptions] = React.useState<Scenario['descriptions']>({});
 

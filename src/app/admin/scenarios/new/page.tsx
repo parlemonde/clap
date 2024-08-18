@@ -7,7 +7,8 @@ import { Breadcrumbs } from 'src/components/layout/Breadcrumbs';
 import { Container } from 'src/components/layout/Container';
 import { Title } from 'src/components/layout/Typography';
 
-export default async function AdminNewScenarioPage() {
+export default async function AdminNewScenarioPage({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) {
+    const defaultThemeId = typeof searchParams.themeId === 'string' ? Number(searchParams.themeId) || 0 : undefined;
     const themes = await listThemes();
 
     return (
@@ -23,7 +24,7 @@ export default async function AdminNewScenarioPage() {
                 currentLabel={<Title style={{ display: 'inline' }}>Nouveau</Title>}
             />
             <AdminTile marginY="md" title="Ajouter un scénario">
-                <NewScenarioForm themes={themes} />
+                <NewScenarioForm defaultThemeId={defaultThemeId} themes={themes} />
             </AdminTile>
         </Container>
     );

@@ -81,6 +81,7 @@ export default [
             '@typescript-eslint/no-misused-promises': ['error', { checksVoidReturn: false }],
             "@typescript-eslint/require-await": "off",
             "@typescript-eslint/unbound-method": "off",
+            "@typescript-eslint/no-unsafe-return": "off",
             'import/newline-after-import': [
                 'error',
                 {

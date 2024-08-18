@@ -48,7 +48,7 @@ export const ThemesTable = ({ defaultThemes }: ThemesTableWithDataProps) => {
                 <thead>
                     <tr>
                         <th align="left">Ordre</th>
-                        <th align="left">
+                        <th align="left" style={{ padding: '16px 0' }}>
                             Nom{' '}
                             <span style={{ marginLeft: '2rem' }}>
                                 (
@@ -78,7 +78,9 @@ export const ThemesTable = ({ defaultThemes }: ThemesTableWithDataProps) => {
                             </span>
                             )
                         </th>
-                        <th align="left">Image</th>
+                        <th align="left" style={{ padding: '16px 0' }}>
+                            Image
+                        </th>
                         <th align="right">Actions</th>
                     </tr>
                 </thead>
