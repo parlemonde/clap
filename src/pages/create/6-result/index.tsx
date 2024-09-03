@@ -80,52 +80,43 @@ const ResultPage = () => {
     const { isCollaborationActive } = useCollaboration();
     const { socket, connectTeacher } = useSocket();
     const [isLoading, setIsLoading] = React.useState(false);
+    const [hasGenerated, setHasGenerated] = React.useState(false);
     const {
-        projectVideo: initialProjectVideo,
+        projectVideo,
         isLoading: isLoadingProjectVideo,
         refetch,
     } = useProjectVideo(project?.id ?? 0, {
         enabled: project !== undefined && project.id !== 0,
     });
-    const [projectVideo, setProjectVideo] = React.useState(initialProjectVideo);
     const sounds = React.useMemo(() => getSounds(questions), [questions]);
-    const [isDownloading, setIsDownloading] = React.useState<boolean>((projectVideo !== undefined && projectVideo.progress < 100) as boolean);
+    const isDownloading = projectVideo !== undefined && projectVideo.progress < 100;
 
+    // Automatically refresh the video download progress
+    const intervalRef = React.useRef<number | null>(null);
+    if (isDownloading && intervalRef.current === null) {
+        intervalRef.current = window.setInterval(() => {
+            refetch();
+        }, 1000);
+    }
+    if (!isDownloading && intervalRef.current !== null) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+    }
+
+    // Automatically download the video when it's ready
+    const willAutoDownload = React.useRef(false);
+    const downloadVideoRef = React.useRef<HTMLAnchorElement | null>(null);
     React.useEffect(() => {
-        if (initialProjectVideo) {
-            setProjectVideo(initialProjectVideo);
+        if (projectVideo !== undefined && projectVideo.url && willAutoDownload.current && downloadVideoRef.current) {
+            willAutoDownload.current = false;
+            downloadVideoRef.current.click();
         }
-    }, [initialProjectVideo]);
+    }, [projectVideo]);
 
-    const resetProjectVideo = () => {
-        setProjectVideo({
-            ...projectVideo,
-            url: '',
-            progress: 0,
-        });
-    };
-
-    React.useEffect(() => {
-        setIsDownloading((projectVideo !== undefined && projectVideo.progress < 100) as boolean);
-        if (projectVideo !== undefined && isDownloading) {
-            if (projectVideo.progress > 99) {
-                setIsDownloading(false);
-                const a = document.createElement('a');
-                a.href = projectVideo.url;
-                a.download = 'project_video.mp4';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                return;
-            }
-
-            setTimeout(() => {
-                refetch();
-            }, 1000);
-        }
-
-        return () => {};
-    }, [projectVideo, isDownloading, refetch]);
+    if (isDownloading && !hasGenerated) {
+        setHasGenerated(true);
+        willAutoDownload.current = true;
+    }
 
     React.useEffect(() => {
         if (isCollaborationActive && socket.connected === false && project !== undefined && project.id) {
@@ -177,9 +168,6 @@ const ResultPage = () => {
         if (!project || project.id === 0 || !data) {
             return;
         }
-
-        resetProjectVideo();
-
         createProjectVideoMutation.mutate(
             {
                 projectId: project.id,
@@ -187,7 +175,8 @@ const ResultPage = () => {
             },
             {
                 onSuccess: () => {
-                    setIsDownloading(true);
+                    setHasGenerated(true);
+                    willAutoDownload.current = true;
                 },
                 onError: () => {
                     sendToast({ message: t('unknown_error'), type: 'error' });
@@ -196,6 +185,7 @@ const ResultPage = () => {
         );
     };
 
+    const videoUrl = projectVideo?.url;
     const videoProgress = projectVideo?.progress;
     const hasProject = project !== undefined && project.id !== 0;
 
@@ -259,6 +249,19 @@ const ResultPage = () => {
                                     </Text>
                                     <LinearProgressWithLabel value={videoProgress} />
                                 </div>
+                            ) : videoUrl && hasGenerated ? (
+                                <Button
+                                    label={t('part6_mp4_download_button')}
+                                    as="a"
+                                    ref={downloadVideoRef}
+                                    href={videoUrl}
+                                    className="full-width"
+                                    variant="contained"
+                                    color="secondary"
+                                    style={{ width: '100%' }}
+                                    leftIcon={<VideoIcon style={{ marginRight: '10px', width: '24px', height: '24px' }} />}
+                                    download
+                                />
                             ) : (
                                 <Tooltip
                                     content={user === null ? t('part6_mp4_user_disabled') : !hasProject ? t('part6_mp4_project_disabled') : ''}
