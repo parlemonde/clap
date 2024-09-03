@@ -80,7 +80,7 @@ const ResultPage = () => {
     const { isCollaborationActive } = useCollaboration();
     const { socket, connectTeacher } = useSocket();
     const [isLoading, setIsLoading] = React.useState(false);
-    const [hasGenerated, setHasGenerated] = React.useState(false);
+    const [isGenerating, setIsGenerating] = React.useState(false);
     const {
         projectVideo,
         isLoading: isLoadingProjectVideo,
@@ -113,8 +113,8 @@ const ResultPage = () => {
         }
     }, [projectVideo]);
 
-    if (isDownloading && !hasGenerated) {
-        setHasGenerated(true);
+    if (isDownloading && !isGenerating) {
+        setIsGenerating(true);
         willAutoDownload.current = true;
     }
 
@@ -168,6 +168,7 @@ const ResultPage = () => {
         if (!project || project.id === 0 || !data) {
             return;
         }
+        setIsGenerating(true);
         createProjectVideoMutation.mutate(
             {
                 projectId: project.id,
@@ -175,10 +176,10 @@ const ResultPage = () => {
             },
             {
                 onSuccess: () => {
-                    setHasGenerated(true);
                     willAutoDownload.current = true;
                 },
                 onError: () => {
+                    setIsGenerating(false);
                     sendToast({ message: t('unknown_error'), type: 'error' });
                 },
             },
@@ -231,7 +232,7 @@ const ResultPage = () => {
                         <div>loading</div>
                     ) : (
                         <>
-                            {createProjectVideoMutation.isLoading || (videoProgress && videoProgress !== 100) ? (
+                            {!videoUrl && isGenerating ? (
                                 <div
                                     style={{
                                         width: '100%',
@@ -247,9 +248,9 @@ const ResultPage = () => {
                                     <Text className="color-secondary" style={{ fontSize: '0.8rem', marginBottom: '0.5rem' }}>
                                         {t('part6_mp4_loading')}
                                     </Text>
-                                    <LinearProgressWithLabel value={videoProgress || 0} />
+                                    <LinearProgressWithLabel value={videoProgress === 100 ? 0 : videoProgress ?? 0} />
                                 </div>
-                            ) : videoUrl && hasGenerated ? (
+                            ) : videoUrl && isGenerating ? (
                                 <Button
                                     label={t('part6_mp4_download_button')}
                                     as="a"
