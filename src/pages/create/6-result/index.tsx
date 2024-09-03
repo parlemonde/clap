@@ -231,7 +231,7 @@ const ResultPage = () => {
                         <div>loading</div>
                     ) : (
                         <>
-                            {videoProgress && videoProgress !== 100 ? (
+                            {createProjectVideoMutation.isLoading || (videoProgress && videoProgress !== 100) ? (
                                 <div
                                     style={{
                                         width: '100%',
@@ -247,7 +247,7 @@ const ResultPage = () => {
                                     <Text className="color-secondary" style={{ fontSize: '0.8rem', marginBottom: '0.5rem' }}>
                                         {t('part6_mp4_loading')}
                                     </Text>
-                                    <LinearProgressWithLabel value={videoProgress} />
+                                    <LinearProgressWithLabel value={videoProgress || 0} />
                                 </div>
                             ) : videoUrl && hasGenerated ? (
                                 <Button
