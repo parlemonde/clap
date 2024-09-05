@@ -32,6 +32,8 @@ export function TitleCanvas({ title, onChange }: TitleCanvasProps) {
     const [fontFamily, setFontFamily] = React.useState<string>(style.fontFamily || 'serif');
     const [fontSize, setFontSize] = React.useState<number>(style.fontSize || 8); // %
     const [textAlign, setTextAlign] = React.useState<TextAlign>(style.textAlign || 'center');
+    const [backgroundColor, setBackgroundColor] = React.useState<string>(style.backgroundColor || 'white');
+    const [color, setColor] = React.useState<string>(style.color || 'black');
     // relative pos
     const [textXPer, setTextXPer] = React.useState<number>(style.x ?? 15); // %
     const [textYPer, setTextYPer] = React.useState<number>(style.y ?? 30); // %
@@ -46,6 +48,8 @@ export function TitleCanvas({ title, onChange }: TitleCanvasProps) {
         setTextYPer(style.y ?? 35);
         setTextWidthPer(style.width || 50);
         setTextAlign(style.textAlign || 'center');
+        setBackgroundColor(style.backgroundColor || 'white');
+        setColor(style.color || 'black');
     }, [title, style]);
 
     const onChangeStyle = (newPartialSyle: Record<string, string | number>) => {
@@ -69,7 +73,7 @@ export function TitleCanvas({ title, onChange }: TitleCanvasProps) {
         if (textAreaRef.current) {
             setTextAreaRefHeight(textAreaRef.current.scrollHeight);
         }
-    }, [titleText, textWidthPer, canvasWidth, fontSize, fontFamily, textAlign]); // update textAreaRefHeight on title change.
+    }, [titleText, textWidthPer, canvasWidth, fontSize, fontFamily, textAlign, backgroundColor]); // update textAreaRefHeight on title change.
 
     // Absolute pos
     const { textX, textY, textWidth } = React.useMemo(
@@ -141,7 +145,42 @@ export function TitleCanvas({ title, onChange }: TitleCanvasProps) {
 
     return (
         <div style={{ width: '100%', maxWidth: '600px', margin: '2rem auto' }} ref={canvasRef}>
-            <KeepRatio ratio={9 / 16} style={{ border: '1px solid grey', borderRadius: '8px' }}>
+            <div
+                style={{
+                    display: 'inline-flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    backgroundColor: PrimaryColor,
+                    color: '#fff',
+                    padding: '0.1rem',
+                    borderTopLeftRadius: '4px',
+                    borderTopRightRadius: '4px',
+                }}
+            >
+                <select
+                    value={backgroundColor}
+                    onChange={(event) => {
+                        const newBackgroundColor = event.target.value;
+                        setBackgroundColor(newBackgroundColor);
+                        onChangeStyle({ backgroundColor: newBackgroundColor });
+                    }}
+                    style={{
+                        margin: '0 0.5rem',
+                        backgroundColor: PrimaryColor,
+                        color: '#fff',
+                        border: 'none',
+                        outline: 'none',
+                        cursor: 'pointer',
+                    }}
+                >
+                    <option value={'white'}>{t('white')}</option>
+                    <option value={'black'}>{t('black')}</option>
+                    <option value={'#fbe5d3'}>{t('red')}</option>
+                    <option value={'#dad7fe'}>{t('blue')}</option>
+                    <option value={'#e2fbd7'}>{t('green')}</option>
+                </select>
+            </div>
+            <KeepRatio ratio={9 / 16} style={{ border: '1px solid grey', borderRadius: '0 8px 8px 8px', backgroundColor: backgroundColor }}>
                 <div
                     style={{
                         display: 'inline-block',
@@ -209,6 +248,7 @@ export function TitleCanvas({ title, onChange }: TitleCanvasProps) {
                             <option value={8}>{t('medium')}</option>
                             <option value={10}>{t('big')}</option>
                         </select>
+                        <div style={{ height: '1rem', width: '1px', backgroundColor: '#fff' }}></div>
                         <select
                             value={textAlign}
                             onChange={(event) => {
@@ -228,6 +268,26 @@ export function TitleCanvas({ title, onChange }: TitleCanvasProps) {
                             <option value={'left'}>{t('left')}</option>
                             <option value={'center'}>{t('center')}</option>
                             <option value={'right'}>{t('right')}</option>
+                        </select>
+                        <div style={{ height: '1rem', width: '1px', backgroundColor: '#fff' }}></div>
+                        <select
+                            value={color}
+                            onChange={(event) => {
+                                const newColor = event.target.value;
+                                setBackgroundColor(color);
+                                onChangeStyle({ color: newColor });
+                            }}
+                            style={{
+                                margin: '0 0.5rem',
+                                backgroundColor: PrimaryColor,
+                                color: '#fff',
+                                border: 'none',
+                                outline: 'none',
+                                cursor: 'pointer',
+                            }}
+                        >
+                            <option value={'black'}>{t('black')}</option>
+                            <option value={'white'}>{t('white')}</option>
                         </select>
                     </div>
                     <textarea
@@ -255,6 +315,8 @@ export function TitleCanvas({ title, onChange }: TitleCanvasProps) {
                             fontFamily: fontFamily,
                             textAlign: textAlign,
                             resize: 'none',
+                            backgroundColor: backgroundColor,
+                            color: color,
                         }}
                     />
                     <textarea
@@ -279,6 +341,8 @@ export function TitleCanvas({ title, onChange }: TitleCanvasProps) {
                             resize: 'none',
                             whiteSpace: 'pre-wrap',
                             wordBreak: 'break-word',
+                            backgroundColor: backgroundColor,
+                            color: color,
                         }}
                     ></textarea>
                     <div

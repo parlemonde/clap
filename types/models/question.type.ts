@@ -22,7 +22,7 @@ export interface Question {
     soundUrl: string | null;
     soundVolume: number | null;
     status?: QuestionStatus;
-    feedback?: string | null;
+    feedbacks?: string[] | null;
 }
 
 export interface QuestionTemplate {

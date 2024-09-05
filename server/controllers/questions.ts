@@ -255,10 +255,20 @@ questionController.put({ path: '/:id', userType: UserType.CLASS }, async (req, r
     question.soundVolume = data.soundVolume !== undefined ? data.soundVolume : question.soundVolume;
     const dataStatus = data.status;
     logger.info(`dataStatus: ${dataStatus}`);
-    if (dataStatus !== undefined && dataStatus !== null) {
+    const previousStatus = question.status;
+    if (previousStatus === QuestionStatus.STORYBOARD && dataStatus === QuestionStatus.PREMOUNTING) {
         question.status = dataStatus;
-        question.feedback = [QuestionStatus.ONGOING, QuestionStatus.PREMOUNTING].includes(dataStatus) && data.feedback ? data.feedback : null;
+        question.feedbacks = null;
+    } else {
+        if (dataStatus !== undefined && dataStatus !== null) {
+            question.status = dataStatus;
+            question.feedbacks =
+                [QuestionStatus.ONGOING, QuestionStatus.PREMOUNTING].includes(dataStatus) && data.feedback
+                    ? [...(question.feedbacks || []), data.feedback]
+                    : question.feedbacks || [];
+        }
     }
+
     await getRepository(Question).save(question);
     res.sendJSON(question);
 });

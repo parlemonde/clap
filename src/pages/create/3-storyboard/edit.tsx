@@ -154,7 +154,7 @@ const EditPlan = () => {
     const { user } = React.useContext(userContext);
     const isStudent = user?.type === UserType.STUDENT;
     const [showButtonFeedback, setShowButtonFeedback] = React.useState(
-        (isStudent && sequence && sequence.feedback && QuestionStatus.ONGOING === sequence.status) as boolean,
+        (isStudent && sequence && sequence.feedbacks && QuestionStatus.ONGOING === sequence.status) as boolean,
     );
     const [showFeedback, setShowFeedback] = React.useState(false);
     const imageUrl = React.useMemo(() => {
@@ -165,7 +165,7 @@ const EditPlan = () => {
     }, [imageBlob, plan]);
 
     React.useEffect(() => {
-        if (isStudent && sequence && sequence.feedback && QuestionStatus.ONGOING === sequence.status) {
+        if (isStudent && sequence && sequence.feedbacks && QuestionStatus.ONGOING === sequence.status) {
             setShowButtonFeedback(true);
         }
     }, [isStudent, sequence]);
@@ -531,7 +531,7 @@ const EditPlan = () => {
             <FeedbackModal
                 isOpen={showFeedback}
                 onClose={() => setShowFeedback(false)}
-                feedback={sequence && sequence.feedback ? sequence.feedback : ''}
+                feedback={sequence && sequence.feedbacks && sequence.feedbacks.length > 0 ? sequence.feedbacks[sequence.feedbacks.length - 1] : ''}
             />
         </Container>
     );

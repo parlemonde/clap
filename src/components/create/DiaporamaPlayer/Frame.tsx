@@ -53,6 +53,9 @@ type FrameProps = {
     time: number;
     className?: string;
 };
+
+type TextAlign = 'left' | 'center' | 'right';
+
 export const Frame = ({ questions, time, className }: FrameProps) => {
     const [canvasRef, { height: canvasHeight }] = useResizeObserver<HTMLDivElement>();
     const currentFrame = getCurrentFrame(questions, time);
@@ -62,7 +65,11 @@ export const Frame = ({ questions, time, className }: FrameProps) => {
             style={{
                 width: '100%',
                 height: '100%',
-                backgroundColor: currentFrame !== null && currentFrame.kind === 'title' ? 'white' : 'unset',
+                backgroundColor:
+                    currentFrame !== null && currentFrame.kind === 'title' ? (currentFrame.style.backgroundColor as string) || 'white' : 'white',
+                color: currentFrame !== null && currentFrame.kind === 'title' ? String(currentFrame.style.color) || 'black' : 'black',
+                textAlign:
+                    currentFrame !== null && currentFrame.kind === 'title' ? (currentFrame.style.textAlign as TextAlign) || 'center' : 'center',
             }}
             ref={canvasRef}
         >
@@ -81,6 +88,7 @@ export const Frame = ({ questions, time, className }: FrameProps) => {
                                   left: `${currentFrame.style.x ?? 15}%`,
                                   top: `${currentFrame.style.y ?? 30}%`,
                                   width: `${currentFrame.style.width ?? 70}%`,
+                                  textAlign: (currentFrame.style.textAlign as TextAlign) || 'center',
                               }
                     }
                 >

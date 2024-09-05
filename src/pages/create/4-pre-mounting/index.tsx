@@ -85,7 +85,7 @@ const PreMountingPage = () => {
                 {questions.map((q, index) => {
                     if (isStudent && sequencyId !== q.id) return null;
                     const hasBeenEdited = q.title !== null || (q.plans || []).some((plan) => plan.description || plan.imageUrl);
-                    const showButtonFeedback = isStudent && q.id === sequencyId && q.feedback && QuestionStatus.PREMOUNTING === q.status;
+                    const showButtonFeedback = isStudent && q.id === sequencyId && q.feedbacks && QuestionStatus.PREMOUNTING === q.status;
                     return (
                         <div key={index}>
                             <Title color="primary" variant="h2" marginTop="lg" style={{ marginTop: '2rem', display: 'flex', alignItems: 'center' }}>
@@ -105,12 +105,12 @@ const PreMountingPage = () => {
                                     />
                                 </div>
                             ) : (
-                                <p>{t('part4_placeholder')}</p>
+                                <p style={{ marginTop: '1rem' }}>{t('part4_placeholder')}</p>
                             )}
                             <FeedbackModal
                                 isOpen={showFeedback}
                                 onClose={() => setShowFeedback(false)}
-                                feedback={q && q.feedback ? q.feedback : ''}
+                                feedback={q && q.feedbacks && q.feedbacks.length > 0 ? q.feedbacks[q.feedbacks.length - 1] : ''}
                             />
                         </div>
                     );

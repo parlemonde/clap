@@ -12,7 +12,6 @@ import { Button } from 'src/components/layout/Button';
 import { Container } from 'src/components/layout/Container';
 import { Flex } from 'src/components/layout/Flex';
 import { LinearProgress } from 'src/components/layout/LinearProgress';
-import { Modal } from 'src/components/layout/Modal';
 import { Tooltip } from 'src/components/layout/Tooltip';
 import { Title, Text } from 'src/components/layout/Typography';
 import { Steps } from 'src/components/navigation/Steps';
@@ -81,7 +80,7 @@ const ResultPage = () => {
     const { isCollaborationActive } = useCollaboration();
     const { socket, connectTeacher } = useSocket();
     const [isLoading, setIsLoading] = React.useState(false);
-    const [isVideoModalOpen, setIsVideoModalOpen] = React.useState(false);
+    const [isGenerating, setIsGenerating] = React.useState(false);
     const {
         projectVideo,
         isLoading: isLoadingProjectVideo,
@@ -90,23 +89,34 @@ const ResultPage = () => {
         enabled: project !== undefined && project.id !== 0,
     });
     const sounds = React.useMemo(() => getSounds(questions), [questions]);
-    const [isDownloading, setIsDownloading] = React.useState<boolean>((projectVideo !== undefined && projectVideo.progress < 100) as boolean);
+    const isDownloading = projectVideo !== undefined && projectVideo.progress < 100;
 
+    // Automatically refresh the video download progress
+    const intervalRef = React.useRef<number | null>(null);
+    if (isDownloading && intervalRef.current === null) {
+        intervalRef.current = window.setInterval(() => {
+            refetch();
+        }, 1000);
+    }
+    if (!isDownloading && intervalRef.current !== null) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+    }
+
+    // Automatically download the video when it's ready
+    const willAutoDownload = React.useRef(false);
+    const downloadVideoRef = React.useRef<HTMLAnchorElement | null>(null);
     React.useEffect(() => {
-        setIsDownloading((projectVideo !== undefined && projectVideo.progress < 100) as boolean);
-        if (projectVideo !== undefined && isDownloading) {
-            if (projectVideo.progress > 99) {
-                setIsDownloading(false);
-                return;
-            }
-
-            setTimeout(() => {
-                refetch();
-            }, 1000);
+        if (projectVideo !== undefined && projectVideo.url && willAutoDownload.current && downloadVideoRef.current) {
+            willAutoDownload.current = false;
+            downloadVideoRef.current.click();
         }
+    }, [projectVideo]);
 
-        return () => {};
-    }, [projectVideo, isDownloading, refetch]);
+    if (isDownloading && !isGenerating) {
+        setIsGenerating(true);
+        willAutoDownload.current = true;
+    }
 
     React.useEffect(() => {
         if (isCollaborationActive && socket.connected === false && project !== undefined && project.id) {
@@ -158,17 +168,18 @@ const ResultPage = () => {
         if (!project || project.id === 0 || !data) {
             return;
         }
+        setIsGenerating(true);
         createProjectVideoMutation.mutate(
             {
                 projectId: project.id,
                 data,
             },
             {
-                onSettled: () => {
-                    setIsVideoModalOpen(false);
-                    setIsDownloading(true);
+                onSuccess: () => {
+                    willAutoDownload.current = true;
                 },
                 onError: () => {
+                    setIsGenerating(false);
                     sendToast({ message: t('unknown_error'), type: 'error' });
                 },
             },
@@ -221,23 +232,7 @@ const ResultPage = () => {
                         <div>loading</div>
                     ) : (
                         <>
-                            {videoUrl && (
-                                <>
-                                    <Button
-                                        label={t('part6_mp4_download_button')}
-                                        as="a"
-                                        href={videoUrl}
-                                        className="full-width"
-                                        variant="contained"
-                                        color="secondary"
-                                        style={{ width: '100%' }}
-                                        leftIcon={<VideoIcon style={{ marginRight: '10px', width: '24px', height: '24px' }} />}
-                                        download
-                                    ></Button>
-                                    <Or />
-                                </>
-                            )}
-                            {videoProgress && videoProgress !== 100 ? (
+                            {!videoUrl && isGenerating ? (
                                 <div
                                     style={{
                                         width: '100%',
@@ -253,21 +248,32 @@ const ResultPage = () => {
                                     <Text className="color-secondary" style={{ fontSize: '0.8rem', marginBottom: '0.5rem' }}>
                                         {t('part6_mp4_loading')}
                                     </Text>
-                                    <LinearProgressWithLabel value={videoProgress} />
+                                    <LinearProgressWithLabel value={videoProgress === 100 ? 0 : videoProgress ?? 0} />
                                 </div>
+                            ) : videoUrl && isGenerating ? (
+                                <Button
+                                    label={t('part6_mp4_download_button')}
+                                    as="a"
+                                    ref={downloadVideoRef}
+                                    href={videoUrl}
+                                    className="full-width"
+                                    variant="contained"
+                                    color="secondary"
+                                    style={{ width: '100%' }}
+                                    leftIcon={<VideoIcon style={{ marginRight: '10px', width: '24px', height: '24px' }} />}
+                                    download
+                                />
                             ) : (
                                 <Tooltip
                                     content={user === null ? t('part6_mp4_user_disabled') : !hasProject ? t('part6_mp4_project_disabled') : ''}
                                     hasArrow
                                 >
                                     <Button
-                                        label={t(videoUrl ? 'part6_mp4_generate_button' : 'part6_mp4_button')}
+                                        label={t('part6_mp4_download_button')}
                                         className="full-width"
                                         variant="contained"
                                         color="secondary"
-                                        onClick={() => {
-                                            setIsVideoModalOpen(true);
-                                        }}
+                                        onClick={generateMP4}
                                         disabled={user === null || !hasProject}
                                         style={{ width: '100%' }}
                                         leftIcon={<VideoIcon style={{ marginRight: '10px', width: '24px', height: '24px' }} />}
@@ -287,25 +293,6 @@ const ResultPage = () => {
                         style={{ width: '100%' }}
                     ></Button>
                 </Flex>
-                <Modal
-                    isOpen={isVideoModalOpen}
-                    onClose={() => {
-                        setIsVideoModalOpen(false);
-                    }}
-                    isLoading={createProjectVideoMutation.isLoading}
-                    title={t('part6_mp4_button')}
-                    confirmLabel={t('generate')}
-                    onConfirm={generateMP4}
-                    width="md"
-                    isFullWidth
-                    confirmLevel="secondary"
-                >
-                    <ul style={{ margin: 0 }}>
-                        <li style={{ marginBottom: '0.5rem' }}>{t('part6_mp4_description_1')}</li>
-                        <li style={{ marginBottom: '0.5rem' }}>{t('part6_mp4_description_2')}</li>
-                        <li style={{ marginBottom: '0.5rem' }}>{t('part6_mp4_description_3')}</li>
-                    </ul>
-                </Modal>
             </div>
             <Loader isLoading={isLoading} />
         </Container>

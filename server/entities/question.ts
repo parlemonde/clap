@@ -49,6 +49,13 @@ export class Question implements QuestionInterface {
     })
     status: QuestionStatus;
 
-    @Column({ type: 'varchar', length: 2000, nullable: true })
-    public feedback: string | null;
+    @Column({
+        type: 'text',
+        nullable: true,
+        transformer: {
+            to: (value: string[] | null) => (value ? JSON.stringify(value) : null),
+            from: (value: string | null) => (value ? JSON.parse(value) : null),
+        },
+    })
+    public feedbacks: string[] | null;
 }
