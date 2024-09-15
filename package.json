@@ -43,6 +43,7 @@
     "sass": "^1.78.0",
     "sharp": "^0.33.5",
     "sortablejs": "^1.15.3",
+    "swr": "^2.2.5",
     "uuid": "^10.0.0"
   },
   "devDependencies": {
@@ -79,7 +80,7 @@
     "typescript-eslint": "8.5.0"
   },
   "volta": {
-    "node": "20.11.1"
+    "node": "20.17.0"
   },
   "packageManager": "yarn@4.4.0"
 }

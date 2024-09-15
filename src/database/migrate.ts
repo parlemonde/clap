@@ -5,6 +5,7 @@ import { migrate } from 'drizzle-orm/postgres-js/migrator';
 import postgres from 'postgres';
 
 import { db } from './database';
+import { languages } from './schemas/languages';
 import type { NewUser } from './schemas/users';
 import { users } from './schemas/users';
 
@@ -48,12 +49,30 @@ async function createAdminUser(): Promise<void> {
     }
 }
 
+async function createDefaultLanguage(): Promise<void> {
+    try {
+        const results = await db.query.languages.findFirst({
+            where: eq(languages.value, 'fr'),
+        });
+        if (results) {
+            return;
+        }
+        await db.insert(languages).values({
+            value: 'fr',
+            label: 'Français',
+        });
+    } catch {
+        return;
+    }
+}
+
 const start = async () => {
     await createDatabase();
     const migrationClient = postgres(DATABASE_URL, { max: 1 });
     const db = drizzle(migrationClient, { logger: process.env.NODE_ENV !== 'production' });
     await migrate(db, { migrationsFolder: './drizzle' });
     await createAdminUser();
+    await createDefaultLanguage();
     await migrationClient.end();
     process.exit();
 };

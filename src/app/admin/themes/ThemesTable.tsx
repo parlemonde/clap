@@ -15,22 +15,14 @@ import { Link } from 'src/components/navigation/Link';
 import { Sortable } from 'src/components/ui/Sortable';
 import { sendToast } from 'src/components/ui/Toasts';
 import type { Theme } from 'src/database/schemas/themes';
+import { useLanguages } from 'src/hooks/useLanguages';
 
 type ThemesTableWithDataProps = {
     defaultThemes: Theme[];
 };
 
 export const ThemesTable = ({ defaultThemes }: ThemesTableWithDataProps) => {
-    const languages = [
-        {
-            label: 'Français',
-            value: 'fr',
-        },
-        {
-            label: 'Anglais',
-            value: 'en',
-        },
-    ];
+    const languages = useLanguages();
     const [selectedLanguage, setSelectedLanguage] = React.useState('fr');
     const [deleteIndex, setDeleteIndex] = React.useState<number | null>(null);
     const [isDeleting, setIsDeleting] = React.useState(false);

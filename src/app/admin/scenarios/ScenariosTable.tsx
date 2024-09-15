@@ -12,6 +12,7 @@ import { Tooltip } from 'src/components/layout/Tooltip';
 import { Link } from 'src/components/navigation/Link';
 import type { Scenario } from 'src/database/schemas/scenarios';
 import type { Theme } from 'src/database/schemas/themes';
+import { useLanguages } from 'src/hooks/useLanguages';
 
 type ScenarioData = {
     themeIndex: number;
@@ -25,16 +26,7 @@ type ScenariosTableProps = {
 };
 
 export const ScenariosTable = ({ themes, scenarios }: ScenariosTableProps) => {
-    const languages = [
-        {
-            label: 'Français',
-            value: 'fr',
-        },
-        {
-            label: 'Anglais',
-            value: 'en',
-        },
-    ];
+    const languages = useLanguages();
 
     const [deleteId, setDeleteId] = React.useState<number | null>(null);
     const [isDeleting, setIsDeleting] = React.useState(false);

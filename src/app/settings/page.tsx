@@ -5,19 +5,11 @@ import { Container } from 'src/components/layout/Container';
 import { Field, Form } from 'src/components/layout/Form';
 import { Select } from 'src/components/layout/Form/Select';
 import { Title } from 'src/components/layout/Typography';
+import { db } from 'src/database';
 
 export default async function SettingsPage() {
     const { t, currentLocale } = await getTranslation();
-    const languages = [
-        {
-            label: 'Français',
-            value: 'fr',
-        },
-        {
-            label: 'English',
-            value: 'en',
-        },
-    ];
+    const languages = await db.query.languages.findMany();
 
     return (
         <Container paddingBottom="xl">

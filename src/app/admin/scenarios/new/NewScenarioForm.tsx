@@ -16,6 +16,7 @@ import { Loader } from 'src/components/ui/Loader';
 import { sendToast } from 'src/components/ui/Toasts';
 import type { Scenario } from 'src/database/schemas/scenarios';
 import type { Theme } from 'src/database/schemas/themes';
+import { useLanguages } from 'src/hooks/useLanguages';
 
 type Language = {
     label: string;
@@ -30,16 +31,7 @@ type NewScenarioFormProps = {
 export const NewScenarioForm = ({ themes, defaultThemeId = -1 }: NewScenarioFormProps) => {
     const router = useRouter();
 
-    const languages = [
-        {
-            label: 'Français',
-            value: 'fr',
-        },
-        {
-            label: 'Anglais',
-            value: 'en',
-        },
-    ];
+    const languages = useLanguages();
     const languagesMap = languages.reduce(
         (acc: { [key: string]: number }, language: Language, index: number) => ({ ...acc, [language.value]: index }),
         {},

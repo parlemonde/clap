@@ -18,6 +18,7 @@ import { Sortable } from 'src/components/ui/Sortable';
 import { sendToast } from 'src/components/ui/Toasts';
 import type { QuestionTemplate } from 'src/database/schemas/question-template';
 import type { Scenario } from 'src/database/schemas/scenarios';
+import { useLanguages } from 'src/hooks/useLanguages';
 
 interface QuestionsTileProps {
     selectedScenario: Scenario;
@@ -25,16 +26,8 @@ interface QuestionsTileProps {
 }
 
 export const QuestionsTile = ({ selectedScenario, questions }: QuestionsTileProps) => {
-    const languages = [
-        {
-            label: 'Français',
-            value: 'fr',
-        },
-        {
-            label: 'Anglais',
-            value: 'en',
-        },
-    ];
+    const languages = useLanguages();
+
     const availableLanguages = languages.filter((l) => selectedScenario.names[l.value] !== undefined);
     const [selectedLanguage, setSelectedLanguage] = React.useState(
         availableLanguages.map((l) => l.value).includes('fr') ? 'fr' : availableLanguages[0].value,
