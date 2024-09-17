@@ -294,7 +294,7 @@ userController.get({ path: '/invite' }, async (req, res) => {
     const invite = new Invite();
     invite.token = generateToken(20);
     invite.createdAt = new Date();
-    const nextDay = invite.createdAt.getDate() + 1;
+    const nextDay = invite.createdAt.getDate() + 14;
     invite.expiredAt = new Date();
     invite.expiredAt.setDate(nextDay);
     await getRepository(Invite).save(invite);
