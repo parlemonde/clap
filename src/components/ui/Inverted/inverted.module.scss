@@ -1,3 +1,4 @@
+@use 'sass:math';
 @use 'variables' as *;
 
 .inverted {
@@ -5,7 +6,7 @@
   color: white;
 
   &.inverted__round {
-    border-radius: $sizeXL/2;
+    border-radius: math.div($sizeXL, 2);
     display: inline-flex;
     align-items: center;
     justify-content: center;

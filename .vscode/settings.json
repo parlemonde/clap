@@ -4,11 +4,10 @@
     "source.fixAll.eslint": "explicit"
   },
   "search.exclude": {
-    "**/.yarn": true,
-    "**/.pnp.*": true
+    "**/.next": true,
+    "**/.minio-data": true,
+    "**/.postgres-data": true,
+    "**/.redis-data": true,
+    "**/node_modules": true,
   },
-  "eslint.nodePath": ".yarn/sdks",
-  "prettier.prettierPath": ".yarn/sdks/prettier/index.cjs",
-  "typescript.tsdk": ".yarn/sdks/typescript/lib",
-  "typescript.enablePromptUseWorkspaceTsdk": true
 }
