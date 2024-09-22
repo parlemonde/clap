@@ -1,7 +1,7 @@
 'use client';
 
 import * as RadixSlider from '@radix-ui/react-slider';
-import classNames from 'classnames';
+import classNames from 'clsx';
 import React from 'react';
 
 import styles from './slider.module.scss';

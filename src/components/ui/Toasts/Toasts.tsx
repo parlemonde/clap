@@ -2,7 +2,7 @@
 
 import { Cross1Icon } from '@radix-ui/react-icons';
 import * as Toast from '@radix-ui/react-toast';
-import classNames from 'classnames';
+import classNames from 'clsx';
 import * as React from 'react';
 
 import { TOAST_EVENT } from './toast-events';

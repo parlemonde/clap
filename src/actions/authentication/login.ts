@@ -2,7 +2,7 @@
 
 import * as argon2 from 'argon2';
 import { eq } from 'drizzle-orm';
-import jwt from 'jsonwebtoken';
+import { SignJWT } from 'jose';
 import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 import { RedirectType, redirect } from 'next/navigation';
@@ -10,10 +10,10 @@ import { RedirectType, redirect } from 'next/navigation';
 import { db } from 'src/database';
 import { users } from 'src/database/schemas/users';
 
-const APP_SECRET: string = process.env.APP_SECRET || '';
+const APP_SECRET = new TextEncoder().encode(process.env.APP_SECRET || '');
 
-function getAccessToken(userId: number): string {
-    return jwt.sign({ userId }, APP_SECRET, { expiresIn: '7d' });
+function getAccessToken(userId: number): Promise<string> {
+    return new SignJWT({ userId }).setProtectedHeader({ alg: 'HS256' }).setIssuedAt().setExpirationTime('7d').sign(APP_SECRET);
 }
 
 const getString = (value: unknown): string => {
@@ -66,7 +66,7 @@ export async function login(_previousState: string, formData: FormData): Promise
             .where(eq(users.id, user.id));
     }
 
-    const accessToken = getAccessToken(user.id);
+    const accessToken = await getAccessToken(user.id);
     cookies().set({
         name: 'access-token',
         value: accessToken,

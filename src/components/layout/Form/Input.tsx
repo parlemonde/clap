@@ -1,6 +1,6 @@
 'use client';
 
-import classNames from 'classnames';
+import classNames from 'clsx';
 import * as React from 'react';
 
 import styles from './input.module.scss';

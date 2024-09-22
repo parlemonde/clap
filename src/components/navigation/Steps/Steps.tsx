@@ -1,5 +1,5 @@
 import { ChevronLeftIcon } from '@radix-ui/react-icons';
-import classNames from 'classnames';
+import classNames from 'clsx';
 import Link from 'next/link';
 import * as React from 'react';
 

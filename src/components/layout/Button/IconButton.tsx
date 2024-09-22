@@ -1,5 +1,5 @@
 import type { IconProps } from '@radix-ui/react-icons/dist/types';
-import classNames from 'classnames';
+import classNames from 'clsx';
 import * as React from 'react';
 
 import type { ButtonProps } from './Button';
