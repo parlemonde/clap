@@ -63,7 +63,7 @@
     "@types/nprogress": "0.2.3",
     "@types/react": "18.3.8",
     "@types/react-dom": "18.3.0",
-    "@types/sortablejs": "1.15p.8",
+    "@types/sortablejs": "1.15.8",
     "@types/uuid": "10.0.0",
     "drizzle-kit": "0.24.2",
     "eslint": "9.11.0",
@@ -76,7 +76,7 @@
     "eslint-plugin-react-hooks": "4.6.2",
     "prettier": "3.3.3",
     "tsx": "4.19.1",
-    "typescript": "5.5.4",
+    "typescript": "5.6.2",
     "typescript-eslint": "8.6.0"
   },
   "volta": {
