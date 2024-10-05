@@ -11,7 +11,7 @@ type LocalThemeNameProps = {
 
 export const LocalThemeName = ({ themeId }: LocalThemeNameProps) => {
     const { currentLocale } = useTranslation();
-    const localThemes = useLocalStorage('themes') || [];
+    const [localThemes] = useLocalStorage('themes', []);
     const theme = localThemes.find((theme) => theme.id === themeId);
 
     return <>{theme ? theme.names?.[currentLocale] || theme.names?.fr || '' : ''}</>;

@@ -1,5 +1,7 @@
 'use client';
 
+import isEqual from 'fast-deep-equal/es6';
+
 import type { Scenario } from 'src/database/schemas/scenarios';
 import type { Theme } from 'src/database/schemas/themes';
 
@@ -17,10 +19,20 @@ export const isLocalScenario = (scenario: Scenario | LocalScenario): scenario is
 export type LocalStorageKey = 'themes' | 'scenarios';
 export type ObjectType<T extends LocalStorageKey> = T extends 'themes' ? LocalTheme[] : T extends 'scenarios' ? LocalScenario[] : never;
 
+const localStorageCache: Record<LocalStorageKey, unknown> = {
+    themes: undefined,
+    scenarios: undefined,
+};
+
 export function getFromLocalStorage<T extends LocalStorageKey>(key: T): ObjectType<T> | undefined {
     try {
-        const localItem = localStorage.getItem(key);
-        return localItem ? (JSON.parse(localItem) as ObjectType<T>) : undefined;
+        const localItemStr = localStorage.getItem(key);
+        const localItem = localItemStr ? (JSON.parse(localItemStr) as ObjectType<T>) : undefined;
+        if (isEqual(localStorageCache[key], localItem)) {
+            return localStorageCache[key] as ObjectType<T>;
+        }
+        localStorageCache[key] = localItem;
+        return localItem;
     } catch {
         return undefined;
     }
@@ -29,6 +41,7 @@ export function getFromLocalStorage<T extends LocalStorageKey>(key: T): ObjectTy
 export function setToLocalStorage<T extends LocalStorageKey>(key: T, item: ObjectType<T>) {
     try {
         localStorage.setItem(key, JSON.stringify(item));
+        localStorageCache[key] = item;
     } catch {
         // do nothing...
     }

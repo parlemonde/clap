@@ -12,7 +12,7 @@ type LocalScenariosProps = {
 };
 export const LocalScenarios = ({ themeId }: LocalScenariosProps) => {
     const { currentLocale } = useTranslation();
-    const scenarios = useLocalStorage('scenarios') || [];
+    const [scenarios] = useLocalStorage('scenarios', []);
 
     return (
         <>

@@ -12,8 +12,8 @@ import { sendToast } from 'src/components/ui/Toasts';
 import { Trans } from 'src/components/ui/Trans';
 import { useTranslation } from 'src/contexts/translationContext';
 import { userContext } from 'src/contexts/userContext';
-import type { LocalScenario } from 'src/utils/local-storage';
-import { getFromLocalStorage, setToLocalStorage } from 'src/utils/local-storage';
+import { useLocalStorage } from 'src/hooks/useLocalStorage';
+import type { LocalScenario } from 'src/hooks/useLocalStorage/local-storage';
 import { serializeToQueryUrl } from 'src/utils/serialize-to-query-url';
 
 type NewScenarioFormProps = {
@@ -28,6 +28,7 @@ export const NewScenarioForm = ({ backUrl, themeId }: NewScenarioFormProps) => {
     const [name, setName] = React.useState('');
     const [description, setDescription] = React.useState('');
     const [isLoading, setIsLoading] = React.useState(false);
+    const [localScenarios, setLocalScenarios] = useLocalStorage('scenarios', []);
 
     const onCreateScenario = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -46,7 +47,6 @@ export const NewScenarioForm = ({ backUrl, themeId }: NewScenarioFormProps) => {
             }
             setIsLoading(false);
         } else {
-            const localScenarios = getFromLocalStorage('scenarios') || [];
             const nextId = Math.max(0, ...localScenarios.map((scenario) => Number(scenario.id.split('_')[1] || '0'))) + 1;
             const newScenario: LocalScenario = {
                 id: `local_${nextId}`,
@@ -60,7 +60,7 @@ export const NewScenarioForm = ({ backUrl, themeId }: NewScenarioFormProps) => {
                 isDefault: false,
                 themeId,
             };
-            setToLocalStorage('scenarios', [...localScenarios, newScenario]);
+            setLocalScenarios([...localScenarios, newScenario]);
             router.push(`/create/2-questions${serializeToQueryUrl({ themeId, scenarioId: newScenario.id })}`);
         }
     };

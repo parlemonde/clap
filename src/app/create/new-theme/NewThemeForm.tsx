@@ -12,8 +12,8 @@ import { sendToast } from 'src/components/ui/Toasts';
 import { Trans } from 'src/components/ui/Trans';
 import { useTranslation } from 'src/contexts/translationContext';
 import { userContext } from 'src/contexts/userContext';
-import type { LocalTheme } from 'src/utils/local-storage';
-import { getFromLocalStorage, setToLocalStorage } from 'src/utils/local-storage';
+import { useLocalStorage } from 'src/hooks/useLocalStorage';
+import type { LocalTheme } from 'src/hooks/useLocalStorage/local-storage';
 
 export const NewThemeForm = () => {
     const router = useRouter();
@@ -21,6 +21,7 @@ export const NewThemeForm = () => {
     const { user } = React.useContext(userContext);
     const [themeName, setThemeName] = React.useState('');
     const [isLoading, setIsLoading] = React.useState(false);
+    const [localThemes, setLocalThemes] = useLocalStorage('themes', []);
 
     const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -35,7 +36,6 @@ export const NewThemeForm = () => {
             }
             setIsLoading(false);
         } else {
-            const localThemes = getFromLocalStorage('themes') || [];
             const nextId = Math.max(0, ...localThemes.map((theme) => Number(theme.id.split('_')[1] || '0'))) + 1;
             const newTheme: LocalTheme = {
                 id: `local_${nextId}`,
@@ -47,7 +47,7 @@ export const NewThemeForm = () => {
                     [currentLocale]: themeName,
                 },
             };
-            setToLocalStorage('themes', [...localThemes, newTheme]);
+            setLocalThemes([...localThemes, newTheme]);
             router.push(`/create/1-scenario?themeId=${newTheme.id}`);
         }
     };

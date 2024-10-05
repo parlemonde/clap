@@ -8,7 +8,7 @@ import { useLocalStorage } from 'src/hooks/useLocalStorage';
 
 export const LocalThemes = () => {
     const { currentLocale } = useTranslation();
-    const localThemes = useLocalStorage('themes') || [];
+    const [localThemes] = useLocalStorage('themes', []);
 
     return (
         <>
