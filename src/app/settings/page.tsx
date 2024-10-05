@@ -1,14 +1,13 @@
 import * as React from 'react';
 
+import { LanguageSelect } from './LanguageSelect';
 import { getTranslation } from 'src/actions/get-translation';
 import { Container } from 'src/components/layout/Container';
-import { Field, Form } from 'src/components/layout/Form';
-import { Select } from 'src/components/layout/Form/Select';
 import { Title } from 'src/components/layout/Typography';
 import { db } from 'src/database';
 
 export default async function SettingsPage() {
-    const { t, currentLocale } = await getTranslation();
+    const { t } = await getTranslation();
     const languages = await db.query.languages.findMany();
 
     return (
@@ -17,21 +16,7 @@ export default async function SettingsPage() {
             <Title color="inherit" variant="h2" marginTop="sm" marginBottom="md" style={{ width: '100%', textAlign: 'left' }}>
                 {t('change_language')}
             </Title>
-            <Form preventSubmit>
-                <Field
-                    name="language"
-                    label={t('language')}
-                    input={
-                        <Select name="language" id="language" marginTop="xs" isFullWidth value={currentLocale}>
-                            {languages.map((l) => (
-                                <option value={l.value} key={l.value}>
-                                    {l.label}
-                                </option>
-                            ))}
-                        </Select>
-                    }
-                ></Field>
-            </Form>
+            <LanguageSelect languages={languages} />
         </Container>
     );
 }
