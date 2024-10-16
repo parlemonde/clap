@@ -1,5 +1,9 @@
 import * as React from 'react';
 
+import { DeleteAccountButton } from './DeleteAccountButton';
+import { UpdateEmailForm } from './UpdateEmailForm';
+import { UpdateNameForm } from './UpdateNameForm';
+import { UpdatePasswordButton } from './UpdatePasswordButton';
 import { logout } from 'src/actions/authentication/logout';
 import { getCurrentUser } from 'src/actions/get-current-user';
 import { getTranslation } from 'src/actions/get-translation';
@@ -29,62 +33,17 @@ export default async function AccountPage() {
             </Title>
             <div style={{ marginTop: '0.5rem' }}>
                 <label>
-                    <strong>{t('signup_pseudo')} : </strong>
+                    <strong>{t('signup_name')} : </strong>
                 </label>
-                {user.name} -{' '}
-                {/* <a
-                    tabIndex={0}
-                    className="color-primary"
-                    onKeyDown={(event) => {
-                        if (event.key === ' ' || event.key === 'Enter') {
-                            // TODO
-                        }
-                    }}
-                    style={{ cursor: 'pointer', textDecoration: 'underline' }}
-                    onClick={() => {
-                        // TODO
-                    }}
-                >
-                    {t('account_change_button')}
-                </a> */}
+                {user.name} - <UpdateNameForm user={user} />
             </div>
             <div style={{ marginTop: '4px' }}>
                 <label>
                     <strong>{t('signup_email')} : </strong>
                 </label>
-                {user.email}
-                {/* {user.accountRegistration < 10 && (
-                    <>
-                        {' '}
-                        -{' '}
-                        <a
-                            tabIndex={0}
-                            className="color-primary"
-                            onKeyDown={(event) => {
-                                if (event.key === ' ' || event.key === 'Enter') {
-                                    openModal(2)();
-                                }
-                            }}
-                            style={{ cursor: 'pointer', textDecoration: 'underline' }}
-                            onClick={openModal(2)}
-                        >
-                            {t('account_change_button')}
-                        </a>
-                    </>
-                )} */}
+                {user.email} - <UpdateEmailForm user={user} />
             </div>
-            {/* {user.accountRegistration < 10 && (
-                <Button
-                    label={t('account_password_change')}
-                    style={{ marginTop: '0.8rem' }}
-                    className="mobile-full-width"
-                    onClick={openModal(3)}
-                    variant="contained"
-                    color="secondary"
-                    size="sm"
-                    marginTop="md"
-                ></Button>
-            )} */}
+            <UpdatePasswordButton />
             <Divider marginY="lg" />
             <Title color="inherit" variant="h2">
                 {t('logout_button')}
@@ -105,16 +64,7 @@ export default async function AccountPage() {
             <Title color="inherit" variant="h2">
                 {t('my_account')}
             </Title>
-            <Button
-                label={t('account_delete_button')}
-                style={{ marginTop: '0.8rem' }}
-                className="mobile-full-width"
-                // onClick={openModal(5)}
-                variant="contained"
-                color="error"
-                size="sm"
-                marginTop="sm"
-            ></Button>
+            <DeleteAccountButton />
         </Container>
     );
 }
