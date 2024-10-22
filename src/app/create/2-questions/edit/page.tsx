@@ -10,12 +10,13 @@ import { Inverted } from 'src/components/ui/Inverted';
 import { Trans } from 'src/components/ui/Trans';
 import { useTranslation } from 'src/contexts/translationContext';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
-import type { ClientPageProps } from 'src/utils/page-props.types';
+import type { ServerPageProps } from 'src/utils/page-props.types';
 
-export default function ScenarioPage({ searchParams }: ClientPageProps) {
+export default function ScenarioPage(props: ServerPageProps) {
     const [project] = useCurrentProject();
     const { t } = useTranslation();
 
+    const searchParams = React.use(props.searchParams);
     const questionIndex = typeof searchParams.question === 'string' ? Number(searchParams.question) : undefined;
 
     if (!project || questionIndex === undefined) {

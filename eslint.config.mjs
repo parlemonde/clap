@@ -1,40 +1,33 @@
-import { fixupPluginRules, fixupConfigRules } from '@eslint/compat';
-import { FlatCompat } from '@eslint/eslintrc';
 import eslintJS from '@eslint/js';
+import nextPlugin from '@next/eslint-plugin-next';
+import hooksPlugin from 'eslint-plugin-react-hooks';
 import eslintPrettier from 'eslint-plugin-prettier/recommended';
 import eslintTS from 'typescript-eslint';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import importPlugin from 'eslint-plugin-import';
 
 const project = './tsconfig.json';
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const compat = new FlatCompat({
-    baseDirectory: __dirname,
-    recommendedConfig: eslintJS.configs.recommended,
-    allConfig: eslintJS.configs.all,
-});
-
-function legacyPlugin(name, alias = name) {
-    const plugin = compat.plugins(name)[0]?.plugins?.[alias];
-
-    if (!plugin) {
-        throw new Error(`Unable to resolve plugin ${name} and/or alias ${alias}`);
-    }
-
-    return fixupPluginRules(plugin);
-}
 
 export default [
     // Next.js config
-    ...fixupConfigRules(compat.extends('next')),
+    {
+        plugins: {
+            'react-hooks': hooksPlugin,
+            '@next/next': nextPlugin,
+        },
+        rules: {
+            ...hooksPlugin.configs.recommended.rules,
+            ...nextPlugin.configs.recommended.rules,
+            ...nextPlugin.configs['core-web-vitals'].rules,
+        },
+    },
     // JS and TS config
     eslintJS.configs.recommended,
     ...eslintTS.configs.recommendedTypeChecked,
     // Import plugin config
-    ...compat.extends('plugin:import/typescript'),
+    importPlugin.flatConfigs.recommended,
     // Custom rules
     {
+        files: ['**/*.{js,jsx,mjs,cjs,ts,tsx,mts,cts}'],
         languageOptions: {
             parserOptions: {
                 project,
@@ -45,14 +38,9 @@ export default [
         },
         settings: {
             'import/resolver': {
-                typescript: {
-                    alwaysTryTypes: true,
-                    project,
-                },
+                typescript: true,
+                node: true,
             },
-        },
-        plugins: {
-            import: legacyPlugin('eslint-plugin-import', 'import'),
         },
         rules: {
             'no-console': [
@@ -79,9 +67,9 @@ export default [
             '@typescript-eslint/explicit-function-return-type': 'off',
             '@typescript-eslint/explicit-module-boundary-types': 'off',
             '@typescript-eslint/no-misused-promises': ['error', { checksVoidReturn: false }],
-            "@typescript-eslint/require-await": "off",
-            "@typescript-eslint/unbound-method": "off",
-            "@typescript-eslint/no-unsafe-return": "off",
+            '@typescript-eslint/require-await': 'off',
+            '@typescript-eslint/unbound-method': 'off',
+            '@typescript-eslint/no-unsafe-return': 'off',
             'import/newline-after-import': [
                 'error',
                 {
@@ -129,7 +117,6 @@ export default [
             '.prettierrc.js',
             '.svgrrc.js',
             'eslint.config.mjs',
-            'next.config.mjs',
         ],
     },
 ];
