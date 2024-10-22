@@ -22,7 +22,7 @@ export const ScenarioSelect = ({ selectedScenarioId, scenarios }: ScenarioSelect
             style={{ color: selectedScenarioId === undefined ? 'grey' : undefined }}
             isFullWidth
         >
-            <option value={''} hidden>
+            <option value={''} disabled>
                 Choisissez un scénario
             </option>
             {scenarios.map((s) => (

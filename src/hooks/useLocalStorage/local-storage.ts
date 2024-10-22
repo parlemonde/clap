@@ -5,6 +5,14 @@ import isEqual from 'fast-deep-equal/es6';
 import type { Scenario } from 'src/database/schemas/scenarios';
 import type { Theme } from 'src/database/schemas/themes';
 
+export interface Project {
+    id: string | number;
+    name: string;
+    themeId: string | number;
+    scenarioId: string | number;
+    questions: { id: string | number; question: string }[];
+}
+
 export type LocalTheme = Omit<Theme, 'id'> & {
     id: string;
 };
@@ -16,12 +24,19 @@ export type LocalScenario = Omit<Scenario, 'id' | 'themeId'> & {
 };
 export const isLocalScenario = (scenario: Scenario | LocalScenario): scenario is LocalScenario => typeof scenario.id === 'string';
 
-export type LocalStorageKey = 'themes' | 'scenarios';
-export type ObjectType<T extends LocalStorageKey> = T extends 'themes' ? LocalTheme[] : T extends 'scenarios' ? LocalScenario[] : never;
+export type LocalStorageKey = 'themes' | 'scenarios' | 'project';
+export type ObjectType<T extends LocalStorageKey> = T extends 'themes'
+    ? LocalTheme[]
+    : T extends 'scenarios'
+      ? LocalScenario[]
+      : T extends 'project'
+        ? Project
+        : never;
 
 const localStorageCache: Record<LocalStorageKey, unknown> = {
     themes: undefined,
     scenarios: undefined,
+    project: undefined,
 };
 
 export function getFromLocalStorage<T extends LocalStorageKey>(key: T): ObjectType<T> | undefined {

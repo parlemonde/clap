@@ -25,13 +25,18 @@ interface QuestionsTileProps {
     questions: QuestionTemplate[];
 }
 
-export const QuestionsTile = ({ selectedScenario, questions }: QuestionsTileProps) => {
+export const QuestionsTile = ({ selectedScenario, questions: allQuestions }: QuestionsTileProps) => {
     const languages = useLanguages();
 
     const availableLanguages = languages.filter((l) => selectedScenario.names[l.value] !== undefined);
+    if (availableLanguages.length === 0) {
+        availableLanguages.push({ label: 'français', value: 'fr' });
+    }
     const [selectedLanguage, setSelectedLanguage] = React.useState(
         availableLanguages.map((l) => l.value).includes('fr') ? 'fr' : availableLanguages[0].value,
     );
+
+    const questions = allQuestions.filter((q) => q.languageCode === selectedLanguage);
 
     const [createModalOpen, setCreateModalOpen] = React.useState<boolean>(false);
     const [editQuestionIndex, setEditQuestionIndex] = React.useState<number>(-1);

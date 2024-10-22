@@ -1,12 +1,14 @@
+'use client';
+
 import { ChevronLeftIcon } from '@radix-ui/react-icons';
 import classNames from 'clsx';
 import Link from 'next/link';
 import * as React from 'react';
 
 import styles from './steps.module.scss';
-import { getTranslation } from 'src/actions/get-translation';
 import { Button } from 'src/components/layout/Button';
 import { Text } from 'src/components/layout/Typography';
+import { useTranslation } from 'src/contexts/translationContext';
 import { serializeToQueryUrl } from 'src/utils/serialize-to-query-url';
 
 type StepData = {
@@ -47,8 +49,8 @@ type StepsProps = {
     scenarioName?: string;
     backHref?: string;
 };
-export const Steps = async ({ activeStep, backHref, themeId }: StepsProps) => {
-    const { t } = await getTranslation();
+export const Steps = ({ activeStep, backHref, themeId }: StepsProps) => {
+    const { t } = useTranslation();
     // const { project } = useCurrentProject();
     // const projectId = project ? project.id : undefined;
     const projectId = undefined;

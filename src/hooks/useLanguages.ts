@@ -8,5 +8,12 @@ import { jsonFetcher } from 'src/utils/json-fetcher';
 export function useLanguages(): Language[] {
     const { data } = useSWR<Language[], Error>('/api/languages', jsonFetcher);
 
-    return data ?? [];
+    return data && data.length > 0
+        ? data
+        : [
+              {
+                  value: 'fr',
+                  label: 'Français',
+              },
+          ];
 }
