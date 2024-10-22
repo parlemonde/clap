@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { type JSX } from 'react';
 
 import type { MarginProps, PaddingProps } from '../css-styles';
 import { getMarginAndPaddingProps, getMarginAndPaddingStyle } from '../css-styles';

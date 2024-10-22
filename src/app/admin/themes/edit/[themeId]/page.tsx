@@ -7,8 +7,10 @@ import { AdminTile } from 'src/components/admin/AdminTile';
 import { Breadcrumbs } from 'src/components/layout/Breadcrumbs';
 import { Container } from 'src/components/layout/Container';
 import { Title } from 'src/components/layout/Typography';
+import type { ServerPageProps } from 'src/utils/page-props.types';
 
-export default async function AdminEditThemePage({ params }: { params: { themeId: string } }) {
+export default async function AdminEditThemePage(props: ServerPageProps) {
+    const params = await props.params;
     const theme = await getTheme(Number(params.themeId) || 0);
     const { currentLocale } = await getLocales();
 

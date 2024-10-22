@@ -23,7 +23,8 @@ export const getLocalesForLanguage = cache(async (languageCode: string) => {
 });
 
 export async function getLocales() {
-    const currentLocale = cookies().get('app-language')?.value || 'fr';
+    const cookieStore = await cookies();
+    const currentLocale = cookieStore.get('app-language')?.value || 'fr';
     return {
         locales: await getLocalesForLanguage(currentLocale),
         currentLocale,

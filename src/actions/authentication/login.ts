@@ -67,7 +67,8 @@ export async function login(_previousState: string, formData: FormData): Promise
     }
 
     const accessToken = await getAccessToken(user.id);
-    cookies().set({
+    const cookieStore = await cookies();
+    cookieStore.set({
         name: 'access-token',
         value: accessToken,
         httpOnly: true,

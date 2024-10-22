@@ -1,5 +1,6 @@
 import classNames from 'clsx';
 import * as React from 'react';
+import type { JSX } from 'react';
 
 import styles from './input.module.scss';
 import type { MarginProps } from '../css-styles';

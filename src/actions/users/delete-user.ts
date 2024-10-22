@@ -18,7 +18,8 @@ export async function deleteUser() {
 
     await db.delete(users).where(eq(users.id, user.id));
 
-    cookies().delete('access-token');
+    const cookieStore = await cookies();
+    cookieStore.delete('access-token');
 
     revalidatePath('/', 'layout');
     redirect(`/`, RedirectType.push);

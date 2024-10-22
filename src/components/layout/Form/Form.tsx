@@ -1,6 +1,6 @@
 'use client';
-
 import * as React from 'react';
+import type { JSX } from 'react';
 
 import type { MarginProps, PaddingProps } from '../css-styles';
 import { getMarginAndPaddingProps, getMarginAndPaddingStyle } from '../css-styles';

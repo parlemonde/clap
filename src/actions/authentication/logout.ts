@@ -5,7 +5,8 @@ import { cookies } from 'next/headers';
 import { RedirectType, redirect } from 'next/navigation';
 
 export async function logout() {
-    cookies().delete('access-token');
+    const cookieStore = await cookies();
+    cookieStore.delete('access-token');
 
     revalidatePath('/', 'layout');
     redirect(`/`, RedirectType.push);

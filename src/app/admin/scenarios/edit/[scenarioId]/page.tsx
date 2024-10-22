@@ -9,7 +9,8 @@ import { Breadcrumbs } from 'src/components/layout/Breadcrumbs';
 import { Container } from 'src/components/layout/Container';
 import { Title } from 'src/components/layout/Typography';
 
-export default async function AdminEditThemePage({ params }: { params: { scenarioId: string } }) {
+export default async function AdminEditThemePage(props: { params: Promise<{ scenarioId: string }> }) {
+    const params = await props.params;
     const [{ currentLocale }, scenario, themes] = await Promise.all([getLocales(), getScenario(Number(params.scenarioId) || 0), listThemes()]);
 
     if (!scenario) {

@@ -10,9 +10,9 @@ import { Inverted } from 'src/components/ui/Inverted';
 import { Trans } from 'src/components/ui/Trans';
 import { useTranslation } from 'src/contexts/translationContext';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
-import type { SearchParams } from 'src/utils/search-params/search-params.types';
+import type { ClientPageProps } from 'src/utils/page-props.types';
 
-export default function ScenarioPage({ searchParams }: { searchParams: SearchParams }) {
+export default function ScenarioPage({ searchParams }: ClientPageProps) {
     const [project] = useCurrentProject();
     const { t } = useTranslation();
 

@@ -1,5 +1,6 @@
 import classNames from 'clsx';
 import * as React from 'react';
+import type { JSX } from 'react';
 
 import styles from './container.module.scss';
 import type { Size } from '../css-styles';

@@ -1,9 +1,10 @@
-/** @type {import('next').NextConfig} */
-import path from 'path'
+import type { NextConfig } from 'next';
+import path from 'path';
 
-const nextConfig = {
+const nextConfig: NextConfig = {
     poweredByHeader: false,
     webpack: (config) => {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
         config.module.rules.push({
             test: /\.svg$/,
             use: ['@svgr/webpack'],

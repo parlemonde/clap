@@ -13,7 +13,8 @@ const notFoundResponse = () => {
 };
 const getContentTypeFromFileName = (filename: string): string | null => mime.lookup(filename) || null;
 
-export async function GET(request: NextRequest, { params }: { params: { name: string } }) {
+export async function GET(request: NextRequest, props: { params: Promise<{ name: string }> }) {
+    const params = await props.params;
     const data = await getFileData('images', params.name);
 
     if (!data || data.ContentLength === 0) {
@@ -94,7 +95,8 @@ export async function GET(request: NextRequest, { params }: { params: { name: st
     }
 }
 
-export async function HEAD(request: NextRequest, { params }: { params: { name: string } }) {
+export async function HEAD(request: NextRequest, props: { params: Promise<{ name: string }> }) {
+    const params = await props.params;
     const data = await getFileData('images', params.name);
     if (!data || data.ContentLength === 0) {
         return notFoundResponse();

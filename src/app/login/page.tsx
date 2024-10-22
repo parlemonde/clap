@@ -3,7 +3,6 @@
 import { EyeNoneIcon, EyeOpenIcon } from '@radix-ui/react-icons';
 import { redirect } from 'next/navigation';
 import * as React from 'react';
-import { useFormState } from 'react-dom';
 
 import { login } from 'src/actions/authentication/login';
 import { Button } from 'src/components/layout/Button';
@@ -16,7 +15,7 @@ import { useTranslation } from 'src/contexts/translationContext';
 import { userContext } from 'src/contexts/userContext';
 
 export default function LoginPage() {
-    const [message, formAction] = useFormState(login, '');
+    const [message, formAction] = React.useActionState(login, '');
     const { t } = useTranslation();
 
     const [showPassword, setShowPassword] = React.useState(false);

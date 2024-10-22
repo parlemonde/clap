@@ -13,7 +13,8 @@ import { setRedisValue } from 'src/redis/set-value';
 const LOCALE_REGEX = /^\w\w(\.(po|json))?$/;
 const PO_REGEX = /^\w\w\.po$/;
 
-export async function GET(_request: NextRequest, { params }: { params: { languageCode: string } }) {
+export async function GET(_request: NextRequest, props: { params: Promise<{ languageCode: string }> }) {
+    const params = await props.params;
     const user = await getCurrentUser();
     const value = params.languageCode;
 
@@ -50,7 +51,8 @@ export async function GET(_request: NextRequest, { params }: { params: { languag
     return NextResponse.json(locales);
 }
 
-export async function PUT(request: NextRequest, { params }: { params: { languageCode: string } }) {
+export async function PUT(request: NextRequest, props: { params: Promise<{ languageCode: string }> }) {
+    const params = await props.params;
     const user = await getCurrentUser();
     if (!user || user.role !== 'admin') {
         return new NextResponse('Error 403, forbidden.', {

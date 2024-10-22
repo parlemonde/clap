@@ -11,7 +11,8 @@ import { themes } from 'src/database/schemas/themes';
 
 // User action to create a new theme
 export async function createTheme(themeName: string): Promise<Theme | undefined> {
-    const currentLocale = cookies().get('app-language')?.value || 'fr';
+    const cookieStore = await cookies();
+    const currentLocale = cookieStore.get('app-language')?.value || 'fr';
     const user = await getCurrentUser();
     if (!user) {
         return;

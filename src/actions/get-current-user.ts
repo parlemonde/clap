@@ -22,7 +22,8 @@ const getUser = cache(async (accessToken: string): Promise<User | undefined> => 
 });
 
 export async function getCurrentUser(): Promise<User | undefined> {
-    const accessToken = cookies().get('access-token')?.value;
+    const cookieStore = await cookies();
+    const accessToken = cookieStore.get('access-token')?.value;
     if (!accessToken) {
         return;
     }

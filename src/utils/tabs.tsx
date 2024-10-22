@@ -1,6 +1,6 @@
 'use client';
-
 import * as React from 'react';
+import type { JSX } from 'react';
 
 import CreateLogo from 'src/svg/create.svg';
 import MoviesLogo from 'src/svg/movies.svg';

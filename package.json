@@ -34,12 +34,12 @@
     "ioredis": "^5.4.1",
     "jose": "^5.9.2",
     "mime-types": "^2.1.35",
-    "next": "14.2.13",
+    "next": "15.0.0",
     "normalize.css": "^8.0.1",
     "nprogress": "^0.2.0",
     "postgres": "^3.4.4",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
+    "react": "19.0.0-rc-65a56d0e-20241020",
+    "react-dom": "19.0.0-rc-65a56d0e-20241020",
     "sanitize-filename": "^1.6.3",
     "sass": "^1.79.3",
     "sharp": "^0.33.5",
@@ -52,7 +52,7 @@
     "@eslint/compat": "1.1.1",
     "@eslint/eslintrc": "3.1.0",
     "@eslint/js": "9.11.0",
-    "@next/eslint-plugin-next": "14.2.13",
+    "@next/eslint-plugin-next": "15.0.0",
     "@svgr/webpack": "8.1.0",
     "@types/aws-lambda": "8.10.145",
     "@types/croppie": "2.6.4",
@@ -61,13 +61,13 @@
     "@types/mime-types": "2.1.4",
     "@types/node": "20.16.5",
     "@types/nprogress": "0.2.3",
-    "@types/react": "18.3.8",
-    "@types/react-dom": "18.3.0",
+    "@types/react": "npm:types-react@19.0.0-rc.1",
+    "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1",
     "@types/sortablejs": "1.15.8",
     "@types/uuid": "10.0.0",
     "drizzle-kit": "0.24.2",
     "eslint": "9.11.0",
-    "eslint-config-next": "14.2.13",
+    "eslint-config-next": "15.0.0",
     "eslint-config-prettier": "9.1.0",
     "eslint-import-resolver-node": "0.3.9",
     "eslint-import-resolver-typescript": "3.6.3",
@@ -82,5 +82,11 @@
   "volta": {
     "node": "20.17.0"
   },
-  "packageManager": "pnpm@9.11.0+sha256.1c0e33f70e5df9eede84a357bdfa0b1f9dba6e58194628d48a1055756f553754"
+  "packageManager": "pnpm@9.11.0+sha256.1c0e33f70e5df9eede84a357bdfa0b1f9dba6e58194628d48a1055756f553754",
+  "pnpm": {
+    "overrides": {
+      "@types/react": "npm:types-react@19.0.0-rc.1",
+      "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1"
+    }
+  }
 }
