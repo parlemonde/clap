@@ -51,8 +51,8 @@ export const DiaporamaCard = ({ projectId, questionIndex, sequence, isAuthorized
         width: '100%',
         height: '100%',
         pointerEvents: isAuthorized ? 'auto' : 'none',
-        backgroundColor: style.backgroundColor || 'white',
-        color: style.color || 'black',
+        backgroundColor: style?.backgroundColor || 'white',
+        color: style?.color || 'black',
     };
 
     const updateFrameIndex = React.useCallback(() => {
