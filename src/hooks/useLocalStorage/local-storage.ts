@@ -6,11 +6,14 @@ import type { Scenario } from 'src/database/schemas/scenarios';
 import type { Theme } from 'src/database/schemas/themes';
 
 export interface Project {
-    id: string | number;
+    id: 'local' | number;
+    locale: string;
     name: string;
     themeId: string | number;
+    themeName: string;
     scenarioId: string | number;
-    questions: { id: string | number; question: string }[];
+    scenarioName: string;
+    questions: { id: number; question: string }[];
 }
 
 export type LocalTheme = Omit<Theme, 'id'> & {

@@ -12,8 +12,9 @@ type ScenarioCardProps = {
     description?: string;
     questionsCount?: string;
     href: string;
+    onClick?: (event: React.MouseEvent) => void;
 };
-export const ScenarioCard = ({ isNew = false, name, description, questionsCount, href }: ScenarioCardProps) => (
+export const ScenarioCard = ({ isNew = false, name, description, questionsCount, href, onClick }: ScenarioCardProps) => (
     <Link
         href={href}
         style={{
@@ -21,6 +22,7 @@ export const ScenarioCard = ({ isNew = false, name, description, questionsCount,
         }}
         className={styles.scenarioCard}
         tabIndex={0}
+        onClick={onClick}
     >
         <Title variant="h3" color="primary">
             {name}

@@ -9,51 +9,49 @@ import styles from './steps.module.scss';
 import { Button } from 'src/components/layout/Button';
 import { Text } from 'src/components/layout/Typography';
 import { useTranslation } from 'src/contexts/translationContext';
+import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import { serializeToQueryUrl } from 'src/utils/serialize-to-query-url';
 
 type StepData = {
     name: string;
-    href: (args: { themeId?: string | number; projectId?: number | null }) => string;
+    href: string | ((themeId?: number | string | null) => string);
 };
 
 const STEPS: StepData[] = [
     {
         name: 'step1',
-        href: ({ themeId }) => `/create/1-scenario${serializeToQueryUrl({ themeId })}`,
+        href: (themeId) => `/create/1-scenario${serializeToQueryUrl({ themeId })}`,
     },
     {
         name: 'step2',
-        href: ({ projectId }) => `/create/2-questions${serializeToQueryUrl({ projectId })}`,
+        href: '/create/2-questions',
     },
     {
         name: 'step3',
-        href: ({ projectId }) => `/create/3-storyboard${serializeToQueryUrl({ projectId })}`,
+        href: '/create/3-storyboard',
     },
     {
         name: 'step4',
-        href: ({ projectId }) => `/create/4-pre-mounting${serializeToQueryUrl({ projectId })}`,
+        href: '/create/4-pre-mounting',
     },
     {
         name: 'step5',
-        href: ({ projectId }) => `/create/5-music${serializeToQueryUrl({ projectId })}`,
+        href: '/create/5-music',
     },
     {
         name: 'step6',
-        href: ({ projectId }) => `/create/6-result${serializeToQueryUrl({ projectId })}`,
+        href: '/create/6-result',
     },
 ];
 
 type StepsProps = {
     activeStep: number;
     themeId?: string | number;
-    scenarioName?: string;
     backHref?: string;
 };
 export const Steps = ({ activeStep, backHref, themeId }: StepsProps) => {
     const { t } = useTranslation();
-    // const { project } = useCurrentProject();
-    // const projectId = project ? project.id : undefined;
-    const projectId = undefined;
+    const [project] = useCurrentProject();
 
     return (
         <>
@@ -89,12 +87,15 @@ export const Steps = ({ activeStep, backHref, themeId }: StepsProps) => {
                             </div>
                         </>
                     );
-                    const href =
-                        index === activeStep && backHref
-                            ? backHref
-                            : activeStep !== 0
-                              ? step.href({ themeId, projectId: projectId || null })
-                              : undefined;
+
+                    let href: string | undefined = undefined;
+                    if (index === activeStep && backHref) {
+                        href = backHref;
+                    } else if (typeof step.href === 'function') {
+                        href = step.href(themeId);
+                    } else if (project && project.themeId === themeId) {
+                        href = step.href;
+                    }
                     if (href) {
                         return (
                             <Link href={href} key={step.name} className={styles.step}>

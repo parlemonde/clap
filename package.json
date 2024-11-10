@@ -35,7 +35,7 @@
     "ioredis": "^5.4.1",
     "jose": "^5.9.2",
     "mime-types": "^2.1.35",
-    "next": "15.0.0",
+    "next": "15.0.2",
     "normalize.css": "^8.0.1",
     "nprogress": "^0.2.0",
     "postgres": "^3.4.4",

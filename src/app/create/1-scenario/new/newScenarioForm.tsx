@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import React from 'react';
+import useSWR from 'swr';
 
 import { createScenario } from 'src/actions/scenarios/create-scenario';
 import { Form, Field, Input, TextArea } from 'src/components/layout/Form';
@@ -12,9 +13,12 @@ import { sendToast } from 'src/components/ui/Toasts';
 import { Trans } from 'src/components/ui/Trans';
 import { useTranslation } from 'src/contexts/translationContext';
 import { userContext } from 'src/contexts/userContext';
+import type { Scenario } from 'src/database/schemas/scenarios';
+import type { Theme } from 'src/database/schemas/themes';
+import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import { useLocalStorage } from 'src/hooks/useLocalStorage';
 import type { LocalScenario } from 'src/hooks/useLocalStorage/local-storage';
-import { serializeToQueryUrl } from 'src/utils/serialize-to-query-url';
+import { jsonFetcher } from 'src/utils/json-fetcher';
 
 type NewScenarioFormProps = {
     backUrl: string;
@@ -24,11 +28,32 @@ export const NewScenarioForm = ({ backUrl, themeId }: NewScenarioFormProps) => {
     const router = useRouter();
     const { user } = React.useContext(userContext);
     const { t, currentLocale } = useTranslation();
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [_p, setProject] = useCurrentProject();
+
+    const { data: themes } = useSWR<Theme[]>('/api/themes', jsonFetcher);
+    const [localThemes] = useLocalStorage('themes', []);
 
     const [name, setName] = React.useState('');
     const [description, setDescription] = React.useState('');
     const [isLoading, setIsLoading] = React.useState(false);
     const [localScenarios, setLocalScenarios] = useLocalStorage('scenarios', []);
+
+    const createNewProject = (scenario: Scenario | LocalScenario) => {
+        setProject({
+            id: 'local',
+            name: '',
+            locale: currentLocale,
+            themeId: scenario.themeId,
+            themeName:
+                typeof scenario.themeId === 'number'
+                    ? themes?.find((theme) => theme.id === scenario.themeId)?.names[currentLocale] || ''
+                    : localThemes.find((theme) => theme.id === scenario.themeId)?.names[currentLocale] || '',
+            scenarioId: scenario.id,
+            scenarioName: scenario.names[currentLocale] || scenario.names[Object.keys(scenario.names)[0]] || '',
+            questions: [],
+        });
+    };
 
     const onCreateScenario = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -41,7 +66,8 @@ export const NewScenarioForm = ({ backUrl, themeId }: NewScenarioFormProps) => {
                 themeId,
             });
             if (newScenario) {
-                router.push(`/create/2-questions${serializeToQueryUrl({ themeId, scenarioId: newScenario.id })}`);
+                createNewProject(newScenario);
+                router.push('/create/2-questions');
             } else {
                 sendToast({ message: t('unknown_error'), type: 'error' });
             }
@@ -61,7 +87,8 @@ export const NewScenarioForm = ({ backUrl, themeId }: NewScenarioFormProps) => {
                 themeId,
             };
             setLocalScenarios([...localScenarios, newScenario]);
-            router.push(`/create/2-questions${serializeToQueryUrl({ themeId, scenarioId: newScenario.id })}`);
+            createNewProject(newScenario);
+            router.push('/create/2-questions');
         }
     };
 

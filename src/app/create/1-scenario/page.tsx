@@ -1,7 +1,7 @@
 import * as React from 'react';
 
+import { BackendScenarios } from './BackendScenarios';
 import { LocalScenarios } from './LocalScenarios';
-import { Scenarios } from './Scenarios';
 import { getTranslation } from 'src/actions/get-translation';
 import { ScenarioCard } from 'src/components/create/ScenarioCard';
 import { ScenarioCardPlaceholder } from 'src/components/create/ScenarioCard/ScenarioCard';
@@ -41,7 +41,7 @@ export default async function ScenarioPage(props: ServerPageProps) {
             />
             {typeof themeId === 'number' && (
                 <React.Suspense fallback={<ScenarioCardPlaceholder />}>
-                    <Scenarios themeId={themeId}></Scenarios>
+                    <BackendScenarios themeId={themeId}></BackendScenarios>
                 </React.Suspense>
             )}
             <LocalScenarios themeId={themeId}></LocalScenarios>

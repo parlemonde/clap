@@ -13,34 +13,23 @@ import { Inverted } from 'src/components/ui/Inverted';
 import { Trans } from 'src/components/ui/Trans';
 import { useTranslation } from 'src/contexts/translationContext';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
-import type { ServerPageProps } from 'src/utils/page-props.types';
 
-export default function ScenarioPage(props: ServerPageProps) {
+export default function QuestionNewPage() {
     const router = useRouter();
     const [project, setProject] = useCurrentProject();
     const { t } = useTranslation();
 
-    const searchParams = React.use(props.searchParams);
-    const questionIndex = typeof searchParams.question === 'string' ? Number(searchParams.question) : undefined;
+    const [question, setQuestion] = React.useState('');
 
-    const [question, setQuestion] = React.useState(questionIndex ? project?.questions[questionIndex]?.question || '' : '');
-
-    // Update the question when the project or question index changes
-    React.useEffect(() => {
-        if (questionIndex === undefined) {
-            return;
-        }
-        setQuestion(project?.questions[questionIndex]?.question || '');
-    }, [questionIndex, project]);
-
-    if (!project || questionIndex === undefined) {
+    if (!project) {
         return null;
     }
 
-    const onUpdateQuestion = (event: React.FormEvent<HTMLFormElement>) => {
+    const onCreateQuestion = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const newQuestions = [...project.questions];
-        newQuestions[questionIndex] = { ...newQuestions[questionIndex], question };
+        const maxId = Math.max(0, ...newQuestions.map((q) => q.id).filter((id) => !isNaN(id) && Number.isFinite(id)));
+        newQuestions.push({ id: maxId + 1, question });
         setProject({ ...project, questions: newQuestions });
         router.push('/create/2-questions');
     };
@@ -55,12 +44,12 @@ export default function ScenarioPage(props: ServerPageProps) {
                     Mes <Inverted>séquences</Inverted>
                 </Trans>
             </Title>
-            <Form onSubmit={onUpdateQuestion}>
+            <Form onSubmit={onCreateQuestion}>
                 <Field
                     name="question"
                     label={
                         <Title color="inherit" variant="h2">
-                            {t('part2_edit_question')}
+                            {t('part2_add_question')}
                         </Title>
                     }
                     input={
