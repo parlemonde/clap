@@ -65,8 +65,8 @@ export const TitleCard = ({ title, questionIndex, onDelete = () => {} }: TitleCa
                         width: `${title.width}%`,
                         textAlign: title.textAlign,
                         color: title.color,
-                        lineBreak: 'anywhere',
                         whiteSpace: 'pre-wrap',
+                        wordBreak: 'break-word',
                     }}
                 >
                     {title.text}

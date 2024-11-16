@@ -107,6 +107,8 @@ textarea.input {
     width: 100%;
     resize: none;
     overflow: hidden;
+    white-space: pre-wrap;
+    word-break: break-word;
     grid-area: 1 / 1 / 2 / 2;
 }
 
@@ -117,6 +119,7 @@ textarea.input {
     &::after {
         content: attr(data-replicated-value) " ";
         white-space: pre-wrap;
+        word-break: break-word;
         visibility: hidden;
         grid-area: 1 / 1 / 2 / 2;
         font-family: 'Open Sans', Arial, sans-serif;
