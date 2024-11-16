@@ -1,0 +1,45 @@
+.textAreaContainer {
+    display: grid;
+
+    &::after {
+        content: attr(data-replicated-value) ' ';
+        visibility: hidden;
+        grid-area: 1 / 1 / 2 / 2;
+        width: 100%;
+        padding: 0;
+        margin: 0;
+        box-sizing: content-box;
+        text-align: inherit;
+        font-size: inherit;
+        line-height: 1;
+        font-family: inherit;
+        font-weight: inherit;
+        border: 1px dashed;
+        border-radius: 8px;
+        border-top-left-radius: 0;
+        line-break: anywhere;
+        white-space: pre-wrap;
+    }
+
+    textarea {
+        grid-area: 1 / 1 / 2 / 2;
+        width: 100%;
+        resize: none;
+        outline: none;
+        padding: 0;
+        margin: 0;
+        box-sizing: content-box;
+        text-align: inherit;
+        font-size: inherit;
+        line-height: 1;
+        font-family: inherit;
+        font-weight: inherit;
+        border: 1px dashed #6065fc;
+        border-radius: 8px;
+        border-top-left-radius: 0;
+        background-color: inherit;
+        color: inherit;
+        max-height: 100%;
+        overflow: hidden;
+    }
+}

@@ -71,6 +71,7 @@ export const Scenarios = ({ scenarios }: ScenariosProps) => {
                             questions: questions.map((question, index) => ({
                                 id: index,
                                 question: question.question,
+                                plans: [],
                             })),
                         });
                         setIsCreatingProject(false);

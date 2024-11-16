@@ -1,0 +1,71 @@
+.titleCard {
+    width: 100%;
+    height: 100%;
+    border: 1px solid #737373;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    text-decoration: none;
+    color: #737373;
+
+    &:hover,
+    &:focus-visible {
+        .titleCard__placeholder {
+            color: #6065fc;
+        }
+        .titleCard__placeholderDesc {
+            background-color: #6065fc;
+            color: white;
+        }
+        .titleCard__editButton {
+            display: block;
+        }
+        .titleCard__deleteButton {
+            opacity: 1;
+        }
+    }
+
+    &__placeholder {
+        font-size: 3rem;
+        line-height: 3rem;
+    }
+    &__placeholderDesc {
+        font-size: 1rem;
+        line-height: 1rem;
+        padding: 0.25rem 0.65rem;
+        border-radius: 2px;
+    }
+
+    &__title {
+        position: absolute;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    &__editButton {
+        display: none;
+        background-color: rgb(255, 255, 255);
+        padding: 0.25rem 0.65rem;
+        border-radius: 2px;
+        background-color: #5f65ff;
+        color: #fff;
+        position: relative;
+        z-index: 1;
+    }
+
+    &__deleteButton {
+        opacity: 0;
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+
+        &:focus-visible {
+            opacity: 1;
+        }
+    }
+}

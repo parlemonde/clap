@@ -29,7 +29,7 @@ export default function QuestionNewPage() {
         event.preventDefault();
         const newQuestions = [...project.questions];
         const maxId = Math.max(0, ...newQuestions.map((q) => q.id).filter((id) => !isNaN(id) && Number.isFinite(id)));
-        newQuestions.push({ id: maxId + 1, question });
+        newQuestions.push({ id: maxId + 1, question, plans: [] });
         setProject({ ...project, questions: newQuestions });
         router.push('/create/2-questions');
     };

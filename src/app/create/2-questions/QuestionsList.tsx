@@ -4,7 +4,7 @@ import { QuestionCard } from 'src/components/create/QuestionCard';
 import { Modal } from 'src/components/layout/Modal';
 import { Sortable } from 'src/components/ui/Sortable';
 import { useTranslation } from 'src/contexts/translationContext';
-import type { Project } from 'src/hooks/useLocalStorage/local-storage';
+import type { Project, Sequence } from 'src/hooks/useLocalStorage/local-storage';
 
 interface QuestionsListProps {
     project: Project;
@@ -16,7 +16,7 @@ export const QuestionsList = ({ project, setProject }: QuestionsListProps) => {
     const questions = project.questions;
     const [deleteQuestionIndex, setDeleteQuestionIndex] = React.useState(-1);
 
-    const setQuestionsOrder = (newQuestions: Project['questions']) => {
+    const setQuestionsOrder = (newQuestions: Sequence[]) => {
         setProject({ ...project, questions: newQuestions });
     };
 
