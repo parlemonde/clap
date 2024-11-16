@@ -8,7 +8,6 @@ export type CustomMySqlJsonBuilderInitial<TName extends string, DataType = unkno
     data: DataType;
     driverParam: unknown;
     enumValues: undefined;
-    generated: undefined;
 }>;
 
 export const json = postgresqlJson as <TName extends string, DataType = unknown>(name: TName) => CustomMySqlJsonBuilderInitial<TName, DataType>;
