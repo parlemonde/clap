@@ -10,8 +10,12 @@ import type { NewUser } from './schemas/users';
 import { users } from './schemas/users';
 
 const DATABASE_URL = process.env.DATABASE_URL || '';
+const IS_VERCEL_CI = process.env.VERCEL === '1';
 
 async function createDatabase(): Promise<void> {
+    if (IS_VERCEL_CI) {
+        return;
+    }
     try {
         const client = postgres(DATABASE_URL.replace(/\/[^/]*$/, ''), { debug: true });
         const res = await client`SELECT datname FROM pg_catalog.pg_database WHERE datname = ${'clap'}`;
@@ -77,7 +81,7 @@ const start = async () => {
     process.exit();
 };
 
-if (process.env.VERCEL === '1' && process.env.VERCEL_ENV !== 'production') {
+if (IS_VERCEL_CI && process.env.VERCEL_ENV !== 'production') {
     // eslint-disable-next-line no-console
     console.log('Not running migrations on Vercel dev and preview deployments.');
 } else {
