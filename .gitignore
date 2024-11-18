@@ -34,14 +34,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 
-.mysql-data
 .postgres-data
 .minio-data
 .redis-data
 .env
 .env.*
-.aws-sam
 dist
-drizzle
-.open-next
-deploy.sh

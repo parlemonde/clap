@@ -1,0 +1,1 @@
+ALTER TABLE "question-templates" RENAME COLUMN "index" TO "order";
