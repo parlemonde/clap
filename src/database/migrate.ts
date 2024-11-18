@@ -77,4 +77,9 @@ const start = async () => {
     process.exit();
 };
 
-start().catch(console.error);
+if (process.env.VERCEL === '1' && process.env.VERCEL_ENV !== 'production') {
+    // eslint-disable-next-line no-console
+    console.log('Not running migrations on Vercel dev and preview deployments.');
+} else {
+    start().catch(console.error);
+}

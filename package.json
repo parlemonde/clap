@@ -7,7 +7,6 @@
     "build": "next build",
     "start": "next start",
     "db:migrate": "dotenvx run -- tsx src/database/migrate.ts",
-    "db:migrate:prod": "dotenvx run --env-file=.env.production -- tsx src/database/migrate.ts",
     "db:generate": "drizzle-kit generate",
     "db:studio": "drizzle-kit studio"
   },
