@@ -1,0 +1,59 @@
+.planCard {
+  width: 100%;
+  height: 100%;
+  border: 1px solid #737373;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+  color: #737373;
+
+  &:hover,
+  &:focus-visible {
+      .planCard__editButton {
+          display: block;
+      }
+      .planCard__deleteButton {
+          opacity: 1;
+      }
+  }
+
+  &__editButton {
+      display: none;
+      background-color: rgb(255, 255, 255);
+      padding: 0.25rem 0.65rem;
+      border-radius: 2px;
+      background-color: #5f65ff;
+      color: #fff;
+      position: relative;
+      z-index: 1;
+  }
+
+  &__deleteButton {
+      opacity: 0;
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+
+      &:focus-visible {
+          opacity: 1;
+      }
+  }
+
+  &__number {
+      position: absolute;
+      top: 0.5rem;
+      left: 0.5rem;
+  }
+
+  &__bolt {
+      position: absolute;
+      bottom: 0.5rem;
+      left: 0.5rem;
+  }
+}

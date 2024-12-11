@@ -18,7 +18,8 @@ export interface Title {
 }
 export interface Plan {
     id: number;
-    // TODO define type
+    description: string;
+    imageUrl: string;
 }
 
 export interface Sequence {

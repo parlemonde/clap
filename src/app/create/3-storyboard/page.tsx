@@ -27,7 +27,7 @@ export default function StoryboardPage() {
     const startIndexPerSequence: Partial<Record<number, number>> = {};
     project.questions.reduce<number>((acc, sequence, index) => {
         startIndexPerSequence[index] = acc;
-        return acc + Math.max((sequence.plans || []).length, 1);
+        return acc + (sequence.plans || []).length;
     }, 1);
 
     return (
