@@ -57,9 +57,6 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
-      croppie:
-        specifier: ^2.6.5
-        version: 2.6.5
       drizzle-orm:
         specifier: ^0.38.0
         version: 0.38.0(@types/react@19.0.1)(postgres@3.4.5)(react@19.0.0)
@@ -127,9 +124,6 @@ importers:
       '@svgr/webpack':
         specifier: 8.1.0
         version: 8.1.0(typescript@5.7.2)
-      '@types/croppie':
-        specifier: 2.6.4
-        version: 2.6.4
       '@types/eslint__js':
         specifier: 8.42.3
         version: 8.42.3
@@ -2452,9 +2446,6 @@ packages:
     resolution: {integrity: sha512-L7z9BgrNEcYyUYtF+HaEfiS5ebkh9jXqbszz7pC0hRBPaatV0XjSD3+eHrpqFemQfgwiFF0QPIarnIihIDn7OA==}
     engines: {node: '>=10.13.0'}
 
-  '@types/croppie@2.6.4':
-    resolution: {integrity: sha512-rxKLA5S+QarlaMVlsMqhn2fMMC5XlvogFzTYdMlkeupPgxT1mWaheucdZNzkUJACn61+JjN/eJYt5dS9GMoeXw==}
-
   '@types/eslint@9.6.1':
     resolution: {integrity: sha512-FXx2pKgId/WyYo2jXw63kk7/+TY7u7AziEJxJAnSFzHlqTAS3Ync6SvgYAN/k4/PQpnnVuzoMuVnByKK2qp0ag==}
 
@@ -2863,9 +2854,6 @@ packages:
     peerDependenciesMeta:
       typescript:
         optional: true
-
-  croppie@2.6.5:
-    resolution: {integrity: sha512-IlChnVUGG5T3w2gRZIaQgBtlvyuYnlUWs2YZIXXR3H9KrlO1PtBT3j+ykxvy9eZIWhk+V5SpBmhCQz5UXKrEKQ==}
 
   cross-spawn@7.0.5:
     resolution: {integrity: sha512-ZVJrKKYunU38/76t0RMOulHOnUcbU9GbpWKAOZ0mhjr7CX6FVrH+4FrAapSOekrgFQ3f/8gwMEuIft0aKq6Hug==}
@@ -7033,8 +7021,6 @@ snapshots:
 
   '@trysound/sax@0.2.0': {}
 
-  '@types/croppie@2.6.4': {}
-
   '@types/eslint@9.6.1':
     dependencies:
       '@types/estree': 1.0.6
@@ -7492,8 +7478,6 @@ snapshots:
       path-type: 4.0.0
     optionalDependencies:
       typescript: 5.7.2
-
-  croppie@2.6.5: {}
 
   cross-spawn@7.0.5:
     dependencies:

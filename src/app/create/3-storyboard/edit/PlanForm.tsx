@@ -1,29 +1,85 @@
-import { ImageIcon, LightningBoltIcon } from '@radix-ui/react-icons';
+import { CameraIcon, ImageIcon, LightningBoltIcon, Pencil2Icon, UploadIcon } from '@radix-ui/react-icons';
+import Image from 'next/legacy/image';
 import React from 'react';
 
+import { deleteImage } from 'src/actions/delete-image';
+import { uploadImage } from 'src/actions/upload-image';
+import { Button } from 'src/components/layout/Button';
 import { Flex, FlexItem } from 'src/components/layout/Flex';
 import { Field, Form, TextArea } from 'src/components/layout/Form';
+import { KeepRatio } from 'src/components/layout/KeepRatio';
+import { Modal } from 'src/components/layout/Modal';
 import { Title } from 'src/components/layout/Typography';
 import { NextButton } from 'src/components/navigation/NextButton';
+import { Cropper } from 'src/components/ui/Cropper';
+import { Loader } from 'src/components/ui/Loader';
+import { sendToast } from 'src/components/ui/Toasts';
 import { useTranslation } from 'src/contexts/translationContext';
 import type { Plan } from 'src/hooks/useLocalStorage/local-storage';
+
+const RATIO = 16 / 9;
 
 interface PlanFormProps {
     plan: Plan;
     setPlan: (plan: Plan) => void;
-    onSubmit: () => void;
+    onSubmit: (plan: Plan) => void;
 }
 
 export const PlanForm = ({ plan, setPlan, onSubmit }: PlanFormProps) => {
     const { t } = useTranslation();
 
+    const [isUploading, setIsUploading] = React.useState(false);
+    const [newImageData, setNewImageData] = React.useState<Blob | null>(null);
+    const newImageUrl = React.useMemo(() => {
+        return newImageData ? URL.createObjectURL(newImageData) : null;
+    }, [newImageData]);
+    const [showChangeModal, setShowChangeModal] = React.useState(false);
+
+    const [imageToResizeUrl, setImageToResizeUrl] = React.useState<string | null>(null);
+    const onInputUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event.target.files !== null && event.target.files.length > 0) {
+            setImageToResizeUrl(URL.createObjectURL(event.target.files[0]));
+            setShowChangeModal(false);
+        } else {
+            setImageToResizeUrl(null);
+            setShowChangeModal(false);
+        }
+        event.target.value = ''; // clear input
+    };
+
+    const imageUrl = newImageUrl || plan.imageUrl;
+
+    const onNext = async (event: React.FormEvent) => {
+        event.preventDefault();
+        setIsUploading(true);
+        const planToSubmit = { ...plan };
+
+        // Remove old image if needed.
+        if (newImageData && plan.imageUrl) {
+            await deleteImage(plan.imageUrl);
+        }
+
+        // Upload image if needed.
+        if (newImageData) {
+            try {
+                planToSubmit.imageUrl = await uploadImage(newImageData);
+            } catch (error) {
+                console.error(error);
+                sendToast({
+                    message: t('error_upload_image'),
+                    type: 'error',
+                });
+                setIsUploading(false);
+                return;
+            }
+        }
+
+        onSubmit(planToSubmit);
+        setIsUploading(false);
+    };
+
     return (
-        <Form
-            onSubmit={(event) => {
-                event.preventDefault();
-                onSubmit();
-            }}
-        >
+        <Form onSubmit={onNext}>
             <Flex isFullWidth flexDirection="row" alignItems="center" justifyContent="flex-start">
                 <div className={`pill ${plan.description ? 'pill--green' : ''}`} style={{ marginRight: '10px' }}>
                     <LightningBoltIcon />
@@ -53,7 +109,7 @@ export const PlanForm = ({ plan, setPlan, onSubmit }: PlanFormProps) => {
             ></Field>
 
             <Flex isFullWidth flexDirection="row" alignItems="center" justifyContent="flex-start" style={{ margin: '1rem 0 0 0' }}>
-                <div className={`pill ${plan.imageUrl ? 'pill--green' : ''}`} style={{ marginRight: '10px' }}>
+                <div className={`pill ${imageUrl ? 'pill--green' : ''}`} style={{ marginRight: '10px' }}>
                     <ImageIcon />
                 </div>
                 <FlexItem flexGrow={1} flexBasis={0}>
@@ -68,8 +124,160 @@ export const PlanForm = ({ plan, setPlan, onSubmit }: PlanFormProps) => {
             <Title color="inherit" variant="h3" className="for-mobile-only">
                 {t('part3_plan_edit_title_mobile')}
             </Title>
+            <div style={{ width: '100%', maxWidth: '600px', margin: '2rem auto' }}>
+                <KeepRatio
+                    ratio={1 / RATIO}
+                    style={{
+                        border: '1px solid rgb(192, 192, 192)',
+                        borderRadius: '4px',
+                        backgroundColor: imageUrl ? 'black' : 'unset',
+                        overflow: 'hidden',
+                    }}
+                >
+                    {imageUrl ? (
+                        <Image unoptimized layout="fill" objectFit="contain" src={imageUrl} />
+                    ) : (
+                        <EditImageButtons
+                            imageUploadId="plan-img-upload"
+                            onShowCamera={() => {
+                                //
+                            }}
+                            onDraw={() => {
+                                //
+                            }}
+                        />
+                    )}
+                </KeepRatio>
+                <input id="plan-img-upload" type="file" accept="image/*" onChange={onInputUpload} style={{ display: 'none' }} />
+                {imageUrl && (
+                    <div className="text-center">
+                        <Button
+                            label={t('part3_change_image')}
+                            className="plan-button"
+                            variant="outlined"
+                            color="secondary"
+                            style={{ display: 'inline-block' }}
+                            onClick={() => {
+                                setShowChangeModal(true);
+                            }}
+                            marginTop="md"
+                        ></Button>
+                        <Modal
+                            isOpen={showChangeModal}
+                            onClose={() => {
+                                setShowChangeModal(false);
+                            }}
+                            title={t('part3_change_image')}
+                            isFullWidth
+                        >
+                            <EditImageButtons
+                                imageUploadId="plan-img-upload"
+                                onShowCamera={() => {
+                                    //
+                                }}
+                                onDraw={() => {
+                                    //
+                                }}
+                            />
+                        </Modal>
+                    </div>
+                )}
+            </div>
+
+            <Cropper
+                ratio={RATIO}
+                imageUrl={imageToResizeUrl || ''}
+                isOpen={imageToResizeUrl !== null}
+                onClose={() => {
+                    setImageToResizeUrl(null);
+                }}
+                onCrop={(data) => {
+                    setNewImageData(data);
+                    setImageToResizeUrl(null);
+                }}
+            />
 
             <NextButton label={t('continue')} backHref="/create/3-storyboard" type="submit" />
+
+            <Loader isLoading={isUploading} />
         </Form>
+    );
+};
+
+const SecondaryColor = '#79C3A5';
+
+const styles: Record<string, React.CSSProperties> = {
+    verticalLine: {
+        backgroundColor: SecondaryColor,
+        flex: 1,
+        width: '1px',
+        margin: '0.2rem 0',
+    },
+    horizontalLine: {
+        backgroundColor: SecondaryColor,
+        flex: 1,
+        height: '1px',
+        margin: '2rem 1rem',
+    },
+    secondaryColor: {
+        color: SecondaryColor,
+    },
+};
+
+type EditImageButtonsProps = {
+    imageUploadId: string;
+    onShowCamera(): void;
+    onDraw(): void;
+};
+const EditImageButtons = ({ imageUploadId, onShowCamera, onDraw }: EditImageButtonsProps) => {
+    const { t } = useTranslation();
+
+    return (
+        <div className="edit-plans-container">
+            <Button
+                variant="outlined"
+                color="secondary"
+                as="label"
+                label={t('import_image')}
+                htmlFor={imageUploadId}
+                isUpperCase={false}
+                role="button"
+                aria-controls="filename"
+                tabIndex={0}
+                onKeyDown={(event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        document.getElementById(imageUploadId)?.click();
+                    }
+                }}
+                leftIcon={<UploadIcon style={{ width: '16px', height: '16px', marginRight: '8px' }} />}
+            ></Button>
+            <div className="or-horizontal-divider">
+                <div style={styles.verticalLine} />
+                <span style={styles.secondaryColor}>{t('or').toUpperCase()}</span>
+                <div style={styles.verticalLine} />
+            </div>
+            <Button
+                label={t('take_picture')}
+                variant="outlined"
+                color="secondary"
+                isUpperCase={false}
+                onClick={onShowCamera}
+                leftIcon={<CameraIcon style={{ width: '16px', height: '16px', marginRight: '8px' }} />}
+            ></Button>
+            <div className="or-horizontal-divider for-tablet-up">
+                <div style={styles.verticalLine} />
+                <span style={styles.secondaryColor}>{t('or').toUpperCase()}</span>
+                <div style={styles.verticalLine} />
+            </div>
+            <Button
+                label={t('draw_plan')}
+                variant="outlined"
+                color="secondary"
+                isUpperCase={false}
+                isTabletUpOnly
+                leftIcon={<Pencil2Icon style={{ width: '16px', height: '16px', marginRight: '8px' }} />}
+                onClick={onDraw}
+            ></Button>
+        </div>
     );
 };

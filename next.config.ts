@@ -23,7 +23,6 @@ const nextConfig: NextConfig = {
     },
     sassOptions: {
         includePaths: [path.join('src', 'styles')],
-        silenceDeprecations: ['legacy-js-api'],
     },
     images: {
         loader: 'custom',

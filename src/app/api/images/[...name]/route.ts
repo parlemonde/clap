@@ -13,9 +13,10 @@ const notFoundResponse = () => {
 };
 const getContentTypeFromFileName = (filename: string): string | null => mime.lookup(filename) || null;
 
-export async function GET(request: NextRequest, props: { params: Promise<{ name: string }> }) {
+export async function GET(request: NextRequest, props: { params: Promise<{ name: string[] }> }) {
     const params = await props.params;
-    const data = await getFileData('images', params.name);
+    const filename = params.name.join('/');
+    const data = await getFileData('images', filename);
 
     if (!data || data.ContentLength === 0) {
         return notFoundResponse();
@@ -25,12 +26,12 @@ export async function GET(request: NextRequest, props: { params: Promise<{ name:
     const range = request.headers.get('range');
     const contentType =
         data.ContentType.length === 0 || data.ContentType === 'application/octet-stream'
-            ? (getContentTypeFromFileName(params.name) ?? 'application/octet-stream')
+            ? (getContentTypeFromFileName(filename) ?? 'application/octet-stream')
             : (data.ContentType ?? 'application/octet-stream');
     const width = Number(request.nextUrl.searchParams.get('w'));
     const quality = Number(request.nextUrl.searchParams.get('q'));
 
-    const readable = (await getFile('images', params.name, range || undefined))?.on('error', () => {
+    const readable = (await getFile('images', filename, range || undefined))?.on('error', () => {
         return notFoundResponse();
     });
     if (!readable) {

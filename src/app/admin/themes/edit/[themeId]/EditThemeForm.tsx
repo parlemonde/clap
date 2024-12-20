@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 
+import { deleteImage } from 'src/actions/delete-image';
 import { updateDefaultTheme } from 'src/actions/themes/update-theme';
 import { uploadImage } from 'src/actions/upload-image';
 import { NameInput } from 'src/components/admin/NameInput';
@@ -13,7 +14,7 @@ import { Field, Form } from 'src/components/layout/Form';
 import { Select } from 'src/components/layout/Form/Select';
 import { Modal } from 'src/components/layout/Modal';
 import { Title } from 'src/components/layout/Typography';
-import { ImgCroppie, type ImgCroppieRef } from 'src/components/ui/ImgCroppie';
+import { Cropper } from 'src/components/ui/Cropper';
 import { Loader } from 'src/components/ui/Loader';
 import { sendToast } from 'src/components/ui/Toasts';
 import type { Theme } from 'src/database/schemas/themes';
@@ -45,15 +46,15 @@ export const EditThemeForm = ({ theme }: EditThemeFormProps) => {
         {},
     );
 
-    const croppieRef = React.useRef<ImgCroppieRef | null>(null);
-    const inputRef = React.useRef<HTMLInputElement>(null);
     const [themeNames, setThemeNames] = React.useState(theme.names);
     const [showModal, setShowModal] = React.useState<boolean>(false);
     const [languageToAdd, setLanguageToAdd] = React.useState<number>(0);
     const [selectedLanguages, setSelectedLanguages] = React.useState<number[]>([]);
-    const [imageUrl, setImageUrl] = React.useState<string | null>(null);
-    const [imageBlob, setImageBlob] = React.useState<Blob | null | undefined>(undefined);
     const availableLanguages = languages.filter((l, index) => l.value !== 'fr' && !selectedLanguages.includes(index));
+
+    const [newImageBlob, setNewImageBlob] = React.useState<Blob | null | undefined>(undefined); // null = delete current image.
+    const newImageUrl = React.useMemo(() => (newImageBlob ? window.URL.createObjectURL(newImageBlob) : null), [newImageBlob]);
+    const imageUrl = newImageBlob === null ? '' : newImageUrl || theme.imageUrl;
 
     const [isLoading, setIsLoading] = React.useState(false);
 
@@ -81,25 +82,14 @@ export const EditThemeForm = ({ theme }: EditThemeFormProps) => {
         }));
     };
 
-    const onImageInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const [imageToResizeUrl, setImageToResizeUrl] = React.useState<string | null>(null);
+    const onInputUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files !== null && event.target.files.length > 0) {
-            const url = URL.createObjectURL(event.target.files[0]);
-            setImageUrl(url);
+            setImageToResizeUrl(URL.createObjectURL(event.target.files[0]));
         } else {
-            setImageUrl(null);
+            setImageToResizeUrl(null);
         }
-    };
-    const onImageUrlClear = () => {
-        setImageUrl(null);
-        if (inputRef.current !== undefined && inputRef.current !== null) {
-            inputRef.current.value = '';
-        }
-    };
-    const onSetImageBlob = async () => {
-        if (croppieRef.current) {
-            setImageBlob(await croppieRef.current.getBlob());
-        }
-        onImageUrlClear();
+        event.target.value = ''; // clear input
     };
 
     const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -112,22 +102,27 @@ export const EditThemeForm = ({ theme }: EditThemeFormProps) => {
         try {
             setIsLoading(true);
 
-            // 1. Upload image.
-            let imageUrl: string | undefined | null = undefined;
-            if (imageBlob === null) {
-                imageUrl = null; // delete image
-            } else if (imageBlob !== undefined) {
-                imageUrl = await uploadImage(imageBlob); // upload new image
+            // 1. Delete old image.
+            if (theme.imageUrl && newImageBlob !== undefined) {
+                await deleteImage(theme.imageUrl, true);
             }
 
-            // 2. Update theme.
+            // 2. Upload image.
+            let imageUrlToSubmit: string | null = theme.imageUrl;
+            if (newImageBlob === null) {
+                imageUrlToSubmit = null;
+            } else if (newImageBlob) {
+                imageUrlToSubmit = await uploadImage(newImageBlob, true); // upload new image
+            }
+
+            // 3. Update theme.
             await updateDefaultTheme({
                 themeId: theme.id,
                 names: themeNames,
-                imageUrl,
+                imageUrl: imageUrlToSubmit,
             });
 
-            // 3. Redirect to list.
+            // 4. Redirect to list.
             sendToast({ message: 'Thème mis à jour avec succès!', type: 'success' });
             setIsLoading(false);
             router.push('/admin/themes');
@@ -137,8 +132,6 @@ export const EditThemeForm = ({ theme }: EditThemeFormProps) => {
             setIsLoading(false);
         }
     };
-
-    const imageSrc = imageBlob === null ? null : imageBlob ? window.URL.createObjectURL(imageBlob) : theme.imageUrl;
 
     return (
         <>
@@ -169,17 +162,10 @@ export const EditThemeForm = ({ theme }: EditThemeFormProps) => {
                 <Title variant="h3" color="primary" marginTop="lg">
                     Image :
                 </Title>
-                <div style={{ marginTop: '0.5rem' }}>{imageSrc && <Image alt="theme image" width={300} height={210} src={imageSrc} />}</div>
-                <input
-                    id="theme-image-upload"
-                    ref={inputRef}
-                    type="file"
-                    style={{ display: 'none' }}
-                    onChange={onImageInputChange}
-                    accept="image/*"
-                />
+                <div style={{ marginTop: '0.5rem' }}>{imageUrl && <Image alt="theme image" width={300} height={210} src={imageUrl} />}</div>
+                <input id="theme-image-upload" type="file" style={{ display: 'none' }} onChange={onInputUpload} accept="image/*" />
                 <Button
-                    label={imageBlob ? "Changer d'image" : 'Choisir une image'}
+                    label={imageUrl ? "Changer d'image" : 'Choisir une image'}
                     variant="outlined"
                     color="secondary"
                     as="label"
@@ -196,7 +182,7 @@ export const EditThemeForm = ({ theme }: EditThemeFormProps) => {
                     leftIcon={<UploadIcon style={{ width: '16px', height: '16px', marginRight: '8px' }} />}
                     marginTop="sm"
                 ></Button>
-                {imageSrc && (
+                {imageUrl && (
                     <Button
                         label="Supprimer l'image"
                         variant="outlined"
@@ -204,7 +190,7 @@ export const EditThemeForm = ({ theme }: EditThemeFormProps) => {
                         marginTop="sm"
                         marginLeft="sm"
                         onClick={() => {
-                            setImageBlob(null);
+                            setNewImageBlob(null);
                         }}
                     ></Button>
                 )}
@@ -252,22 +238,19 @@ export const EditThemeForm = ({ theme }: EditThemeFormProps) => {
             </Modal>
 
             {/* image modal */}
-            <Modal
-                isOpen={imageUrl !== null}
-                onClose={onImageUrlClear}
-                onConfirm={onSetImageBlob}
-                confirmLabel="Valider"
-                cancelLabel="Annuler"
-                title="Redimensionner l'image"
-            >
-                {imageUrl !== null && (
-                    <div className="text-center">
-                        <div style={{ width: '500px', height: '400px', marginBottom: '2rem' }}>
-                            <ImgCroppie src={imageUrl} alt="Plan image" ref={croppieRef} imgWidth={420} imgHeight={294} />
-                        </div>
-                    </div>
-                )}
-            </Modal>
+            <Cropper
+                ratio={30 / 21}
+                imageUrl={imageToResizeUrl || ''}
+                isOpen={imageToResizeUrl !== null}
+                onClose={() => {
+                    setImageToResizeUrl(null);
+                }}
+                maxWidth="600px"
+                onCrop={(data) => {
+                    setNewImageBlob(data);
+                    setImageToResizeUrl(null);
+                }}
+            />
 
             <Loader isLoading={isLoading} />
         </>

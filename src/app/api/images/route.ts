@@ -9,6 +9,7 @@ export async function POST(request: NextRequest) {
     try {
         const formData = await request.formData();
         const file: FormDataEntryValue | undefined = formData.getAll('image')[0];
+        const isAdminImage = formData.getAll('isAdminImage')[0] === 'true';
 
         if (!file || !(file instanceof File)) {
             return new NextResponse('No file found in request', {
@@ -37,7 +38,7 @@ export async function POST(request: NextRequest) {
             .toFormat('webp');
         const imageBuffer = await sharpPipeline.toBuffer();
 
-        const url = await uploadFile('images', filename, imageBuffer);
+        const url = await uploadFile('images', filename, isAdminImage, imageBuffer);
         return Response.json({ url });
     } catch {
         return new NextResponse('Unknown error happened', {

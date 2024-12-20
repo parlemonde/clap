@@ -54,13 +54,13 @@ export default function StoryboardPlanPage(props: ServerPageProps) {
             <PlanForm
                 plan={newPlan || plan}
                 setPlan={setNewPlan}
-                onSubmit={() => {
+                onSubmit={(submittedPlan) => {
                     const newQuestions = [...project.questions];
                     newQuestions[questionIndex] = {
                         ...sequence,
                         plans: sequence.plans.map((p, index) => {
                             if (index === planIndex) {
-                                return newPlan || p;
+                                return submittedPlan;
                             }
                             return p;
                         }),

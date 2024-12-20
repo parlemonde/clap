@@ -13,7 +13,7 @@ import { Field, Form } from 'src/components/layout/Form';
 import { Select } from 'src/components/layout/Form/Select';
 import { Modal } from 'src/components/layout/Modal';
 import { Title } from 'src/components/layout/Typography';
-import { ImgCroppie, type ImgCroppieRef } from 'src/components/ui/ImgCroppie';
+import { Cropper } from 'src/components/ui/Cropper';
 import { Loader } from 'src/components/ui/Loader';
 import { sendToast } from 'src/components/ui/Toasts';
 import type { Theme } from 'src/database/schemas/themes';
@@ -41,17 +41,16 @@ export const NewThemeForm = () => {
         {},
     );
 
-    const croppieRef = React.useRef<ImgCroppieRef | null>(null);
-    const inputRef = React.useRef<HTMLInputElement>(null);
     const [themeNames, setThemeNames] = React.useState<Theme['names']>({
         fr: '',
     });
     const [showModal, setShowModal] = React.useState<boolean>(false);
     const [languageToAdd, setLanguageToAdd] = React.useState<number>(0);
     const [selectedLanguages, setSelectedLanguages] = React.useState<number[]>([]);
-    const [imageUrl, setImageUrl] = React.useState<string | null>(null);
-    const [imageBlob, setImageBlob] = React.useState<Blob | null>(null);
     const availableLanguages = languages.filter((l, index) => l.value !== 'fr' && !selectedLanguages.includes(index));
+
+    const [imageBlob, setImageBlob] = React.useState<Blob | undefined>(undefined);
+    const imageUrl = React.useMemo(() => (imageBlob ? window.URL.createObjectURL(imageBlob) : null), [imageBlob]);
 
     const [isLoading, setIsLoading] = React.useState(false);
 
@@ -79,25 +78,14 @@ export const NewThemeForm = () => {
         }));
     };
 
-    const onImageInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const [imageToResizeUrl, setImageToResizeUrl] = React.useState<string | null>(null);
+    const onInputUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files !== null && event.target.files.length > 0) {
-            const url = URL.createObjectURL(event.target.files[0]);
-            setImageUrl(url);
+            setImageToResizeUrl(URL.createObjectURL(event.target.files[0]));
         } else {
-            setImageUrl(null);
+            setImageToResizeUrl(null);
         }
-    };
-    const onImageUrlClear = () => {
-        setImageUrl(null);
-        if (inputRef.current !== undefined && inputRef.current !== null) {
-            inputRef.current.value = '';
-        }
-    };
-    const onSetImageBlob = async () => {
-        if (croppieRef.current) {
-            setImageBlob(await croppieRef.current.getBlob());
-        }
-        onImageUrlClear();
+        event.target.value = ''; // clear input
     };
 
     const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -111,16 +99,16 @@ export const NewThemeForm = () => {
             setIsLoading(true);
 
             // 1. Upload image.
-            let imageUrl: string | undefined = undefined;
-            if (imageBlob !== null) {
-                imageUrl = await uploadImage(imageBlob);
+            let imageUrlToSubmit: string | undefined = undefined;
+            if (imageBlob) {
+                imageUrlToSubmit = await uploadImage(imageBlob, true);
             }
 
             // 2. Create theme.
             await createDefaultTheme({
                 names: themeNames,
                 isDefault: true,
-                imageUrl,
+                imageUrl: imageUrlToSubmit,
             });
 
             // 3. Redirect to list.
@@ -165,19 +153,10 @@ export const NewThemeForm = () => {
                 <Title variant="h3" color="primary" marginTop="lg">
                     Image :
                 </Title>
-                <div style={{ marginTop: '0.5rem' }}>
-                    {imageBlob && <Image alt="theme image" width={300} height={210} src={window.URL.createObjectURL(imageBlob)} />}
-                </div>
-                <input
-                    id="theme-image-upload"
-                    ref={inputRef}
-                    type="file"
-                    style={{ display: 'none' }}
-                    onChange={onImageInputChange}
-                    accept="image/*"
-                />
+                <div style={{ marginTop: '0.5rem' }}>{imageUrl && <Image alt="theme image" width={300} height={210} src={imageUrl} />}</div>
+                <input id="theme-image-upload" type="file" style={{ display: 'none' }} onChange={onInputUpload} accept="image/*" />
                 <Button
-                    label={imageBlob ? "Changer d'image" : 'Choisir une image'}
+                    label={imageUrl ? "Changer d'image" : 'Choisir une image'}
                     variant="outlined"
                     color="secondary"
                     as="label"
@@ -194,7 +173,7 @@ export const NewThemeForm = () => {
                     leftIcon={<UploadIcon style={{ width: '16px', height: '16px', marginRight: '8px' }} />}
                     marginTop="sm"
                 ></Button>
-                {imageBlob && (
+                {imageUrl && (
                     <Button
                         label="Supprimer l'image"
                         variant="outlined"
@@ -202,7 +181,7 @@ export const NewThemeForm = () => {
                         marginTop="sm"
                         marginLeft="sm"
                         onClick={() => {
-                            setImageBlob(null);
+                            setImageBlob(undefined);
                         }}
                     ></Button>
                 )}
@@ -250,22 +229,19 @@ export const NewThemeForm = () => {
             </Modal>
 
             {/* image modal */}
-            <Modal
-                isOpen={imageUrl !== null}
-                onClose={onImageUrlClear}
-                onConfirm={onSetImageBlob}
-                confirmLabel="Valider"
-                cancelLabel="Annuler"
-                title="Redimensionner l'image"
-            >
-                {imageUrl !== null && (
-                    <div className="text-center">
-                        <div style={{ width: '500px', height: '400px', marginBottom: '2rem' }}>
-                            <ImgCroppie src={imageUrl} alt="Plan image" ref={croppieRef} imgWidth={420} imgHeight={294} />
-                        </div>
-                    </div>
-                )}
-            </Modal>
+            <Cropper
+                ratio={30 / 21}
+                imageUrl={imageToResizeUrl || ''}
+                isOpen={imageToResizeUrl !== null}
+                onClose={() => {
+                    setImageToResizeUrl(null);
+                }}
+                maxWidth="600px"
+                onCrop={(data) => {
+                    setImageBlob(data);
+                    setImageToResizeUrl(null);
+                }}
+            />
 
             <Loader isLoading={isLoading} />
         </>
