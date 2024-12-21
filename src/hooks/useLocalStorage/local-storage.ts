@@ -7,6 +7,7 @@ import type { Theme } from 'src/database/schemas/themes';
 
 export interface Title {
     text: string;
+    duration: number;
     x: number;
     y: number;
     width: number;
@@ -20,6 +21,7 @@ export interface Plan {
     id: number;
     description: string;
     imageUrl: string;
+    duration: number;
 }
 
 export interface Sequence {

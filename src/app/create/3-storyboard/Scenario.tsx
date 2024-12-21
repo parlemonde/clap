@@ -105,6 +105,7 @@ export const Scenario = ({ sequence, sequenceIndex, planStartIndex, onUpdateSequ
                                                     id: newId,
                                                     description: '',
                                                     imageUrl: '',
+                                                    duration: 1000,
                                                 },
                                             ],
                                         };

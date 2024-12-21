@@ -1,0 +1,67 @@
+.DiaporamaCard {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border: 1px solid #737373;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    overflow: hidden;
+    text-decoration: none;
+    color: #737373;
+
+    &:hover,
+    &:focus-visible {
+        .DiaporamaCard__editButton {
+            display: block;
+        }
+    }
+
+    &__title {
+        position: absolute;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    &__editButton {
+        display: none;
+        background-color: rgb(255, 255, 255);
+        padding: 0.25rem 0.65rem;
+        border-radius: 2px;
+        background-color: #5f65ff;
+        color: #fff;
+        position: relative;
+        z-index: 1;
+    }
+
+    &__voice {
+        position: absolute;
+        bottom: 8px;
+        left: 8px;
+    }
+    &__sound {
+        position: absolute;
+        bottom: 8px;
+        left: 44px;
+    }
+    &__time {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        position: absolute;
+        bottom: 8px;
+        right: 8px;
+        width: unset;
+        max-width: 50%;
+    }
+    &__seconds {
+        margin-right: 4px;
+        flex: 1 1 0;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+}

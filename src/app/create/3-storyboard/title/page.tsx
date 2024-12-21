@@ -17,6 +17,7 @@ import type { ServerPageProps } from 'src/utils/page-props.types';
 
 const getDefaultTitle = (question: string): SequenceTitle => ({
     text: question,
+    duration: 1000,
     x: 15,
     y: 30,
     width: 70,
