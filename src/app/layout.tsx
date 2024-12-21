@@ -6,6 +6,7 @@ import * as React from 'react';
 import 'normalize.css/normalize.css';
 import 'nprogress/nprogress.css';
 import 'src/styles/globals.scss';
+import 'react-html5-camera-photo/build/css/index.css';
 
 import styles from './app.module.scss';
 import { getCurrentUser } from 'src/actions/get-current-user';

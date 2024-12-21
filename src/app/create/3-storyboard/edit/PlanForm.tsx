@@ -1,9 +1,11 @@
 import { CameraIcon, ImageIcon, LightningBoltIcon, Pencil2Icon, UploadIcon } from '@radix-ui/react-icons';
 import Image from 'next/legacy/image';
 import React from 'react';
+import Camera from 'react-html5-camera-photo';
 
 import { deleteImage } from 'src/actions/delete-image';
 import { uploadImage } from 'src/actions/upload-image';
+import { Canvas } from 'src/components/create/Canvas';
 import { Button } from 'src/components/layout/Button';
 import { Flex, FlexItem } from 'src/components/layout/Flex';
 import { Field, Form, TextArea } from 'src/components/layout/Form';
@@ -29,11 +31,15 @@ export const PlanForm = ({ plan, setPlan, onSubmit }: PlanFormProps) => {
     const { t } = useTranslation();
 
     const [isUploading, setIsUploading] = React.useState(false);
-    const [newImageData, setNewImageData] = React.useState<Blob | null>(null);
+    const [newImageData, setNewImageData] = React.useState<Blob | null | undefined>(undefined); // null = delete image
     const newImageUrl = React.useMemo(() => {
         return newImageData ? URL.createObjectURL(newImageData) : null;
     }, [newImageData]);
     const [showChangeModal, setShowChangeModal] = React.useState(false);
+    const [showCameraModal, setShowCameraModal] = React.useState(false);
+    const [showDrawModal, setShowDrawModal] = React.useState(false);
+    const [isCreatingBlob, setIsCreatingBlob] = React.useState(false);
+    const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
 
     const [imageToResizeUrl, setImageToResizeUrl] = React.useState<string | null>(null);
     const onInputUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -47,7 +53,7 @@ export const PlanForm = ({ plan, setPlan, onSubmit }: PlanFormProps) => {
         event.target.value = ''; // clear input
     };
 
-    const imageUrl = newImageUrl || plan.imageUrl;
+    const imageUrl = newImageData === null ? '' : newImageUrl || plan.imageUrl;
 
     const onNext = async (event: React.FormEvent) => {
         event.preventDefault();
@@ -55,8 +61,9 @@ export const PlanForm = ({ plan, setPlan, onSubmit }: PlanFormProps) => {
         const planToSubmit = { ...plan };
 
         // Remove old image if needed.
-        if (newImageData && plan.imageUrl) {
+        if (newImageData !== undefined && plan.imageUrl) {
             await deleteImage(plan.imageUrl);
+            planToSubmit.imageUrl = '';
         }
 
         // Upload image if needed.
@@ -140,10 +147,10 @@ export const PlanForm = ({ plan, setPlan, onSubmit }: PlanFormProps) => {
                         <EditImageButtons
                             imageUploadId="plan-img-upload"
                             onShowCamera={() => {
-                                //
+                                setShowCameraModal(true);
                             }}
                             onDraw={() => {
-                                //
+                                setShowDrawModal(true);
                             }}
                         />
                     )}
@@ -162,6 +169,18 @@ export const PlanForm = ({ plan, setPlan, onSubmit }: PlanFormProps) => {
                             }}
                             marginTop="md"
                         ></Button>
+                        <Button
+                            label={t('delete')}
+                            className="plan-button"
+                            variant="outlined"
+                            color="secondary"
+                            style={{ display: 'inline-block' }}
+                            onClick={() => {
+                                setNewImageData(null);
+                            }}
+                            marginTop="md"
+                            marginLeft="md"
+                        ></Button>
                         <Modal
                             isOpen={showChangeModal}
                             onClose={() => {
@@ -173,10 +192,12 @@ export const PlanForm = ({ plan, setPlan, onSubmit }: PlanFormProps) => {
                             <EditImageButtons
                                 imageUploadId="plan-img-upload"
                                 onShowCamera={() => {
-                                    //
+                                    setShowChangeModal(false);
+                                    setShowCameraModal(true);
                                 }}
                                 onDraw={() => {
-                                    //
+                                    setShowChangeModal(false);
+                                    setShowDrawModal(true);
                                 }}
                             />
                         </Modal>
@@ -196,6 +217,72 @@ export const PlanForm = ({ plan, setPlan, onSubmit }: PlanFormProps) => {
                     setImageToResizeUrl(null);
                 }}
             />
+
+            <Modal
+                width="lg"
+                isOpen={showCameraModal}
+                onClose={() => {
+                    setShowCameraModal(false);
+                }}
+                title={t('take_picture')}
+                isFullWidth
+            >
+                <div style={{ maxWidth: '120vh', margin: '0 auto' }}>
+                    <Camera
+                        idealResolution={{ width: 1920, height: 1080 }}
+                        onTakePhoto={(picture: string) => {
+                            setShowCameraModal(false);
+                            setImageToResizeUrl(picture);
+                        }}
+                        isSilentMode={true}
+                    />
+                </div>
+            </Modal>
+
+            <Modal
+                width="lg"
+                isOpen={showDrawModal}
+                isLoading={isCreatingBlob}
+                onClose={() => {
+                    setShowDrawModal(false);
+                }}
+                confirmLabel={t('save')}
+                confirmLevel="secondary"
+                onConfirm={async () => {
+                    setIsCreatingBlob(true);
+                    const canvas = canvasRef.current;
+                    let blob: Blob | null = null;
+                    if (canvas) {
+                        blob = await new Promise<Blob | null>((resolve) => {
+                            const canvasWithBackground = document.createElement('canvas');
+                            canvasWithBackground.width = canvas.width;
+                            canvasWithBackground.height = canvas.height;
+
+                            const ctx = canvasWithBackground.getContext('2d');
+                            if (!ctx) {
+                                resolve(null);
+                                return;
+                            }
+                            ctx.fillStyle = 'white';
+                            ctx.fillRect(0, 0, canvas.width, canvas.height);
+                            ctx.drawImage(canvas, 0, 0);
+                            canvasWithBackground.toBlob(resolve);
+                        });
+                    }
+                    if (blob !== null) {
+                        setNewImageData(blob);
+                    } else {
+                        sendToast({ message: t('unknown_error'), type: 'error' });
+                    }
+                    setIsCreatingBlob(false);
+                    setShowDrawModal(false);
+                }}
+                title={t('draw_plan')}
+                isFullWidth
+                onOpenAutoFocus={false}
+            >
+                <Canvas ref={canvasRef} />
+            </Modal>
 
             <NextButton label={t('continue')} backHref="/create/3-storyboard" type="submit" />
 
