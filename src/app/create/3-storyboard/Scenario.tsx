@@ -9,7 +9,7 @@ import { Modal } from 'src/components/layout/Modal';
 import { Tooltip } from 'src/components/layout/Tooltip';
 import { Title } from 'src/components/layout/Typography';
 import { useTranslation } from 'src/contexts/translationContext';
-import type { Sequence } from 'src/hooks/useLocalStorage/local-storage';
+import type { Plan, Sequence } from 'src/hooks/useLocalStorage/local-storage';
 
 interface Scenario {
     sequence: Sequence;
@@ -24,6 +24,24 @@ export const Scenario = ({ sequence, sequenceIndex, planStartIndex, onUpdateSequ
     const [deletePlanIndex, setDeletePlanIndex] = React.useState(-1);
     const isCreatingPlan = false; // TODO
 
+    const [draggedPlanIndex, setDraggedPlanIndex] = React.useState<number | null>(null);
+    const isDragging = draggedPlanIndex !== null;
+    const [initialPlans, setInitialPlans] = React.useState<Plan[] | null>(null);
+    const onPlanEnter = (planIndex: number) => {
+        if (draggedPlanIndex === null || !initialPlans) {
+            return;
+        }
+        const newPlans = [...initialPlans];
+        if (draggedPlanIndex < planIndex) {
+            newPlans.splice(planIndex + 1, 0, initialPlans[draggedPlanIndex]);
+            newPlans.splice(draggedPlanIndex, 1);
+        } else {
+            newPlans.splice(planIndex, 0, initialPlans[draggedPlanIndex]);
+            newPlans.splice(draggedPlanIndex + 1, 1);
+        }
+        onUpdateSequence?.({ ...sequence, plans: newPlans });
+    };
+
     return (
         <div>
             <Title color="primary" variant="h2" marginTop="lg" style={{ display: 'flex', alignItems: 'center' }}>
@@ -36,6 +54,7 @@ export const Scenario = ({ sequence, sequenceIndex, planStartIndex, onUpdateSequ
                     onDelete={() => {
                         setShowDeleteTitle(true);
                     }}
+                    isDisabled={isDragging}
                 />
                 {sequence.plans.map((plan, planIndex) => (
                     <PlanCard
@@ -43,15 +62,28 @@ export const Scenario = ({ sequence, sequenceIndex, planStartIndex, onUpdateSequ
                         plan={plan}
                         questionIndex={sequenceIndex}
                         planIndex={planIndex}
-                        showNumber={planStartIndex + planIndex}
+                        showNumber={planStartIndex + (initialPlans?.findIndex((p) => p.id === plan.id) ?? planIndex)}
                         canDelete
                         onDelete={() => {
                             setDeletePlanIndex(planIndex);
                         }}
+                        onEnter={() => {
+                            onPlanEnter(planIndex);
+                        }}
+                        isDragging={isDragging}
+                        setIsDragging={(isDragging) => {
+                            if (isDragging) {
+                                setDraggedPlanIndex(planIndex);
+                                setInitialPlans([...sequence.plans]);
+                            } else {
+                                setDraggedPlanIndex(null);
+                                setInitialPlans(null);
+                            }
+                        }}
                         canEdit
                     />
                 ))}
-                {sequence.plans.length < 5 && (
+                {sequence.plans.length < 5 && !isDragging && (
                     <div className="plan-button-container add">
                         {isCreatingPlan ? (
                             <CircularProgress color="primary" />

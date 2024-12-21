@@ -12,9 +12,10 @@ type TitleCardProps = {
     title?: Sequence['title'];
     questionIndex: number;
     onDelete?: () => void;
+    isDisabled?: boolean;
 };
 
-export const TitleCard = ({ title, questionIndex, onDelete = () => {} }: TitleCardProps) => {
+export const TitleCard = ({ title, questionIndex, onDelete = () => {}, isDisabled }: TitleCardProps) => {
     const { t } = useTranslation();
 
     // Use a ResizeObserver to get the height of the canvas
@@ -50,6 +51,7 @@ export const TitleCard = ({ title, questionIndex, onDelete = () => {} }: TitleCa
             style={{
                 boxSizing: 'border-box',
                 backgroundColor: title ? title.backgroundColor : 'white',
+                pointerEvents: isDisabled ? 'none' : 'auto',
             }}
         >
             {title ? (
