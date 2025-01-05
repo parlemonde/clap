@@ -29,6 +29,10 @@ export interface Sequence {
     question: string;
     plans: Plan[];
     title?: Title;
+    voiceText?: string;
+    soundUrl?: string;
+    soundVolume?: number;
+    voiceOffBeginTime?: number;
 }
 export interface Project {
     id: 'local' | number;

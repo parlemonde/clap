@@ -44,7 +44,8 @@
     "sharp": "^0.33.5",
     "sortablejs": "^1.15.6",
     "swr": "^2.2.5",
-    "uuid": "^11.0.3"
+    "uuid": "^11.0.3",
+    "waveform-data": "^4.5.0"
   },
   "devDependencies": {
     "@dotenvx/dotenvx": "1.29.0",

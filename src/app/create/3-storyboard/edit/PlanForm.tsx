@@ -62,7 +62,11 @@ export const PlanForm = ({ plan, setPlan, onSubmit }: PlanFormProps) => {
 
         // Remove old image if needed.
         if (newImageData !== undefined && plan.imageUrl) {
-            await deleteImage(plan.imageUrl);
+            try {
+                await deleteImage(plan.imageUrl);
+            } catch {
+                // Ignore
+            }
             planToSubmit.imageUrl = '';
         }
 

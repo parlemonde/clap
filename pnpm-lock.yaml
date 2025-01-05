@@ -114,6 +114,9 @@ importers:
       uuid:
         specifier: ^11.0.3
         version: 11.0.3
+      waveform-data:
+        specifier: ^4.5.0
+        version: 4.5.0
     devDependencies:
       '@dotenvx/dotenvx':
         specifier: 1.29.0
@@ -4361,6 +4364,9 @@ packages:
   uuid@9.0.1:
     resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
     hasBin: true
+
+  waveform-data@4.5.0:
+    resolution: {integrity: sha512-fLT8yLGUuVhDBMVVOD2AGqHlLLVT/zfGlSIKgfqMCwFJGtkvY9eEhu0EL9W55lFJQt4r53X5Ncj86ymTGJlJTA==}
 
   which-boxed-primitive@1.0.2:
     resolution: {integrity: sha512-bwZdv0AKLpplFY2KZRX6TvyuN7ojjr7lwkg6ml0roIy9YeuSr7JS372qlNW18UQYzgYK9ziGcerWqZOmEn9VNg==}
@@ -9216,6 +9222,8 @@ snapshots:
   uuid@11.0.3: {}
 
   uuid@9.0.1: {}
+
+  waveform-data@4.5.0: {}
 
   which-boxed-primitive@1.0.2:
     dependencies:

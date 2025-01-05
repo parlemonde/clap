@@ -49,7 +49,6 @@ export const Cropper = ({ ratio, imageUrl, isOpen, maxWidth = '800px', onClose, 
             }),
         [],
     );
-
     const onCanvasRef = React.useCallback(
         (canvas: HTMLDivElement | null) => {
             if (canvas) {

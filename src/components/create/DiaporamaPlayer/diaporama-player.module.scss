@@ -1,0 +1,250 @@
+.DiaporamaPlayer {
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    position: relative;
+    overflow: hidden;
+
+    &__container {
+        width: 100%;
+        max-width: 740px;
+        margin: auto;
+        background-color: rgba(0, 0, 0, 0.7);
+        padding: 15px 15px 0px 15px;
+    }
+
+    &__frame {
+        position: absolute;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    &__playButton {
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        top: 0;
+        left: 0;
+        z-index: 1;
+        cursor: pointer;
+
+        &:hover .DiaporamaPlayer__squareButton {
+            background-color: #6065fccc;
+        }
+
+        &--playing .DiaporamaPlayer__squareButton{
+            display: none;
+        }
+        &--playing:hover .DiaporamaPlayer__squareButton {
+            display: flex;
+        }
+    }
+
+    &__squareButton {
+        background: rgba(0, 0, 0, 0.7);
+        border-radius: 4px;
+        width: 110px;
+        height: 70px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #fff;
+    }
+
+    &__timer {
+        color: #fff;
+        text-align: center;
+        padding: 5px 0;
+    }
+
+    &__mountingTable {
+        width: 100%;
+        max-width: 740px;
+        margin: 1rem auto;
+        background-color: rgba(0, 0, 0, 0.7);
+        padding: 15px;
+        width: 100%;
+        user-select: none;
+    }
+    &__globalTime {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 14px;
+        color: #fff;
+        margin-bottom: 10px;
+    }
+    &__globalTracks {
+        display: flex;
+        flex-direction: row;
+    }
+    &__tableTime {
+        border: solid #fff;
+        border-width: 0 2px;
+        flex: 1 1 0;
+        min-width: 0;
+        padding-top: 35px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    &__mountingPlans {
+        background: #00adef;
+        width: 100%;
+        height: 80px;
+        display: flex;
+        flex-direction: row;
+    }
+    &__mountingPlan {
+        height: 100%;
+        flex-shrink: 1;
+        flex-basis: 0;
+        min-width: 0;
+        overflow: visible;
+        position: relative;
+        background: #00adef;
+    }
+    &__mountingPlanTitleFrame {
+        position: absolute;
+        height: 54px;
+        width: 96px;
+        top: 13px;
+        left: 0;
+        color: white;
+        overflow: hidden;
+        background-color: black;
+        border: 1px solid rgb(200, 200, 200);
+        border-radius: 4px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+    &__mountingPlanFrame {
+        position: absolute;
+        height: 54px;
+        width: 96px;
+        top: 13px;
+        left: 0;
+        display: inline-block;
+        overflow: hidden;
+        background-color: black;
+        border: 1px solid rgb(200, 200, 200);
+        border-radius: 4px;
+    }
+
+    // tODO
+    &__mountingSounds {
+        background: #dedfe3;
+        height: 80px;
+        position: relative;
+    }
+    &__mountingSounds.green {
+        background-color: #d0f4d0;
+    }
+    &__soundFile {
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        border-radius: 5px;
+        background-repeat: no-repeat;
+        background: linear-gradient(#83a483, #83a483 5%, transparent 5%), linear-gradient(transparent, transparent 95%, #83a483 95%),
+            repeating-linear-gradient(2.25turn, transparent, transparent 50%, #83a483 50%) 68px 45px / 30px 90px,
+            radial-gradient(12px 47px at 10px 44%, #fff 49%, #83a483 50%) 31px 3px / 20px 100%,
+            radial-gradient(10px 10px at 10px 10px, #fff 49%, #83a483 50%) -28px 0 / 23px 10px;
+    }
+    &__icons {
+        padding-top: 30px;
+        width: 50px;
+    }
+    &__icons > span {
+        padding-right: 15px;
+        height: 80px;
+        width: 100%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+    &__volume {
+        width: 75px;
+        display: flex;
+        flex-direction: column;
+        padding-left: 15px;
+        align-items: center;
+    }
+    &__timeEdit {
+        display: flex;
+        align-items: center;
+        width: 150px;
+        justify-content: center;
+    }
+    &__time {
+        position: absolute;
+        height: calc(100% - 30px);
+        bottom: 0;
+        width: 2px;
+        background-color: #000;
+        z-index: 1;
+    }
+    &__time:before {
+        content: '';
+        position: absolute;
+        height: 0;
+        width: 2px;
+        border: 15px solid;
+        border-color: #000 transparent transparent;
+        left: -15px;
+        top: -15px;
+        cursor: ew-resize;
+    }
+}
+
+.planFrameWhiteBorder {
+    position: absolute;
+    left: 0;
+    top: -15px;
+    bottom: 0;
+    width: 2px;
+    background-color: white;
+    padding-top: 15px;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.planFrameWhiteBorder > .dragButton,
+.soundWhiteBorder > .dragButton {
+    flex-shrink: 0;
+    cursor: ew-resize;
+    font-size: 15px;
+    background-color: white;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+}
+.planFrameTiming {
+    position: absolute;
+    top: -34px;
+    left: -50px;
+    width: 100px;
+    text-align: center;
+    color: white;
+    font-size: 13px;
+}
+.soundWhiteBorder {
+    position: absolute;
+    bottom: 5px;
+    width: 100px;
+    left: CALC(50% - 50px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 2px;
+    background: white;
+}

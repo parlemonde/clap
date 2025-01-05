@@ -51,11 +51,7 @@ export default function PreMountingPage() {
                         </Title>
                         {hasBeenEdited ? (
                             <div className="plans">
-                                <DiaporamaCard
-                                    sequence={q}
-                                    questionIndex={index}
-                                    // isDisabled={q.status === QuestionStatus.PREMOUNTING || !isStudent}
-                                />
+                                <DiaporamaCard sequence={q} questionIndex={index} />
                             </div>
                         ) : (
                             <p style={{ marginTop: '1rem' }}>{t('part4_placeholder')}</p>
