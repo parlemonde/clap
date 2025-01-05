@@ -59,7 +59,7 @@ export const createCspHeaders = (nonce: string) => {
       frame-ancestors 'none';
       block-all-mixed-content;
       upgrade-insecure-requests;
-      media-src 'self' blob:;
+      media-src 'self' blob: https:;
     `;
 
     // when environment is preview enable unsafe-inline scripts for vercel preview feedback/comments feature
@@ -71,7 +71,7 @@ export const createCspHeaders = (nonce: string) => {
         return `
         ${defaultsCSPHeaders}
         script-src 'self' https://vercel.live/ https://vercel.com 'unsafe-inline' https: http:;
-        connect-src 'self' https://vercel.live/ https://vercel.com https://vitals.vercel-insights.com https://sockjs-mt1.pusher.com/ wss://ws-mt1.pusher.com/;
+        connect-src 'self' https://vercel.live/ https://vercel.com https://vitals.vercel-insights.com https://sockjs-mt1.pusher.com/ wss://ws-mt1.pusher.com/ blob:;
         img-src 'self' https://vercel.live/ https://vercel.com https://sockjs-mt1.pusher.com/ data: blob:;
         frame-src 'self' https://vercel.live/ https://vercel.com;
         `;
@@ -81,8 +81,8 @@ export const createCspHeaders = (nonce: string) => {
     // based on: https://vercel.com/docs/speed-insights#content-security-policy
     return `
         ${defaultsCSPHeaders}
-        script-src 'self' 'nonce-${nonce}' 'strict-dynamic' 'unsafe-inline' https:;
+        script-src 'self' 'nonce-${nonce}' 'unsafe-inline' https://vercel.live/;
         img-src 'self' blob: data: https:;
-        connect-src 'self' https://vitals.vercel-insights.com;
+        connect-src 'self' https://vitals.vercel-insights.com blob:;
         `;
 };
