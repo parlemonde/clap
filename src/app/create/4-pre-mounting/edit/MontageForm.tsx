@@ -130,7 +130,6 @@ export const MontageForm = ({ sequence, setSequence, onSubmit }: MontageFormProp
                     setSequence({ ...sequence, voiceOffBeginTime: newSoundBeginTime });
                 }}
                 sounds={sounds}
-                isQuestionEditing={true}
             />
 
             {/* Sound */}

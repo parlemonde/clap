@@ -32,7 +32,6 @@ type DiaporamaPlayerProps = {
     setQuestion?: (newQuestion: Sequence) => void;
     setSoundBeginTime: (newSoundBeginTime: number) => void;
     setVolume: (newVolume: number) => void;
-    isQuestionEditing?: boolean;
 };
 export const DiaporamaPlayer = ({
     questions: allQuestions,
@@ -42,7 +41,6 @@ export const DiaporamaPlayer = ({
     volume,
     canEdit = false,
     canEditPlans = false,
-    isQuestionEditing,
     setQuestion = () => {},
     setSoundBeginTime,
     setVolume,
@@ -514,7 +512,7 @@ export const DiaporamaPlayer = ({
                                         volume={volume}
                                         beginTime={soundBeginTime + deltaSound}
                                         onUpdateSequenceDuration={(audioDuration) => {
-                                            if (!isQuestionEditing || duration >= audioDuration || soundUrl === questions[0]?.soundUrl) {
+                                            if (!canEditPlans || duration >= audioDuration || soundUrl === questions[0]?.soundUrl) {
                                                 return;
                                             }
                                             updateLastDuration(audioDuration - duration);

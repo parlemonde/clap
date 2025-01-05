@@ -43,6 +43,9 @@ export interface Project {
     scenarioId: string | number;
     scenarioName: string;
     questions: Sequence[];
+    soundUrl?: string;
+    soundVolume?: number;
+    soundBeginTime?: number;
 }
 
 export type LocalTheme = Omit<Theme, 'id'> & {
