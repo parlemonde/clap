@@ -59,6 +59,7 @@ export const createCspHeaders = (nonce: string) => {
       frame-ancestors 'none';
       block-all-mixed-content;
       upgrade-insecure-requests;
+      media-src 'self' blob:;
     `;
 
     // when environment is preview enable unsafe-inline scripts for vercel preview feedback/comments feature
@@ -80,8 +81,8 @@ export const createCspHeaders = (nonce: string) => {
     // based on: https://vercel.com/docs/speed-insights#content-security-policy
     return `
         ${defaultsCSPHeaders}
-        script-src 'self' 'nonce-${nonce}' 'strict-dynamic' 'unsafe-inline' https: http:;
-        img-src 'self' blob: data:;
+        script-src 'self' 'nonce-${nonce}' 'strict-dynamic' 'unsafe-inline' https:;
+        img-src 'self' blob: data: https:;
         connect-src 'self' https://vitals.vercel-insights.com;
         `;
 };
