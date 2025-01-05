@@ -83,6 +83,7 @@ export const createCspHeaders = (nonce: string) => {
         ${defaultsCSPHeaders}
         script-src 'self' 'nonce-${nonce}' 'unsafe-inline' https://vercel.live/;
         img-src 'self' blob: data: https:;
-        connect-src 'self' https://vitals.vercel-insights.com blob:;
+        connect-src 'self' blob:;
+        frame-src 'self' blob:;
         `;
 };
