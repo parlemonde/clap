@@ -70,10 +70,10 @@ export const createCspHeaders = (nonce: string) => {
     if (process.env?.VERCEL_ENV === 'preview') {
         return `
         ${defaultsCSPHeaders}
-        script-src 'self' https://vercel.live/ https://vercel.com 'unsafe-inline' https: http:;
+        script-src 'self' https://vercel.live/ https://vercel.com 'unsafe-inline' https: http: blob:;
         connect-src 'self' https://vercel.live/ https://vercel.com https://vitals.vercel-insights.com https://sockjs-mt1.pusher.com/ wss://ws-mt1.pusher.com/ blob:;
         img-src 'self' https://vercel.live/ https://vercel.com https://sockjs-mt1.pusher.com/ data: blob:;
-        frame-src 'self' https://vercel.live/ https://vercel.com;
+        frame-src 'self' https://vercel.live/ https://vercel.com blob:;
         `;
     }
 
@@ -81,9 +81,9 @@ export const createCspHeaders = (nonce: string) => {
     // based on: https://vercel.com/docs/speed-insights#content-security-policy
     return `
         ${defaultsCSPHeaders}
-        script-src 'self' 'nonce-${nonce}' 'unsafe-inline' https://vercel.live/;
+        script-src 'self' 'nonce-${nonce}' 'unsafe-inline' https://vercel.live/ blob:;
         img-src 'self' blob: data: https:;
-        connect-src 'self' blob:;
-        frame-src 'self' blob:;
+        connect-src 'self' blob: https://vercel.live/;
+        frame-src 'self' blob: https://vercel.live/;
         `;
 };
