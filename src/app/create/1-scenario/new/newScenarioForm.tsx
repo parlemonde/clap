@@ -18,7 +18,7 @@ import type { Theme } from 'src/database/schemas/themes';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import { useLocalStorage } from 'src/hooks/useLocalStorage';
 import type { LocalScenario } from 'src/hooks/useLocalStorage/local-storage';
-import { jsonFetcher } from 'src/utils/json-fetcher';
+import { jsonFetcher } from 'src/lib/json-fetcher';
 
 type NewScenarioFormProps = {
     backUrl: string;

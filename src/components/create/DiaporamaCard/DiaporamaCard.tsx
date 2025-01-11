@@ -8,7 +8,7 @@ import { useTranslation } from 'src/contexts/translationContext';
 import type { Sequence } from 'src/hooks/useLocalStorage/local-storage';
 import { getSequenceDuration } from 'src/lib/get-sequence-duration';
 import TimerIcon from 'src/svg/timer.svg';
-import { serializeToQueryUrl } from 'src/utils/serialize-to-query-url';
+import { serializeToQueryUrl } from 'src/lib/serialize-to-query-url';
 
 type DiaporamaCardProps = {
     questionIndex: number;

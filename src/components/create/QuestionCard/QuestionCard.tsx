@@ -4,7 +4,7 @@ import React from 'react';
 
 import styles from './question-card.module.scss';
 import { IconButton } from 'src/components/layout/Button/IconButton';
-import { serializeToQueryUrl } from 'src/utils/serialize-to-query-url';
+import { serializeToQueryUrl } from 'src/lib/serialize-to-query-url';
 
 type QuestionCardProps = {
     projectId: number | null;

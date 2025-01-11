@@ -12,7 +12,7 @@ import { Inverted } from 'src/components/ui/Inverted';
 import { useTranslation } from 'src/contexts/translationContext';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import type { Sequence } from 'src/hooks/useLocalStorage/local-storage';
-import type { ServerPageProps } from 'src/utils/page-props.types';
+import type { ServerPageProps } from 'src/lib/page-props.types';
 
 export default function MontagePage(props: ServerPageProps) {
     const router = useRouter();

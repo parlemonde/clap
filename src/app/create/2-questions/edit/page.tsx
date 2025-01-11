@@ -13,7 +13,7 @@ import { Inverted } from 'src/components/ui/Inverted';
 import { Trans } from 'src/components/ui/Trans';
 import { useTranslation } from 'src/contexts/translationContext';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
-import type { ServerPageProps } from 'src/utils/page-props.types';
+import type { ServerPageProps } from 'src/lib/page-props.types';
 
 export default function ScenarioPage(props: ServerPageProps) {
     const router = useRouter();

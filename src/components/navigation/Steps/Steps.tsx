@@ -10,7 +10,7 @@ import { Button } from 'src/components/layout/Button';
 import { Text } from 'src/components/layout/Typography';
 import { useTranslation } from 'src/contexts/translationContext';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
-import { serializeToQueryUrl } from 'src/utils/serialize-to-query-url';
+import { serializeToQueryUrl } from 'src/lib/serialize-to-query-url';
 
 type StepData = {
     name: string;

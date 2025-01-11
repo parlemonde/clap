@@ -6,7 +6,7 @@ import { AdminTile } from 'src/components/admin/AdminTile';
 import { Breadcrumbs } from 'src/components/layout/Breadcrumbs';
 import { Container } from 'src/components/layout/Container';
 import { Title } from 'src/components/layout/Typography';
-import type { ServerPageProps } from 'src/utils/page-props.types';
+import type { ServerPageProps } from 'src/lib/page-props.types';
 
 export default async function AdminNewScenarioPage(props: ServerPageProps) {
     const searchParams = await props.searchParams;

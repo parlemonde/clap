@@ -13,7 +13,7 @@ import { Inverted } from 'src/components/ui/Inverted';
 import { useTranslation } from 'src/contexts/translationContext';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import type { Title as SequenceTitle } from 'src/hooks/useLocalStorage/local-storage';
-import type { ServerPageProps } from 'src/utils/page-props.types';
+import type { ServerPageProps } from 'src/lib/page-props.types';
 
 const getDefaultTitle = (question: string): SequenceTitle => ({
     text: question,

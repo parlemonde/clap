@@ -9,7 +9,7 @@ import styles from './bottom-nav-bar.module.scss';
 import { Link as NextLink, startNProgress } from 'src/components/navigation/Link';
 import { useTranslation } from 'src/contexts/translationContext';
 import { userContext } from 'src/contexts/userContext';
-import { getTabs } from 'src/utils/tabs';
+import { getTabs } from 'src/lib/get-tabs';
 
 export const BottomNavBar = () => {
     const { t } = useTranslation();

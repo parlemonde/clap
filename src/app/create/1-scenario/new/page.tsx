@@ -7,9 +7,9 @@ import { Steps } from 'src/components/navigation/Steps';
 import { ThemeBreadcrumbs } from 'src/components/navigation/ThemeBreadcrumbs';
 import { Inverted } from 'src/components/ui/Inverted';
 import { Trans } from 'src/components/ui/Trans';
-import type { ServerPageProps } from 'src/utils/page-props.types';
-import { getThemeId } from 'src/utils/search-params/get-theme-id';
-import { serializeToQueryUrl } from 'src/utils/serialize-to-query-url';
+import type { ServerPageProps } from 'src/lib/page-props.types';
+import { getThemeId } from 'src/lib/search-params/get-theme-id';
+import { serializeToQueryUrl } from 'src/lib/serialize-to-query-url';
 
 export default async function ScenarioPage(props: ServerPageProps) {
     const searchParams = await props.searchParams;

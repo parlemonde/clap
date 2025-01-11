@@ -9,7 +9,7 @@ import { Placeholder } from 'src/components/layout/Placeholder';
 import { useTranslation } from 'src/contexts/translationContext';
 import type { Theme } from 'src/database/schemas/themes';
 import { useLocalStorage } from 'src/hooks/useLocalStorage';
-import { jsonFetcher } from 'src/utils/json-fetcher';
+import { jsonFetcher } from 'src/lib/json-fetcher';
 
 type ThemeBreadcrumbsProps = {
     themeId: string | number;

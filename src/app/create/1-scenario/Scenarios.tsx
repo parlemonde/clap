@@ -13,8 +13,8 @@ import type { Theme } from 'src/database/schemas/themes';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import { useLocalStorage } from 'src/hooks/useLocalStorage';
 import type { LocalScenario } from 'src/hooks/useLocalStorage/local-storage';
-import { jsonFetcher } from 'src/utils/json-fetcher';
-import { serializeToQueryUrl } from 'src/utils/serialize-to-query-url';
+import { jsonFetcher } from 'src/lib/json-fetcher';
+import { serializeToQueryUrl } from 'src/lib/serialize-to-query-url';
 
 interface ScenariosProps {
     scenarios: Array<Scenario | LocalScenario>;

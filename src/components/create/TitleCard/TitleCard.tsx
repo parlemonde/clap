@@ -6,7 +6,7 @@ import styles from './title-card.module.scss';
 import { IconButton } from 'src/components/layout/Button/IconButton';
 import { useTranslation } from 'src/contexts/translationContext';
 import type { Sequence } from 'src/hooks/useLocalStorage/local-storage';
-import { serializeToQueryUrl } from 'src/utils/serialize-to-query-url';
+import { serializeToQueryUrl } from 'src/lib/serialize-to-query-url';
 
 type TitleCardProps = {
     title?: Sequence['title'];
