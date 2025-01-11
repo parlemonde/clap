@@ -1,5 +1,5 @@
 import { getSequenceDuration } from './get-sequence-duration';
-import type { Sequence } from 'src/hooks/useLocalStorage/local-storage';
+import type { Sequence } from './project.types';
 
 export type Sound = {
     soundUrl: string;

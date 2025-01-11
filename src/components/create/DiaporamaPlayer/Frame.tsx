@@ -1,7 +1,7 @@
 import Image from 'next/legacy/image';
 import React from 'react';
 
-import type { Sequence, Title } from 'src/hooks/useLocalStorage/local-storage';
+import type { Sequence, Title } from 'src/lib/project.types';
 
 type ImageFrame =
     | null

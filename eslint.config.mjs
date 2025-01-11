@@ -70,12 +70,24 @@ export default [
             '@typescript-eslint/require-await': 'off',
             '@typescript-eslint/unbound-method': 'off',
             '@typescript-eslint/no-unsafe-return': 'off',
-            "@typescript-eslint/no-unsafe-assignment": "off",
+            '@typescript-eslint/no-unsafe-assignment': 'off',
             '@typescript-eslint/no-unused-expressions': [
                 'error',
                 {
                     allowShortCircuit: true,
                     allowTernary: true,
+                },
+            ],
+            '@typescript-eslint/no-unused-vars': [
+                'error',
+                {
+                    args: 'all',
+                    argsIgnorePattern: '^_',
+                    caughtErrors: 'all',
+                    caughtErrorsIgnorePattern: '^_',
+                    destructuredArrayIgnorePattern: '^_',
+                    varsIgnorePattern: '^_',
+                    ignoreRestSiblings: true,
                 },
             ],
             'import/newline-after-import': [

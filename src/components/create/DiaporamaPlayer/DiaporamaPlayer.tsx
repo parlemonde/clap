@@ -12,11 +12,11 @@ import { Input } from 'src/components/layout/Form';
 import { KeepRatio } from 'src/components/layout/KeepRatio';
 import { Slider } from 'src/components/layout/Slider';
 import { sendToast } from 'src/components/ui/Toasts';
-import type { Sequence } from 'src/hooks/useLocalStorage/local-storage';
 import { getFormatedTime } from 'src/lib/get-formatted-time';
 import { getProjectDuration } from 'src/lib/get-project-duration';
 import { isSequenceAvailable } from 'src/lib/get-sequence-duration';
 import type { Sound } from 'src/lib/get-sounds';
+import type { Sequence } from 'src/lib/project.types';
 import CodeIcon from 'src/svg/code.svg';
 
 const PLAYER_ID = 'diaporama-player';

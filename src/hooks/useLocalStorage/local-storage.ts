@@ -2,51 +2,9 @@
 
 import isEqual from 'fast-deep-equal/es6';
 
+import type { Project } from 'src/database/schemas/projects';
 import type { Scenario } from 'src/database/schemas/scenarios';
 import type { Theme } from 'src/database/schemas/themes';
-
-export interface Title {
-    text: string;
-    duration: number;
-    x: number;
-    y: number;
-    width: number;
-    fontSize: number;
-    fontFamily: string;
-    color: string;
-    backgroundColor: string;
-    textAlign: 'left' | 'center' | 'right' | 'justify';
-}
-export interface Plan {
-    id: number;
-    description: string;
-    imageUrl: string;
-    duration: number;
-}
-
-export interface Sequence {
-    id: number;
-    question: string;
-    plans: Plan[];
-    title?: Title;
-    voiceText?: string;
-    soundUrl?: string;
-    soundVolume?: number;
-    voiceOffBeginTime?: number;
-}
-export interface Project {
-    id: 'local' | number;
-    locale: string;
-    name: string;
-    themeId: string | number;
-    themeName: string;
-    scenarioId: string | number;
-    scenarioName: string;
-    questions: Sequence[];
-    soundUrl?: string;
-    soundVolume?: number;
-    soundBeginTime?: number;
-}
 
 export type LocalTheme = Omit<Theme, 'id'> & {
     id: string;
@@ -59,19 +17,30 @@ export type LocalScenario = Omit<Scenario, 'id' | 'themeId'> & {
 };
 export const isLocalScenario = (scenario: Scenario | LocalScenario): scenario is LocalScenario => typeof scenario.id === 'string';
 
-export type LocalStorageKey = 'themes' | 'scenarios' | 'project';
+export type LocalProject = Pick<
+    Project,
+    'name' | 'language' | 'questions' | 'scenarioName' | 'themeName' | 'soundBeginTime' | 'soundUrl' | 'soundVolume'
+> & {
+    scenarioId: string | number | null;
+    themeId: string | number | null;
+};
+
+export type LocalStorageKey = 'themes' | 'scenarios' | 'project' | 'projectId';
 export type ObjectType<T extends LocalStorageKey> = T extends 'themes'
     ? LocalTheme[]
     : T extends 'scenarios'
       ? LocalScenario[]
       : T extends 'project'
-        ? Project
-        : never;
+        ? LocalProject
+        : T extends 'projectId'
+          ? number
+          : never;
 
 const localStorageCache: Record<LocalStorageKey, unknown> = {
     themes: undefined,
     scenarios: undefined,
     project: undefined,
+    projectId: undefined,
 };
 
 export function getFromLocalStorage<T extends LocalStorageKey>(key: T): ObjectType<T> | undefined {

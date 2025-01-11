@@ -12,13 +12,12 @@ import { useLocalStorage } from 'src/hooks/useLocalStorage';
 import { jsonFetcher } from 'src/lib/json-fetcher';
 
 type ThemeBreadcrumbsProps = {
-    themeId: string | number;
+    themeId?: string | number | null;
 };
 
 export const ThemeBreadcrumbs = ({ themeId }: ThemeBreadcrumbsProps) => {
     const { t, currentLocale } = useTranslation();
     const { data: themes, isLoading } = useSWR<Theme[]>('/api/themes', jsonFetcher);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [localThemes, _setLocalThemes, isLoadingLocalThemes] = useLocalStorage('themes', []);
 
     if ((typeof themeId === 'number' && isLoading) || (typeof themeId === 'string' && isLoadingLocalThemes)) {

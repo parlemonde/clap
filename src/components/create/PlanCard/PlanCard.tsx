@@ -7,7 +7,7 @@ import { createPortal } from 'react-dom';
 import styles from './plan-card.module.scss';
 import { IconButton } from 'src/components/layout/Button/IconButton';
 import { useTranslation } from 'src/contexts/translationContext';
-import type { Plan } from 'src/hooks/useLocalStorage/local-storage';
+import type { Plan } from 'src/lib/project.types';
 import { serializeToQueryUrl } from 'src/lib/serialize-to-query-url';
 
 type PlanCardProps = {

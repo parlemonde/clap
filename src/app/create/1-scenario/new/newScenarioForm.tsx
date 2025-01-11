@@ -28,7 +28,7 @@ export const NewScenarioForm = ({ backUrl, themeId }: NewScenarioFormProps) => {
     const router = useRouter();
     const { user } = React.useContext(userContext);
     const { t, currentLocale } = useTranslation();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     const [_p, setProject] = useCurrentProject();
 
     const { data: themes } = useSWR<Theme[]>('/api/themes', jsonFetcher);
@@ -41,9 +41,8 @@ export const NewScenarioForm = ({ backUrl, themeId }: NewScenarioFormProps) => {
 
     const createNewProject = (scenario: Scenario | LocalScenario) => {
         setProject({
-            id: 'local',
             name: '',
-            locale: currentLocale,
+            language: currentLocale,
             themeId: scenario.themeId,
             themeName:
                 typeof scenario.themeId === 'number'
@@ -52,6 +51,9 @@ export const NewScenarioForm = ({ backUrl, themeId }: NewScenarioFormProps) => {
             scenarioId: scenario.id,
             scenarioName: scenario.names[currentLocale] || scenario.names[Object.keys(scenario.names)[0]] || '',
             questions: [],
+            soundBeginTime: 0,
+            soundUrl: null,
+            soundVolume: 100,
         });
     };
 

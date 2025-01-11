@@ -46,7 +46,7 @@ const STEPS: StepData[] = [
 
 type StepsProps = {
     activeStep: number;
-    themeId?: string | number;
+    themeId?: string | number | null;
     backHref?: string;
 };
 export const Steps = ({ activeStep, backHref, themeId }: StepsProps) => {

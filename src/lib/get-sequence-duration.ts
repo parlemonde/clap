@@ -1,4 +1,4 @@
-import type { Sequence } from 'src/hooks/useLocalStorage/local-storage';
+import type { Sequence } from './project.types';
 
 export function isSequenceAvailable(sequence: Sequence) {
     return sequence.title !== null || (sequence.plans || []).some((plan) => plan.description || plan.imageUrl);

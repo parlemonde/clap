@@ -4,7 +4,7 @@ import React from 'react';
 import styles from './title-form.module.scss';
 import { KeepRatio } from 'src/components/layout/KeepRatio';
 import { useTranslation } from 'src/contexts/translationContext';
-import type { Title } from 'src/hooks/useLocalStorage/local-storage';
+import type { Title } from 'src/lib/project.types';
 
 const PRIMARY_COLOR = '#6065fc';
 

@@ -17,7 +17,7 @@ import { Cropper } from 'src/components/ui/Cropper';
 import { Loader } from 'src/components/ui/Loader';
 import { sendToast } from 'src/components/ui/Toasts';
 import { useTranslation } from 'src/contexts/translationContext';
-import type { Plan } from 'src/hooks/useLocalStorage/local-storage';
+import type { Plan } from 'src/lib/project.types';
 
 const RATIO = 16 / 9;
 

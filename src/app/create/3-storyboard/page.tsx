@@ -13,7 +13,7 @@ import { Inverted } from 'src/components/ui/Inverted';
 import { Trans } from 'src/components/ui/Trans';
 import { useTranslation } from 'src/contexts/translationContext';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
-import type { Sequence } from 'src/hooks/useLocalStorage/local-storage';
+import type { Sequence } from 'src/lib/project.types';
 
 export default function StoryboardPage() {
     const router = useRouter();

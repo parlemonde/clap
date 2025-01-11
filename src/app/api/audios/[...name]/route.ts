@@ -85,7 +85,7 @@ export async function GET(request: NextRequest, props: { params: Promise<{ name:
     }
 }
 
-export async function HEAD(request: NextRequest, props: { params: Promise<{ name: string }> }) {
+export async function HEAD(_request: NextRequest, props: { params: Promise<{ name: string }> }) {
     const params = await props.params;
     const data = await getFileData('audios', params.name);
     if (!data || data.ContentLength === 0) {

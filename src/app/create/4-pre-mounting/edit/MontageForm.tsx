@@ -12,8 +12,8 @@ import { NextButton } from 'src/components/navigation/NextButton';
 import { Loader } from 'src/components/ui/Loader';
 import { sendToast } from 'src/components/ui/Toasts';
 import { useTranslation } from 'src/contexts/translationContext';
-import type { Sequence } from 'src/hooks/useLocalStorage/local-storage';
 import type { Sound } from 'src/lib/get-sounds';
+import type { Sequence } from 'src/lib/project.types';
 
 interface MontageFormProps {
     sequence: Sequence;

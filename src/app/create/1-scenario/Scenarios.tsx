@@ -58,9 +58,8 @@ export const Scenarios = ({ scenarios }: ScenariosProps) => {
                             `/api/questions-templates${serializeToQueryUrl({ scenarioId: s.id })}`,
                         );
                         setProject({
-                            id: 'local',
                             name: '',
-                            locale: currentLocale,
+                            language: currentLocale,
                             themeId: s.themeId,
                             themeName:
                                 typeof s.themeId === 'number'
@@ -73,6 +72,9 @@ export const Scenarios = ({ scenarios }: ScenariosProps) => {
                                 question: question.question,
                                 plans: [],
                             })),
+                            soundBeginTime: 0,
+                            soundUrl: null,
+                            soundVolume: 100,
                         });
                         setIsCreatingProject(false);
                         router.push('/create/2-questions');
