@@ -11,7 +11,7 @@ import type { Scenario } from 'src/database/schemas/scenarios';
 import type { Theme } from 'src/database/schemas/themes';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import { useLocalStorage } from 'src/hooks/useLocalStorage';
-import type { LocalScenario } from 'src/hooks/useLocalStorage/local-storage';
+import { deleteFromLocalStorage, setToLocalStorage, type LocalScenario } from 'src/hooks/useLocalStorage/local-storage';
 import { jsonFetcher } from 'src/lib/json-fetcher';
 import { serializeToQueryUrl } from 'src/lib/serialize-to-query-url';
 
@@ -22,7 +22,8 @@ interface ScenariosProps {
 export const Scenarios = ({ scenarios }: ScenariosProps) => {
     const router = useRouter();
     const { t, currentLocale } = useTranslation();
-    const [project, setProject] = useCurrentProject();
+    const [projectId] = useLocalStorage('projectId');
+    const [project] = useCurrentProject();
 
     const { data: themes } = useSWR<Theme[]>('/api/themes', jsonFetcher);
     const [localThemes] = useLocalStorage('themes', []);
@@ -45,7 +46,7 @@ export const Scenarios = ({ scenarios }: ScenariosProps) => {
                     questionsCount={getQuestionCountString(s.questionsCount)}
                     href="/create/2-questions"
                     onClick={async (event) => {
-                        if (project && project.themeId === s.themeId && project.scenarioId === s.id) {
+                        if (project && project.themeId === s.themeId && project.scenarioId === s.id && !projectId) {
                             return; // Go to the next page if the project is already created with the default link action
                         }
 
@@ -54,7 +55,9 @@ export const Scenarios = ({ scenarios }: ScenariosProps) => {
                         const questions = await jsonFetcher<QuestionTemplate[]>(
                             `/api/questions-templates${serializeToQueryUrl({ scenarioId: s.id })}`,
                         );
-                        setProject({
+                        // Create a new project with the selected scenario and selected theme
+                        deleteFromLocalStorage('projectId');
+                        setToLocalStorage('project', {
                             name: '',
                             language: currentLocale,
                             themeId: s.themeId,

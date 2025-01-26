@@ -21,6 +21,7 @@ import { useTranslation } from 'src/contexts/translationContext';
 import { userContext } from 'src/contexts/userContext';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import { useLocalStorage } from 'src/hooks/useLocalStorage';
+import { deleteFromLocalStorage } from 'src/hooks/useLocalStorage/local-storage';
 
 export default function QuestionPage() {
     const router = useRouter();
@@ -54,7 +55,7 @@ export default function QuestionPage() {
         setIsCreatingProject(false);
         if (backendProject) {
             setProjectId(backendProject.id);
-            localStorage.removeItem('project');
+            deleteFromLocalStorage('project');
             router.push('/create/3-storyboard');
         } else {
             sendToast({

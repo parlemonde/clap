@@ -65,3 +65,12 @@ export function setToLocalStorage<T extends LocalStorageKey>(key: T, item: Objec
         // do nothing...
     }
 }
+
+export function deleteFromLocalStorage(key: LocalStorageKey) {
+    try {
+        localStorage.removeItem(key);
+        localStorageCache[key] = undefined;
+    } catch {
+        // do nothing...
+    }
+}
