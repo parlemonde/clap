@@ -38,4 +38,4 @@ export const projects = pgTable('projects', {
 });
 
 export type Project = typeof projects.$inferSelect;
-export type NewProject = Omit<typeof projects.$inferInsert, 'id' | 'createDate' | 'updateDate' | 'deleteDate'>;
+export type NewProject = Omit<typeof projects.$inferInsert, 'id' | 'createDate' | 'updateDate' | 'deleteDate' | 'userId'>;

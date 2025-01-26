@@ -5,7 +5,6 @@ import React from 'react';
 import useSWR from 'swr';
 
 import { ScenarioCard } from 'src/components/create/ScenarioCard';
-import { Loader } from 'src/components/ui/Loader';
 import { useTranslation } from 'src/contexts/translationContext';
 import type { QuestionTemplate } from 'src/database/schemas/question-template';
 import type { Scenario } from 'src/database/schemas/scenarios';
@@ -23,7 +22,6 @@ interface ScenariosProps {
 export const Scenarios = ({ scenarios }: ScenariosProps) => {
     const router = useRouter();
     const { t, currentLocale } = useTranslation();
-    const [isCreatingProject, setIsCreatingProject] = React.useState(false);
     const [project, setProject] = useCurrentProject();
 
     const { data: themes } = useSWR<Theme[]>('/api/themes', jsonFetcher);
@@ -53,7 +51,6 @@ export const Scenarios = ({ scenarios }: ScenariosProps) => {
 
                         // Prevent navigation to the next page and create a new project
                         event.preventDefault();
-                        setIsCreatingProject(true);
                         const questions = await jsonFetcher<QuestionTemplate[]>(
                             `/api/questions-templates${serializeToQueryUrl({ scenarioId: s.id })}`,
                         );
@@ -76,12 +73,10 @@ export const Scenarios = ({ scenarios }: ScenariosProps) => {
                             soundUrl: null,
                             soundVolume: 100,
                         });
-                        setIsCreatingProject(false);
                         router.push('/create/2-questions');
                     }}
                 />
             ))}
-            <Loader isLoading={isCreatingProject} />
         </>
     );
 };
