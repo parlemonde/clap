@@ -5,6 +5,7 @@ import classNames from 'clsx';
 import Link from 'next/link';
 import * as React from 'react';
 
+import { ProjectTitle } from './ProjectTitle';
 import styles from './steps.module.scss';
 import { Button } from 'src/components/layout/Button';
 import { Text } from 'src/components/layout/Typography';
@@ -56,7 +57,7 @@ export const Steps = ({ activeStep, backHref, themeId }: StepsProps) => {
     return (
         <>
             {/* -- Step Title (Desktop only) -- */}
-            {/* {activeStep > 0 && <ProjectTitle />} */}
+            {activeStep > 0 && <ProjectTitle />}
 
             {/* -- Steps (Desktop only) -- */}
             <div className={styles.steps}>
