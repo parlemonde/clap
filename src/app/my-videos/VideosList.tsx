@@ -44,7 +44,7 @@ export const VideoList = ({ projects }: VideoListProps) => {
                 <ProjectCard
                     title={t('my_videos_empty')}
                     onClick={() => {
-                        router.push('/create');
+                        router.push('/');
                     }}
                 />
             )}
