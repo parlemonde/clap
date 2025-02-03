@@ -8,11 +8,12 @@ export const users = pgTable('users', {
     id: serial('id').primaryKey(),
     email: varchar('email', { length: 150 }).notNull().unique(),
     name: varchar('name', { length: 150 }).notNull(),
-    passwordHash: char('passwordHash', { length: 100 }).notNull(),
+    passwordHash: char('passwordHash', { length: 100 }),
+    verificationHash: char('verificationHash', { length: 100 }),
     accountRegistration: smallint('accountRegistration').notNull().default(0),
     role: varchar('role', { length: 20, enum: ROLES_ENUM }).notNull().default('teacher'),
 });
 
-export type FullUser = typeof users.$inferSelect;
+type FullUser = typeof users.$inferSelect;
 export type User = Pick<FullUser, 'id' | 'name' | 'email' | 'role'>;
 export type NewUser = Omit<typeof users.$inferInsert, 'id'>;

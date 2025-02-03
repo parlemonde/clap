@@ -9,5 +9,13 @@ export async function getUsers(): Promise<User[]> {
     if (currentUser?.role !== 'admin') {
         throw new Error('Not allowed');
     }
-    return db.select().from(users).orderBy(users.name);
+    return db
+        .select({
+            id: users.id,
+            name: users.name,
+            email: users.email,
+            role: users.role,
+        })
+        .from(users)
+        .orderBy(users.name);
 }

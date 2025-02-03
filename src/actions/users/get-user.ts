@@ -12,6 +12,7 @@ export async function getUser(userId: number): Promise<User | undefined> {
         throw new Error('Not allowed');
     }
     return db.query.users.findFirst({
+        columns: { id: true, name: true, email: true, role: true },
         where: eq(users.id, userId),
     });
 }

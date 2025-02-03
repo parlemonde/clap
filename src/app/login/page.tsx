@@ -1,6 +1,7 @@
 'use client';
 
 import { EyeNoneIcon, EyeOpenIcon } from '@radix-ui/react-icons';
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import * as React from 'react';
 
@@ -64,6 +65,11 @@ export default function LoginPage() {
                     }
                 ></Field>
                 <Button label={t('login_connect')} variant="contained" color="secondary" type="submit" value="Submit"></Button>
+                <div className="text-center">
+                    <Link href="/reset-password" className="color-primary">
+                        {t('login_forgot_password')}
+                    </Link>
+                </div>
                 <div className="loader-wrapper">
                     <FormLoader />
                 </div>

@@ -50,6 +50,13 @@
       "when": 1736614806344,
       "tag": "0006_broken_sway",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1738600068139,
+      "tag": "0007_wandering_puppet_master",
+      "breakpoints": true
     }
   ]
 }
