@@ -53,7 +53,7 @@ export async function login(_previousState: string, formData: FormData): Promise
         await db
             .update(users)
             .set({
-                accountRegistration: user.accountRegistration + 1,
+                accountRegistration: Math.max(user.accountRegistration + 1, 4),
             })
             .where(eq(users.id, user.id));
         return 'Unauthorized - Invalid credentials.';

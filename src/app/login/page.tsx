@@ -1,79 +1,27 @@
-'use client';
+'use server';
 
-import { EyeNoneIcon, EyeOpenIcon } from '@radix-ui/react-icons';
-import Link from 'next/link';
-import { redirect } from 'next/navigation';
 import * as React from 'react';
 
-import { login } from 'src/actions/authentication/login';
-import { Button } from 'src/components/layout/Button';
-import { IconButton } from 'src/components/layout/Button/IconButton';
+import { LoginForm } from './LoginForm';
+import { getTranslation } from 'src/actions/get-translation';
 import { Container } from 'src/components/layout/Container';
-import { Field, Form, Input } from 'src/components/layout/Form';
 import { Title } from 'src/components/layout/Typography';
-import { FormLoader } from 'src/components/ui/Loader';
-import { useTranslation } from 'src/contexts/translationContext';
-import { userContext } from 'src/contexts/userContext';
+import type { ServerPageProps } from 'src/lib/page-props.types';
 
-export default function LoginPage() {
-    const [message, formAction] = React.useActionState(login, '');
-    const { t } = useTranslation();
+const CLIENT_ID = process.env.CLIENT_ID || '';
+const SSO_HOST = process.env.SSO_HOST || '';
 
-    const [showPassword, setShowPassword] = React.useState(false);
-
-    const { user } = React.useContext(userContext);
-    if (user) {
-        redirect('/');
-    }
-
+export default async function LoginPage(props: ServerPageProps) {
+    const searchParams = await props.searchParams;
+    const stateQueryParam = typeof searchParams.state === 'string' ? searchParams.state : undefined;
+    const codeQueryParam = typeof searchParams.code === 'string' ? searchParams.code : undefined;
+    const { t } = await getTranslation();
     return (
         <Container className="text-center">
             <Title color="primary" variant="h1" marginTop={48} marginBottom="lg">
                 {t('login_title')}
             </Title>
-            <Form className="login-form" action={formAction}>
-                {message && <span style={{ color: 'rgb(211, 47, 47)', display: 'block' }}>{message}</span>}
-                <Field
-                    name="email"
-                    label={<span style={{ display: 'inline-block', marginBottom: 4 }}>{t('login_username')}</span>}
-                    input={<Input id="email" name="email" type="text" color="secondary" isFullWidth required />}
-                ></Field>
-                <Field
-                    name="password"
-                    label={<span style={{ display: 'inline-block', marginBottom: 4 }}>{t('login_password')}</span>}
-                    input={
-                        <Input
-                            type={showPassword ? 'text' : 'password'}
-                            id="password"
-                            name="password"
-                            color="secondary"
-                            isFullWidth
-                            required
-                            iconAdornment={
-                                <IconButton
-                                    aria-label="toggle password visibility"
-                                    onClick={() => {
-                                        setShowPassword(!showPassword);
-                                    }}
-                                    variant="borderless"
-                                    icon={showPassword ? EyeNoneIcon : EyeOpenIcon}
-                                    iconProps={{ style: { color: 'rgba(0, 0, 0, 0.54)', height: 24, width: 24 } }}
-                                ></IconButton>
-                            }
-                            iconAdornmentProps={{ position: 'right' }}
-                        />
-                    }
-                ></Field>
-                <Button label={t('login_connect')} variant="contained" color="secondary" type="submit" value="Submit"></Button>
-                <div className="text-center">
-                    <Link href="/reset-password" className="color-primary">
-                        {t('login_forgot_password')}
-                    </Link>
-                </div>
-                <div className="loader-wrapper">
-                    <FormLoader />
-                </div>
-            </Form>
+            <LoginForm ssoHost={SSO_HOST} clientId={CLIENT_ID} stateQueryParam={stateQueryParam} codeQueryParam={codeQueryParam} />
         </Container>
     );
 }
