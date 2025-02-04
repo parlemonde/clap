@@ -9,6 +9,11 @@ const nextConfig: NextConfig = {
             test: /\.svg$/,
             use: ['@svgr/webpack'],
         });
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+        config.module.rules.push({
+            test: /\.(html|txt)$/,
+            use: ['raw-loader'],
+        });
         return config;
     },
     experimental: {
@@ -16,6 +21,14 @@ const nextConfig: NextConfig = {
             rules: {
                 '*.svg': {
                     loaders: ['@svgr/webpack'],
+                    as: '*.js',
+                },
+                '*.html': {
+                    loaders: ['raw-loader'],
+                    as: '*.js',
+                },
+                '*.txt': {
+                    loaders: ['raw-loader'],
                     as: '*.js',
                 },
             },

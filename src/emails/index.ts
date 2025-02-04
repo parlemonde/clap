@@ -1,12 +1,12 @@
-import { fileURLToPath } from 'node:url';
 import nodemailer from 'nodemailer';
 import type Mail from 'nodemailer/lib/mailer';
 import type SESTransport from 'nodemailer/lib/ses-transport';
 import type SMTPTransport from 'nodemailer/lib/smtp-transport';
-import path from 'path';
 
 import { getNodeMailer } from './nodemailer';
 import { renderFile } from './render-file';
+import resetPasswordHtml from './templates/reset-password.html';
+import resetPasswordText from './templates/reset-password.txt';
 import { getTranslation } from 'src/actions/get-translation';
 
 const DOMAIN =
@@ -79,11 +79,10 @@ export async function sendMail(to: string, kind: EmailKind): Promise<void> {
     }
 
     try {
-        const dirname = path.dirname(fileURLToPath(import.meta.url));
-        const htmlFilename = path.join(dirname, 'templates', `${kind.kind}.html`);
-        const textFilename = path.join(dirname, 'templates', `${kind.kind}.txt`);
-        const html = await renderFile(htmlFilename, emailData, t);
-        const text = await renderFile(textFilename, emailData, t);
+        const htmlFile = kind.kind === 'reset-password' ? resetPasswordHtml : '';
+        const textFile = kind.kind === 'reset-password' ? resetPasswordText : '';
+        const html = await renderFile(htmlFile, emailData, t);
+        const text = await renderFile(textFile, emailData, t);
 
         // send mail with defined transport object
         const info = await nodeMailer.sendMail({
