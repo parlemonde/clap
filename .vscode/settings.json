@@ -9,11 +9,13 @@
     "**/.postgres-data": true,
     "**/.redis-data": true,
     "**/node_modules": true,
+    "**/temp": true,
   },
   "files.exclude": {
     "**/.next": true,
     "**/.minio-data": true,
     "**/.postgres-data": true,
     "**/.redis-data": true,
+    "**/temp": true,
   }
 }

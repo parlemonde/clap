@@ -25,8 +25,8 @@ export async function getMltZip(project: LocalProject) {
     const { mlt, files } = await projectToMlt(project, 'local');
 
     const id: string = v4();
-    const __dirname = dirname(fileURLToPath(import.meta.url));
-    const directory: string = path.join(__dirname, 'temp', id);
+    const __dirname = process.env.VERCEL === '1' ? '/tmp' : path.join(dirname(fileURLToPath(import.meta.url)), '../../../temp');
+    const directory: string = path.join(__dirname, id);
     await fs.mkdirs(directory);
 
     // Create Zip file.
