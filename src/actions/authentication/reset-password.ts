@@ -1,7 +1,7 @@
 'use server';
 
 import * as argon2 from 'argon2';
-import { eq } from 'drizzle-orm';
+import { eq, and, lt } from 'drizzle-orm';
 
 import { generateToken } from './generate-token';
 import { db } from 'src/database';
@@ -20,7 +20,13 @@ export async function resetPassword(formData: FormData): Promise<void> {
     if (!email) {
         return;
     }
-    const isUserValid = (await db.select({ id: users.id }).from(users).where(eq(users.email, email))).length === 1;
+    const isUserValid =
+        (
+            await db
+                .select({ id: users.id })
+                .from(users)
+                .where(and(eq(users.email, email), lt(users.accountRegistration, 10)))
+        ).length === 1;
     if (!isUserValid) {
         return;
     }

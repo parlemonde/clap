@@ -1,6 +1,6 @@
 'use server';
 import * as argon2 from 'argon2';
-import { eq } from 'drizzle-orm';
+import { eq, and, lt } from 'drizzle-orm';
 
 import { db } from 'src/database';
 import { users } from 'src/database/schemas/users';
@@ -12,7 +12,7 @@ export async function updateUserPassword(email: string, verifyToken: string, new
                 verificationHash: users.verificationHash,
             })
             .from(users)
-            .where(eq(users.email, email))
+            .where(and(eq(users.email, email), lt(users.accountRegistration, 10)))
     )[0];
     if (!user || !user.verificationHash) {
         return false;
@@ -32,6 +32,7 @@ export async function updateUserPassword(email: string, verifyToken: string, new
         .set({
             passwordHash,
             verificationHash: null,
+            accountRegistration: 0, // Reset account registration
         })
         .where(eq(users.email, email));
     return true;

@@ -25,7 +25,7 @@ export type LocalProject = Pick<
     themeId: string | number | null;
 };
 
-export type LocalStorageKey = 'themes' | 'scenarios' | 'project' | 'projectId';
+export type LocalStorageKey = 'themes' | 'scenarios' | 'project' | 'projectId' | 'videoJobId';
 export type ObjectType<T extends LocalStorageKey> = T extends 'themes'
     ? LocalTheme[]
     : T extends 'scenarios'
@@ -34,13 +34,16 @@ export type ObjectType<T extends LocalStorageKey> = T extends 'themes'
         ? LocalProject
         : T extends 'projectId'
           ? number
-          : never;
+          : T extends 'videoJobId'
+            ? string
+            : never;
 
 const localStorageCache: Record<LocalStorageKey, unknown> = {
     themes: undefined,
     scenarios: undefined,
     project: undefined,
     projectId: undefined,
+    videoJobId: undefined,
 };
 
 export function getFromLocalStorage<T extends LocalStorageKey>(key: T): ObjectType<T> | undefined {

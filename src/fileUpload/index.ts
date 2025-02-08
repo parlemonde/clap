@@ -6,7 +6,7 @@ import type { FileData } from './provider';
 import { s3StorageProvider } from './s3';
 import { getCurrentUser } from 'src/actions/get-current-user';
 
-export type FileType = 'images' | 'audios' | 'locales';
+export type FileType = 'images' | 'audios' | 'locales' | 'zip';
 
 const PROVIDER_NAME = (process.env.PROVIDER_NAME || 'local').toLowerCase();
 const USE_S3 = PROVIDER_NAME === 's3' || PROVIDER_NAME === 'minio';
