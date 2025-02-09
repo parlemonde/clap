@@ -4,6 +4,7 @@ import { VideoIcon } from '@radix-ui/react-icons';
 import * as React from 'react';
 
 import { getMltZip } from 'src/actions/projects/generate-mlt-zip';
+import { createVideoJob, getVideoJob } from 'src/actions/projects/generate-video';
 import { DiaporamaPlayer } from 'src/components/create/DiaporamaPlayer';
 import { Button } from 'src/components/layout/Button';
 import { Container } from 'src/components/layout/Container';
@@ -15,6 +16,7 @@ import { Steps } from 'src/components/navigation/Steps';
 import { ThemeBreadcrumbs } from 'src/components/navigation/ThemeBreadcrumbs';
 import { Inverted } from 'src/components/ui/Inverted';
 import { Loader } from 'src/components/ui/Loader';
+import { sendToast } from 'src/components/ui/Toasts';
 import { Trans } from 'src/components/ui/Trans';
 import { useTranslation } from 'src/contexts/translationContext';
 import { userContext } from 'src/contexts/userContext';
@@ -89,17 +91,48 @@ export default function ResultPage() {
         }
     }, [videoJob]);
 
+    // Fetch video job status every second
+    React.useEffect(() => {
+        if (!videoJob || videoJob.progress === 100) {
+            return;
+        }
+        const fetchVideoJob = async () => {
+            const newJob = await getVideoJob(videoJob.id);
+            if (newJob) {
+                setVideoJob(newJob);
+            } else {
+                sendToast({
+                    message: t('unknown_error'),
+                    type: 'error',
+                });
+                setVideoJob(undefined);
+            }
+        };
+        const timeout = setTimeout(fetchVideoJob, 1000);
+        return () => {
+            clearTimeout(timeout);
+        };
+    }, [t, videoJob]);
+
     if (!project) {
         return null;
     }
 
-    const generateMP4 = () => {
-        // TODO
-        setVideoJob({
-            id: 'fake-id',
-            progress: 0,
-        });
-        willAutoDownload.current = true; // Will auto download when the video is ready
+    const generateMP4 = async () => {
+        setIsLoading(true);
+        const response = await createVideoJob(project);
+        setIsLoading(false);
+        if (response) {
+            setVideoJob(response);
+            if (response.progress !== 100) {
+                willAutoDownload.current = true; // Will auto download when the video is ready
+            }
+        } else {
+            sendToast({
+                message: t('unknown_error'),
+                type: 'error',
+            });
+        }
     };
 
     const generateMLT = async () => {
@@ -151,6 +184,7 @@ export default function ResultPage() {
                         label={t('part6_mp4_download_button')}
                         as="a"
                         href={videoJob.url}
+                        ref={downloadVideoRef}
                         className="full-width"
                         variant="contained"
                         color="secondary"

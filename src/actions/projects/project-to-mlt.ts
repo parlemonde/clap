@@ -32,7 +32,7 @@ const toLocalUrl = (url: string) => {
     return url.replace(/^\/api\/images\/(?:users\/)?/, '').replace(/^\/api\/audios\/(?:users\/)?/, '');
 };
 
-export async function projectToMlt(project: LocalProject, urlKind: 'full' | 'local'): Promise<{ mlt: string; files: File[] }> {
+export async function projectToMlt(project: LocalProject, urlKind: 'full' | 'local') {
     const questions = project.questions.filter((q) => q.title !== undefined || q.plans.length > 0);
     const totalFrames = getFramesCount(
         questions.reduce(
@@ -452,7 +452,8 @@ export async function projectToMlt(project: LocalProject, urlKind: 'full' | 'loc
 
     const mltStr = mltToXml(mlt);
     return {
-        mlt: mltStr,
+        mlt,
+        mltStr,
         files,
     };
 }

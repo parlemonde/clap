@@ -22,7 +22,7 @@ async function getFileStream(file: File): Promise<internal.Readable | null> {
 }
 
 export async function getMltZip(project: LocalProject) {
-    const { mlt, files } = await projectToMlt(project, 'local');
+    const { mltStr, files } = await projectToMlt(project, 'local');
 
     const id: string = v4();
     const __dirname = process.env.VERCEL === '1' ? '/tmp' : path.join(dirname(fileURLToPath(import.meta.url)), '../../../temp');
@@ -46,7 +46,7 @@ export async function getMltZip(project: LocalProject) {
         });
 
         // Add files to the archive.
-        archive.append(mlt, { name: 'Montage.mlt' });
+        archive.append(mltStr, { name: 'Montage.mlt' });
         Promise.allSettled(files.map(getFileStream))
             .then((streamResults) => {
                 for (let i = 0; i < files.length; i++) {
