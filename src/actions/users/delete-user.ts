@@ -24,3 +24,14 @@ export async function deleteUser() {
     revalidatePath('/', 'layout');
     redirect(`/`, RedirectType.push);
 }
+
+export async function deleteUserById(id: number) {
+    const user = await getCurrentUser();
+
+    if (!user || user.role !== 'admin') {
+        return;
+    }
+
+    await db.delete(users).where(eq(users.id, id));
+    revalidatePath('/admin/users');
+}
