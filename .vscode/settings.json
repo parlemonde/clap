@@ -7,6 +7,7 @@
     "**/.next": true,
     "**/.minio-data": true,
     "**/.postgres-data": true,
+    "**/.dynamodb": true,
     "**/.redis-data": true,
     "**/node_modules": true,
     "**/temp": true,
@@ -15,6 +16,7 @@
     "**/.next": true,
     "**/.minio-data": true,
     "**/.postgres-data": true,
+    "**/.dynamodb": true,
     "**/.redis-data": true,
     "**/temp": true,
   }

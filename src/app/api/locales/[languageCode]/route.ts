@@ -8,7 +8,7 @@ import { getCurrentUser } from 'src/actions/get-current-user';
 import { getLocalesForLanguage } from 'src/actions/get-locales';
 import { db } from 'src/database';
 import { languages } from 'src/database/schemas/languages';
-import { setRedisValue } from 'src/redis/set-value';
+import { setDynamoDbValue } from 'src/dynamodb';
 
 const LOCALE_REGEX = /^\w\w(\.(po|json))?$/;
 const PO_REGEX = /^\w\w\.po$/;
@@ -97,7 +97,7 @@ export async function PUT(request: NextRequest, props: { params: Promise<{ langu
         }
 
         const newTranslations = await poToJson(Buffer.from(await file.arrayBuffer()));
-        await setRedisValue(`locales:${language.value}`, newTranslations);
+        await setDynamoDbValue(`locales:${language.value}`, newTranslations);
 
         return new Response(null, {
             status: 204,

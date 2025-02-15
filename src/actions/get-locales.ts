@@ -3,19 +3,18 @@
 import { cookies } from 'next/headers';
 import { cache } from 'react';
 
+import { getDynamoDbValue, setDynamoDbValue } from 'src/dynamodb';
 import DEFAULT_LOCALES from 'src/i18n/default-locales.json';
-import { getRedisValue } from 'src/redis/get-value';
-import { setRedisValue } from 'src/redis/set-value';
 
 export const getLocalesForLanguage = cache(async (languageCode: string) => {
     let locales: Record<string, string> = DEFAULT_LOCALES;
 
     try {
-        const redisLocales = await getRedisValue<Record<string, string>>(`locales:${languageCode}`);
-        if (redisLocales) {
-            locales = { ...locales, ...redisLocales };
+        const dynamoDbLocales = await getDynamoDbValue<Record<string, string>>(`locales:${languageCode}`);
+        if (dynamoDbLocales) {
+            locales = { ...locales, ...dynamoDbLocales };
         } else {
-            await setRedisValue(`locales:${languageCode}`, locales);
+            await setDynamoDbValue(`locales:${languageCode}`, locales);
         }
     } catch (err) {
         console.error(err);
