@@ -1,9 +1,8 @@
 'use server';
 
 import { SignJWT } from 'jose';
-import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
-import { RedirectType, redirect } from 'next/navigation';
+import { redirect, RedirectType } from 'next/navigation';
 
 import { getPlmUser } from '../legacy-plm/get-plm-user';
 
@@ -15,7 +14,6 @@ function getAccessToken(userId: number): Promise<string> {
 
 export async function loginWithSSO(code: string): Promise<string> {
     const user = await getPlmUser(code);
-
     if (!user) {
         return 'Could not connect with SSO.';
     }
@@ -27,11 +25,8 @@ export async function loginWithSSO(code: string): Promise<string> {
         value: accessToken,
         httpOnly: true,
         secure: true,
-        maxAge: 604800, // 7 days
         expires: new Date(Date.now() + 604800000),
         sameSite: 'strict',
     });
-
-    revalidatePath('/', 'layout');
     redirect(`/`, RedirectType.push);
 }

@@ -1,9 +1,12 @@
 'use client';
 
-import { Pencil1Icon, TrashIcon, ChevronLeftIcon, ChevronRightIcon, ArrowUpIcon, ArrowDownIcon } from '@radix-ui/react-icons';
+import { Pencil1Icon, TrashIcon, ChevronLeftIcon, ChevronRightIcon, ArrowUpIcon, ArrowDownIcon, PlusCircledIcon } from '@radix-ui/react-icons';
 import * as React from 'react';
 
+import { SharedLink } from './SharedLink';
+import { inviteUser } from 'src/actions/authentication/invite-user';
 import { deleteUserById } from 'src/actions/users/delete-user';
+import { AdminTile } from 'src/components/admin/AdminTile';
 import { Table } from 'src/components/admin/Table';
 import { Button } from 'src/components/layout/Button';
 import { IconButton } from 'src/components/layout/Button/IconButton';
@@ -12,6 +15,8 @@ import { Select } from 'src/components/layout/Form/Select';
 import { Modal } from 'src/components/layout/Modal';
 import { Tooltip } from 'src/components/layout/Tooltip';
 import { Link } from 'src/components/navigation/Link';
+import { Loader } from 'src/components/ui/Loader';
+import { sendToast } from 'src/components/ui/Toasts';
 import { userContext } from 'src/contexts/userContext';
 import type { User } from 'src/database/schemas/users';
 
@@ -28,6 +33,9 @@ export const UsersTable = ({ users }: UsersTableWithDataProps) => {
     const [page, setPage] = React.useState(1);
     const [order, setOrder] = React.useState<'name' | 'email' | 'role'>('name');
     const [sort, setSort] = React.useState<'asc' | 'desc'>('asc');
+    const [isGeneratingInvite, setIsGeneratingInvite] = React.useState(false);
+    const [inviteToken, setInviteToken] = React.useState<string | null>(null);
+    const inviteUrl = inviteToken ? `${window.location.origin}/sign-up?inviteCode=${encodeURIComponent(inviteToken)}` : '';
 
     const filteredUsers = users.filter(
         (u) => u.name.toLowerCase().includes(search.toLowerCase()) || u.email.toLowerCase().includes(search.toLowerCase()),
@@ -47,8 +55,33 @@ export const UsersTable = ({ users }: UsersTableWithDataProps) => {
         setPage(1);
     }
 
+    const onInviteUser = async () => {
+        setIsGeneratingInvite(true);
+        const token = await inviteUser();
+        setInviteToken(token);
+        setIsGeneratingInvite(false);
+        if (token === 'null') {
+            sendToast({
+                message: "Une erreur s'est produite lors de la génération de l'invitation",
+                type: 'error',
+            });
+        }
+    };
+
     return (
-        <>
+        <AdminTile
+            marginY="md"
+            title="Liste des utilisateurs"
+            actions={
+                <Button
+                    label="Inviter un utilisateur"
+                    onClick={onInviteUser}
+                    variant="contained"
+                    color="light-grey"
+                    leftIcon={<PlusCircledIcon style={{ width: '20px', height: '20px', marginRight: '8px' }} />}
+                />
+            }
+        >
             <div style={{ margin: '8px' }}>
                 <Input
                     size="sm"
@@ -233,7 +266,7 @@ export const UsersTable = ({ users }: UsersTableWithDataProps) => {
                         return;
                     }
                     setIsDeleting(true);
-                    await deleteUserById(users[deleteIndex].id);
+                    await deleteUserById(usersToDisplay[deleteIndex].id);
                     setIsDeleting(false);
                     setDeleteIndex(null);
                 }}
@@ -245,9 +278,32 @@ export const UsersTable = ({ users }: UsersTableWithDataProps) => {
                 isLoading={isDeleting}
             >
                 <p>
-                    Voulez-vous vraiment supprimer l'utilisateur <strong>{deleteIndex !== null && users[deleteIndex].name}</strong> ?
+                    Voulez-vous vraiment supprimer l'utilisateur <strong>{deleteIndex !== null && usersToDisplay[deleteIndex].name}</strong> ?
                 </p>
             </Modal>
-        </>
+            <Modal
+                isOpen={inviteToken !== null}
+                width="lg"
+                onClose={() => {
+                    setInviteToken(null);
+                }}
+                cancelLabel="Retour"
+                title="Inviter un utilisateur"
+                isFullWidth
+                onOpenAutoFocus={false}
+            >
+                <div id="add-dialog-description">
+                    <div>
+                        <label style={{ fontWeight: 'bold' }}>{"Code d'invitation :"}</label>
+                        <SharedLink link={inviteToken || ''} />
+                    </div>
+                    <div style={{ margin: '0.4rem 0 0.8rem 0' }}>
+                        <label style={{ fontWeight: 'bold' }}>{"Lien d'invitation :"}</label>
+                        <SharedLink link={inviteUrl} />
+                    </div>
+                </div>
+            </Modal>
+            <Loader isLoading={isGeneratingInvite} />
+        </AdminTile>
     );
 };

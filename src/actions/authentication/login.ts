@@ -3,16 +3,15 @@
 import * as argon2 from 'argon2';
 import { eq } from 'drizzle-orm';
 import { SignJWT } from 'jose';
-import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
-import { RedirectType, redirect } from 'next/navigation';
+import { redirect, RedirectType } from 'next/navigation';
 
 import { db } from 'src/database';
 import { users } from 'src/database/schemas/users';
 
 const APP_SECRET = new TextEncoder().encode(process.env.APP_SECRET || '');
 
-function getAccessToken(userId: number): Promise<string> {
+export async function getAccessToken(userId: number): Promise<string> {
     return new SignJWT({ userId }).setProtectedHeader({ alg: 'HS256' }).setIssuedAt().setExpirationTime('7d').sign(APP_SECRET);
 }
 
@@ -73,11 +72,8 @@ export async function login(_previousState: string, formData: FormData): Promise
         value: accessToken,
         httpOnly: true,
         secure: true,
-        maxAge: 604800, // 7 days
         expires: new Date(Date.now() + 604800000),
         sameSite: 'strict',
     });
-
-    revalidatePath('/', 'layout');
     redirect(`/`, RedirectType.push);
 }
