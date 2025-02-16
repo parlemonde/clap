@@ -3,18 +3,18 @@
 import { cookies } from 'next/headers';
 import { cache } from 'react';
 
-import { getDynamoDbValue, setDynamoDbValue } from 'src/dynamodb';
+import { getDynamoDBItem, setDynamoDBItem } from 'src/aws/dynamoDb';
 import DEFAULT_LOCALES from 'src/i18n/default-locales.json';
 
 export const getLocalesForLanguage = cache(async (languageCode: string) => {
     let locales: Record<string, string> = DEFAULT_LOCALES;
 
     try {
-        const dynamoDbLocales = await getDynamoDbValue<Record<string, string>>(`locales:${languageCode}`);
+        const dynamoDbLocales = await getDynamoDBItem<Record<string, string>>(`locales:${languageCode}`);
         if (dynamoDbLocales) {
             locales = { ...locales, ...dynamoDbLocales };
         } else {
-            await setDynamoDbValue(`locales:${languageCode}`, locales);
+            await setDynamoDBItem(`locales:${languageCode}`, locales);
         }
     } catch (err) {
         console.error(err);

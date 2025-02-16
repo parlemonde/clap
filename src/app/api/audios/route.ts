@@ -1,3 +1,4 @@
+import mime from 'mime-types';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import path from 'path';
@@ -27,7 +28,8 @@ export async function POST(request: NextRequest) {
         const extension = path.extname(file.name).substring(1);
         const filename = `${uuid}.${extension}`;
 
-        const url = await uploadFile('audios', filename, false, Buffer.from(await file.arrayBuffer()));
+        const contentType = mime.lookup(filename) || undefined;
+        const url = await uploadFile('audios', filename, false, Buffer.from(await file.arrayBuffer()), contentType);
         return Response.json({ url });
     } catch {
         return new NextResponse('Unknown error happened', {

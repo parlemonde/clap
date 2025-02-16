@@ -7,20 +7,7 @@ import { questionTemplates } from './schemas/question-template';
 import { scenarios } from './schemas/scenarios';
 import { themes } from './schemas/themes';
 import { users } from './schemas/users';
-
-/**
- * Register service: Stores instances in `global` to prevent memory leaks in development.
- *
- */
-const registerService = <T>(name: string, initFn: () => T): T => {
-    if (process.env.NODE_ENV !== 'production') {
-        if (!(name in global)) {
-            (global as Record<string, unknown>)[name] = initFn();
-        }
-        return (global as Record<string, unknown>)[name] as T;
-    }
-    return initFn();
-};
+import { registerService } from 'src/lib/register-service';
 
 const queryClient = postgres(process.env.DATABASE_URL || '', { max: 10 });
 

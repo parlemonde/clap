@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
             .toFormat('webp');
         const imageBuffer = await sharpPipeline.toBuffer();
 
-        const url = await uploadFile('images', filename, isAdminImage, imageBuffer);
+        const url = await uploadFile('images', filename, isAdminImage, imageBuffer, 'image/webp');
         return Response.json({ url });
     } catch {
         return new NextResponse('Unknown error happened', {

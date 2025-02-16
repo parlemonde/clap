@@ -66,7 +66,7 @@ export async function getMltZip(project: LocalProject) {
 
     // Push to S3.
     const fileBuffer = await fs.readFile(path.join(directory, `Montage.zip`));
-    await uploadFile('zip', `${id}.zip`, false, fileBuffer);
+    await uploadFile('zip', `${id}.zip`, false, fileBuffer, 'application/zip');
 
     // Delete temp directory.
     await fs.remove(directory);

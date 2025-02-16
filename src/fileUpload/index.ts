@@ -1,15 +1,14 @@
+import type { Readable } from 'node:stream';
 import sanitize from 'sanitize-filename';
-import type { Readable } from 'stream';
 
-import { localStorageProvider } from './local';
-import type { FileData } from './provider';
-import { s3StorageProvider } from './s3';
+import type { FileData } from './file-upload.types';
+import { deleteLocalFile, getLocalFile, getLocalFileData, uploadLocalFile } from './local';
 import { getCurrentUser } from 'src/actions/get-current-user';
+import { deleteS3File, getS3File, getS3FileData, uploadS3File } from 'src/aws/s3';
 
 export type FileType = 'images' | 'audios' | 'locales' | 'zip';
 
-const PROVIDER_NAME = (process.env.PROVIDER_NAME || 'local').toLowerCase();
-const USE_S3 = PROVIDER_NAME === 's3' || PROVIDER_NAME === 'minio';
+const USE_S3 = process.env.S3_BUCKET_NAME;
 
 async function getFileNameForUpload(fileType: FileType, name: string, isForAdmin: boolean): Promise<string | null> {
     if (!isForAdmin) {
@@ -38,15 +37,15 @@ async function getFileName(fileType: FileType, name: string, action: 'GET' | 'DE
     return null; // Invalid path
 }
 
-export async function uploadFile(fileType: FileType, name: string, isForAdmin: boolean, fileData: Buffer): Promise<string> {
+export async function uploadFile(fileType: FileType, name: string, isForAdmin: boolean, fileData: Buffer, contentType?: string): Promise<string> {
     const fileName = await getFileNameForUpload(fileType, name, isForAdmin);
     if (!fileName) {
         return '';
     }
     if (USE_S3) {
-        await s3StorageProvider.uploadFile(fileName, fileData);
+        await uploadS3File(fileName, fileData, contentType);
     } else {
-        await localStorageProvider.uploadFile(fileName, fileData);
+        await uploadLocalFile(fileName, fileData);
     }
     return `/api/${fileName}`;
 }
@@ -57,9 +56,9 @@ export async function getFileData(fileType: FileType, name: string): Promise<Fil
         return null;
     }
     if (USE_S3) {
-        return s3StorageProvider.getFileData(fileName);
+        return getS3FileData(fileName);
     } else {
-        return localStorageProvider.getFileData(fileName);
+        return getLocalFileData(fileName);
     }
 }
 
@@ -69,9 +68,9 @@ export async function getFile(fileType: FileType, name: string, range?: string):
         return null;
     }
     if (USE_S3) {
-        return s3StorageProvider.getFile(fileName, range);
+        return getS3File(fileName, range);
     } else {
-        return localStorageProvider.getFile(fileName, range);
+        return getLocalFile(fileName);
     }
 }
 
@@ -81,8 +80,8 @@ export async function deleteFile(fileType: FileType, name: string, isAdmin: bool
         return;
     }
     if (USE_S3) {
-        return s3StorageProvider.deleteFile(fileName);
+        return deleteS3File(fileName);
     } else {
-        return localStorageProvider.deleteFile(fileName);
+        return deleteLocalFile(fileName);
     }
 }
