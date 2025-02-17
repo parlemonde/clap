@@ -138,6 +138,7 @@ export default [
             '.svgrrc.js',
             'eslint.config.mjs',
             'server-pdf-generation/',
+            '.open-next/'
         ],
     },
 ];

@@ -1,5 +1,3 @@
-import { Analytics } from '@vercel/analytics/react';
-import { SpeedInsights } from '@vercel/speed-insights/next';
 import classNames from 'clsx';
 import type { Metadata, Viewport } from 'next';
 import { cookies } from 'next/headers';
@@ -92,8 +90,6 @@ export default async function RootLayout({ children }: React.PropsWithChildren) 
                 </TooltipProvider>
                 <Toasts />
                 <NProgressDone />
-                <Analytics />
-                <SpeedInsights />
             </body>
         </html>
     );

@@ -53,3 +53,4 @@ server-image-resize/cargo.lock
 
 # Pdf server
 server-pdf-generation/node_modules
+.open-next

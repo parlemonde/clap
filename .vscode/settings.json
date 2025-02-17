@@ -11,6 +11,7 @@
     "**/.redis-data": true,
     "**/node_modules": true,
     "**/temp": true,
+    "**/.open-next": true,
   },
   "files.exclude": {
     "**/.next": true,
