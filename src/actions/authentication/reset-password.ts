@@ -1,6 +1,6 @@
 'use server';
 
-import * as argon2 from 'argon2';
+import { hash } from '@node-rs/argon2';
 import { eq, and, lt } from 'drizzle-orm';
 
 import { generateToken } from './generate-token';
@@ -31,7 +31,7 @@ export async function resetPassword(formData: FormData): Promise<void> {
         return;
     }
     const resetCode = generateToken(12);
-    const verificationHash = await argon2.hash(resetCode);
+    const verificationHash = await hash(resetCode);
     await db.update(users).set({ verificationHash }).where(eq(users.email, email));
     try {
         await sendMail(email, {

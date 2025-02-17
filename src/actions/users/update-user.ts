@@ -1,6 +1,6 @@
 'use server';
 
-import * as argon2 from 'argon2';
+import { hash, verify } from '@node-rs/argon2';
 import { eq } from 'drizzle-orm';
 
 import { getCurrentUser } from '../get-current-user';
@@ -36,9 +36,9 @@ export async function updateUser(updatedUser: UpdateUserArgs): Promise<void> {
     if (updatedUser.oldPassword !== undefined && updatedUser.password !== undefined && PASSWORD_REGEX.test(updatedUser.password)) {
         const userPasswordHash =
             (await db.select({ passwordHash: users.passwordHash }).from(users).where(eq(users.id, user.id)))[0]?.passwordHash ?? '';
-        const isValidOldPassword = userPasswordHash && (await argon2.verify(userPasswordHash.trim(), updatedUser.oldPassword));
+        const isValidOldPassword = userPasswordHash && (await verify(userPasswordHash.trim(), updatedUser.oldPassword));
         if (isValidOldPassword) {
-            updatableValues.passwordHash = await argon2.hash(updatedUser.password);
+            updatableValues.passwordHash = await hash(updatedUser.password);
         }
     }
 

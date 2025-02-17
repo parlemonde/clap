@@ -1,6 +1,6 @@
 'use server';
 
-import * as argon2 from 'argon2';
+import { hash } from '@node-rs/argon2';
 import { eq } from 'drizzle-orm';
 import { cookies } from 'next/headers';
 
@@ -30,7 +30,7 @@ export async function createUser({ name, email, password, inviteCode }: CreateUs
 
     try {
         // Create the user
-        const passwordHash = await argon2.hash(password);
+        const passwordHash = await hash(password);
         const user = (
             await db
                 .insert(users)

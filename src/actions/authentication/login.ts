@@ -1,6 +1,6 @@
 'use server';
 
-import * as argon2 from 'argon2';
+import { verify } from '@node-rs/argon2';
 import { eq } from 'drizzle-orm';
 import { SignJWT } from 'jose';
 import { cookies } from 'next/headers';
@@ -43,7 +43,7 @@ export async function login(_previousState: string, formData: FormData): Promise
 
     let isPasswordCorrect: boolean = false;
     try {
-        isPasswordCorrect = await argon2.verify((user.passwordHash || '').trim(), password);
+        isPasswordCorrect = await verify((user.passwordHash || '').trim(), password);
     } catch {
         return 'Unauthorized - Invalid credentials.';
     }

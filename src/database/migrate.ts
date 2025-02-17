@@ -1,4 +1,4 @@
-import * as argon2 from 'argon2';
+import { hash } from '@node-rs/argon2';
 import { eq } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import { migrate } from 'drizzle-orm/postgres-js/migrator';
@@ -44,7 +44,7 @@ async function createAdminUser(): Promise<void> {
         const user: NewUser = {
             name: adminName,
             email: process.env.ADMIN_EMAIL || 'admin@clap.parlemonde.org',
-            passwordHash: await argon2.hash(adminPassword),
+            passwordHash: await hash(adminPassword),
             role: 'admin',
         };
         await db.insert(users).values(user);

@@ -1,5 +1,5 @@
 'use server';
-import * as argon2 from 'argon2';
+import { hash, verify } from '@node-rs/argon2';
 import { eq, and, lt } from 'drizzle-orm';
 
 import { db } from 'src/database';
@@ -19,14 +19,14 @@ export async function updateUserPassword(email: string, verifyToken: string, new
     }
     let isTokenCorrect: boolean = false;
     try {
-        isTokenCorrect = await argon2.verify((user.verificationHash || '').trim(), verifyToken);
+        isTokenCorrect = await verify((user.verificationHash || '').trim(), verifyToken);
     } catch {
         return false;
     }
     if (!isTokenCorrect) {
         return false;
     }
-    const passwordHash = await argon2.hash(newPassword);
+    const passwordHash = await hash(newPassword);
     await db
         .update(users)
         .set({
