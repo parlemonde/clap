@@ -14,8 +14,8 @@ const DOMAIN =
         ? process.env.VERCEL_PROJECT_PRODUCTION_URL || ''
         : process.env.VERCEL_ENV === 'preview'
           ? process.env.VERCEL_PROJECT_URL || ''
-          : process.env.HOST_DOMAIN || 'clap.parlemonde.org';
-const HOST_URL = process.env.VERCEL === '1' ? `https://${DOMAIN}` : process.env.HOST_URL || 'http://localhost:5000';
+          : process.env.HOST_DOMAIN || '';
+const HOST_URL = process.env.VERCEL === '1' ? `https://${DOMAIN}` : process.env.HOST_URL || '';
 
 type ResetPasswordEmail = {
     kind: 'reset-password';

@@ -9,7 +9,7 @@ import { users } from 'src/database/schemas/users';
 import { jsonFetcher } from 'src/lib/json-fetcher';
 
 const SSO_HOST_URL = process.env.SSO_HOST || '';
-const CLAP_HOST_URL = process.env.HOST_URL || '';
+const CLAP_HOST_URL = process.env.VERCEL_ENV === 'preview' ? `https://${process.env.VERCEL_PROJECT_URL || ''}` : process.env.HOST_URL || '';
 const CLIENT_ID = process.env.CLIENT_ID || '';
 const CLIENT_SECRET = process.env.CLIENT_SECRET || '';
 
