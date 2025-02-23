@@ -14,6 +14,7 @@ const IS_VERCEL_CI = process.env.VERCEL === '1';
 
 async function createDatabase(): Promise<void> {
     if (IS_VERCEL_CI) {
+        // Skip database creation on Vercel CI. Use the database provided by Vercel.
         return;
     }
     try {
@@ -31,8 +32,9 @@ async function createDatabase(): Promise<void> {
 async function createAdminUser(): Promise<void> {
     const adminName = process.env.ADMIN_NAME;
     const adminPassword = process.env.ADMIN_PASSWORD;
+    const adminEmail = process.env.ADMIN_EMAIL;
 
-    if (!adminName || !adminPassword) {
+    if (!adminName || !adminPassword || !adminEmail) {
         return;
     }
 
@@ -43,7 +45,7 @@ async function createAdminUser(): Promise<void> {
         }
         const user: NewUser = {
             name: adminName,
-            email: process.env.ADMIN_EMAIL || 'admin@clap.parlemonde.org',
+            email: adminEmail,
             passwordHash: await hash(adminPassword),
             role: 'admin',
         };
@@ -72,7 +74,8 @@ async function createDefaultLanguage(): Promise<void> {
 
 const start = async () => {
     await createDatabase();
-    const migrationClient = postgres(DATABASE_URL, { max: 1 });
+    const ssl = DATABASE_URL.includes('localhost') ? false : 'verify-full';
+    const migrationClient = postgres(DATABASE_URL, { max: 1, ssl });
     const db = drizzle(migrationClient, { logger: process.env.NODE_ENV !== 'production' });
     await migrate(db, { migrationsFolder: './drizzle' });
     await createAdminUser();
@@ -81,9 +84,4 @@ const start = async () => {
     process.exit();
 };
 
-if (IS_VERCEL_CI && process.env.VERCEL_ENV !== 'production') {
-    // eslint-disable-next-line no-console
-    console.log('Not running migrations on Vercel dev and preview deployments.');
-} else {
-    start().catch(console.error);
-}
+start().catch(console.error);

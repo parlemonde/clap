@@ -10,7 +10,7 @@ const isAttributeItemObject = (value: unknown): value is { Item: any } => {
 };
 
 const DYNAMO_DB_URL = process.env.DYNAMODB_ENDPOINT || `https://dynamodb.${process.env.AWS_REGION}.amazonaws.com`;
-const DYNAMO_DB_TABLE = process.env.DYNAMO_DB_TABLE || 'clap';
+const DYNAMO_DB_TABLE = process.env.DYNAMODB_TABLE_NAME || 'clap';
 export async function getDynamoDBItem<T>(key: string): Promise<T | undefined> {
     try {
         const aws = getAwsClient();
