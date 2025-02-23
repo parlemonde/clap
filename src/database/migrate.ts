@@ -10,8 +10,13 @@ import type { NewUser } from './schemas/users';
 import { users } from './schemas/users';
 
 const DATABASE_URL = process.env.DATABASE_URL || '';
+const IS_VERCEL_CI = process.env.VERCEL === '1';
 
 async function createDatabase(): Promise<void> {
+    if (IS_VERCEL_CI) {
+        // Skip database creation on Vercel CI. Use the database provided by Vercel.
+        return;
+    }
     try {
         const client = postgres(DATABASE_URL.replace(/\/[^/]*$/, ''), { debug: true });
         const res = await client`SELECT datname FROM pg_catalog.pg_database WHERE datname = ${'clap'}`;
@@ -69,7 +74,8 @@ async function createDefaultLanguage(): Promise<void> {
 
 const start = async () => {
     await createDatabase();
-    const migrationClient = postgres(DATABASE_URL, { max: 1 });
+    const ssl = DATABASE_URL.includes('localhost') ? false : 'verify-full';
+    const migrationClient = postgres(DATABASE_URL, { max: 1, ssl });
     const db = drizzle(migrationClient, { logger: process.env.NODE_ENV !== 'production' });
     await migrate(db, { migrationsFolder: './drizzle' });
     await createAdminUser();
