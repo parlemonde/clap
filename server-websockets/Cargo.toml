@@ -1,0 +1,13 @@
+[package]
+name = "server-websockets"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+tokio = { version = "1", features = ["full"] }
+futures-channel = "0.3.31"
+futures-util = "0.3.31"
+axum = "0.8.1"
+fastwebsockets = { version= "0.10.0", features = ["upgrade", "with_axum", "unstable-split"] }
+serde = { version = "1.0.218", features = ["derive"] }
+uuid = { version = "1.15.1", features = ["v4"] }

@@ -43,3 +43,6 @@ yarn-error.log*
 dist
 temp
 
+# Websocket server
+server-websockets/target
+server-websockets/cargo.lock
