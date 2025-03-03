@@ -17,7 +17,7 @@ import { useCurrentProject } from 'src/hooks/useCurrentProject';
 export default function PreMountingPage() {
     const router = useRouter();
     const { t } = useTranslation();
-    const [project] = useCurrentProject();
+    const { project } = useCurrentProject();
 
     if (!project) {
         return null;

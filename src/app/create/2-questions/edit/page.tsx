@@ -17,7 +17,7 @@ import type { ServerPageProps } from 'src/lib/page-props.types';
 
 export default function ScenarioPage(props: ServerPageProps) {
     const router = useRouter();
-    const [project, setProject] = useCurrentProject();
+    const { project, setProject } = useCurrentProject();
     const { t } = useTranslation();
 
     const searchParams = React.use(props.searchParams);

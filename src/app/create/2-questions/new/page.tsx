@@ -16,7 +16,7 @@ import { useCurrentProject } from 'src/hooks/useCurrentProject';
 
 export default function QuestionNewPage() {
     const router = useRouter();
-    const [project, setProject] = useCurrentProject();
+    const { project, setProject } = useCurrentProject();
     const { t } = useTranslation();
 
     const [question, setQuestion] = React.useState('');

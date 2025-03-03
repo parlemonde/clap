@@ -29,7 +29,7 @@ export const NewScenarioForm = ({ backUrl, themeId }: NewScenarioFormProps) => {
     const { user } = React.useContext(userContext);
     const { t, currentLocale } = useTranslation();
 
-    const [_p, setProject] = useCurrentProject();
+    const { setProject } = useCurrentProject();
 
     const { data: themes } = useSWR<Theme[]>('/api/themes', jsonFetcher);
     const [localThemes] = useLocalStorage('themes', []);

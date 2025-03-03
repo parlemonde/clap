@@ -24,7 +24,7 @@ import { getSounds } from 'src/lib/get-sounds';
 export default function MusicPage() {
     const router = useRouter();
     const { t } = useTranslation();
-    const [project, setProject] = useCurrentProject();
+    const { project, setProject } = useCurrentProject();
     const [isUploading, setIsUploading] = React.useState(false);
 
     const sounds = useDeepMemo(getSounds(project?.questions || []));

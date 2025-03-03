@@ -12,7 +12,7 @@ import { useLocalStorage } from 'src/hooks/useLocalStorage';
 
 export const ProjectTitle = () => {
     const [projectId] = useLocalStorage('projectId');
-    const [project] = useCurrentProject();
+    const { project } = useCurrentProject();
 
     const { t } = useTranslation();
     if (!project || !projectId) {

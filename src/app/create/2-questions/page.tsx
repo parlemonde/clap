@@ -9,7 +9,7 @@ import { Button } from 'src/components/layout/Button';
 import { Container } from 'src/components/layout/Container';
 import { Field, Form, Input } from 'src/components/layout/Form';
 import { Modal } from 'src/components/layout/Modal';
-import { Title } from 'src/components/layout/Typography';
+import { Text, Title } from 'src/components/layout/Typography';
 import { Link } from 'src/components/navigation/Link';
 import { NextButton } from 'src/components/navigation/NextButton';
 import { Steps } from 'src/components/navigation/Steps';
@@ -28,7 +28,7 @@ export default function QuestionPage() {
     const { t } = useTranslation();
     const { user } = React.useContext(userContext);
     const [projectId, setProjectId] = useLocalStorage('projectId');
-    const [project, setProject] = useCurrentProject();
+    const { project, setProject, collaborationCode, onStartCollaboration, onStopCollaboration } = useCurrentProject();
     const [title, setTitle] = React.useState('');
     const [showSaveProjectModal, setShowSaveProjectModal] = React.useState(false);
     const [isCreatingProject, setIsCreatingProject] = React.useState(false);
@@ -75,12 +75,27 @@ export default function QuestionPage() {
                     Mes <Inverted>séquences</Inverted>
                 </Trans>
             </Title>
-            <Title color="inherit" variant="h2">
+            <Title color="inherit" variant="h2" marginBottom="lg">
                 {t('part2_desc')}
             </Title>
             <Link href={`/create/2-questions/new`} passHref legacyBehavior>
-                <Button as="a" label={t('add_question')} variant="outlined" color="secondary" marginTop="lg" isUpperCase={false}></Button>
+                <Button as="a" label={t('add_question')} variant="outlined" color="secondary" isUpperCase={false}></Button>
             </Link>
+            <Button
+                marginLeft="lg"
+                variant="contained"
+                color="secondary"
+                label={collaborationCode ? 'Stopper la collaboration' : 'Démarrer la collaboration'}
+                isUpperCase={false}
+                onClick={() => {
+                    if (collaborationCode) {
+                        onStopCollaboration();
+                    } else {
+                        onStartCollaboration();
+                    }
+                }}
+            ></Button>
+            {collaborationCode && <Text>Code de collaboration: {collaborationCode}</Text>}
             <QuestionsList project={project} setProject={setProject} />
             <NextButton
                 onNext={() => {

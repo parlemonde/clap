@@ -2,18 +2,18 @@
 
 import * as React from 'react';
 
-import type { LocalStorageKey, ObjectType } from './local-storage';
-import { getFromLocalStorage, setToLocalStorage, UPDATE_EVENT_NAME } from './local-storage';
+import type { SessionStorageKey, ObjectType } from './session-storage';
+import { getFromSessionStorage, setToSessionStorage, UPDATE_EVENT_NAME } from './session-storage';
 
-export function useLocalStorage<T extends LocalStorageKey>(
+export function useSessionStorage<T extends SessionStorageKey>(
     key: T,
     initialValue: ObjectType<T>,
 ): [ObjectType<T>, (newItem: ObjectType<T>) => void, boolean];
-export function useLocalStorage<T extends LocalStorageKey>(
+export function useSessionStorage<T extends SessionStorageKey>(
     key: T,
     initialValue?: ObjectType<T>,
 ): [ObjectType<T> | undefined, (newItem: ObjectType<T>) => void, boolean];
-export function useLocalStorage<T extends LocalStorageKey>(
+export function useSessionStorage<T extends SessionStorageKey>(
     key: T,
     initialValue?: ObjectType<T>,
 ): [ObjectType<T> | undefined, (newItem: ObjectType<T>) => void, boolean] {
@@ -29,14 +29,14 @@ export function useLocalStorage<T extends LocalStorageKey>(
         },
         () => {
             isLoadingRef.current = false;
-            return getFromLocalStorage(key) || initialValue;
+            return getFromSessionStorage(key) || initialValue;
         },
         () => initialValue,
     );
 
     const setItem = React.useCallback(
         (newItem: ObjectType<T>) => {
-            setToLocalStorage(key, newItem);
+            setToSessionStorage(key, newItem);
         },
         [key],
     );

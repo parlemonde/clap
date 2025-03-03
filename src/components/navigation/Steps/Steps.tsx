@@ -52,7 +52,7 @@ type StepsProps = {
 };
 export const Steps = ({ activeStep, backHref, themeId }: StepsProps) => {
     const { t } = useTranslation();
-    const [project] = useCurrentProject();
+    const { project } = useCurrentProject();
 
     return (
         <>

@@ -18,7 +18,7 @@ import type { Sequence } from 'src/lib/project.types';
 export default function StoryboardPage() {
     const router = useRouter();
     const { t } = useTranslation();
-    const [project, setProject] = useCurrentProject();
+    const { project, setProject } = useCurrentProject();
 
     if (!project) {
         return null;

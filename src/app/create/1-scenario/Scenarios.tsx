@@ -23,7 +23,7 @@ export const Scenarios = ({ scenarios }: ScenariosProps) => {
     const router = useRouter();
     const { t, currentLocale } = useTranslation();
     const [projectId] = useLocalStorage('projectId');
-    const [project] = useCurrentProject();
+    const { project } = useCurrentProject();
 
     const { data: themes } = useSWR<Theme[]>('/api/themes', jsonFetcher);
     const [localThemes] = useLocalStorage('themes', []);

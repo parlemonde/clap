@@ -17,7 +17,7 @@ import type { Plan } from 'src/lib/project.types';
 export default function StoryboardPlanPage(props: ServerPageProps) {
     const router = useRouter();
     const { t } = useTranslation();
-    const [project, setProject] = useCurrentProject();
+    const { project, setProject } = useCurrentProject();
 
     const searchParams = React.use(props.searchParams);
     const questionIndex = typeof searchParams.question === 'string' ? Number(searchParams.question) : undefined;

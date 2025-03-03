@@ -4,11 +4,14 @@ import * as React from 'react';
 
 declare global {
     interface Window {
-        socket?: WebSocket;
+        websocket?: {
+            socket: WebSocket;
+            room: string;
+        };
     }
 }
 
-export const useWebsockets = (onReceiveMsg?: (msg: string) => void) => {
+export const useWebsockets = (room: string = '', isEnabled = false, onReceiveMsg?: (msg: string) => void) => {
     const [socket, setSocket] = React.useState<WebSocket | null>(null);
 
     // Keep a ref to the latest onReceiveMsg function
@@ -19,22 +22,43 @@ export const useWebsockets = (onReceiveMsg?: (msg: string) => void) => {
 
     // Initialize the WebSocket connection
     React.useEffect(() => {
-        if (!window.socket) {
-            const newSocket = new WebSocket('ws://localhost:9000');
+        if (!isEnabled) {
+            setSocket(null);
+            return;
+        }
+
+        // Close the previous WebSocket connection
+        if (window.websocket && window.websocket.room !== room) {
+            window.websocket.socket.close();
+            window.websocket = undefined;
+        }
+        // Create a new WebSocket connection
+        if (!window.websocket) {
+            const newSocket = new WebSocket(room ? `ws://localhost:9000?room=${encodeURIComponent(room)}` : 'ws://localhost:9000');
             newSocket.onerror = (error) => {
                 console.warn('WebSocket error:', error);
             };
             newSocket.onopen = () => {
-                setSocket(newSocket);
-                window.socket = newSocket;
-                window.onbeforeunload = () => {
-                    window.socket?.close();
-                };
+                setSocket(newSocket); // Set the socket only after it's open
+            };
+            window.websocket = {
+                socket: newSocket,
+                room,
+            };
+            window.onbeforeunload = () => {
+                window.websocket?.socket.close();
             };
         } else {
-            setSocket(window.socket);
+            const newSocket = window.websocket.socket;
+            if (newSocket.readyState === WebSocket.OPEN) {
+                setSocket(window.websocket.socket);
+            } else {
+                newSocket.addEventListener('open', () => {
+                    setSocket(newSocket);
+                });
+            }
         }
-    }, []);
+    }, [isEnabled, room]);
 
     // Listen for incoming messages
     React.useEffect(() => {

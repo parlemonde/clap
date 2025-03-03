@@ -75,7 +75,7 @@ type VideoJob = {
 export default function ResultPage() {
     const { t } = useTranslation();
     const { user } = React.useContext(userContext);
-    const [project] = useCurrentProject();
+    const { project } = useCurrentProject();
     const sounds = useDeepMemo(getSounds(project?.questions || []));
 
     const [isLoading, setIsLoading] = React.useState(false);
