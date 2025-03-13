@@ -68,10 +68,9 @@ async fn handle_client(
     let cloned_state = state.clone();
     let cloned_room_name = room_name.clone();
     let receive_handle = tokio::spawn(async move {
-        while let Some(frame) = ws_rx
+        while let Ok(frame) = ws_rx
             .read_frame::<_, WebSocketError>(&mut move |_| async move { Ok(()) })
             .await
-            .ok()
         {
             match frame.opcode {
                 OpCode::Close => {

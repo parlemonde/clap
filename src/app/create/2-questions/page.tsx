@@ -28,7 +28,7 @@ export default function QuestionPage() {
     const { t } = useTranslation();
     const { user } = React.useContext(userContext);
     const [projectId, setProjectId] = useLocalStorage('projectId');
-    const { project, setProject, collaborationCode, onStartCollaboration, onStopCollaboration } = useCurrentProject();
+    const { project, setProject, isCollaborationAvailable, collaborationCode, onStartCollaboration, onStopCollaboration } = useCurrentProject();
     const [title, setTitle] = React.useState('');
     const [showSaveProjectModal, setShowSaveProjectModal] = React.useState(false);
     const [isCreatingProject, setIsCreatingProject] = React.useState(false);
@@ -81,21 +81,25 @@ export default function QuestionPage() {
             <Link href={`/create/2-questions/new`} passHref legacyBehavior>
                 <Button as="a" label={t('add_question')} variant="outlined" color="secondary" isUpperCase={false}></Button>
             </Link>
-            <Button
-                marginLeft="lg"
-                variant="contained"
-                color="secondary"
-                label={collaborationCode ? 'Stopper la collaboration' : 'Démarrer la collaboration'}
-                isUpperCase={false}
-                onClick={() => {
-                    if (collaborationCode) {
-                        onStopCollaboration();
-                    } else {
-                        onStartCollaboration();
-                    }
-                }}
-            ></Button>
-            {collaborationCode && <Text>Code de collaboration: {collaborationCode}</Text>}
+            {isCollaborationAvailable && (
+                <>
+                    <Button
+                        marginLeft="lg"
+                        variant="contained"
+                        color="secondary"
+                        label={collaborationCode ? 'Stopper la collaboration' : 'Démarrer la collaboration'}
+                        isUpperCase={false}
+                        onClick={() => {
+                            if (collaborationCode) {
+                                onStopCollaboration();
+                            } else {
+                                onStartCollaboration();
+                            }
+                        }}
+                    ></Button>
+                    {collaborationCode && <Text>Code de collaboration: {collaborationCode}</Text>}
+                </>
+            )}
             <QuestionsList project={project} setProject={setProject} />
             <NextButton
                 onNext={() => {

@@ -9,12 +9,14 @@ import { useSessionStorage } from './useSessionStorage';
 import { deleteFromSessionStorage } from './useSessionStorage/session-storage';
 import { useWebsockets } from './useWebsockets';
 import { updateProject } from 'src/actions/projects/update-project';
+import { sendToast } from 'src/components/ui/Toasts';
 import type { Project } from 'src/database/schemas/projects';
 import { jsonFetcher } from 'src/lib/json-fetcher';
 
 interface UseCurrentProjectData {
     project?: LocalProject;
     setProject: (newProject: LocalProject) => void;
+    isCollaborationAvailable: boolean;
     collaborationCode?: number;
     onStartCollaboration: () => boolean;
     onStopCollaboration: () => void;
@@ -28,15 +30,27 @@ export const useCurrentProject = (): UseCurrentProjectData => {
     const { data, mutate } = useSWR<Project>(projectId !== undefined ? `/api/projects/${projectId}` : null, jsonFetcher);
 
     // Collaboration on the project
+    const isCollaborationAvailable = process.env.NEXT_PUBLIC_COLLABORATION_SERVER_URL !== undefined;
     const [collaborationCode, setCollaborationCode] = useSessionStorage('collaborationCode');
-    const isCollaborationEnabled = projectId !== undefined && collaborationCode !== undefined;
-    const socket = useWebsockets(projectId ? `clap_project_${projectId}` : '', isCollaborationEnabled, (msg) => {
-        if (!projectId) {
-            return; // Needs a project
-        }
-        if (msg === 'update_project') {
-            mutate().catch(console.error);
-        }
+    const isCollaborationEnabled = isCollaborationAvailable && projectId !== undefined && collaborationCode !== undefined;
+    const socket = useWebsockets({
+        room: projectId ? `clap_project_${projectId}` : '',
+        isEnabled: isCollaborationEnabled,
+        onSocketError: React.useCallback(() => {
+            deleteFromSessionStorage('collaborationCode');
+            sendToast({
+                message: 'Failed to connect to collaboration server',
+                type: 'error',
+            });
+        }, []),
+        onReceiveMsg: (msg) => {
+            if (!projectId) {
+                return; // Needs a project
+            }
+            if (msg === 'update_project') {
+                mutate().catch(console.error);
+            }
+        },
     });
     const onStartCollaboration = () => {
         if (projectId === undefined) {
@@ -96,6 +110,7 @@ export const useCurrentProject = (): UseCurrentProjectData => {
     return {
         project: projectId !== undefined ? data : localProject,
         setProject,
+        isCollaborationAvailable,
         collaborationCode,
         onStartCollaboration,
         onStopCollaboration,

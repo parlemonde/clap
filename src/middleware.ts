@@ -72,8 +72,8 @@ export const createCspHeaders = (nonce: string) => {
         ${defaultsCSPHeaders}
         script-src 'self' https://vercel.live/ https://vercel.com 'unsafe-inline' https: http: blob:;
         connect-src 'self' https://vercel.live/ https://vercel.com https://vitals.vercel-insights.com https://sockjs-mt1.pusher.com/ wss://ws-mt1.pusher.com/ blob:;
-        img-src 'self' https://vercel.live/ https://vercel.com https://sockjs-mt1.pusher.com/ data: blob:;
-        frame-src 'self' https://vercel.live/ https://vercel.com blob:;
+        img-src 'self' blob: data: https:;
+        frame-src 'self' blob: https://vercel.live/ https://vercel.com;
         `;
     }
 

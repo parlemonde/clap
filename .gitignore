@@ -46,3 +46,7 @@ temp
 # Websocket server
 server-websockets/target
 server-websockets/cargo.lock
+
+# Image resize server
+server-image-resize/target
+server-image-resize/cargo.lock

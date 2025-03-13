@@ -11,7 +11,13 @@ declare global {
     }
 }
 
-export const useWebsockets = (room: string = '', isEnabled = false, onReceiveMsg?: (msg: string) => void) => {
+interface UseWebsocketsProps {
+    room?: string;
+    isEnabled?: boolean;
+    onSocketError?: () => void;
+    onReceiveMsg?: (msg: string) => void;
+}
+export const useWebsockets = ({ room = '', isEnabled = false, onSocketError, onReceiveMsg }: UseWebsocketsProps) => {
     const [socket, setSocket] = React.useState<WebSocket | null>(null);
 
     // Keep a ref to the latest onReceiveMsg function
@@ -24,6 +30,10 @@ export const useWebsockets = (room: string = '', isEnabled = false, onReceiveMsg
     React.useEffect(() => {
         if (!isEnabled) {
             setSocket(null);
+            if (window.websocket) {
+                window.websocket.socket.close();
+                window.websocket = undefined;
+            }
             return;
         }
 
@@ -34,9 +44,14 @@ export const useWebsockets = (room: string = '', isEnabled = false, onReceiveMsg
         }
         // Create a new WebSocket connection
         if (!window.websocket) {
-            const newSocket = new WebSocket(room ? `ws://localhost:9000?room=${encodeURIComponent(room)}` : 'ws://localhost:9000');
+            const newSocket = new WebSocket(
+                room
+                    ? `${process.env.NEXT_PUBLIC_COLLABORATION_SERVER_URL || ''}?room=${encodeURIComponent(room)}`
+                    : process.env.NEXT_PUBLIC_COLLABORATION_SERVER_URL || '',
+            );
             newSocket.onerror = (error) => {
                 console.warn('WebSocket error:', error);
+                onSocketError?.();
             };
             newSocket.onopen = () => {
                 setSocket(newSocket); // Set the socket only after it's open
@@ -56,9 +71,10 @@ export const useWebsockets = (room: string = '', isEnabled = false, onReceiveMsg
                 newSocket.addEventListener('open', () => {
                     setSocket(newSocket);
                 });
+                // No need to listen for error events, as the error event is already handled above by another mounted hook
             }
         }
-    }, [isEnabled, room]);
+    }, [onSocketError, isEnabled, room]);
 
     // Listen for incoming messages
     React.useEffect(() => {
