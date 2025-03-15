@@ -2,7 +2,6 @@
 
 import { EyeNoneIcon, EyeOpenIcon } from '@radix-ui/react-icons';
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
 import * as React from 'react';
 
 import { login } from 'src/actions/authentication/login';
@@ -12,7 +11,6 @@ import { IconButton } from 'src/components/layout/Button/IconButton';
 import { Field, Form, Input } from 'src/components/layout/Form';
 import { FormLoader, Loader } from 'src/components/ui/Loader';
 import { useTranslation } from 'src/contexts/translationContext';
-import { userContext } from 'src/contexts/userContext';
 
 interface LoginFormProps {
     ssoHost: string;
@@ -35,11 +33,6 @@ export const LoginForm = ({ ssoHost, clientId, stateQueryParam, codeQueryParam }
     const [showPassword, setShowPassword] = React.useState(false);
     const [ssoErrorMessage, setSsoErrorMessage] = React.useState('');
     const [isConnectingWithSso, setIsConnectingWithSso] = React.useState(stateQueryParam !== undefined && codeQueryParam !== undefined);
-
-    const { user } = React.useContext(userContext);
-    if (user) {
-        redirect('/');
-    }
 
     const onLoginWithSSO = () => {
         setIsConnectingWithSso(true);
@@ -133,6 +126,9 @@ export const LoginForm = ({ ssoHost, clientId, stateQueryParam, codeQueryParam }
                 }
             ></Field>
             <Button label={t('login_connect')} variant="contained" color="secondary" type="submit" value="Submit"></Button>
+            <Link href="/join" passHref legacyBehavior>
+                <Button marginTop="lg" as="a" isFullWidth label="Je suis un·e élève" variant="outlined" color="secondary"></Button>
+            </Link>
             <div className="text-center">
                 <Link href="/reset-password" className="color-primary">
                     {t('login_forgot_password')}

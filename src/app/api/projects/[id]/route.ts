@@ -10,7 +10,7 @@ export async function GET(_request: NextRequest, props: { params: Promise<{ id: 
     const projectId = params.id;
     const user = await getCurrentUser();
 
-    if (!user) {
+    if (!user || (user.role === 'student' && user.projectId !== Number(projectId))) {
         return new NextResponse('Error 401, unauthorized.', {
             status: 401,
         });
@@ -20,7 +20,9 @@ export async function GET(_request: NextRequest, props: { params: Promise<{ id: 
     const project = /^\d+$/.test(params.id)
         ? await db.query.projects.findFirst({
               where:
-                  user.role === 'admin' ? eq(projects.id, Number(projectId)) : and(eq(projects.id, Number(projectId)), eq(projects.userId, userId)),
+                  user.role === 'admin' || user.role === 'student'
+                      ? eq(projects.id, Number(projectId))
+                      : and(eq(projects.id, Number(projectId)), eq(projects.userId, userId)),
           })
         : undefined;
     if (!project) {

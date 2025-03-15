@@ -3,6 +3,7 @@ import * as React from 'react';
 import type { JSX } from 'react';
 
 import styles from './button.module.scss';
+import { CircularProgress } from '../CircularProgress';
 import type { MarginProps } from '../css-styles';
 import { getMarginAndPaddingProps, getMarginAndPaddingStyle } from '../css-styles';
 
@@ -19,6 +20,7 @@ export type ButtonProps = {
     isVisuallyHidden?: boolean; // is selectable by keyboard only. For accessibility.
     isMobileOnly?: boolean;
     isTabletUpOnly?: boolean;
+    isLoading?: boolean;
 } & Omit<JSX.IntrinsicElements['a'] & JSX.IntrinsicElements['button'] & JSX.IntrinsicElements['label'], 'ref' | 'size' | 'children'> &
     MarginProps;
 const ButtonWithRef = (
@@ -38,6 +40,7 @@ const ButtonWithRef = (
         isMobileOnly,
         isTabletUpOnly,
         style = {},
+        isLoading,
         ...props
     }: ButtonProps,
     ref: React.ForwardedRef<HTMLButtonElement | HTMLAnchorElement>,
@@ -48,6 +51,7 @@ const ButtonWithRef = (
         {
             ...otherProps,
             type,
+            disabled: isLoading || otherProps.disabled,
             className: classNames(
                 styles.button,
                 styles[`button--color-${color}`],
@@ -69,9 +73,15 @@ const ButtonWithRef = (
             ref,
         },
         <>
-            {leftIcon}
+            {isLoading ? (
+                <span style={{ display: 'inline-flex', marginRight: 8 }}>
+                    <CircularProgress color="grey" size={20} />
+                </span>
+            ) : (
+                leftIcon
+            )}
             {label}
-            {rightIcon}
+            {!isLoading && rightIcon}
         </>,
     );
 };

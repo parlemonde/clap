@@ -1,16 +1,10 @@
 'use server';
 
-import { SignJWT } from 'jose';
 import { cookies } from 'next/headers';
 import { redirect, RedirectType } from 'next/navigation';
 
+import { getAccessToken } from './login';
 import { getPlmUser } from '../legacy-plm/get-plm-user';
-
-const APP_SECRET = new TextEncoder().encode(process.env.APP_SECRET || '');
-
-function getAccessToken(userId: number): Promise<string> {
-    return new SignJWT({ userId }).setProtectedHeader({ alg: 'HS256' }).setIssuedAt().setExpirationTime('7d').sign(APP_SECRET);
-}
 
 export async function loginWithSSO(code: string): Promise<string> {
     const user = await getPlmUser(code);
@@ -18,7 +12,7 @@ export async function loginWithSSO(code: string): Promise<string> {
         return 'Could not connect with SSO.';
     }
 
-    const accessToken = await getAccessToken(user.id);
+    const accessToken = await getAccessToken({ userId: user.id });
     const cookieStore = await cookies();
     cookieStore.set({
         name: 'access-token',

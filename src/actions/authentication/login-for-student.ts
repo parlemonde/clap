@@ -1,0 +1,35 @@
+'use server';
+
+import { eq } from 'drizzle-orm';
+import { cookies } from 'next/headers';
+
+import { getAccessToken } from './login';
+import { db } from 'src/database';
+import { projects } from 'src/database/schemas/projects';
+
+export async function loginForStudent(projectCode: string): Promise<{ errorMessage: string } | { projectId: number }> {
+    const project = await db.query.projects.findFirst({
+        columns: {
+            id: true,
+        },
+        where: eq(projects.collaborationCode, projectCode),
+    });
+
+    if (!project) {
+        return { errorMessage: 'Unauthorized' };
+    }
+
+    const accessToken = await getAccessToken({ projectId: project.id });
+    const cookieStore = await cookies();
+    cookieStore.set({
+        name: 'access-token',
+        value: accessToken,
+        httpOnly: true,
+        secure: true,
+        expires: new Date(Date.now() + 604800000),
+        sameSite: 'strict',
+    });
+    return {
+        projectId: project.id,
+    };
+}

@@ -5,9 +5,9 @@ import useSWR from 'swr';
 
 import { useLocalStorage } from './useLocalStorage';
 import type { LocalProject } from './useLocalStorage/local-storage';
-import { useSessionStorage } from './useSessionStorage';
-import { deleteFromSessionStorage } from './useSessionStorage/session-storage';
 import { useWebsockets } from './useWebsockets';
+import { endCollaboration } from 'src/actions/projects/end-collaboration';
+import { startCollaboration } from 'src/actions/projects/start-collaboration';
 import { updateProject } from 'src/actions/projects/update-project';
 import { sendToast } from 'src/components/ui/Toasts';
 import type { Project } from 'src/database/schemas/projects';
@@ -17,9 +17,9 @@ interface UseCurrentProjectData {
     project?: LocalProject;
     setProject: (newProject: LocalProject) => void;
     isCollaborationAvailable: boolean;
-    collaborationCode?: number;
-    onStartCollaboration: () => boolean;
-    onStopCollaboration: () => void;
+    collaborationCode?: string;
+    onStartCollaboration: () => Promise<void>;
+    onStopCollaboration: () => Promise<void>;
 }
 
 export const useCurrentProject = (): UseCurrentProjectData => {
@@ -31,18 +31,23 @@ export const useCurrentProject = (): UseCurrentProjectData => {
 
     // Collaboration on the project
     const isCollaborationAvailable = process.env.NEXT_PUBLIC_COLLABORATION_SERVER_URL !== undefined;
-    const [collaborationCode, setCollaborationCode] = useSessionStorage('collaborationCode');
+    const collaborationCode =
+        data && data.collaborationCodeExpiresAt !== null && new Date(data.collaborationCodeExpiresAt).getTime() > new Date().getTime()
+            ? data.collaborationCode || undefined
+            : undefined;
     const isCollaborationEnabled = isCollaborationAvailable && projectId !== undefined && collaborationCode !== undefined;
     const socket = useWebsockets({
         room: projectId ? `clap_project_${projectId}` : '',
         isEnabled: isCollaborationEnabled,
         onSocketError: React.useCallback(() => {
-            deleteFromSessionStorage('collaborationCode');
+            if (projectId) {
+                endCollaboration(projectId).catch(console.error);
+            }
             sendToast({
                 message: 'Failed to connect to collaboration server',
                 type: 'error',
             });
-        }, []),
+        }, [projectId]),
         onReceiveMsg: (msg) => {
             if (!projectId) {
                 return; // Needs a project
@@ -52,19 +57,19 @@ export const useCurrentProject = (): UseCurrentProjectData => {
             }
         },
     });
-    const onStartCollaboration = () => {
-        if (projectId === undefined) {
-            return false;
-        }
-        const newCode = Math.floor(Math.random() * 1000000); // TODO: generate on backend
-        setCollaborationCode(newCode);
-        return true;
-    };
-    const onStopCollaboration = () => {
+    const onStartCollaboration = async () => {
         if (projectId === undefined) {
             return;
         }
-        deleteFromSessionStorage('collaborationCode');
+        await startCollaboration(projectId);
+        await mutate();
+    };
+    const onStopCollaboration = async () => {
+        if (projectId === undefined) {
+            return;
+        }
+        await endCollaboration(projectId);
+        await mutate();
     };
 
     // Update project
@@ -91,6 +96,8 @@ export const useCurrentProject = (): UseCurrentProjectData => {
                             videoJobId: data?.videoJobId || '',
                             themeId: typeof newProject.themeId === 'string' ? null : newProject.themeId,
                             scenarioId: typeof newProject.scenarioId === 'string' ? null : newProject.scenarioId,
+                            collaborationCode: data?.collaborationCode ?? null,
+                            collaborationCodeExpiresAt: data?.collaborationCodeExpiresAt ?? null,
                         },
                     },
                 )
@@ -104,7 +111,18 @@ export const useCurrentProject = (): UseCurrentProjectData => {
                 setLocalProject(newProject);
             }
         },
-        [projectId, mutate, data?.userId, data?.createDate, data?.updateDate, data?.videoJobId, setLocalProject, socket],
+        [
+            projectId,
+            mutate,
+            data?.userId,
+            data?.createDate,
+            data?.updateDate,
+            data?.videoJobId,
+            data?.collaborationCode,
+            data?.collaborationCodeExpiresAt,
+            setLocalProject,
+            socket,
+        ],
     );
 
     return {

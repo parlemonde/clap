@@ -32,6 +32,7 @@ export default function QuestionPage() {
     const [title, setTitle] = React.useState('');
     const [showSaveProjectModal, setShowSaveProjectModal] = React.useState(false);
     const [isCreatingProject, setIsCreatingProject] = React.useState(false);
+    const [isCollaborationLoading, setIsCollaborationLoading] = React.useState(false);
 
     if (!project) {
         return null;
@@ -84,17 +85,20 @@ export default function QuestionPage() {
             {isCollaborationAvailable && (
                 <>
                     <Button
-                        marginLeft="lg"
+                        marginX="lg"
                         variant="contained"
                         color="secondary"
                         label={collaborationCode ? 'Stopper la collaboration' : 'Démarrer la collaboration'}
                         isUpperCase={false}
-                        onClick={() => {
+                        isLoading={isCollaborationLoading}
+                        onClick={async () => {
+                            setIsCollaborationLoading(true);
                             if (collaborationCode) {
-                                onStopCollaboration();
+                                await onStopCollaboration();
                             } else {
-                                onStartCollaboration();
+                                await onStartCollaboration();
                             }
+                            setIsCollaborationLoading(false);
                         }}
                     ></Button>
                     {collaborationCode && <Text>Code de collaboration: {collaborationCode}</Text>}

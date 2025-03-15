@@ -46,7 +46,7 @@ export async function createUser({ name, email, password, inviteCode }: CreateUs
         await db.delete(inviteTokens).where(eq(inviteTokens.token, inviteCode));
 
         // Log the user in
-        const accessToken = await getAccessToken(user.id);
+        const accessToken = await getAccessToken({ userId: user.id });
         const cookieStore = await cookies();
         cookieStore.set({
             name: 'access-token',

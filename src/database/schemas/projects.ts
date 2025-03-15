@@ -35,6 +35,8 @@ export const projects = pgTable('projects', {
     soundUrl: varchar('soundUrl', { length: 200 }),
     soundVolume: integer('soundVolume'),
     soundBeginTime: integer('soundBeginTime'),
+    collaborationCode: varchar('collaborationCode', { length: 6 }),
+    collaborationCodeExpiresAt: timestamp('collaborationCodeExpiresAt', { mode: 'string' }),
 });
 
 export type Project = typeof projects.$inferSelect;

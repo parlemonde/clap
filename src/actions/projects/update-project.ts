@@ -14,11 +14,15 @@ export async function updateProject(projectId: number, updatedProject: Partial<P
         return;
     }
 
+    if (user.role === 'student' && user.projectId !== projectId) {
+        return;
+    }
+
     try {
         await db
             .update(projects)
             .set(updatedProject)
-            .where(and(eq(projects.id, projectId), eq(projects.userId, user.id)));
+            .where(user.role === 'student' ? eq(projects.id, projectId) : and(eq(projects.id, projectId), eq(projects.userId, user.id)));
         if (revalidatePage) {
             revalidatePath(`/my-videos/${projectId}`);
         }

@@ -26,6 +26,9 @@
 .progressIndicator--secondary > svg {
     stroke: $secondaryColor;
 }
+.progressIndicator--grey > svg {
+    stroke: rgba(0, 0, 0, 0.26);
+}
 
 @keyframes stroke-anim {
     0% {

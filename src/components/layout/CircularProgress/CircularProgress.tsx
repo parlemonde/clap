@@ -7,7 +7,7 @@ import * as React from 'react';
 import styles from './circular-progress.module.scss';
 
 type CircularProgressProps = {
-    color?: 'primary' | 'secondary';
+    color?: 'primary' | 'secondary' | 'grey';
     size?: number;
 };
 export const CircularProgress = ({ color = 'primary', size = 40 }: CircularProgressProps) => {

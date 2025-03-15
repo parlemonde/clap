@@ -1,6 +1,6 @@
 import { pgTable, serial, varchar, char, smallint } from 'drizzle-orm/pg-core';
 
-const ROLES_ENUM = ['admin', 'teacher'] as const;
+const ROLES_ENUM = ['admin', 'teacher', 'student'] as const;
 
 export type Role = (typeof ROLES_ENUM)[number];
 
@@ -15,5 +15,7 @@ export const users = pgTable('users', {
 });
 
 type FullUser = typeof users.$inferSelect;
-export type User = Pick<FullUser, 'id' | 'name' | 'email' | 'role'>;
+export type User = Pick<FullUser, 'id' | 'name' | 'email' | 'role'> & {
+    projectId?: number;
+};
 export type NewUser = Omit<typeof users.$inferInsert, 'id'>;
