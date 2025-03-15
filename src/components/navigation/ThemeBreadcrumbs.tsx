@@ -7,6 +7,7 @@ import { LocalThemeName } from 'src/components/create/LocalThemeName';
 import { Breadcrumbs } from 'src/components/layout/Breadcrumbs';
 import { Placeholder } from 'src/components/layout/Placeholder';
 import { useTranslation } from 'src/contexts/translationContext';
+import { userContext } from 'src/contexts/userContext';
 import type { Theme } from 'src/database/schemas/themes';
 import { useLocalStorage } from 'src/hooks/useLocalStorage';
 import { jsonFetcher } from 'src/lib/json-fetcher';
@@ -17,8 +18,13 @@ type ThemeBreadcrumbsProps = {
 
 export const ThemeBreadcrumbs = ({ themeId }: ThemeBreadcrumbsProps) => {
     const { t, currentLocale } = useTranslation();
+    const { user } = React.useContext(userContext);
     const { data: themes, isLoading } = useSWR<Theme[]>('/api/themes', jsonFetcher);
     const [localThemes, _setLocalThemes, isLoadingLocalThemes] = useLocalStorage('themes', []);
+
+    if (user?.role === 'student') {
+        return null;
+    }
 
     if ((typeof themeId === 'number' && isLoading) || (typeof themeId === 'string' && isLoadingLocalThemes)) {
         return (

@@ -2,6 +2,7 @@ import Link from 'next/link';
 import * as React from 'react';
 
 import { ProjectForm } from './ProjectForm';
+import { getCurrentUser } from 'src/actions/get-current-user';
 import { getTranslation } from 'src/actions/get-translation';
 import { getProject } from 'src/actions/projects/get-project';
 import { Button } from 'src/components/layout/Button';
@@ -12,6 +13,12 @@ import type { ServerPageProps } from 'src/lib/page-props.types';
 
 export default async function EditProjectPage(props: ServerPageProps) {
     const params = await props.params;
+    const user = await getCurrentUser();
+
+    if (user?.role === 'student') {
+        return null;
+    }
+
     const projectId = Number(params.id);
     const project = await getProject(projectId);
     const { t } = await getTranslation();

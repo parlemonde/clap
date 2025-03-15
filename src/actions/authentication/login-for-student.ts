@@ -26,7 +26,7 @@ export async function loginForStudent(projectCode: string): Promise<{ errorMessa
         value: accessToken,
         httpOnly: true,
         secure: true,
-        expires: new Date(Date.now() + 604800000),
+        expires: new Date(Date.now() + 14400000), // 4h
         sameSite: 'strict',
     });
     return {

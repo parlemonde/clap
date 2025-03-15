@@ -17,7 +17,7 @@ export default async function AccountPage() {
     const { t } = await getTranslation();
     const user = await getCurrentUser();
 
-    if (!user) {
+    if (!user || user.role === 'student') {
         return null;
     }
 

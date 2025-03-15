@@ -34,7 +34,7 @@ export default function QuestionPage() {
     const [isCreatingProject, setIsCreatingProject] = React.useState(false);
     const [isCollaborationLoading, setIsCollaborationLoading] = React.useState(false);
 
-    if (!project) {
+    if (!project || user?.role === 'student') {
         return null;
     }
 

@@ -10,6 +10,7 @@ import styles from './steps.module.scss';
 import { Button } from 'src/components/layout/Button';
 import { Text } from 'src/components/layout/Typography';
 import { useTranslation } from 'src/contexts/translationContext';
+import { userContext } from 'src/contexts/userContext';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import { serializeToQueryUrl } from 'src/lib/serialize-to-query-url';
 
@@ -53,11 +54,14 @@ type StepsProps = {
 export const Steps = ({ activeStep, backHref, themeId }: StepsProps) => {
     const { t } = useTranslation();
     const { project } = useCurrentProject();
+    const { user } = React.useContext(userContext);
+
+    const isStudent = user?.role === 'student';
 
     return (
         <>
             {/* -- Step Title (Desktop only) -- */}
-            {activeStep > 0 && <ProjectTitle />}
+            {activeStep > 0 && !isStudent && <ProjectTitle />}
 
             {/* -- Steps (Desktop only) -- */}
             <div className={styles.steps}>
@@ -97,7 +101,7 @@ export const Steps = ({ activeStep, backHref, themeId }: StepsProps) => {
                     } else if (project && project.themeId === themeId) {
                         href = step.href;
                     }
-                    if (href) {
+                    if (href && (!isStudent || index > 1)) {
                         return (
                             <Link href={href} key={step.name} className={styles.step}>
                                 {stepContent}

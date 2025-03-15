@@ -2,6 +2,7 @@
 import * as React from 'react';
 import type { JSX } from 'react';
 
+import type { User } from 'src/database/schemas/users';
 import CreateLogo from 'src/svg/create.svg';
 import MoviesLogo from 'src/svg/movies.svg';
 import SettingsLogo from 'src/svg/settings.svg';
@@ -35,7 +36,7 @@ const defaultTabs = [
     },
 ];
 
-const userTabs = [
+const teacherTabs = [
     {
         label: 'create',
         path: '/',
@@ -58,6 +59,19 @@ const userTabs = [
     },
 ];
 
+const studentTabs = [
+    {
+        label: 'create',
+        path: '/create/3-storyboard',
+        icon: <CreateLogo style={{ fill: 'currentcolor' }} />,
+    },
+    {
+        icon: <SettingsLogo style={{ fill: 'currentcolor' }} />,
+        label: 'settings',
+        path: '/settings',
+    },
+];
+
 const adminTabs = [
     {
         label: 'app',
@@ -67,15 +81,14 @@ const adminTabs = [
 ];
 
 export const getTabs = (
-    isLoggedIn: boolean,
-    isAdmin: boolean,
-    isOnAdminPages: boolean,
+    userRole?: User['role'],
+    isOnAdminPages: boolean = false,
 ): Array<{
     icon: JSX.Element | null;
     label: string;
     path: string;
 }> => {
-    if (!isLoggedIn) {
+    if (!userRole) {
         return defaultTabs;
     }
 
@@ -83,15 +96,22 @@ export const getTabs = (
         return adminTabs;
     }
 
-    if (isAdmin) {
-        return [
-            ...userTabs,
-            {
-                label: 'admin',
-                path: '/admin/themes',
-                icon: <SettingsLogo style={{ fill: 'currentcolor' }} />,
-            },
-        ];
+    switch (userRole) {
+        case 'student':
+            return studentTabs;
+        case 'teacher':
+            return teacherTabs;
+        case 'admin':
+            return [
+                ...teacherTabs,
+                {
+                    label: 'admin',
+                    path: '/admin/themes',
+                    icon: <SettingsLogo style={{ fill: 'currentcolor' }} />,
+                },
+            ];
     }
-    return userTabs;
+
+    // Should never happen
+    return [];
 };

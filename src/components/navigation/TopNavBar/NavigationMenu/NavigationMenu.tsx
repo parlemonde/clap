@@ -17,7 +17,7 @@ export const NavigationMenu = () => {
     const currentPathName = usePathname().split('/')[1];
     const currentPath = currentPathName && currentPathName !== 'create' ? `/${currentPathName}` : '/';
     const isOnAdmin = currentPath === '/admin';
-    const tabs = getTabs(user !== undefined, user?.role === 'admin', isOnAdmin);
+    const tabs = getTabs(user?.role, isOnAdmin);
 
     return (
         <RadixNavigationMenu.Root className={styles.navigation}>
@@ -26,7 +26,7 @@ export const NavigationMenu = () => {
                     <RadixNavigationMenu.Item key={tab.path}>
                         <NextLink href={tab.path} passHref legacyBehavior>
                             <RadixNavigationMenu.Link
-                                active={tab.path === currentPath}
+                                active={tab.path === currentPath || (tab.path === '/create/3-storyboard' && currentPath === '/')}
                                 onClick={(event) => {
                                     startNProgress(tab.path, event);
                                 }}

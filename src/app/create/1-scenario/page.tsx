@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { BackendScenarios } from './BackendScenarios';
 import { LocalScenarios } from './LocalScenarios';
+import { getCurrentUser } from 'src/actions/get-current-user';
 import { getTranslation } from 'src/actions/get-translation';
 import { ScenarioCard } from 'src/components/create/ScenarioCard';
 import { ScenarioCardPlaceholder } from 'src/components/create/ScenarioCard/ScenarioCard';
@@ -19,6 +20,11 @@ export default async function ScenarioPage(props: ServerPageProps) {
     const searchParams = await props.searchParams;
     const themeId = getThemeId(searchParams);
     const { t } = await getTranslation();
+    const user = await getCurrentUser();
+
+    if (user?.role === 'student') {
+        return null;
+    }
 
     return (
         <Container paddingBottom="xl">

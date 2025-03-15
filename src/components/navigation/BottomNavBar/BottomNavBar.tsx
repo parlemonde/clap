@@ -18,7 +18,7 @@ export const BottomNavBar = () => {
     const currentPathName = usePathname().split('/')[1];
     const currentPath = currentPathName && currentPathName !== 'create' ? `/${currentPathName}` : '/';
     const isOnAdmin = currentPath === '/admin';
-    const tabs = getTabs(user !== undefined, false, isOnAdmin);
+    const tabs = getTabs(user?.role);
 
     if (isOnAdmin) {
         return null;
@@ -32,7 +32,7 @@ export const BottomNavBar = () => {
                         <NavigationMenu.Item key={tab.path} className={styles.navigationItem}>
                             <NextLink href={tab.path} passHref legacyBehavior>
                                 <NavigationMenu.Link
-                                    active={tab.path === currentPath}
+                                    active={tab.path === currentPath || (tab.path === '/create/3-storyboard' && currentPath === '/')}
                                     onClick={(event) => {
                                         startNProgress(tab.path, event);
                                     }}
