@@ -14,3 +14,4 @@ tokio = { version = "1", features = ["macros"] }
 image = "0.25.5"
 fast_image_resize = { version = "5.1.2", features = ["image"] }
 bytes = "1.10.0"
+sha256 = "1.6.0"

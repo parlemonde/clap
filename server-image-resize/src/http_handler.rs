@@ -93,21 +93,50 @@ fn get_resized_image(
     Ok(result_buf)
 }
 
+fn compute_etag(key: &str, width: Option<u32>, quality: Option<u8>) -> String {
+    let width = if let Some(width) = width {
+        width.to_string()
+    } else {
+        "".to_string()
+    };
+    let quality = if let Some(quality) = quality {
+        quality.to_string()
+    } else {
+        "".to_string()
+    };
+    sha256::digest(format!("{}:{}:{}", key, width, quality).as_bytes())
+}
+
+fn get_not_modified_response() -> Result<Response<Body>, Error> {
+    Ok(Response::builder()
+        .status(304)
+        .header("Access-Control-Allow-Origin", "*")
+        .body(Body::Empty)
+        .map_err(Box::new)?)
+}
+
 fn get_head_response(data: Vec<u8>, content_type: &str) -> Result<Response<Body>, Error> {
     let content_length = data.len();
     Ok(Response::builder()
         .status(200)
+        .header("Access-Control-Allow-Origin", "*")
         .header("Content-Length", content_length.to_string())
         .header("Content-Type", content_type)
         .body(Body::Empty)
         .map_err(Box::new)?)
 }
 
-fn get_full_response(data: Vec<u8>, content_type: &str) -> Result<Response<Body>, Error> {
+fn get_full_response(
+    data: Vec<u8>,
+    content_type: &str,
+    etag: &str,
+) -> Result<Response<Body>, Error> {
     let content_length = data.len();
     Ok(Response::builder()
         .status(200)
-        .header("Cache-Control", "public, s-maxage=604800, max-age=2678400, immutable")
+        .header("Access-Control-Allow-Origin", "*")
+        .header("ETag", format!("\"{}\"", etag))
+        .header("Cache-Control", "public, max-age=2678400, immutable")
         .header("Content-Length", content_length.to_string())
         .header("Content-Type", content_type)
         .body(Body::from(data))
@@ -118,11 +147,12 @@ fn get_response(
     data: Vec<u8>,
     content_type: &str,
     is_head: bool,
+    etag: &str,
 ) -> Result<Response<Body>, Error> {
     if is_head {
         return get_head_response(data, content_type);
     }
-    get_full_response(data, content_type)
+    get_full_response(data, content_type, etag)
 }
 
 pub(crate) async fn function_handler(event: Request) -> Result<Response<Body>, Error> {
@@ -135,6 +165,13 @@ pub(crate) async fn function_handler(event: Request) -> Result<Response<Body>, E
         .and_then(|w| w.parse::<u32>().ok());
     let key = &event.uri().path()[1..];
     let is_head_method = event.method() == "HEAD";
+    let if_none_match = event.headers().get("If-None-Match");
+    let etag = compute_etag(key, width, quality);
+    if let Some(if_none_match) = if_none_match {
+        if if_none_match.to_str().unwrap_or("") == format!("\"{}\"", etag) {
+            return get_not_modified_response();
+        }
+    }
 
     let result = fetch_image_bytes(key).await;
     if result.is_err() {
@@ -154,7 +191,7 @@ pub(crate) async fn function_handler(event: Request) -> Result<Response<Body>, E
         })
         .unwrap_or(false);
     if width.is_none() || !is_format_supported {
-        return get_response(object_data.to_vec(), &content_type, is_head_method);
+        return get_response(object_data.to_vec(), &content_type, is_head_method, &etag);
     }
 
     let object_data = get_resized_image(object_data, format.unwrap(), width, quality);
@@ -166,5 +203,5 @@ pub(crate) async fn function_handler(event: Request) -> Result<Response<Body>, E
     }
     let object_data = object_data.unwrap();
 
-    return get_response(object_data, &content_type, is_head_method);
+    return get_response(object_data, &content_type, is_head_method, &etag);
 }
