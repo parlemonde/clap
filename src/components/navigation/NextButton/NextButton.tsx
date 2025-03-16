@@ -14,9 +14,10 @@ type NextButtonProps = {
     backHref?: string;
     type?: 'button' | 'submit' | 'reset';
     onNext?: () => void | Promise<void>;
+    isDisabled?: boolean;
 } & MarginProps;
 
-export const NextButton = ({ label, backHref, type, onNext, ...marginProps }: NextButtonProps) => {
+export const NextButton = ({ label, backHref, type, onNext, isDisabled, ...marginProps }: NextButtonProps) => {
     const { t } = useTranslation();
 
     return (
@@ -42,7 +43,8 @@ export const NextButton = ({ label, backHref, type, onNext, ...marginProps }: Ne
                 variant="contained"
                 color="secondary"
                 type={type}
-                onClick={onNext} /**endIcon={<ArrowForwardIcon />} **/
+                onClick={onNext}
+                disabled={isDisabled}
             ></Button>
         </Box>
     );

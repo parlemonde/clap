@@ -10,6 +10,7 @@ import { Steps } from 'src/components/navigation/Steps';
 import { ThemeBreadcrumbs } from 'src/components/navigation/ThemeBreadcrumbs';
 import { Inverted } from 'src/components/ui/Inverted';
 import { useTranslation } from 'src/contexts/translationContext';
+import { useCollaboration } from 'src/hooks/useCollaboration';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import type { ServerPageProps } from 'src/lib/page-props.types';
 import type { Sequence } from 'src/lib/project.types';
@@ -18,6 +19,7 @@ export default function MontagePage(props: ServerPageProps) {
     const router = useRouter();
     const { t } = useTranslation();
     const { project, setProject } = useCurrentProject();
+    useCollaboration(); // Listen to collaboration updates
 
     const searchParams = React.use(props.searchParams);
     const questionIndex = typeof searchParams.question === 'string' ? Number(searchParams.question) : undefined;

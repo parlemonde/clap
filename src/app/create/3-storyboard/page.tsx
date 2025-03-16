@@ -14,6 +14,7 @@ import { Inverted } from 'src/components/ui/Inverted';
 import { Trans } from 'src/components/ui/Trans';
 import { useTranslation } from 'src/contexts/translationContext';
 import { userContext } from 'src/contexts/userContext';
+import { useCollaboration } from 'src/hooks/useCollaboration';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import { COLORS } from 'src/lib/colors';
 import type { Sequence } from 'src/lib/project.types';
@@ -21,7 +22,8 @@ import type { Sequence } from 'src/lib/project.types';
 export default function StoryboardPage() {
     const router = useRouter();
     const { t } = useTranslation();
-    const { project, setProject, collaborationButton, isCollaborationEnabled } = useCurrentProject();
+    const { project, setProject } = useCurrentProject();
+    const { collaborationButton, isCollaborationEnabled, sendCollaborationValidationMsg } = useCollaboration();
     const { user } = React.useContext(userContext);
     const isStudent = user?.role === 'student';
 
@@ -36,8 +38,8 @@ export default function StoryboardPage() {
     }, 1);
 
     const questionIndexMap = Object.fromEntries(project.questions.map((q, index) => [q.id, index]));
-    const filteredQuestions =
-        isStudent && user?.questionId !== undefined ? project.questions.filter((q) => q.id === user.questionId) : project.questions;
+    const studentQuestion = isStudent && user?.questionId !== undefined ? project.questions.find((q) => q.id === user.questionId) : null;
+    const filteredQuestions = isStudent ? (studentQuestion ? [studentQuestion] : []) : project.questions;
 
     return (
         <Container paddingBottom="xl">
@@ -70,17 +72,54 @@ export default function StoryboardPage() {
                         isCollaborationEnabled
                             ? {
                                   color: COLORS[questionIndexMap[sequence.id]],
-                                  status: isStudent ? undefined : 'in progress',
+                                  status: isStudent ? undefined : getStatus(sequence.status),
                               }
                             : undefined
                     }
                 />
             ))}
             <NextButton
+                isDisabled={studentQuestion?.status === 'storyboard-validating'}
+                label={
+                    studentQuestion?.status === 'storyboard-validating'
+                        ? 'En attente de validation du storyboard'
+                        : isStudent
+                          ? 'Envoyer pour vérification'
+                          : undefined
+                }
                 onNext={() => {
-                    router.push('/create/4-pre-mounting');
+                    if (isStudent) {
+                        if (!studentQuestion) {
+                            return;
+                        }
+                        // const newQuestions = project.questions.map<Sequence>((q) =>
+                        //     q.id === studentQuestion.id ? { ...q, status: 'storyboard-validating' } : q,
+                        // );
+                        // setProject({ ...project, questions: newQuestions });
+                        sendCollaborationValidationMsg(studentQuestion.id, 'storyboard-validating');
+                    } else {
+                        router.push('/create/4-pre-mounting');
+                    }
                 }}
             />
         </Container>
     );
+}
+
+function getStatus(status: Sequence['status']) {
+    if (!status || status === 'storyboard') {
+        return 'Storyboard en cours';
+    }
+    if (status === 'storyboard-validating') {
+        return 'En attente de validation du storyboard';
+    }
+    if (status === 'pre-mounting') {
+        return 'Prémontage en cours';
+    }
+    if (status === 'pre-mounting-validating') {
+        return 'En attente de validation du prémontage';
+    }
+    if (status === 'validated') {
+        return 'Terminé';
+    }
 }

@@ -20,6 +20,7 @@ import { sendToast } from 'src/components/ui/Toasts';
 import { Trans } from 'src/components/ui/Trans';
 import { useTranslation } from 'src/contexts/translationContext';
 import { userContext } from 'src/contexts/userContext';
+import { useCollaboration } from 'src/hooks/useCollaboration';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import { useDeepMemo } from 'src/hooks/useDeepMemo';
 import { getSounds } from 'src/lib/get-sounds';
@@ -76,6 +77,7 @@ export default function ResultPage() {
     const { t } = useTranslation();
     const { user } = React.useContext(userContext);
     const { project } = useCurrentProject();
+    useCollaboration(); // Listen to collaboration updates
     const sounds = useDeepMemo(getSounds(project?.questions || []));
 
     const [isLoading, setIsLoading] = React.useState(false);

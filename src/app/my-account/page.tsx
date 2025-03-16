@@ -48,7 +48,13 @@ export default async function AccountPage() {
             <Title color="inherit" variant="h2">
                 {t('logout_button')}
             </Title>
-            <form action={logout} style={{ width: '100%' }}>
+            <form
+                style={{ width: '100%' }}
+                onSubmit={(ev) => {
+                    ev.preventDefault();
+                    logout().catch(console.error);
+                }}
+            >
                 <Button
                     style={{ marginTop: '0.8rem' }}
                     label={t('logout_button')}

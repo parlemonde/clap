@@ -25,4 +25,6 @@ export interface Sequence {
     soundUrl?: string;
     soundVolume?: number;
     voiceOffBeginTime?: number;
+    status?: 'storyboard' | 'storyboard-validating' | 'pre-mounting' | 'pre-mounting-validating' | 'validated';
+    feedbacks?: string[];
 }

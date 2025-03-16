@@ -18,6 +18,7 @@ import { Loader } from 'src/components/ui/Loader';
 import { sendToast } from 'src/components/ui/Toasts';
 import { useTranslation } from 'src/contexts/translationContext';
 import { userContext } from 'src/contexts/userContext';
+import { useCollaboration } from 'src/hooks/useCollaboration';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import { useDeepMemo } from 'src/hooks/useDeepMemo';
 import { getSounds } from 'src/lib/get-sounds';
@@ -26,6 +27,7 @@ export default function MusicPage() {
     const router = useRouter();
     const { t } = useTranslation();
     const { project, setProject } = useCurrentProject();
+    useCollaboration(); // Listen to collaboration updates
     const { user } = React.useContext(userContext);
     const [isUploading, setIsUploading] = React.useState(false);
 

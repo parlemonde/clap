@@ -12,6 +12,7 @@ import 'react-html5-camera-photo/build/css/index.css';
 import styles from './app.module.scss';
 import { getCurrentUser } from 'src/actions/get-current-user';
 import { getLocales } from 'src/actions/get-locales';
+import { AlertModal } from 'src/components/collaboration/AlertModal';
 import { BottomNavBar } from 'src/components/navigation/BottomNavBar';
 import { NProgressDone } from 'src/components/navigation/NProgress';
 import { TopNavBar } from 'src/components/navigation/TopNavBar';
@@ -85,6 +86,7 @@ export default async function RootLayout({ children }: React.PropsWithChildren) 
                             <TopNavBar />
                             {children}
                             <BottomNavBar />
+                            <AlertModal />
                         </UserContextProvider>
                     </TranslationContextProvider>
                 </TooltipProvider>

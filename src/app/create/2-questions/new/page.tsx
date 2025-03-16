@@ -12,11 +12,13 @@ import { ThemeBreadcrumbs } from 'src/components/navigation/ThemeBreadcrumbs';
 import { Inverted } from 'src/components/ui/Inverted';
 import { Trans } from 'src/components/ui/Trans';
 import { useTranslation } from 'src/contexts/translationContext';
+import { useCollaboration } from 'src/hooks/useCollaboration';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
 
 export default function QuestionNewPage() {
     const router = useRouter();
     const { project, setProject } = useCurrentProject();
+    useCollaboration(); // Listen to collaboration updates
     const { t } = useTranslation();
 
     const [question, setQuestion] = React.useState('');

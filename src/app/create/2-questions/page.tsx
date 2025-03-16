@@ -20,6 +20,7 @@ import { sendToast } from 'src/components/ui/Toasts';
 import { Trans } from 'src/components/ui/Trans';
 import { useTranslation } from 'src/contexts/translationContext';
 import { userContext } from 'src/contexts/userContext';
+import { useCollaboration } from 'src/hooks/useCollaboration';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import { useLocalStorage } from 'src/hooks/useLocalStorage';
 import { deleteFromLocalStorage } from 'src/hooks/useLocalStorage/local-storage';
@@ -29,7 +30,8 @@ export default function QuestionPage() {
     const { t } = useTranslation();
     const { user } = React.useContext(userContext);
     const [projectId, setProjectId] = useLocalStorage('projectId');
-    const { project, setProject, collaborationButton } = useCurrentProject();
+    const { project, setProject } = useCurrentProject();
+    const { collaborationButton } = useCollaboration();
     const [title, setTitle] = React.useState('');
     const [showSaveProjectModal, setShowSaveProjectModal] = React.useState(false);
     const [isCreatingProject, setIsCreatingProject] = React.useState(false);
