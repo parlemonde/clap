@@ -6,9 +6,13 @@ import useSWR from 'swr';
 import { useLocalStorage } from './useLocalStorage';
 import type { LocalProject } from './useLocalStorage/local-storage';
 import { useWebsockets } from './useWebsockets';
+import { logout } from 'src/actions/authentication/logout';
 import { endCollaboration } from 'src/actions/projects/end-collaboration';
 import { startCollaboration } from 'src/actions/projects/start-collaboration';
 import { updateProject } from 'src/actions/projects/update-project';
+import { Button } from 'src/components/layout/Button';
+import { Flex } from 'src/components/layout/Flex';
+import { Text } from 'src/components/layout/Typography';
 import { sendToast } from 'src/components/ui/Toasts';
 import type { Project } from 'src/database/schemas/projects';
 import { jsonFetcher } from 'src/lib/json-fetcher';
@@ -16,10 +20,8 @@ import { jsonFetcher } from 'src/lib/json-fetcher';
 interface UseCurrentProjectData {
     project?: LocalProject;
     setProject: (newProject: LocalProject) => void;
-    isCollaborationAvailable: boolean;
-    collaborationCode?: string;
-    onStartCollaboration: () => Promise<void>;
-    onStopCollaboration: () => Promise<void>;
+    collaborationButton: React.ReactNode;
+    isCollaborationEnabled: boolean;
 }
 
 export const useCurrentProject = (): UseCurrentProjectData => {
@@ -30,12 +32,12 @@ export const useCurrentProject = (): UseCurrentProjectData => {
     const { data, mutate } = useSWR<Project>(projectId !== undefined ? `/api/projects/${projectId}` : null, jsonFetcher);
 
     // Collaboration on the project
-    const isCollaborationAvailable = process.env.NEXT_PUBLIC_COLLABORATION_SERVER_URL !== undefined;
+    const isCollaborationAvailable = process.env.NEXT_PUBLIC_COLLABORATION_SERVER_URL !== undefined && projectId !== undefined;
     const collaborationCode =
         data && data.collaborationCodeExpiresAt !== null && new Date(data.collaborationCodeExpiresAt).getTime() > new Date().getTime()
             ? data.collaborationCode || undefined
             : undefined;
-    const isCollaborationEnabled = isCollaborationAvailable && projectId !== undefined && collaborationCode !== undefined;
+    const isCollaborationEnabled = isCollaborationAvailable && collaborationCode !== undefined;
     const socket = useWebsockets({
         room: projectId ? `clap_project_${projectId}` : '',
         isEnabled: isCollaborationEnabled,
@@ -55,8 +57,12 @@ export const useCurrentProject = (): UseCurrentProjectData => {
             if (msg === 'update_project') {
                 mutate().catch(console.error);
             }
+            if (msg === 'end_collaboration') {
+                logout('/login').catch(console.error);
+            }
         },
     });
+    const [isCollaborationLoading, setIsCollaborationLoading] = React.useState(false);
     const onStartCollaboration = async () => {
         if (projectId === undefined) {
             return;
@@ -68,9 +74,32 @@ export const useCurrentProject = (): UseCurrentProjectData => {
         if (projectId === undefined) {
             return;
         }
+        socket?.send('end_collaboration');
         await endCollaboration(projectId);
         await mutate();
     };
+    const collaborationButton = isCollaborationAvailable ? (
+        <Flex flexDirection="row" alignItems="center">
+            <Button
+                marginRight="lg"
+                variant="contained"
+                color="secondary"
+                label={collaborationCode ? 'Stopper la collaboration' : 'Démarrer la collaboration'}
+                isUpperCase={false}
+                isLoading={isCollaborationLoading}
+                onClick={async () => {
+                    setIsCollaborationLoading(true);
+                    if (collaborationCode) {
+                        await onStopCollaboration();
+                    } else {
+                        await onStartCollaboration();
+                    }
+                    setIsCollaborationLoading(false);
+                }}
+            ></Button>
+            {collaborationCode && <Text>Code de collaboration: {collaborationCode}</Text>}
+        </Flex>
+    ) : null;
 
     // Update project
     const setProject = React.useCallback(
@@ -128,9 +157,7 @@ export const useCurrentProject = (): UseCurrentProjectData => {
     return {
         project: projectId !== undefined ? data : localProject,
         setProject,
-        isCollaborationAvailable,
-        collaborationCode,
-        onStartCollaboration,
-        onStopCollaboration,
+        collaborationButton,
+        isCollaborationEnabled,
     };
 };

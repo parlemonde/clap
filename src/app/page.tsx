@@ -16,7 +16,7 @@ export default async function Page() {
     const user = await getCurrentUser();
 
     if (user?.role === 'student') {
-        redirect('/create/2-questions');
+        redirect('/create/3-storyboard');
     }
 
     return (

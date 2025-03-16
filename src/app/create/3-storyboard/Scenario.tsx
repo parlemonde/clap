@@ -1,10 +1,13 @@
 import { PlusIcon } from '@radix-ui/react-icons';
 import React from 'react';
 
+import type { GroupColorPillProps } from 'src/components/collaboration/GroupColorPill';
+import { GroupColorPill } from 'src/components/collaboration/GroupColorPill';
 import { PlanCard } from 'src/components/create/PlanCard';
 import { TitleCard } from 'src/components/create/TitleCard';
 import { IconButton } from 'src/components/layout/Button/IconButton';
 import { CircularProgress } from 'src/components/layout/CircularProgress';
+import { Flex } from 'src/components/layout/Flex';
 import { Modal } from 'src/components/layout/Modal';
 import { Tooltip } from 'src/components/layout/Tooltip';
 import { Title } from 'src/components/layout/Typography';
@@ -16,9 +19,10 @@ interface Scenario {
     sequenceIndex: number;
     planStartIndex: number;
     onUpdateSequence?: (newSequence: Sequence) => void;
+    collaborationStatus?: GroupColorPillProps;
 }
 
-export const Scenario = ({ sequence, sequenceIndex, planStartIndex, onUpdateSequence }: Scenario) => {
+export const Scenario = ({ sequence, sequenceIndex, planStartIndex, onUpdateSequence, collaborationStatus }: Scenario) => {
     const { t } = useTranslation();
     const [showDeleteTitle, setShowDeleteTitle] = React.useState(false);
     const [deletePlanIndex, setDeletePlanIndex] = React.useState(-1);
@@ -44,9 +48,12 @@ export const Scenario = ({ sequence, sequenceIndex, planStartIndex, onUpdateSequ
 
     return (
         <div>
-            <Title color="primary" variant="h2" marginTop="lg" style={{ display: 'flex', alignItems: 'center' }}>
-                {sequenceIndex + 1}. {sequence.question}
-            </Title>
+            <Flex flexDirection="row" isFullWidth marginTop="lg" alignItems="center">
+                <Title color="primary" variant="h2">
+                    {sequenceIndex + 1}. {sequence.question}
+                </Title>
+                {collaborationStatus && <GroupColorPill {...collaborationStatus} />}
+            </Flex>
             <div className="plans">
                 <TitleCard
                     questionIndex={sequenceIndex}

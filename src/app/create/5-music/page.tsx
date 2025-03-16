@@ -17,6 +17,7 @@ import { Inverted } from 'src/components/ui/Inverted';
 import { Loader } from 'src/components/ui/Loader';
 import { sendToast } from 'src/components/ui/Toasts';
 import { useTranslation } from 'src/contexts/translationContext';
+import { userContext } from 'src/contexts/userContext';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import { useDeepMemo } from 'src/hooks/useDeepMemo';
 import { getSounds } from 'src/lib/get-sounds';
@@ -25,11 +26,12 @@ export default function MusicPage() {
     const router = useRouter();
     const { t } = useTranslation();
     const { project, setProject } = useCurrentProject();
+    const { user } = React.useContext(userContext);
     const [isUploading, setIsUploading] = React.useState(false);
 
     const sounds = useDeepMemo(getSounds(project?.questions || []));
 
-    if (!project) {
+    if (!project || user?.role === 'student') {
         return null;
     }
 

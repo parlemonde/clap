@@ -114,7 +114,7 @@ export default function ResultPage() {
         };
     }, [t, videoJob]);
 
-    if (!project) {
+    if (!project || user?.role === 'student') {
         return null;
     }
 

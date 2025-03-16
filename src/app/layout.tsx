@@ -2,6 +2,7 @@ import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import classNames from 'clsx';
 import type { Metadata, Viewport } from 'next';
+import { cookies } from 'next/headers';
 import * as React from 'react';
 import 'normalize.css/normalize.css';
 import 'nprogress/nprogress.css';
@@ -68,6 +69,9 @@ export const viewport: Viewport = {
 
 export default async function RootLayout({ children }: React.PropsWithChildren) {
     const [{ currentLocale, locales }, user] = await Promise.all([getLocales(), getCurrentUser()]);
+    const cookieStore = await cookies();
+    const accessTokenCookie = cookieStore.get('access-token');
+    const isSessionExpired = accessTokenCookie !== undefined && user === undefined;
 
     return (
         <html lang={currentLocale}>
@@ -77,7 +81,7 @@ export default async function RootLayout({ children }: React.PropsWithChildren) 
                 <noscript>You need to enable JavaScript to run this app.</noscript>
                 <TooltipProvider delayDuration={0}>
                     <TranslationContextProvider language={currentLocale} locales={locales}>
-                        <UserContextProvider initialUser={user}>
+                        <UserContextProvider initialUser={user} isSessionExpired={isSessionExpired}>
                             <TopNavBar />
                             {children}
                             <BottomNavBar />

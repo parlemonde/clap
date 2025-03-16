@@ -19,7 +19,7 @@ const getUserById = cache(async (userId: number): Promise<User | undefined> => {
     });
 });
 
-const getUserByProjectId = cache(async (projectId: number): Promise<User | undefined> => {
+const getUserByProjectId = cache(async (projectId: number, questionId: number): Promise<User | undefined> => {
     const project = await db.query.projects.findFirst({
         columns: { id: true, collaborationCodeExpiresAt: true },
         where: eq(projects.id, projectId),
@@ -32,6 +32,7 @@ const getUserByProjectId = cache(async (projectId: number): Promise<User | undef
             role: 'student',
             email: '',
             projectId: project.id,
+            questionId,
         };
     }
     return undefined;
@@ -51,13 +52,19 @@ export async function getCurrentUser(): Promise<User | undefined> {
               }
             | {
                   projectId: number;
+                  questionId: number;
               }
         >(accessToken, APP_SECRET);
 
         if ('userId' in payload && typeof payload.userId === 'number') {
             return getUserById(payload.userId);
-        } else if ('projectId' in payload && typeof payload.projectId === 'number') {
-            return getUserByProjectId(payload.projectId);
+        } else if (
+            'projectId' in payload &&
+            typeof payload.projectId === 'number' &&
+            'questionId' in payload &&
+            typeof payload.questionId === 'number'
+        ) {
+            return getUserByProjectId(payload.projectId, payload.questionId);
         }
     } catch {
         // do nothing

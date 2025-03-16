@@ -3,8 +3,10 @@
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 
+import { GroupColorPill } from 'src/components/collaboration/GroupColorPill';
 import { DiaporamaCard } from 'src/components/create/DiaporamaCard';
 import { Container } from 'src/components/layout/Container';
+import { Flex } from 'src/components/layout/Flex';
 import { Title } from 'src/components/layout/Typography';
 import { NextButton } from 'src/components/navigation/NextButton';
 import { Steps } from 'src/components/navigation/Steps';
@@ -12,12 +14,16 @@ import { ThemeBreadcrumbs } from 'src/components/navigation/ThemeBreadcrumbs';
 import { Inverted } from 'src/components/ui/Inverted';
 import { Trans } from 'src/components/ui/Trans';
 import { useTranslation } from 'src/contexts/translationContext';
+import { userContext } from 'src/contexts/userContext';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
+import { COLORS } from 'src/lib/colors';
 
 export default function PreMountingPage() {
     const router = useRouter();
     const { t } = useTranslation();
-    const { project } = useCurrentProject();
+    const { project, collaborationButton, isCollaborationEnabled } = useCurrentProject();
+    const { user } = React.useContext(userContext);
+    const isStudent = user?.role === 'student';
 
     if (!project) {
         return null;
@@ -29,26 +35,37 @@ export default function PreMountingPage() {
         return acc + (sequence.plans || []).length;
     }, 1);
 
+    const questionIndexMap = Object.fromEntries(project.questions.map((q, index) => [q.id, index]));
+    const filteredQuestions =
+        isStudent && user?.questionId !== undefined ? project.questions.filter((q) => q.id === user.questionId) : project.questions;
+
     return (
         <Container paddingBottom="xl">
             <ThemeBreadcrumbs themeId={project.themeId}></ThemeBreadcrumbs>
             <Steps activeStep={3} themeId={project.themeId}></Steps>
-            <Title color="primary" variant="h1" marginY="md">
-                <Inverted isRound>4</Inverted>{' '}
-                <Trans i18nKey="part4_title">
-                    Prémontez votre <Inverted>film</Inverted>
-                </Trans>
-            </Title>
+            <Flex flexDirection="row" alignItems="center" marginY="md">
+                <Title color="primary" variant="h1" marginRight="xl">
+                    <Inverted isRound>4</Inverted>{' '}
+                    <Trans i18nKey="part4_title">
+                        Prémontez votre <Inverted>film</Inverted>
+                    </Trans>
+                </Title>
+                {!isStudent && collaborationButton}
+            </Flex>
             <Title color="inherit" variant="h2">
                 {t('part4_subtitle1')}
             </Title>
-            {project.questions.map((q, index) => {
+            {filteredQuestions.map((q) => {
                 const hasBeenEdited = q.title !== undefined || (q.plans || []).some((plan) => plan.description || plan.imageUrl);
+                const index = questionIndexMap[q.id];
                 return (
                     <div key={index}>
-                        <Title color="primary" variant="h2" marginTop="lg" style={{ marginTop: '2rem', display: 'flex', alignItems: 'center' }}>
-                            {index + 1}. {q.question}
-                        </Title>
+                        <Flex flexDirection="row" isFullWidth marginTop="lg" alignItems="center">
+                            <Title color="primary" variant="h2">
+                                {index + 1}. {q.question}
+                            </Title>
+                            {isCollaborationEnabled && <GroupColorPill color={COLORS[index]} status={isStudent ? undefined : 'in progress'} />}
+                        </Flex>
                         {hasBeenEdited ? (
                             <div className="plans">
                                 <DiaporamaCard sequence={q} questionIndex={index} />
@@ -59,11 +76,13 @@ export default function PreMountingPage() {
                     </div>
                 );
             })}
-            <NextButton
-                onNext={() => {
-                    router.push('/create/5-music');
-                }}
-            />
+            {!isStudent && (
+                <NextButton
+                    onNext={() => {
+                        router.push('/create/5-music');
+                    }}
+                />
+            )}
         </Container>
     );
 }

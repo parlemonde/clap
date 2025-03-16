@@ -5,6 +5,7 @@ import * as React from 'react';
 
 import { Scenario } from './Scenario';
 import { Container } from 'src/components/layout/Container';
+import { Flex } from 'src/components/layout/Flex';
 import { Title } from 'src/components/layout/Typography';
 import { NextButton } from 'src/components/navigation/NextButton';
 import { Steps } from 'src/components/navigation/Steps';
@@ -12,13 +13,17 @@ import { ThemeBreadcrumbs } from 'src/components/navigation/ThemeBreadcrumbs';
 import { Inverted } from 'src/components/ui/Inverted';
 import { Trans } from 'src/components/ui/Trans';
 import { useTranslation } from 'src/contexts/translationContext';
+import { userContext } from 'src/contexts/userContext';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
+import { COLORS } from 'src/lib/colors';
 import type { Sequence } from 'src/lib/project.types';
 
 export default function StoryboardPage() {
     const router = useRouter();
     const { t } = useTranslation();
-    const { project, setProject } = useCurrentProject();
+    const { project, setProject, collaborationButton, isCollaborationEnabled } = useCurrentProject();
+    const { user } = React.useContext(userContext);
+    const isStudent = user?.role === 'student';
 
     if (!project) {
         return null;
@@ -30,30 +35,45 @@ export default function StoryboardPage() {
         return acc + (sequence.plans || []).length;
     }, 1);
 
+    const questionIndexMap = Object.fromEntries(project.questions.map((q, index) => [q.id, index]));
+    const filteredQuestions =
+        isStudent && user?.questionId !== undefined ? project.questions.filter((q) => q.id === user.questionId) : project.questions;
+
     return (
         <Container paddingBottom="xl">
             <ThemeBreadcrumbs themeId={project.themeId}></ThemeBreadcrumbs>
             <Steps activeStep={2} themeId={project.themeId}></Steps>
-            <Title color="primary" variant="h1" marginY="md">
-                <Inverted isRound>3</Inverted>{' '}
-                <Trans i18nKey="part3_title">
-                    Création du <Inverted>Storyboard</Inverted>
-                </Trans>
-            </Title>
+            <Flex flexDirection="row" alignItems="center" marginY="md">
+                <Title color="primary" variant="h1" marginRight="xl">
+                    <Inverted isRound>3</Inverted>{' '}
+                    <Trans i18nKey="part3_title">
+                        Création du <Inverted>Storyboard</Inverted>
+                    </Trans>
+                </Title>
+                {!isStudent && collaborationButton}
+            </Flex>
             <Title color="inherit" variant="h2">
                 {t('part3_desc')}
             </Title>
-            {project.questions.map((sequence, index) => (
+            {filteredQuestions.map((sequence) => (
                 <Scenario
                     key={sequence.id}
                     sequence={sequence}
-                    sequenceIndex={index}
-                    planStartIndex={startIndexPerSequence[index] || 0}
+                    sequenceIndex={questionIndexMap[sequence.id]}
+                    planStartIndex={startIndexPerSequence[questionIndexMap[sequence.id]] || 0}
                     onUpdateSequence={(newSequence: Sequence) => {
                         const newQuestions = [...project.questions];
-                        newQuestions[index] = newSequence;
+                        newQuestions[questionIndexMap[sequence.id]] = newSequence;
                         setProject({ ...project, questions: newQuestions });
                     }}
+                    collaborationStatus={
+                        isCollaborationEnabled
+                            ? {
+                                  color: COLORS[questionIndexMap[sequence.id]],
+                                  status: isStudent ? undefined : 'in progress',
+                              }
+                            : undefined
+                    }
                 />
             ))}
             <NextButton

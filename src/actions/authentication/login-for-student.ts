@@ -7,7 +7,7 @@ import { getAccessToken } from './login';
 import { db } from 'src/database';
 import { projects } from 'src/database/schemas/projects';
 
-export async function loginForStudent(projectCode: string): Promise<{ errorMessage: string } | { projectId: number }> {
+export async function loginForStudent(projectCode: string, questionId: number): Promise<{ errorMessage: string } | { projectId: number }> {
     const project = await db.query.projects.findFirst({
         columns: {
             id: true,
@@ -19,7 +19,7 @@ export async function loginForStudent(projectCode: string): Promise<{ errorMessa
         return { errorMessage: 'Unauthorized' };
     }
 
-    const accessToken = await getAccessToken({ projectId: project.id });
+    const accessToken = await getAccessToken({ projectId: project.id, questionId });
     const cookieStore = await cookies();
     cookieStore.set({
         name: 'access-token',

@@ -17,6 +17,7 @@ type LoginData =
       }
     | {
           projectId: number; // student guest login
+          questionId: number;
       };
 export async function getAccessToken(loginData: LoginData): Promise<string> {
     return new SignJWT(loginData).setProtectedHeader({ alg: 'HS256' }).setIssuedAt().setExpirationTime('7d').sign(APP_SECRET);

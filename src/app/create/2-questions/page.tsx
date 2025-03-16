@@ -7,9 +7,10 @@ import { QuestionsList } from './QuestionsList';
 import { createProject } from 'src/actions/projects/create-project';
 import { Button } from 'src/components/layout/Button';
 import { Container } from 'src/components/layout/Container';
+import { Flex } from 'src/components/layout/Flex';
 import { Field, Form, Input } from 'src/components/layout/Form';
 import { Modal } from 'src/components/layout/Modal';
-import { Text, Title } from 'src/components/layout/Typography';
+import { Title } from 'src/components/layout/Typography';
 import { Link } from 'src/components/navigation/Link';
 import { NextButton } from 'src/components/navigation/NextButton';
 import { Steps } from 'src/components/navigation/Steps';
@@ -28,11 +29,10 @@ export default function QuestionPage() {
     const { t } = useTranslation();
     const { user } = React.useContext(userContext);
     const [projectId, setProjectId] = useLocalStorage('projectId');
-    const { project, setProject, isCollaborationAvailable, collaborationCode, onStartCollaboration, onStopCollaboration } = useCurrentProject();
+    const { project, setProject, collaborationButton } = useCurrentProject();
     const [title, setTitle] = React.useState('');
     const [showSaveProjectModal, setShowSaveProjectModal] = React.useState(false);
     const [isCreatingProject, setIsCreatingProject] = React.useState(false);
-    const [isCollaborationLoading, setIsCollaborationLoading] = React.useState(false);
 
     if (!project || user?.role === 'student') {
         return null;
@@ -70,40 +70,21 @@ export default function QuestionPage() {
         <Container paddingBottom="xl">
             <ThemeBreadcrumbs themeId={project.themeId}></ThemeBreadcrumbs>
             <Steps activeStep={1} themeId={project.themeId}></Steps>
-            <Title color="primary" marginY="md" variant="h1">
-                <Inverted isRound>2</Inverted>{' '}
-                <Trans i18nKey="part2_title">
-                    Mes <Inverted>séquences</Inverted>
-                </Trans>
-            </Title>
+            <Flex flexDirection="row" alignItems="center" marginY="md">
+                <Title color="primary" variant="h1" marginRight="xl">
+                    <Inverted isRound>2</Inverted>{' '}
+                    <Trans i18nKey="part2_title">
+                        Mes <Inverted>séquences</Inverted>
+                    </Trans>
+                </Title>
+                {collaborationButton}
+            </Flex>
             <Title color="inherit" variant="h2" marginBottom="lg">
                 {t('part2_desc')}
             </Title>
             <Link href={`/create/2-questions/new`} passHref legacyBehavior>
                 <Button as="a" label={t('add_question')} variant="outlined" color="secondary" isUpperCase={false}></Button>
             </Link>
-            {isCollaborationAvailable && (
-                <>
-                    <Button
-                        marginX="lg"
-                        variant="contained"
-                        color="secondary"
-                        label={collaborationCode ? 'Stopper la collaboration' : 'Démarrer la collaboration'}
-                        isUpperCase={false}
-                        isLoading={isCollaborationLoading}
-                        onClick={async () => {
-                            setIsCollaborationLoading(true);
-                            if (collaborationCode) {
-                                await onStopCollaboration();
-                            } else {
-                                await onStartCollaboration();
-                            }
-                            setIsCollaborationLoading(false);
-                        }}
-                    ></Button>
-                    {collaborationCode && <Text>Code de collaboration: {collaborationCode}</Text>}
-                </>
-            )}
             <QuestionsList project={project} setProject={setProject} />
             <NextButton
                 onNext={() => {

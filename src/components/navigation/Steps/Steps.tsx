@@ -101,7 +101,7 @@ export const Steps = ({ activeStep, backHref, themeId }: StepsProps) => {
                     } else if (project && project.themeId === themeId) {
                         href = step.href;
                     }
-                    if (href && (!isStudent || index > 1)) {
+                    if (href && (!isStudent || index === 2 || index === 3)) {
                         return (
                             <Link href={href} key={step.name} className={styles.step}>
                                 {stepContent}

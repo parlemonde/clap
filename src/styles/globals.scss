@@ -375,3 +375,36 @@ p {
   flex: 1;
   overflow-x: auto;
 }
+
+.sequency-list {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  row-gap: 50px;
+  column-gap: 50px;
+  margin: 50px auto;
+
+  &__item {
+    width: 250px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: .5s;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border-radius: 5px;
+    &:hover {
+        border-color: #737373;
+    }
+
+    span {
+      font-size: 24px;
+    }
+  }
+}

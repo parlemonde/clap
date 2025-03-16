@@ -21,3 +21,22 @@ export async function getProject(id: number): Promise<Project | undefined> {
         return undefined;
     }
 }
+
+export async function getProjectByCode(code: string): Promise<Project | undefined> {
+    try {
+        const project = await db.query.projects.findFirst({
+            where: eq(projects.collaborationCode, code),
+        });
+        if (
+            !project ||
+            project.collaborationCodeExpiresAt === null ||
+            new Date(project.collaborationCodeExpiresAt).getTime() < new Date().getTime()
+        ) {
+            return undefined;
+        }
+        return project;
+    } catch (error) {
+        console.error(error);
+        return undefined;
+    }
+}
