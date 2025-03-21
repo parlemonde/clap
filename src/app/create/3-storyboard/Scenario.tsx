@@ -1,12 +1,12 @@
 import { PlusIcon } from '@radix-ui/react-icons';
 import React from 'react';
 
+import { FeedbackForm } from 'src/components/collaboration/FeedbackForm';
 import type { GroupColorPillProps } from 'src/components/collaboration/GroupColorPill';
 import { GroupColorPill } from 'src/components/collaboration/GroupColorPill';
 import { PlanCard } from 'src/components/create/PlanCard';
 import { TitleCard } from 'src/components/create/TitleCard';
 import { IconButton } from 'src/components/layout/Button/IconButton';
-import { CircularProgress } from 'src/components/layout/CircularProgress';
 import { Flex } from 'src/components/layout/Flex';
 import { Modal } from 'src/components/layout/Modal';
 import { Tooltip } from 'src/components/layout/Tooltip';
@@ -19,14 +19,25 @@ interface Scenario {
     sequenceIndex: number;
     planStartIndex: number;
     onUpdateSequence?: (newSequence: Sequence) => void;
+    sendCollaborationValidationMsg?: (status: Sequence['status']) => void;
     collaborationStatus?: GroupColorPillProps;
+    isCollaborationEnabled: boolean;
+    isStudent: boolean;
 }
 
-export const Scenario = ({ sequence, sequenceIndex, planStartIndex, onUpdateSequence, collaborationStatus }: Scenario) => {
+export const Scenario = ({
+    sequence,
+    sequenceIndex,
+    planStartIndex,
+    onUpdateSequence,
+    sendCollaborationValidationMsg,
+    collaborationStatus,
+    isCollaborationEnabled,
+    isStudent,
+}: Scenario) => {
     const { t } = useTranslation();
     const [showDeleteTitle, setShowDeleteTitle] = React.useState(false);
     const [deletePlanIndex, setDeletePlanIndex] = React.useState(-1);
-    const isCreatingPlan = false; // TODO
 
     const [draggedPlanIndex, setDraggedPlanIndex] = React.useState<number | null>(null);
     const isDragging = draggedPlanIndex !== null;
@@ -46,10 +57,13 @@ export const Scenario = ({ sequence, sequenceIndex, planStartIndex, onUpdateSequ
         onUpdateSequence?.({ ...sequence, plans: newPlans });
     };
 
+    const canEdit = !isStudent || (isStudent && sequence.status === 'storyboard');
+
     return (
         <div>
             <Flex flexDirection="row" isFullWidth marginTop="lg" alignItems="center">
-                <Title color="primary" variant="h2">
+                {/* Use a padding and margin to get extra top space when using a hash to scroll to the element */}
+                <Title color="primary" variant="h2" id={`sequence-${sequenceIndex}`} paddingTop={80} marginTop={-80}>
                     {sequenceIndex + 1}. {sequence.question}
                 </Title>
                 {collaborationStatus && <GroupColorPill {...collaborationStatus} />}
@@ -61,7 +75,7 @@ export const Scenario = ({ sequence, sequenceIndex, planStartIndex, onUpdateSequ
                     onDelete={() => {
                         setShowDeleteTitle(true);
                     }}
-                    isDisabled={isDragging}
+                    isDisabled={isDragging || !canEdit}
                 />
                 {sequence.plans.map((plan, planIndex) => (
                     <PlanCard
@@ -87,44 +101,50 @@ export const Scenario = ({ sequence, sequenceIndex, planStartIndex, onUpdateSequ
                                 setInitialPlans(null);
                             }
                         }}
-                        canEdit
+                        canEdit={canEdit}
                     />
                 ))}
-                {sequence.plans.length < 5 && !isDragging && (
+                {sequence.plans.length < 5 && !isDragging && canEdit && (
                     <div className="plan-button-container add">
-                        {isCreatingPlan ? (
-                            <CircularProgress color="primary" />
-                        ) : (
-                            <Tooltip position="bottom" content={t('part3_add_plan')} hasArrow>
-                                <IconButton
-                                    color="primary"
-                                    variant="contained"
-                                    aria-label={t('part3_add_plan')}
-                                    onClick={() => {
-                                        const plans = sequence.plans;
-                                        const ids = plans.map((plan) => plan.id);
-                                        const newId = Math.max(0, ...ids) + 1;
-                                        const newSequence = {
-                                            ...sequence,
-                                            plans: [
-                                                ...sequence.plans,
-                                                {
-                                                    id: newId,
-                                                    description: '',
-                                                    imageUrl: '',
-                                                    duration: 1000,
-                                                },
-                                            ],
-                                        };
-                                        onUpdateSequence?.(newSequence);
-                                    }}
-                                    icon={PlusIcon}
-                                ></IconButton>
-                            </Tooltip>
-                        )}
+                        <Tooltip position="bottom" content={t('part3_add_plan')} hasArrow>
+                            <IconButton
+                                color="primary"
+                                variant="contained"
+                                aria-label={t('part3_add_plan')}
+                                onClick={() => {
+                                    const plans = sequence.plans;
+                                    const ids = plans.map((plan) => plan.id);
+                                    const newId = Math.max(0, ...ids) + 1;
+                                    const newSequence = {
+                                        ...sequence,
+                                        plans: [
+                                            ...sequence.plans,
+                                            {
+                                                id: newId,
+                                                description: '',
+                                                imageUrl: '',
+                                                duration: 1000,
+                                            },
+                                        ],
+                                    };
+                                    onUpdateSequence?.(newSequence);
+                                }}
+                                icon={PlusIcon}
+                            ></IconButton>
+                        </Tooltip>
                     </div>
                 )}
             </div>
+            {isCollaborationEnabled && sequence.status === 'storyboard-validating' && !isStudent ? (
+                <FeedbackForm
+                    question={sequence}
+                    onUpdateSequence={(newSequence) => {
+                        const newStatus = newSequence.status;
+                        sendCollaborationValidationMsg?.(newStatus);
+                        onUpdateSequence?.(newSequence);
+                    }}
+                />
+            ) : null}
             <Modal
                 isOpen={deletePlanIndex !== -1}
                 onClose={() => {

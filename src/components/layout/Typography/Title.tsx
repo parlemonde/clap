@@ -5,6 +5,7 @@ import type { MarginProps, PaddingProps } from '..';
 import { getMarginAndPaddingStyle } from '../css-styles';
 
 type TitleProps = {
+    id?: string;
     variant?: 'h1' | 'h2' | 'h3';
     color?: 'primary' | 'secondary' | 'inherit';
     className?: string;
@@ -12,6 +13,7 @@ type TitleProps = {
 } & MarginProps &
     PaddingProps;
 export const Title = ({
+    id,
     variant = 'h1',
     color = 'primary',
     className,
@@ -27,6 +29,7 @@ export const Title = ({
                 ...getMarginAndPaddingStyle(marginAndPaddingProps),
             },
             className: classNames(className, `color-${color}`),
+            id,
         },
         children,
     );

@@ -64,7 +64,7 @@ export default function PreMountingPage() {
                 return (
                     <div key={index}>
                         <Flex flexDirection="row" isFullWidth marginTop="lg" alignItems="center">
-                            <Title color="primary" variant="h2">
+                            <Title color="primary" variant="h2" id={`sequence-${index}`} paddingTop={80} marginTop={-80}>
                                 {index + 1}. {q.question}
                             </Title>
                             {isCollaborationEnabled && <GroupColorPill color={COLORS[index]} status={isStudent ? undefined : getStatus(q.status)} />}

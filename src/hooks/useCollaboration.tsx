@@ -14,7 +14,6 @@ import { Text } from 'src/components/layout/Typography';
 import { sendToast } from 'src/components/ui/Toasts';
 import type { Project } from 'src/database/schemas/projects';
 import { jsonFetcher } from 'src/lib/json-fetcher';
-import type { Sequence } from 'src/lib/project.types';
 
 export const onSendCurrentProjectUpdateMsg = () => {
     document.dispatchEvent(new CustomEvent('update_project'));
@@ -83,8 +82,8 @@ export const useCollaboration = () => {
         await endCollaboration(projectId);
         await mutate();
     };
-    const sendCollaborationValidationMsg = (questionId: number, status: Sequence['status']) => {
-        socket?.send(`validate_question:${JSON.stringify({ questionId, status })}`);
+    const sendCollaborationValidationMsg = (data: VerifyAlertData) => {
+        socket?.send(`validate_question:${JSON.stringify(data)}`);
     };
 
     const collaborationButton = isCollaborationAvailable ? (

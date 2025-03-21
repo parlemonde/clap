@@ -76,6 +76,15 @@ export default function StoryboardPage() {
                               }
                             : undefined
                     }
+                    isCollaborationEnabled={isCollaborationEnabled}
+                    sendCollaborationValidationMsg={(status) => {
+                        sendCollaborationValidationMsg({
+                            questionId: sequence.id,
+                            status,
+                            studentKind: status === 'storyboard-validating' ? 'feedback' : 'validated',
+                        });
+                    }}
+                    isStudent={isStudent}
                 />
             ))}
             <NextButton
@@ -83,20 +92,23 @@ export default function StoryboardPage() {
                 label={
                     studentQuestion?.status === 'storyboard-validating'
                         ? 'En attente de validation du storyboard'
-                        : isStudent
+                        : isStudent && studentQuestion?.status === 'storyboard'
                           ? 'Envoyer pour vérification'
                           : undefined
                 }
                 onNext={() => {
-                    if (isStudent) {
+                    if (isStudent && (studentQuestion?.status === 'storyboard-validating' || studentQuestion?.status === 'storyboard')) {
                         if (!studentQuestion) {
                             return;
                         }
-                        // const newQuestions = project.questions.map<Sequence>((q) =>
-                        //     q.id === studentQuestion.id ? { ...q, status: 'storyboard-validating' } : q,
-                        // );
-                        // setProject({ ...project, questions: newQuestions });
-                        sendCollaborationValidationMsg(studentQuestion.id, 'storyboard-validating');
+                        const newQuestions = project.questions.map<Sequence>((q) =>
+                            q.id === studentQuestion.id ? { ...q, status: 'storyboard-validating' } : q,
+                        );
+                        setProject({ ...project, questions: newQuestions });
+                        sendCollaborationValidationMsg({
+                            questionId: studentQuestion.id,
+                            status: 'storyboard-validating',
+                        });
                     } else {
                         router.push('/create/4-pre-mounting');
                     }
