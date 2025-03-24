@@ -92,12 +92,15 @@ export default function StoryboardPage() {
                 label={
                     studentQuestion?.status === 'storyboard-validating'
                         ? 'En attente de validation du storyboard'
-                        : isStudent && studentQuestion?.status === 'storyboard'
+                        : isStudent && (!studentQuestion?.status || studentQuestion?.status === 'storyboard')
                           ? 'Envoyer pour vérification'
                           : undefined
                 }
                 onNext={() => {
-                    if (isStudent && (studentQuestion?.status === 'storyboard-validating' || studentQuestion?.status === 'storyboard')) {
+                    if (
+                        isStudent &&
+                        (!studentQuestion?.status || studentQuestion?.status === 'storyboard-validating' || studentQuestion?.status === 'storyboard')
+                    ) {
                         if (!studentQuestion) {
                             return;
                         }
@@ -108,6 +111,7 @@ export default function StoryboardPage() {
                         sendCollaborationValidationMsg({
                             questionId: studentQuestion.id,
                             status: 'storyboard-validating',
+                            studentKind: 'feedback',
                         });
                     } else {
                         router.push('/create/4-pre-mounting');

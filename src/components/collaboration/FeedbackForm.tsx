@@ -75,7 +75,7 @@ export const FeedbackForm = ({ question, onUpdateSequence }: FeedbackFormProps) 
                         const newSequence: Sequence = {
                             ...question,
                             feedbacks: [...(question.feedbacks || []), feedback],
-                            status: 'storyboard',
+                            status: question.status === 'pre-mounting-validating' ? 'pre-mounting' : 'storyboard',
                         };
                         onUpdateSequence(newSequence);
                     }}
@@ -88,9 +88,11 @@ export const FeedbackForm = ({ question, onUpdateSequence }: FeedbackFormProps) 
                     color="secondary"
                     isUpperCase={false}
                     onClick={() => {
+                        const newFeedbacks = feedback ? [...(question.feedbacks || []), feedback] : question.feedbacks;
                         const newSequence: Sequence = {
                             ...question,
-                            status: 'pre-mounting',
+                            feedbacks: newFeedbacks,
+                            status: question.status === 'pre-mounting-validating' ? 'validated' : 'pre-mounting',
                         };
                         onUpdateSequence(newSequence);
                     }}

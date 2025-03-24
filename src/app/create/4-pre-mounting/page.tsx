@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 
+import { FeedbackForm } from 'src/components/collaboration/FeedbackForm';
 import { GroupColorPill } from 'src/components/collaboration/GroupColorPill';
 import { DiaporamaCard } from 'src/components/create/DiaporamaCard';
 import { Container } from 'src/components/layout/Container';
@@ -23,8 +24,8 @@ import type { Sequence } from 'src/lib/project.types';
 export default function PreMountingPage() {
     const router = useRouter();
     const { t } = useTranslation();
-    const { project } = useCurrentProject();
-    const { collaborationButton, isCollaborationEnabled } = useCollaboration();
+    const { project, setProject } = useCurrentProject();
+    const { collaborationButton, isCollaborationEnabled, sendCollaborationValidationMsg } = useCollaboration();
     const { user } = React.useContext(userContext);
     const isStudent = user?.role === 'student';
 
@@ -41,6 +42,8 @@ export default function PreMountingPage() {
     const questionIndexMap = Object.fromEntries(project.questions.map((q, index) => [q.id, index]));
     const studentQuestion = isStudent && user?.questionId !== undefined ? project.questions.find((q) => q.id === user.questionId) : null;
     const filteredQuestions = isStudent ? (studentQuestion ? [studentQuestion] : []) : project.questions;
+
+    const canEdit = !isStudent || (isStudent && studentQuestion?.status === 'pre-mounting');
 
     return (
         <Container paddingBottom="xl">
@@ -71,21 +74,59 @@ export default function PreMountingPage() {
                         </Flex>
                         {hasBeenEdited ? (
                             <div className="plans">
-                                <DiaporamaCard sequence={q} questionIndex={index} />
+                                <DiaporamaCard sequence={q} questionIndex={index} isDisabled={!canEdit} />
                             </div>
                         ) : (
                             <p style={{ marginTop: '1rem' }}>{t('part4_placeholder')}</p>
                         )}
+                        {isCollaborationEnabled && q.status === 'pre-mounting-validating' && !isStudent ? (
+                            <FeedbackForm
+                                question={q}
+                                onUpdateSequence={(newSequence) => {
+                                    const newStatus = newSequence.status;
+                                    sendCollaborationValidationMsg?.({
+                                        status: newStatus,
+                                        questionId: q.id,
+                                        studentKind: 'feedback',
+                                    });
+                                    const newQuestions = project.questions.map<Sequence>((q) => (q.id === newSequence.id ? newSequence : q));
+                                    setProject({ ...project, questions: newQuestions });
+                                }}
+                            />
+                        ) : null}
                     </div>
                 );
             })}
-            {!isStudent && (
-                <NextButton
-                    onNext={() => {
-                        router.push('/create/5-music');
-                    }}
-                />
-            )}
+            {!isStudent ||
+                (studentQuestion?.status !== 'validated' && (
+                    <NextButton
+                        label={
+                            isStudent && studentQuestion?.status === 'pre-mounting-validating'
+                                ? 'En attente de validation du prémontage'
+                                : isStudent
+                                  ? 'Envoyer pour vérification'
+                                  : undefined
+                        }
+                        isDisabled={isStudent && studentQuestion?.status !== 'pre-mounting'}
+                        onNext={() => {
+                            if (isStudent) {
+                                if (!studentQuestion) {
+                                    return;
+                                }
+                                const newQuestions = project.questions.map<Sequence>((q) =>
+                                    q.id === studentQuestion.id ? { ...q, status: 'pre-mounting-validating' } : q,
+                                );
+                                setProject({ ...project, questions: newQuestions });
+                                sendCollaborationValidationMsg({
+                                    questionId: studentQuestion.id,
+                                    status: 'pre-mounting-validating',
+                                });
+                            } else {
+                                router.push('/create/5-music');
+                            }
+                        }}
+                    />
+                ))}
         </Container>
     );
 }

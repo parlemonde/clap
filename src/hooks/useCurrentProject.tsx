@@ -7,6 +7,7 @@ import { onSendCurrentProjectUpdateMsg } from './useCollaboration';
 import { useLocalStorage } from './useLocalStorage';
 import type { LocalProject } from './useLocalStorage/local-storage';
 import { updateProject } from 'src/actions/projects/update-project';
+import { userContext } from 'src/contexts/userContext';
 import type { Project } from 'src/database/schemas/projects';
 import { jsonFetcher } from 'src/lib/json-fetcher';
 
@@ -16,7 +17,9 @@ interface UseCurrentProjectData {
 }
 
 export const useCurrentProject = (): UseCurrentProjectData => {
-    const [projectId] = useLocalStorage('projectId');
+    const { user } = React.useContext(userContext);
+    const [localProjectId] = useLocalStorage('projectId');
+    const projectId = user !== undefined ? localProjectId : undefined; // If user is not logged in, do not try to fetch last current project
     const [localProject, setLocalProject] = useLocalStorage('project');
 
     // Fetch project from backend

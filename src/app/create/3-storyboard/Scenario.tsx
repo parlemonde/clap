@@ -57,7 +57,7 @@ export const Scenario = ({
         onUpdateSequence?.({ ...sequence, plans: newPlans });
     };
 
-    const canEdit = !isStudent || (isStudent && sequence.status === 'storyboard');
+    const canEdit = !isStudent || (isStudent && (!sequence.status || sequence.status === 'storyboard'));
 
     return (
         <div>
@@ -161,7 +161,6 @@ export const Scenario = ({
                 title={t('part3_delete_plan_question')}
                 confirmLabel={t('delete')}
                 confirmLevel="error"
-                isLoading={false} // TODO
             >
                 {t('part3_delete_plan_desc', { planNumber: planStartIndex + deletePlanIndex })}
             </Modal>
@@ -178,7 +177,6 @@ export const Scenario = ({
                 title={t('part3_delete_plan_title')}
                 confirmLabel={t('delete')}
                 confirmLevel="error"
-                isLoading={false} // TODO
             >
                 {t('part3_delete_plan_title_desc')}
             </Modal>

@@ -130,6 +130,24 @@ function getModalContent(
                     nextUrl: undefined,
                 };
             }
+        case 'pre-mounting-validating':
+            return {
+                title: 'Travail à vérifier',
+                content: (
+                    <div>
+                        Le groupe d'élèves affecté à la <span style={{ color: COLORS[questionIndex] }}>séquence n° {questionIndex}</span> a terminé la
+                        partie <b>4 - prémontage</b>. Vous pouvez vérifier leur travail.
+                    </div>
+                ),
+                confirmLabel: 'Voir le travail',
+                nextUrl: `/create/4-pre-mounting#sequence-${questionIndex}`,
+            };
+        case 'validated':
+            return {
+                title: 'Travail validé',
+                content: <div>Le professeur a validé votre travail !</div>,
+                confirmLabel: 'Fermer',
+            };
         default:
             return {
                 title: '',
