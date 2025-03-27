@@ -30,7 +30,7 @@ const handler: WrapperHandler =
         delete internalEvent.headers['if-none-match']; // Remove If-None-Match header from request. Can't be used with nonce script hash.
 
         //This is a workaround, there is an issue in node that causes node to crash silently if the OpenNextNodeResponse stream is not consumed
-        //This does not happen everytime, it's probably caused by suspended component in ssr (either via <Suspense> or loading.tsx)
+        //This does not happen every time, it's probably caused by suspended component in ssr (either via <Suspense> or loading.tsx)
         //Everyone that wish to create their own wrapper without a StreamCreator should implement this workaround
         //This is not necessary if the underlying handler does not use OpenNextNodeResponse (At the moment, OpenNextNodeResponse is used by the node runtime servers and the image server)
         const fakeStream: StreamCreator = {
@@ -43,7 +43,7 @@ const handler: WrapperHandler =
             },
         };
 
-        const response = await handler(internalEvent, fakeStream);
+        const response = await handler(internalEvent, { streamCreator: fakeStream });
         delete response.headers['etag']; // Remove ETag header from response. Can't be used with nonce script hash.
         return converter.convertTo(response, event);
     };

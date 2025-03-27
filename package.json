@@ -54,7 +54,7 @@
     "@dotenvx/dotenvx": "1.29.0",
     "@eslint/js": "9.16.0",
     "@next/eslint-plugin-next": "15.1.7",
-    "@opennextjs/aws": "3.4.2",
+    "@opennextjs/aws": "3.5.1",
     "@svgr/webpack": "8.1.0",
     "@types/archiver": "^6.0.3",
     "@types/aws-lambda": "8.10.147",

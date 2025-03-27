@@ -134,8 +134,8 @@ importers:
         specifier: 15.1.7
         version: 15.1.7
       '@opennextjs/aws':
-        specifier: 3.4.2
-        version: 3.4.2
+        specifier: 3.5.1
+        version: 3.5.1
       '@svgr/webpack':
         specifier: 8.1.0
         version: 8.1.0(typescript@5.7.2)
@@ -1185,11 +1185,6 @@ packages:
     resolution: {integrity: sha512-FxEMIkJKnodyA1OaCUoEvbYRkoZlLZ4d/eXFu9Fh8CbBBgP5EmZxrfTRyN0qpXZ4vOvqnE5YdRdcrmUUXuU+dA==}
     deprecated: 'Merged into tsx: https://tsx.is'
 
-  '@esbuild-plugins/node-resolve@0.2.2':
-    resolution: {integrity: sha512-+t5FdX3ATQlb53UFDBRb4nqjYBz492bIrnVWvpQHpzZlu9BQL5HasMZhqc409ygUwOWCXZhrWr6NyZ6T6Y+cxw==}
-    peerDependencies:
-      esbuild: '*'
-
   '@esbuild/aix-ppc64@0.19.12':
     resolution: {integrity: sha512-bmoCYyWdEL3wDQIVbcyzRyeKLgk2WtWLTWz1ZIAZF/EGbNOwSA6ew3PftJ1PqMiOOGu0OyFMzG53L0zqIpPeNA==}
     engines: {node: '>=12'}
@@ -2119,8 +2114,8 @@ packages:
     resolution: {integrity: sha512-nn5ozdjYQpUCZlWGuxcJY/KpxkWQs4DcbMCmKojjyrYDEAGy4Ce19NN4v5MduafTwJlbKc99UA8YhSVqq9yPZA==}
     engines: {node: '>=12.4.0'}
 
-  '@opennextjs/aws@3.4.2':
-    resolution: {integrity: sha512-f5HWNp3a8zxFT9rJmefh9yw0CrzaXwXjg0gKZjYuQh3pdM9utgZApIrcpWUYyQNH2rSfKyXafHQFm8NkRukptw==}
+  '@opennextjs/aws@3.5.1':
+    resolution: {integrity: sha512-hc+LebNIwCgpWO9jnLTnGyf0YuN4bNksFJ+a5W12RzytS9CyYIVjlzB02XS4EzlR+5wQxHpwYMUQ/MSY4gAxhw==}
     hasBin: true
 
   '@parcel/watcher-android-arm64@2.5.0':
@@ -3150,9 +3145,6 @@ packages:
 
   '@types/readdir-glob@1.1.5':
     resolution: {integrity: sha512-raiuEPUYqXu+nvtY2Pe8s8FEmZ3x5yAH4VkLdihcPdalvsHltomrRC9BzuStrJ9yk06470hS0Crw0f1pXqD+Hg==}
-
-  '@types/resolve@1.20.6':
-    resolution: {integrity: sha512-A4STmOXPhMUtHH+S6ymgE2GiBSMqf4oTvcQZMcHzokuTLVYzXTB8ttjcgxOVaAp2lGwEdzZ0J+cRbbeevQj1UQ==}
 
   '@types/sortablejs@1.15.8':
     resolution: {integrity: sha512-b79830lW+RZfwaztgs1aVPgbasJ8e7AXtZYHTELNXZPsERt4ymJdjV4OccDbHQAvHrCcFpbF78jkm0R6h/pZVg==}
@@ -5067,10 +5059,6 @@ packages:
   process@0.11.10:
     resolution: {integrity: sha512-cdGef/drWFoydD1JsMzuFf8100nZl+GT+yacc2bEced5f9Rjk4z+WtFUTBu9PhOi9j/jfmBPu0mMEY4wIdAF8A==}
     engines: {node: '>= 0.6.0'}
-
-  promise.series@0.2.0:
-    resolution: {integrity: sha512-VWQJyU2bcDTgZw8kpfBpB/ejZASlCrzwz5f2hjb/zlujOEB4oeiAhHygAWq8ubsX2GVkD4kCU5V2dwOTaCY5EQ==}
-    engines: {node: '>=0.12'}
 
   promise@7.3.1:
     resolution: {integrity: sha512-nolQXZ/4L+bP/UGlkfaIujX9BKxGwmQ9OT4mOt5yvy8iK1h3wqTEJCijzGANTCCl9nWjY41juyAn2K3Q1hLLTg==}
@@ -7701,16 +7689,6 @@ snapshots:
       '@esbuild-kit/core-utils': 3.3.2
       get-tsconfig: 4.8.1
 
-  '@esbuild-plugins/node-resolve@0.2.2(esbuild@0.19.2)':
-    dependencies:
-      '@types/resolve': 1.20.6
-      debug: 4.3.7
-      esbuild: 0.19.2
-      escape-string-regexp: 4.0.0
-      resolve: 1.22.8
-    transitivePeerDependencies:
-      - supports-color
-
   '@esbuild/aix-ppc64@0.19.12':
     optional: true
 
@@ -8294,14 +8272,13 @@ snapshots:
 
   '@nolyfill/is-core-module@1.0.39': {}
 
-  '@opennextjs/aws@3.4.2':
+  '@opennextjs/aws@3.5.1':
     dependencies:
       '@aws-sdk/client-cloudfront': 3.398.0
       '@aws-sdk/client-dynamodb': 3.749.0
       '@aws-sdk/client-lambda': 3.749.0
       '@aws-sdk/client-s3': 3.749.0
       '@aws-sdk/client-sqs': 3.749.0
-      '@esbuild-plugins/node-resolve': 0.2.2(esbuild@0.19.2)
       '@node-minify/core': 8.0.6
       '@node-minify/terser': 8.0.6
       '@tsconfig/node18': 1.0.3
@@ -8310,7 +8287,6 @@ snapshots:
       esbuild: 0.19.2
       express: 5.0.1
       path-to-regexp: 6.3.0
-      promise.series: 0.2.0
       urlpattern-polyfill: 10.0.0
     transitivePeerDependencies:
       - aws-crt
@@ -9506,8 +9482,6 @@ snapshots:
   '@types/readdir-glob@1.1.5':
     dependencies:
       '@types/node': 22.10.2
-
-  '@types/resolve@1.20.6': {}
 
   '@types/sortablejs@1.15.8': {}
 
@@ -11617,8 +11591,6 @@ snapshots:
 
   process@0.11.10: {}
 
-  promise.series@0.2.0: {}
-
   promise@7.3.1:
     dependencies:
       asap: 2.0.6
@@ -11707,7 +11679,7 @@ snapshots:
 
   qs@6.13.0:
     dependencies:
-      side-channel: 1.0.6
+      side-channel: 1.1.0
 
   qs@6.14.0:
     dependencies:
@@ -11928,7 +11900,7 @@ snapshots:
 
   send@1.1.0:
     dependencies:
-      debug: 4.3.7
+      debug: 4.4.0
       destroy: 1.2.0
       encodeurl: 2.0.0
       escape-html: 1.0.3
