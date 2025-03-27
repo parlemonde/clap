@@ -140,12 +140,12 @@ function getModalContent(
                     </div>
                 ),
                 confirmLabel: 'Voir le travail',
-                nextUrl: `/create/4-pre-mounting#sequence-${questionIndex}`,
+                nextUrl: `/create/4-pre-mounting/edit?question=${questionIndex}`,
             };
         case 'validated':
             return {
                 title: 'Travail validé',
-                content: <div>Le professeur a validé votre travail !</div>,
+                content: <div>Le professeur a validé votre travail. Vous avez terminé, bravo !</div>,
                 confirmLabel: 'Fermer',
             };
         default:

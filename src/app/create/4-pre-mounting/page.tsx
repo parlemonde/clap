@@ -3,8 +3,9 @@
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 
-import { FeedbackForm } from 'src/components/collaboration/FeedbackForm';
+import { FeedbackModal } from 'src/components/collaboration/FeedbackModal';
 import { GroupColorPill } from 'src/components/collaboration/GroupColorPill';
+import { getStatus } from 'src/components/collaboration/get-status';
 import { DiaporamaCard } from 'src/components/create/DiaporamaCard';
 import { Container } from 'src/components/layout/Container';
 import { Flex } from 'src/components/layout/Flex';
@@ -71,6 +72,7 @@ export default function PreMountingPage() {
                                 {index + 1}. {q.question}
                             </Title>
                             {isCollaborationEnabled && <GroupColorPill color={COLORS[index]} status={isStudent ? undefined : getStatus(q.status)} />}
+                            {isStudent && q.status === 'pre-mounting' && <FeedbackModal question={q} />}
                         </Flex>
                         {hasBeenEdited ? (
                             <div className="plans">
@@ -79,72 +81,38 @@ export default function PreMountingPage() {
                         ) : (
                             <p style={{ marginTop: '1rem' }}>{t('part4_placeholder')}</p>
                         )}
-                        {isCollaborationEnabled && q.status === 'pre-mounting-validating' && !isStudent ? (
-                            <FeedbackForm
-                                question={q}
-                                onUpdateSequence={(newSequence) => {
-                                    const newStatus = newSequence.status;
-                                    sendCollaborationValidationMsg?.({
-                                        status: newStatus,
-                                        questionId: q.id,
-                                        studentKind: 'feedback',
-                                    });
-                                    const newQuestions = project.questions.map<Sequence>((q) => (q.id === newSequence.id ? newSequence : q));
-                                    setProject({ ...project, questions: newQuestions });
-                                }}
-                            />
-                        ) : null}
                     </div>
                 );
             })}
-            {!isStudent ||
-                (studentQuestion?.status !== 'validated' && (
-                    <NextButton
-                        label={
-                            isStudent && studentQuestion?.status === 'pre-mounting-validating'
-                                ? 'En attente de validation du prémontage'
-                                : isStudent
-                                  ? 'Envoyer pour vérification'
-                                  : undefined
-                        }
-                        isDisabled={isStudent && studentQuestion?.status !== 'pre-mounting'}
-                        onNext={() => {
-                            if (isStudent) {
-                                if (!studentQuestion) {
-                                    return;
-                                }
-                                const newQuestions = project.questions.map<Sequence>((q) =>
-                                    q.id === studentQuestion.id ? { ...q, status: 'pre-mounting-validating' } : q,
-                                );
-                                setProject({ ...project, questions: newQuestions });
-                                sendCollaborationValidationMsg({
-                                    questionId: studentQuestion.id,
-                                    status: 'pre-mounting-validating',
-                                });
-                            } else {
-                                router.push('/create/5-music');
+            {(!isStudent || studentQuestion?.status !== 'validated') && (
+                <NextButton
+                    label={
+                        isStudent && studentQuestion?.status === 'pre-mounting-validating'
+                            ? 'En attente de validation du prémontage'
+                            : isStudent
+                              ? 'Envoyer pour vérification'
+                              : undefined
+                    }
+                    isDisabled={isStudent && studentQuestion?.status !== 'pre-mounting'}
+                    onNext={() => {
+                        if (isStudent) {
+                            if (!studentQuestion) {
+                                return;
                             }
-                        }}
-                    />
-                ))}
+                            const newQuestions = project.questions.map<Sequence>((q) =>
+                                q.id === studentQuestion.id ? { ...q, status: 'pre-mounting-validating' } : q,
+                            );
+                            setProject({ ...project, questions: newQuestions });
+                            sendCollaborationValidationMsg({
+                                questionId: studentQuestion.id,
+                                status: 'pre-mounting-validating',
+                            });
+                        } else {
+                            router.push('/create/5-music');
+                        }
+                    }}
+                />
+            )}
         </Container>
     );
-}
-
-function getStatus(status: Sequence['status']) {
-    if (!status || status === 'storyboard') {
-        return 'Storyboard en cours';
-    }
-    if (status === 'storyboard-validating') {
-        return 'En attente de validation du storyboard';
-    }
-    if (status === 'pre-mounting') {
-        return 'Prémontage en cours';
-    }
-    if (status === 'pre-mounting-validating') {
-        return 'En attente de validation du prémontage';
-    }
-    if (status === 'validated') {
-        return 'Terminé';
-    }
 }

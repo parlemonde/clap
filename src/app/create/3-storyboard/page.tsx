@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import * as React from 'react';
 
 import { Scenario } from './Scenario';
+import { getStatus } from 'src/components/collaboration/get-status';
 import { Container } from 'src/components/layout/Container';
 import { Flex } from 'src/components/layout/Flex';
 import { Title } from 'src/components/layout/Typography';
@@ -120,22 +121,4 @@ export default function StoryboardPage() {
             />
         </Container>
     );
-}
-
-function getStatus(status: Sequence['status']) {
-    if (!status || status === 'storyboard') {
-        return 'Storyboard en cours';
-    }
-    if (status === 'storyboard-validating') {
-        return 'En attente de validation du storyboard';
-    }
-    if (status === 'pre-mounting') {
-        return 'Prémontage en cours';
-    }
-    if (status === 'pre-mounting-validating') {
-        return 'En attente de validation du prémontage';
-    }
-    if (status === 'validated') {
-        return 'Terminé';
-    }
 }

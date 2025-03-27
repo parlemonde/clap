@@ -19,8 +19,9 @@ interface MontageFormProps {
     sequence: Sequence;
     setSequence: (sequence: Sequence) => void;
     onSubmit: (sequence: Sequence) => void;
+    feedbackForm?: React.ReactNode;
 }
-export const MontageForm = ({ sequence, setSequence, onSubmit }: MontageFormProps) => {
+export const MontageForm = ({ sequence, setSequence, onSubmit, feedbackForm }: MontageFormProps) => {
     const { t } = useTranslation();
 
     const [newSoundFile, setNewSoundFile] = React.useState<File | null | undefined>(undefined); // null = delete sound
@@ -172,6 +173,7 @@ export const MontageForm = ({ sequence, setSequence, onSubmit }: MontageFormProp
                 onChange={onInputUpload}
                 style={{ display: 'none' }}
             />
+            {feedbackForm}
             <NextButton label={t('continue')} backHref="/create/4-pre-mounting" type="submit" />
             <Loader isLoading={isUploading} />
         </Form>

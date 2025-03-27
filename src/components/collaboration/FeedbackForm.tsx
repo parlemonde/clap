@@ -4,6 +4,7 @@ import React from 'react';
 
 import { Button } from '../layout/Button';
 import { Field, TextArea } from '../layout/Form';
+import { sendToast } from '../ui/Toasts';
 import type { Sequence } from 'src/lib/project.types';
 
 interface FeedbackFormProps {
@@ -72,6 +73,13 @@ export const FeedbackForm = ({ question, onUpdateSequence }: FeedbackFormProps) 
                     color="secondary"
                     isUpperCase={false}
                     onClick={() => {
+                        if (!feedback) {
+                            sendToast({
+                                message: 'Veuillez renseigner un message de retour',
+                                type: 'error',
+                            });
+                            return;
+                        }
                         const newSequence: Sequence = {
                             ...question,
                             feedbacks: [...(question.feedbacks || []), feedback],

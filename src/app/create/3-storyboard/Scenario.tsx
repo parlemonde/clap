@@ -2,6 +2,7 @@ import { PlusIcon } from '@radix-ui/react-icons';
 import React from 'react';
 
 import { FeedbackForm } from 'src/components/collaboration/FeedbackForm';
+import { FeedbackModal } from 'src/components/collaboration/FeedbackModal';
 import type { GroupColorPillProps } from 'src/components/collaboration/GroupColorPill';
 import { GroupColorPill } from 'src/components/collaboration/GroupColorPill';
 import { PlanCard } from 'src/components/create/PlanCard';
@@ -67,6 +68,7 @@ export const Scenario = ({
                     {sequenceIndex + 1}. {sequence.question}
                 </Title>
                 {collaborationStatus && <GroupColorPill {...collaborationStatus} />}
+                {isStudent && (!sequence.status || sequence.status === 'storyboard') && <FeedbackModal question={sequence} />}
             </Flex>
             <div className="plans">
                 <TitleCard
