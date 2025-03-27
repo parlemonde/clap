@@ -10,11 +10,11 @@ type AwsLambdaReturn = APIGatewayProxyResultV2 | WarmerResponse;
 
 const serverId = Math.random().toPrecision(5).toString();
 
-function formatWarmerResponse(event: WarmerEvent) {
+function formatWarmerResponse(delay: number) {
     return new Promise<WarmerResponse>((resolve) => {
         setTimeout(() => {
             resolve({ serverId, type: 'warmer' } satisfies WarmerResponse);
-        }, event.delay);
+        }, delay);
     });
 }
 
@@ -23,7 +23,7 @@ const handler: WrapperHandler =
     async (event: AwsLambdaEvent): Promise<AwsLambdaReturn> => {
         // Handle warmer event
         if ('type' in event) {
-            return formatWarmerResponse(event);
+            return formatWarmerResponse(event.delay);
         }
 
         const internalEvent = await converter.convertFrom(event);
@@ -45,7 +45,7 @@ const handler: WrapperHandler =
 
         const response = await handler(internalEvent, fakeStream);
         delete response.headers['etag']; // Remove ETag header from response. Can't be used with nonce script hash.
-        return await converter.convertTo(response, event);
+        return converter.convertTo(response, event);
     };
 
 const customWrapper = {
