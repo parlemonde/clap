@@ -53,4 +53,9 @@ server-image-resize/cargo.lock
 
 # Pdf server
 server-pdf-generation/node_modules
+
+# Rust proxy server
+rust-proxy/target
+rust-proxy/cargo.lock
+
 .open-next

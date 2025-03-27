@@ -22,7 +22,7 @@ const handler: WrapperHandler =
     async (handler, converter) =>
     async (event: AwsLambdaEvent): Promise<AwsLambdaReturn> => {
         // Handle warmer event
-        if ('type' in event) {
+        if ('type' in event && event.type === 'warmer') {
             return formatWarmerResponse(event.delay);
         }
 
