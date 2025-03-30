@@ -137,6 +137,7 @@ export default [
             '.prettierrc.js',
             '.svgrrc.js',
             'eslint.config.mjs',
+            'server-pdf-generation/',
         ],
     },
 ];
