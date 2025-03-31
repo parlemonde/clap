@@ -4,7 +4,9 @@ import { useRouter } from 'next/navigation';
 import * as React from 'react';
 
 import { Scenario } from './Scenario';
+import { generatePdf } from 'src/actions/projects/generate-pdf';
 import { getStatus } from 'src/components/collaboration/get-status';
+import { Button } from 'src/components/layout/Button';
 import { Container } from 'src/components/layout/Container';
 import { Flex } from 'src/components/layout/Flex';
 import { Title } from 'src/components/layout/Typography';
@@ -12,6 +14,7 @@ import { NextButton } from 'src/components/navigation/NextButton';
 import { Steps } from 'src/components/navigation/Steps';
 import { ThemeBreadcrumbs } from 'src/components/navigation/ThemeBreadcrumbs';
 import { Inverted } from 'src/components/ui/Inverted';
+import { Loader } from 'src/components/ui/Loader';
 import { Trans } from 'src/components/ui/Trans';
 import { useTranslation } from 'src/contexts/translationContext';
 import { userContext } from 'src/contexts/userContext';
@@ -19,6 +22,7 @@ import { useCollaboration } from 'src/hooks/useCollaboration';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import { COLORS } from 'src/lib/colors';
 import type { Sequence } from 'src/lib/project.types';
+import PictureAsPdf from 'src/svg/pdf.svg';
 
 export default function StoryboardPage() {
     const router = useRouter();
@@ -27,6 +31,7 @@ export default function StoryboardPage() {
     const { collaborationButton, isCollaborationEnabled, sendCollaborationValidationMsg } = useCollaboration();
     const { user } = React.useContext(userContext);
     const isStudent = user?.role === 'student';
+    const [isGeneratingPDF, setIsGeneratingPDF] = React.useState(false);
 
     if (!project) {
         return null;
@@ -41,6 +46,19 @@ export default function StoryboardPage() {
     const questionIndexMap = Object.fromEntries(project.questions.map((q, index) => [q.id, index]));
     const studentQuestion = isStudent && user?.questionId !== undefined ? project.questions.find((q) => q.id === user.questionId) : null;
     const filteredQuestions = isStudent ? (studentQuestion ? [studentQuestion] : []) : project.questions;
+
+    const onGeneratePDF = async () => {
+        setIsGeneratingPDF(true);
+        try {
+            const url = await generatePdf(project);
+            if (url) {
+                window.open(url);
+            }
+        } catch (e) {
+            console.error(e);
+        }
+        setIsGeneratingPDF(false);
+    };
 
     return (
         <Container paddingBottom="xl">
@@ -88,6 +106,18 @@ export default function StoryboardPage() {
                     isStudent={isStudent}
                 />
             ))}
+            {!isStudent && (
+                <div style={{ margin: '32px 0' }}>
+                    <Button
+                        label={t('part6_pdf_button')}
+                        leftIcon={<PictureAsPdf style={{ marginRight: '10px' }} />}
+                        variant="outlined"
+                        color="secondary"
+                        onClick={onGeneratePDF}
+                        marginRight="md"
+                    ></Button>
+                </div>
+            )}
             <NextButton
                 isDisabled={studentQuestion?.status === 'storyboard-validating'}
                 label={
@@ -119,6 +149,7 @@ export default function StoryboardPage() {
                     }
                 }}
             />
+            <Loader isLoading={isGeneratingPDF}></Loader>
         </Container>
     );
 }

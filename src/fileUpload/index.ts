@@ -6,7 +6,7 @@ import { deleteLocalFile, getLocalFile, getLocalFileData, uploadLocalFile } from
 import { getCurrentUser } from 'src/actions/get-current-user';
 import { deleteS3File, getS3File, getS3FileData, uploadS3File } from 'src/aws/s3';
 
-export type FileType = 'images' | 'audios' | 'locales' | 'zip';
+export type FileType = 'images' | 'audios' | 'locales' | 'zip' | 'pdf';
 
 const USE_S3 = process.env.S3_BUCKET_NAME;
 

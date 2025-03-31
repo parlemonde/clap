@@ -11,7 +11,7 @@ const nextConfig: NextConfig = {
         });
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
         config.module.rules.push({
-            test: /\.(html|txt)$/,
+            test: /\.(html|txt|pug)$/,
             use: ['raw-loader'],
         });
         return config;
@@ -28,6 +28,10 @@ const nextConfig: NextConfig = {
                     as: '*.js',
                 },
                 '*.txt': {
+                    loaders: ['raw-loader'],
+                    as: '*.js',
+                },
+                '*.pug': {
                     loaders: ['raw-loader'],
                     as: '*.js',
                 },
