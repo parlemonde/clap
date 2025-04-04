@@ -55,7 +55,7 @@ server-image-resize/cargo.lock
 server-pdf-generation/node_modules
 
 # Rust proxy server
-rust-proxy/target
-rust-proxy/cargo.lock
+server-preview-proxy/target
+server-preview-proxy/cargo.lock
 
 .open-next
