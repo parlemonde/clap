@@ -19,7 +19,7 @@ Resources:
       FunctionName: !Join ['-', ['clap', !Ref BranchHash]]
       Runtime: nodejs22.x
       Architectures:
-        - arm64
+        - x86_64
       MemorySize: 256
       Timeout: 10
       Role: !Ref RoleArn
