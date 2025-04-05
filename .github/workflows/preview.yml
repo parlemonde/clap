@@ -18,7 +18,7 @@ jobs:
           cache: 'pnpm'
       - run: pnpm install
       - run: pnpm build:lambda
-      - run: (cd .open-next/server-functions/default && zip -r - .) > app.zip
+      - run: (cd .open-next/server-functions/default && zip --symlinks -r - .) > app.zip
 
       # 2. Push artifacts to S3
       - name: Hash branch name
