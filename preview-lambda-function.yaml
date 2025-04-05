@@ -29,7 +29,8 @@ Resources:
         S3Key: !Join ['', [!Ref BranchHash, '/app_', !Ref GitSha, '.zip']]
       Environment:
         Variables:
-          HOST_URL: !Join ['', ['https://', !Ref BranchHash, '.preview-clap.daviddev.link']]
+          HOST_URL: !Join ['', ['https://', !Ref BranchHash, '.clap-preview.daviddev.link']]
           APP_SECRET: !Ref AppSecret
           DATABASE_URL: !Ref DatabaseUrl
           DYNAMODB_TABLE_NAME: clap
+          NODE_ENV: production
