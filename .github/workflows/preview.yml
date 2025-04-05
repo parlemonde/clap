@@ -46,9 +46,9 @@ jobs:
           template: preview-lambda-function.yaml
           no-fail-on-empty-changeset: "1"
           parameter-overrides: >-
-            RoleArn=${{ secrets.AWS_LAMBDA_ROLE_ARN }}
-            S3Bucket=${{ secrets.AWS_BUCKET_NAME }}
-            GitSha=${{ github.sha }}
-            BranchHash=${{ steps.hash.outputs.hashedBranchName }}
-            AppSecret=${{ secrets.APP_SECRET }}
+            RoleArn=${{ secrets.AWS_LAMBDA_ROLE_ARN }},
+            S3Bucket=${{ secrets.AWS_BUCKET_NAME }},
+            GitSha=${{ github.sha }},
+            BranchHash=${{ steps.hash.outputs.hashedBranchName }},
+            AppSecret=${{ secrets.APP_SECRET }},
             DatabaseUrl=${{ secrets.DATABASE_URL }}
