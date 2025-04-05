@@ -20,7 +20,7 @@ Resources:
       Runtime: nodejs22.x
       Architectures:
         - x86_64
-      MemorySize: 256
+      MemorySize: 512
       Timeout: 10
       Role: !Ref RoleArn
       Handler: index.handler
@@ -34,3 +34,4 @@ Resources:
           DATABASE_URL: !Ref DatabaseUrl
           DYNAMODB_TABLE_NAME: clap
           NODE_ENV: production
+          S3_BUCKET_NAME: david-robert-ansart-clap
