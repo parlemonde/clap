@@ -50,5 +50,5 @@ jobs:
             S3Bucket=${{ secrets.AWS_BUCKET_NAME }}
             GitSha=${{ github.sha }}
             BranchHash=${{ steps.hash.outputs.hashedBranchName }}
-            APP_SECRET=${{ secrets.APP_SECRET }}
-            DATABASE_URL=${{ secrets.DATABASE_URL }}
+            AppSecret=${{ secrets.APP_SECRET }}
+            DatabaseUrl=${{ secrets.DATABASE_URL }}

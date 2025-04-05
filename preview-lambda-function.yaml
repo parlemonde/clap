@@ -8,9 +8,9 @@ Parameters:
     Type: String
   BranchHash:
     Type: String
-  APP_SECRET:
+  AppSecret:
     Type: String
-  DATABASE_URL:
+  DatabaseUrl:
     Type: String
 Resources:
   Function:
@@ -29,6 +29,6 @@ Resources:
       Environment:
         Variables:
           HOST_URL: https://${{ Ref(BranchHash) }}.preview-clap.daviddev.link
-          APP_SECRET: ${{ Ref(APP_SECRET) }}
-          DATABASE_URL: ${{ Ref(DATABASE_URL) }}
+          APP_SECRET: ${{ Ref(AppSecret) }}
+          DATABASE_URL: ${{ Ref(DatabaseUrl) }}
           DYNAMODB_TABLE_NAME: clap
