@@ -1,5 +1,8 @@
 name: Preview
 on: [push]
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   Preview:
     runs-on: ubuntu-latest
@@ -30,7 +33,22 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
+      - name: Delete existing assets
+        run: aws s3 rm s3://${{ secrets.AWS_BUCKET_NAME }}/${{ steps.hash.outputs.hashedBranchName }} --recursive
       - name: Upload app.zip to S3
-        run: aws s3 cp app.zip s3://${{ secrets.AWS_BUCKET_NAME }}/${{ steps.hash.outputs.hashedBranchName }}/app.zip
+        run: aws s3 cp app.zip s3://${{ secrets.AWS_BUCKET_NAME }}/${{ steps.hash.outputs.hashedBranchName }}/app_${{ github.sha }}.zip
       - name: Upload assets to S3
         run: aws s3 cp .open-next/assets s3://${{ secrets.AWS_BUCKET_NAME }}/${{ steps.hash.outputs.hashedBranchName }} --recursive
+      - name: Deploy lambda function
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        with:
+          name: clap-preview-${{ steps.hash.outputs.hashedBranchName }}
+          template: preview-lambda-function.yaml
+          no-fail-on-empty-changeset: "1"
+          parameter-overrides: >-
+            RoleArn=${{ secrets.AWS_LAMBDA_ROLE_ARN }}
+            S3Bucket=${{ secrets.AWS_BUCKET_NAME }}
+            GitSha=${{ github.sha }}
+            BranchHash=${{ steps.hash.outputs.hashedBranchName }}
+            APP_SECRET=${{ secrets.APP_SECRET }}
+            DATABASE_URL=${{ secrets.DATABASE_URL }}
