@@ -9,14 +9,9 @@ export async function createProject(project: NewProject): Promise<Project | unde
     if (!user) {
         return;
     }
-    try {
-        const newProjects = await db
-            .insert(projects)
-            .values({ ...project, userId: user.id })
-            .returning();
-        return newProjects[0];
-    } catch (error) {
-        console.error(error);
-        return;
-    }
+    const newProjects = await db
+        .insert(projects)
+        .values({ ...project, userId: user.id })
+        .returning();
+    return newProjects[0];
 }

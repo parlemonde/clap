@@ -7,7 +7,6 @@ import { getCurrentUser } from '../get-current-user';
 import { db } from 'src/database';
 import { themes } from 'src/database/schemas/themes';
 
-// Admin action to delete a theme
 export async function deleteTheme(themeId: number) {
     const user = await getCurrentUser();
     if (!user || user.role !== 'admin') {

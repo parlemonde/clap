@@ -7,7 +7,6 @@ import { db } from 'src/database';
 import type { Language } from 'src/database/schemas/languages';
 import { languages } from 'src/database/schemas/languages';
 
-// Admin action to add a new language
 export async function createLanguage(newLanguage: Language): Promise<void> {
     const user = await getCurrentUser();
     if (!user || user.role !== 'admin') {

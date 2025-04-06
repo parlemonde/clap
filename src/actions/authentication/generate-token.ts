@@ -1,3 +1,5 @@
+'use server';
+
 import crypto from 'crypto';
 
 export function generateToken(length: number): string {

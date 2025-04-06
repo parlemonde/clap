@@ -18,15 +18,11 @@ export async function updateProject(projectId: number, updatedProject: Partial<P
         return;
     }
 
-    try {
-        await db
-            .update(projects)
-            .set(updatedProject)
-            .where(user.role === 'student' ? eq(projects.id, projectId) : and(eq(projects.id, projectId), eq(projects.userId, user.id)));
-        if (revalidatePage) {
-            revalidatePath(`/my-videos/${projectId}`);
-        }
-    } catch (error) {
-        console.error(error);
+    await db
+        .update(projects)
+        .set(updatedProject)
+        .where(user.role === 'student' ? eq(projects.id, projectId) : and(eq(projects.id, projectId), eq(projects.userId, user.id)));
+    if (revalidatePage) {
+        revalidatePath(`/my-videos/${projectId}`);
     }
 }

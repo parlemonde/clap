@@ -10,7 +10,7 @@ import { projects } from 'src/database/schemas/projects';
 export async function startCollaboration(projectId: number) {
     const user = await getCurrentUser();
     if (!user) {
-        return 0;
+        return;
     }
 
     const project = await db.query.projects.findFirst({
@@ -21,7 +21,7 @@ export async function startCollaboration(projectId: number) {
     });
 
     if (!project) {
-        return 0;
+        return;
     }
 
     const collaborationCode = `${crypto.randomInt(100000, 999999)}`;

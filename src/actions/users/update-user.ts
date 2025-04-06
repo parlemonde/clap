@@ -49,9 +49,9 @@ export async function updateUser(updatedUser: UpdateUserArgs): Promise<void> {
 
 type UpdateUserByIdArgs = Pick<User, 'name' | 'email' | 'role'>;
 export async function updateUserById(id: number, partialUserUpdate: UpdateUserByIdArgs): Promise<void> {
-    const currentUser = await getCurrentUser();
-    if (currentUser?.role !== 'admin' || Object.keys(partialUserUpdate).length === 0) {
-        throw new Error('Not allowed');
+    const user = await getCurrentUser();
+    if (!user || user.role !== 'admin' || Object.keys(partialUserUpdate).length === 0) {
+        return;
     }
     await db.update(users).set(partialUserUpdate).where(eq(users.id, id));
 }

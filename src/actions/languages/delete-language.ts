@@ -7,7 +7,6 @@ import { getCurrentUser } from '../get-current-user';
 import { db } from 'src/database';
 import { languages } from 'src/database/schemas/languages';
 
-// Admin action to delete a language
 export async function deleteLanguage(languageCode: string): Promise<void> {
     const user = await getCurrentUser();
     if (!user || user.role !== 'admin') {

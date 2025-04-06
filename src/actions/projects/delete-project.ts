@@ -7,15 +7,10 @@ import { db } from 'src/database';
 import { projects } from 'src/database/schemas/projects';
 
 export async function deleteProject(id: number): Promise<void> {
-    const currentUser = await getCurrentUser();
-    if (!currentUser) {
+    const user = await getCurrentUser();
+    if (!user) {
         return undefined;
     }
 
-    try {
-        await db.delete(projects).where(and(eq(projects.id, id), eq(projects.userId, currentUser.id)));
-    } catch (error) {
-        console.error(error);
-        return undefined;
-    }
+    await db.delete(projects).where(and(eq(projects.id, id), eq(projects.userId, user.id)));
 }

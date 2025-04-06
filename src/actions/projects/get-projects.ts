@@ -7,15 +7,10 @@ import { db } from 'src/database';
 import { projects, type Project } from 'src/database/schemas/projects';
 
 export async function getProjects(): Promise<Project[]> {
-    const currentUser = await getCurrentUser();
-    if (!currentUser) {
+    const user = await getCurrentUser();
+    if (!user) {
         return [];
     }
 
-    try {
-        return await db.select().from(projects).where(eq(projects.userId, currentUser.id)).orderBy(projects.createDate);
-    } catch (error) {
-        console.error(error);
-        return [];
-    }
+    return await db.select().from(projects).where(eq(projects.userId, user.id)).orderBy(projects.createDate);
 }

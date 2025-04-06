@@ -12,13 +12,8 @@ export async function endCollaboration(projectId: number) {
         return;
     }
 
-    const project = await db.query.projects.findFirst({
-        where: and(eq(projects.id, projectId), eq(projects.userId, user.id)),
-    });
-
-    if (!project) {
-        return;
-    }
-
-    await db.update(projects).set({ collaborationCode: null, collaborationCodeExpiresAt: null }).where(eq(projects.id, projectId));
+    await db
+        .update(projects)
+        .set({ collaborationCode: null, collaborationCodeExpiresAt: null })
+        .where(and(eq(projects.id, projectId), eq(projects.userId, user.id)));
 }

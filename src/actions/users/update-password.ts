@@ -5,7 +5,7 @@ import { eq, and, lt } from 'drizzle-orm';
 import { db } from 'src/database';
 import { users } from 'src/database/schemas/users';
 
-export async function updateUserPassword(email: string, verifyToken: string, newPassword: string) {
+export async function updateUserPassword(email: string, verifyToken: string, newPassword: string): Promise<boolean> {
     const user = (
         await db
             .select({

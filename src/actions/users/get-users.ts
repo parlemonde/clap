@@ -5,9 +5,9 @@ import { db } from 'src/database';
 import { users, type User } from 'src/database/schemas/users';
 
 export async function getUsers(): Promise<User[]> {
-    const currentUser = await getCurrentUser();
-    if (currentUser?.role !== 'admin') {
-        throw new Error('Not allowed');
+    const user = await getCurrentUser();
+    if (!user || user.role !== 'admin') {
+        return [];
     }
     return db
         .select({
