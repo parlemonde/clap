@@ -26,14 +26,14 @@ import { getSounds } from 'src/lib/get-sounds';
 export default function MusicPage() {
     const router = useRouter();
     const { t } = useTranslation();
-    const { project, setProject } = useCurrentProject();
+    const { projectData, setProjectData } = useCurrentProject();
     useCollaboration(); // Listen to collaboration updates
     const { user } = React.useContext(userContext);
     const [isUploading, setIsUploading] = React.useState(false);
 
-    const sounds = useDeepMemo(getSounds(project?.questions || []));
+    const sounds = useDeepMemo(getSounds(projectData?.questions || []));
 
-    if (!project || user?.role === 'student') {
+    if (!projectData || user?.role === 'student') {
         return null;
     }
 
@@ -41,16 +41,16 @@ export default function MusicPage() {
         if (event.target.files !== null && event.target.files.length > 0) {
             const file = event.target.files[0];
             setIsUploading(true);
-            if (project.soundUrl) {
+            if (projectData.soundUrl) {
                 try {
-                    await deleteSound(project.soundUrl);
+                    await deleteSound(projectData.soundUrl);
                 } catch {
                     // Ignore error
                 }
             }
             try {
                 const soundUrl = await uploadSound(file);
-                setProject({ ...project, soundUrl, soundBeginTime: 0 });
+                setProjectData({ ...projectData, soundUrl, soundBeginTime: 0 });
             } catch {
                 sendToast({
                     message: t('error_upload_sound'),
@@ -64,8 +64,8 @@ export default function MusicPage() {
 
     return (
         <Container paddingBottom="xl">
-            <ThemeBreadcrumbs themeId={project.themeId}></ThemeBreadcrumbs>
-            <Steps activeStep={4} themeId={project.themeId}></Steps>
+            <ThemeBreadcrumbs themeId={projectData.themeId}></ThemeBreadcrumbs>
+            <Steps activeStep={4} themeId={projectData.themeId}></Steps>
             <Title color="primary" variant="h1" marginY="md">
                 <Inverted isRound>5</Inverted> {t('part5_title')}
             </Title>
@@ -75,15 +75,15 @@ export default function MusicPage() {
             <div style={{ margin: '16px 0' }}>
                 <DiaporamaPlayer
                     canEdit
-                    questions={project.questions}
-                    soundUrl={project.soundUrl || ''}
-                    volume={project.soundVolume || 100}
+                    questions={projectData.questions}
+                    soundUrl={projectData.soundUrl || ''}
+                    volume={projectData.soundVolume || 100}
                     setVolume={(newVolume) => {
-                        setProject({ ...project, soundVolume: newVolume });
+                        setProjectData({ ...projectData, soundVolume: newVolume });
                     }}
-                    soundBeginTime={project.soundBeginTime || 0}
+                    soundBeginTime={projectData.soundBeginTime || 0}
                     setSoundBeginTime={(newSoundBeginTime) => {
-                        setProject({ ...project, soundBeginTime: newSoundBeginTime });
+                        setProjectData({ ...projectData, soundBeginTime: newSoundBeginTime });
                     }}
                     sounds={sounds}
                 />

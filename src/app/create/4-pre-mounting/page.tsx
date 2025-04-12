@@ -25,31 +25,31 @@ import type { Sequence } from 'src/lib/project.types';
 export default function PreMountingPage() {
     const router = useRouter();
     const { t } = useTranslation();
-    const { project, setProject } = useCurrentProject();
+    const { projectData, setProjectData } = useCurrentProject();
     const { collaborationButton, isCollaborationEnabled, sendCollaborationValidationMsg } = useCollaboration();
     const { user } = React.useContext(userContext);
     const isStudent = user?.role === 'student';
 
-    if (!project) {
+    if (!projectData) {
         return null;
     }
 
     const startIndexPerSequence: Partial<Record<number, number>> = {};
-    project.questions.reduce<number>((acc, sequence, index) => {
+    projectData.questions.reduce<number>((acc, sequence, index) => {
         startIndexPerSequence[index] = acc;
         return acc + (sequence.plans || []).length;
     }, 1);
 
-    const questionIndexMap = Object.fromEntries(project.questions.map((q, index) => [q.id, index]));
-    const studentQuestion = isStudent && user?.questionId !== undefined ? project.questions.find((q) => q.id === user.questionId) : null;
-    const filteredQuestions = isStudent ? (studentQuestion ? [studentQuestion] : []) : project.questions;
+    const questionIndexMap = Object.fromEntries(projectData.questions.map((q, index) => [q.id, index]));
+    const studentQuestion = isStudent && user?.questionId !== undefined ? projectData.questions.find((q) => q.id === user.questionId) : null;
+    const filteredQuestions = isStudent ? (studentQuestion ? [studentQuestion] : []) : projectData.questions;
 
     const canEdit = !isStudent || (isStudent && studentQuestion?.status === 'pre-mounting');
 
     return (
         <Container paddingBottom="xl">
-            <ThemeBreadcrumbs themeId={project.themeId}></ThemeBreadcrumbs>
-            <Steps activeStep={3} themeId={project.themeId}></Steps>
+            <ThemeBreadcrumbs themeId={projectData.themeId}></ThemeBreadcrumbs>
+            <Steps activeStep={3} themeId={projectData.themeId}></Steps>
             <Flex flexDirection="row" alignItems="center" marginY="md">
                 <Title color="primary" variant="h1" marginRight="xl">
                     <Inverted isRound>4</Inverted>{' '}
@@ -99,10 +99,10 @@ export default function PreMountingPage() {
                             if (!studentQuestion) {
                                 return;
                             }
-                            const newQuestions = project.questions.map<Sequence>((q) =>
+                            const newQuestions = projectData.questions.map<Sequence>((q) =>
                                 q.id === studentQuestion.id ? { ...q, status: 'pre-mounting-validating' } : q,
                             );
-                            setProject({ ...project, questions: newQuestions });
+                            setProjectData({ ...projectData, questions: newQuestions });
                             sendCollaborationValidationMsg({
                                 questionId: studentQuestion.id,
                                 status: 'pre-mounting-validating',

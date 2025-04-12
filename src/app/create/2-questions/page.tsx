@@ -30,31 +30,31 @@ export default function QuestionPage() {
     const { t, currentLocale } = useTranslation();
     const { user } = React.useContext(userContext);
     const [projectId, setProjectId] = useLocalStorage('projectId');
-    const { project, setProject } = useCurrentProject();
+    const { projectData, setProjectData } = useCurrentProject();
     const { collaborationButton } = useCollaboration();
     const [title, setTitle] = React.useState('');
     const [showSaveProjectModal, setShowSaveProjectModal] = React.useState(false);
     const [isCreatingProject, setIsCreatingProject] = React.useState(false);
 
-    if (!project || user?.role === 'student') {
+    if (!projectData || user?.role === 'student') {
         return null;
     }
 
     const onSaveProject = async () => {
-        if (!project) {
+        if (!projectData) {
             return;
         }
         // Fix from legacy local project having  an id.
-        if ('id' in project) {
-            delete project.id;
+        if ('id' in projectData) {
+            delete projectData.id;
         }
         setIsCreatingProject(true);
         const backendProject = await createProject({
-            data: project,
+            data: projectData,
             name: title,
             language: currentLocale,
-            themeId: typeof project.themeId === 'string' ? null : project.themeId,
-            scenarioId: typeof project.scenarioId === 'string' ? null : project.scenarioId,
+            themeId: typeof projectData.themeId === 'string' ? null : projectData.themeId,
+            scenarioId: typeof projectData.scenarioId === 'string' ? null : projectData.scenarioId,
         });
         setIsCreatingProject(false);
         if (backendProject) {
@@ -71,8 +71,8 @@ export default function QuestionPage() {
 
     return (
         <Container paddingBottom="xl">
-            <ThemeBreadcrumbs themeId={project.themeId}></ThemeBreadcrumbs>
-            <Steps activeStep={1} themeId={project.themeId}></Steps>
+            <ThemeBreadcrumbs themeId={projectData.themeId}></ThemeBreadcrumbs>
+            <Steps activeStep={1} themeId={projectData.themeId}></Steps>
             <Flex flexDirection="row" alignItems="center" marginY="md">
                 <Title color="primary" variant="h1" marginRight="xl">
                     <Inverted isRound>2</Inverted>{' '}
@@ -88,10 +88,10 @@ export default function QuestionPage() {
             <Link href={`/create/2-questions/new`} passHref legacyBehavior>
                 <Button as="a" label={t('add_question')} variant="outlined" color="secondary" isUpperCase={false}></Button>
             </Link>
-            <QuestionsList project={project} setProject={setProject} />
+            <QuestionsList project={projectData} setProject={setProjectData} />
             <NextButton
                 onNext={() => {
-                    if (!projectId && project && user) {
+                    if (!projectId && projectData && user) {
                         setShowSaveProjectModal(true);
                     } else {
                         router.push('/create/3-storyboard');

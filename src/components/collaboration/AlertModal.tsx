@@ -22,9 +22,9 @@ export const sendCollaborationVerifyAlert = (detail: VerifyAlertData) => {
 export function AlertModal() {
     const router = useRouter();
     const [data, setData] = React.useState<VerifyAlertData | null>(null);
-    const { project } = useCurrentProject();
+    const { projectData } = useCurrentProject();
 
-    const questions = project?.questions || [];
+    const questions = projectData?.questions || [];
     const questionIndexMap = Object.fromEntries(questions.map((q, index) => [q.id, index]));
     const question = questions.find((q) => q.id === data?.questionId);
     const lastFeedback = question?.feedbacks?.[question?.feedbacks.length - 1];

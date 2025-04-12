@@ -76,9 +76,9 @@ type VideoJob = {
 export default function ResultPage() {
     const { t } = useTranslation();
     const { user } = React.useContext(userContext);
-    const { project, name } = useCurrentProject();
+    const { projectData, name } = useCurrentProject();
     useCollaboration(); // Listen to collaboration updates
-    const sounds = useDeepMemo(getSounds(project?.questions || []));
+    const sounds = useDeepMemo(getSounds(projectData?.questions || []));
 
     const [isLoading, setIsLoading] = React.useState(false);
     const [videoJob, setVideoJob] = React.useState<VideoJob | undefined>(undefined);
@@ -116,13 +116,13 @@ export default function ResultPage() {
         };
     }, [t, videoJob]);
 
-    if (!project || user?.role === 'student') {
+    if (!projectData || user?.role === 'student') {
         return null;
     }
 
     const generateMP4 = async () => {
         setIsLoading(true);
-        const response = await createVideoJob(project, name || ''); // TODO generate name
+        const response = await createVideoJob(projectData, name || ''); // TODO generate name
         setIsLoading(false);
         if (response) {
             setVideoJob(response);
@@ -138,11 +138,11 @@ export default function ResultPage() {
     };
 
     const generateMLT = async () => {
-        if (!project) {
+        if (!projectData) {
             return;
         }
         setIsLoading(true);
-        const url = await getMltZip(project, name || ''); // TODO generate name
+        const url = await getMltZip(projectData, name || ''); // TODO generate name
         setIsLoading(false);
         if (url) {
             const link = document.createElement('a');
@@ -154,8 +154,8 @@ export default function ResultPage() {
 
     return (
         <Container paddingBottom="xl">
-            <ThemeBreadcrumbs themeId={project.themeId}></ThemeBreadcrumbs>
-            <Steps activeStep={5} themeId={project.themeId}></Steps>
+            <ThemeBreadcrumbs themeId={projectData.themeId}></ThemeBreadcrumbs>
+            <Steps activeStep={5} themeId={projectData.themeId}></Steps>
             <Title color="primary" variant="h1" marginY="md">
                 <Inverted isRound>6</Inverted>
                 <Trans i18nKey="part6_title">
@@ -167,11 +167,11 @@ export default function ResultPage() {
             </Title>
             <div style={{ margin: '16px 0' }}>
                 <DiaporamaPlayer
-                    questions={project.questions}
-                    soundUrl={project.soundUrl || ''}
-                    volume={project.soundVolume || 100}
+                    questions={projectData.questions}
+                    soundUrl={projectData.soundUrl || ''}
+                    volume={projectData.soundVolume || 100}
                     setVolume={() => {}}
-                    soundBeginTime={project.soundBeginTime || 0}
+                    soundBeginTime={projectData.soundBeginTime || 0}
                     setSoundBeginTime={() => {}}
                     sounds={sounds}
                 />

@@ -11,9 +11,9 @@ import type { Project, ProjectData } from 'src/database/schemas/projects';
 import { jsonFetcher } from 'src/lib/json-fetcher';
 
 interface UseCurrentProjectData {
-    project?: ProjectData;
     name?: string;
-    setProject: (newProject: ProjectData) => void;
+    projectData?: ProjectData;
+    setProjectData: (newProjectData: ProjectData) => void;
 }
 
 export const useCurrentProject = (): UseCurrentProjectData => {
@@ -26,7 +26,7 @@ export const useCurrentProject = (): UseCurrentProjectData => {
     const { data: project, mutate } = useSWR<Project>(projectId !== undefined ? `/api/projects/${projectId}` : null, jsonFetcher);
 
     // Update project
-    const setProject = React.useCallback(
+    const setProjectData = React.useCallback(
         (newProjectData: ProjectData) => {
             if (projectId !== undefined) {
                 mutate(
@@ -63,8 +63,8 @@ export const useCurrentProject = (): UseCurrentProjectData => {
     );
 
     return {
-        project: projectId !== undefined ? project?.data : localProjectData,
         name: projectId !== undefined ? project?.name : '',
-        setProject,
+        projectData: projectId !== undefined ? project?.data : localProjectData,
+        setProjectData,
     };
 };

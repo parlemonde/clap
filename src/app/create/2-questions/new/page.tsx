@@ -17,29 +17,29 @@ import { useCurrentProject } from 'src/hooks/useCurrentProject';
 
 export default function QuestionNewPage() {
     const router = useRouter();
-    const { project, setProject } = useCurrentProject();
+    const { projectData, setProjectData } = useCurrentProject();
     useCollaboration(); // Listen to collaboration updates
     const { t } = useTranslation();
 
     const [question, setQuestion] = React.useState('');
 
-    if (!project) {
+    if (!projectData) {
         return null;
     }
 
     const onCreateQuestion = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        const newQuestions = [...project.questions];
+        const newQuestions = [...projectData.questions];
         const maxId = Math.max(0, ...newQuestions.map((q) => q.id).filter((id) => !isNaN(id) && Number.isFinite(id)));
         newQuestions.push({ id: maxId + 1, question, plans: [] });
-        setProject({ ...project, questions: newQuestions });
+        setProjectData({ ...projectData, questions: newQuestions });
         router.push('/create/2-questions');
     };
 
     return (
         <Container paddingBottom="xl">
-            <ThemeBreadcrumbs themeId={project.themeId}></ThemeBreadcrumbs>
-            <Steps activeStep={1} themeId={project.themeId}></Steps>
+            <ThemeBreadcrumbs themeId={projectData.themeId}></ThemeBreadcrumbs>
+            <Steps activeStep={1} themeId={projectData.themeId}></Steps>
             <Title color="primary" marginY="md" variant="h1">
                 <Inverted isRound>2</Inverted>{' '}
                 <Trans i18nKey="part2_title">

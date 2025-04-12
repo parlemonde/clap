@@ -24,23 +24,23 @@ export default function MontagePage(props: ServerPageProps) {
     const { user } = React.useContext(userContext);
     const isStudent = user?.role === 'student';
     const { t } = useTranslation();
-    const { project, setProject } = useCurrentProject();
+    const { projectData, setProjectData } = useCurrentProject();
     const { isCollaborationEnabled, sendCollaborationValidationMsg } = useCollaboration(); // Listen to collaboration updates
 
     const searchParams = React.use(props.searchParams);
     const questionIndex = typeof searchParams.question === 'string' ? Number(searchParams.question) : undefined;
     const [newQuestion, setNewQuestion] = React.useState<Sequence | null>(null);
 
-    if (!project || questionIndex === undefined || !project.questions[questionIndex]) {
+    if (!projectData || questionIndex === undefined || !projectData.questions[questionIndex]) {
         return null;
     }
 
-    const sequence = project.questions[questionIndex];
+    const sequence = projectData.questions[questionIndex];
 
     return (
         <Container paddingBottom="xl">
-            <ThemeBreadcrumbs themeId={project.themeId}></ThemeBreadcrumbs>
-            <Steps activeStep={3} themeId={project.themeId} backHref="/create/4-pre-mounting"></Steps>
+            <ThemeBreadcrumbs themeId={projectData.themeId}></ThemeBreadcrumbs>
+            <Steps activeStep={3} themeId={projectData.themeId} backHref="/create/4-pre-mounting"></Steps>
             <Flex flexDirection="row" alignItems="center" isFullWidth marginY="md">
                 <Title color="primary" variant="h1">
                     <Inverted isRound>4</Inverted>
@@ -55,9 +55,9 @@ export default function MontagePage(props: ServerPageProps) {
                 sequence={newQuestion || sequence}
                 setSequence={setNewQuestion}
                 onSubmit={(newSequence) => {
-                    const newQuestions = [...project.questions];
+                    const newQuestions = [...projectData.questions];
                     newQuestions[questionIndex] = newSequence;
-                    setProject({ ...project, questions: newQuestions });
+                    setProjectData({ ...projectData, questions: newQuestions });
                     router.push('/create/4-pre-mounting');
                 }}
                 feedbackForm={
@@ -71,8 +71,8 @@ export default function MontagePage(props: ServerPageProps) {
                                     questionId: sequence.id,
                                     studentKind: 'feedback',
                                 });
-                                const newQuestions = project.questions.map<Sequence>((q) => (q.id === newSequence.id ? newSequence : q));
-                                setProject({ ...project, questions: newQuestions });
+                                const newQuestions = projectData.questions.map<Sequence>((q) => (q.id === newSequence.id ? newSequence : q));
+                                setProjectData({ ...projectData, questions: newQuestions });
                             }}
                         />
                     ) : null

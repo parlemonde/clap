@@ -18,39 +18,39 @@ import type { ServerPageProps } from 'src/lib/page-props.types';
 
 export default function ScenarioPage(props: ServerPageProps) {
     const router = useRouter();
-    const { project, setProject } = useCurrentProject();
+    const { projectData, setProjectData } = useCurrentProject();
     useCollaboration(); // Listen to collaboration updates
     const { t } = useTranslation();
 
     const searchParams = React.use(props.searchParams);
     const questionIndex = typeof searchParams.question === 'string' ? Number(searchParams.question) : undefined;
 
-    const [question, setQuestion] = React.useState(questionIndex ? project?.questions[questionIndex]?.question || '' : '');
+    const [question, setQuestion] = React.useState(questionIndex ? projectData?.questions[questionIndex]?.question || '' : '');
 
     // Update the question when the project or question index changes
     React.useEffect(() => {
         if (questionIndex === undefined) {
             return;
         }
-        setQuestion(project?.questions[questionIndex]?.question || '');
-    }, [questionIndex, project]);
+        setQuestion(projectData?.questions[questionIndex]?.question || '');
+    }, [questionIndex, projectData]);
 
-    if (!project || questionIndex === undefined) {
+    if (!projectData || questionIndex === undefined) {
         return null;
     }
 
     const onUpdateQuestion = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        const newQuestions = [...project.questions];
+        const newQuestions = [...projectData.questions];
         newQuestions[questionIndex] = { ...newQuestions[questionIndex], question };
-        setProject({ ...project, questions: newQuestions });
+        setProjectData({ ...projectData, questions: newQuestions });
         router.push('/create/2-questions');
     };
 
     return (
         <Container paddingBottom="xl">
-            <ThemeBreadcrumbs themeId={project.themeId}></ThemeBreadcrumbs>
-            <Steps activeStep={1} themeId={project.themeId}></Steps>
+            <ThemeBreadcrumbs themeId={projectData.themeId}></ThemeBreadcrumbs>
+            <Steps activeStep={1} themeId={projectData.themeId}></Steps>
             <Title color="primary" marginY="md" variant="h1">
                 <Inverted isRound>2</Inverted>{' '}
                 <Trans i18nKey="part2_title">

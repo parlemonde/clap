@@ -29,7 +29,7 @@ export const Scenarios = ({ scenarios }: ScenariosProps) => {
     const router = useRouter();
     const { t, currentLocale } = useTranslation();
     const [projectId] = useLocalStorage('projectId');
-    const { project } = useCurrentProject();
+    const { projectData } = useCurrentProject();
 
     const { data: themes } = useSWR<Theme[]>('/api/themes', jsonFetcher);
     const [localThemes] = useLocalStorage('themes', []);
@@ -57,7 +57,7 @@ export const Scenarios = ({ scenarios }: ScenariosProps) => {
                         questionsCount={isLocalScenario(s) ? undefined : getQuestionCountString(s.questionsCount)}
                         href="/create/2-questions"
                         onClick={async (event) => {
-                            if (project && project.themeId === s.themeId && project.scenarioId === s.id && !projectId) {
+                            if (projectData && projectData.themeId === s.themeId && projectData.scenarioId === s.id && !projectId) {
                                 return; // Go to the next page if the project is already created with the default link action
                             }
 

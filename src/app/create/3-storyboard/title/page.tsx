@@ -32,24 +32,24 @@ const getDefaultTitle = (question: string): SequenceTitle => ({
 export default function StoryboardTitlePage(props: ServerPageProps) {
     const router = useRouter();
     const { t } = useTranslation();
-    const { project, setProject } = useCurrentProject();
+    const { projectData, setProjectData } = useCurrentProject();
     useCollaboration(); // Listen to collaboration updates
 
     const searchParams = React.use(props.searchParams);
     const questionIndex = typeof searchParams.question === 'string' ? Number(searchParams.question) : undefined;
     const [newTitle, setNewTitle] = React.useState<SequenceTitle | null>(null);
 
-    if (!project || questionIndex === undefined || !project.questions[questionIndex]) {
+    if (!projectData || questionIndex === undefined || !projectData.questions[questionIndex]) {
         return null;
     }
 
-    const sequence = project.questions[questionIndex];
+    const sequence = projectData.questions[questionIndex];
     const title = sequence.title || getDefaultTitle(sequence.question);
 
     return (
         <Container paddingBottom="xl">
-            <ThemeBreadcrumbs themeId={project.themeId}></ThemeBreadcrumbs>
-            <Steps activeStep={2} themeId={project.themeId} backHref="/create/3-storyboard"></Steps>
+            <ThemeBreadcrumbs themeId={projectData.themeId}></ThemeBreadcrumbs>
+            <Steps activeStep={2} themeId={projectData.themeId} backHref="/create/3-storyboard"></Steps>
             <Title color="primary" variant="h1" marginY="md">
                 <Inverted isRound>3</Inverted> {t('part3_edit_title', { planNumber: questionIndex + 1 })}
             </Title>
@@ -64,9 +64,9 @@ export default function StoryboardTitlePage(props: ServerPageProps) {
                 label={t('continue')}
                 backHref="/create/3-storyboard"
                 onNext={() => {
-                    const newQuestions = [...project.questions];
+                    const newQuestions = [...projectData.questions];
                     newQuestions[questionIndex] = { ...sequence, title: newTitle || title };
-                    setProject({ ...project, questions: newQuestions });
+                    setProjectData({ ...projectData, questions: newQuestions });
                     router.push('/create/3-storyboard');
                 }}
             />

@@ -18,7 +18,7 @@ import type { Plan } from 'src/lib/project.types';
 export default function StoryboardPlanPage(props: ServerPageProps) {
     const router = useRouter();
     const { t } = useTranslation();
-    const { project, setProject } = useCurrentProject();
+    const { projectData, setProjectData } = useCurrentProject();
     useCollaboration(); // Listen to collaboration updates
 
     const searchParams = React.use(props.searchParams);
@@ -27,23 +27,23 @@ export default function StoryboardPlanPage(props: ServerPageProps) {
     const [newPlan, setNewPlan] = React.useState<Plan | null>(null);
 
     if (
-        !project ||
+        !projectData ||
         questionIndex === undefined ||
-        !project.questions[questionIndex] ||
+        !projectData.questions[questionIndex] ||
         planIndex === undefined ||
-        !project.questions[questionIndex].plans[planIndex]
+        !projectData.questions[questionIndex].plans[planIndex]
     ) {
         return null;
     }
 
-    const sequence = project.questions[questionIndex];
+    const sequence = projectData.questions[questionIndex];
     const plan = sequence.plans[planIndex];
-    const planStartIndex = project.questions.slice(0, questionIndex).reduce<number>((acc, question) => acc + (question.plans || []).length, 1);
+    const planStartIndex = projectData.questions.slice(0, questionIndex).reduce<number>((acc, question) => acc + (question.plans || []).length, 1);
 
     return (
         <Container paddingBottom="xl">
-            <ThemeBreadcrumbs themeId={project.themeId}></ThemeBreadcrumbs>
-            <Steps activeStep={2} themeId={project.themeId} backHref="/create/3-storyboard"></Steps>
+            <ThemeBreadcrumbs themeId={projectData.themeId}></ThemeBreadcrumbs>
+            <Steps activeStep={2} themeId={projectData.themeId} backHref="/create/3-storyboard"></Steps>
             <Title color="primary" variant="h1" marginY="md">
                 <Inverted isRound>3</Inverted> {t('part3_edit_plan')}
             </Title>
@@ -57,7 +57,7 @@ export default function StoryboardPlanPage(props: ServerPageProps) {
                 plan={newPlan || plan}
                 setPlan={setNewPlan}
                 onSubmit={(submittedPlan) => {
-                    const newQuestions = [...project.questions];
+                    const newQuestions = [...projectData.questions];
                     newQuestions[questionIndex] = {
                         ...sequence,
                         plans: sequence.plans.map((p, index) => {
@@ -67,7 +67,7 @@ export default function StoryboardPlanPage(props: ServerPageProps) {
                             return p;
                         }),
                     };
-                    setProject({ ...project, questions: newQuestions });
+                    setProjectData({ ...projectData, questions: newQuestions });
                     router.push('/create/3-storyboard');
                 }}
             />

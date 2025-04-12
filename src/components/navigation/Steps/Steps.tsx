@@ -53,7 +53,7 @@ type StepsProps = {
 };
 export const Steps = ({ activeStep, backHref, themeId }: StepsProps) => {
     const { t } = useTranslation();
-    const { project } = useCurrentProject();
+    const { projectData } = useCurrentProject();
     const { user } = React.useContext(userContext);
 
     const isStudent = user?.role === 'student';
@@ -98,7 +98,7 @@ export const Steps = ({ activeStep, backHref, themeId }: StepsProps) => {
                         href = backHref;
                     } else if (typeof step.href === 'function') {
                         href = step.href(themeId);
-                    } else if (project && project.themeId === themeId) {
+                    } else if (projectData && projectData.themeId === themeId) {
                         href = step.href;
                     }
                     if (href && (!isStudent || index === 2 || index === 3)) {
