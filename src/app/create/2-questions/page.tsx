@@ -27,7 +27,7 @@ import { deleteFromLocalStorage } from 'src/hooks/useLocalStorage/local-storage'
 
 export default function QuestionPage() {
     const router = useRouter();
-    const { t } = useTranslation();
+    const { t, currentLocale } = useTranslation();
     const { user } = React.useContext(userContext);
     const [projectId, setProjectId] = useLocalStorage('projectId');
     const { project, setProject } = useCurrentProject();
@@ -50,8 +50,9 @@ export default function QuestionPage() {
         }
         setIsCreatingProject(true);
         const backendProject = await createProject({
-            ...project,
+            data: project,
             name: title,
+            language: currentLocale,
             themeId: typeof project.themeId === 'string' ? null : project.themeId,
             scenarioId: typeof project.scenarioId === 'string' ? null : project.scenarioId,
         });

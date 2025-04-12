@@ -30,7 +30,7 @@ export const VideoList = ({ projects }: VideoListProps) => {
                         <ProjectCard
                             key={p.id}
                             title={p.name}
-                            themeName={p.themeName}
+                            themeName={p.data.themeName}
                             onClick={() => {
                                 deleteFromLocalStorage('project');
                                 setProjectId(p.id);

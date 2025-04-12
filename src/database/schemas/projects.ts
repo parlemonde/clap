@@ -5,7 +5,47 @@ import { scenarios } from './scenarios';
 import { themes } from './themes';
 import { users } from './users';
 import { json } from '../lib/custom-json';
-import type { Sequence } from 'src/lib/project.types';
+
+export interface Title {
+    text: string;
+    duration: number;
+    x: number;
+    y: number;
+    width: number;
+    fontSize: number;
+    fontFamily: string;
+    color: string;
+    backgroundColor: string;
+    textAlign: 'left' | 'center' | 'right' | 'justify';
+}
+export interface Plan {
+    id: number;
+    description: string;
+    imageUrl: string;
+    duration: number;
+}
+export interface Sequence {
+    id: number;
+    question: string;
+    plans: Plan[];
+    title?: Title;
+    voiceText?: string;
+    soundUrl?: string;
+    soundVolume?: number;
+    voiceOffBeginTime?: number;
+    status?: 'storyboard' | 'storyboard-validating' | 'pre-mounting' | 'pre-mounting-validating' | 'validated';
+    feedbacks?: string[];
+}
+export interface ProjectData {
+    themeId: string | number;
+    themeName: string;
+    scenarioId: string | number;
+    scenarioName: string;
+    questions: Sequence[];
+    soundUrl?: string;
+    soundVolume?: number;
+    soundBeginTime?: number;
+}
 
 export const projects = pgTable('projects', {
     id: serial('id').primaryKey(),
@@ -25,16 +65,11 @@ export const projects = pgTable('projects', {
     themeId: integer('themeId').references(() => themes.id, {
         onDelete: 'set null',
     }),
-    themeName: varchar('themeName', { length: 200 }).notNull(),
     scenarioId: integer('scenarioId').references(() => scenarios.id, {
         onDelete: 'set null',
     }),
-    scenarioName: varchar('scenarioName', { length: 200 }).notNull(),
     videoJobId: varchar('videoJobId', { length: 36 }),
-    questions: json<'questions', Sequence[]>('questions').notNull().default([]),
-    soundUrl: varchar('soundUrl', { length: 200 }),
-    soundVolume: integer('soundVolume'),
-    soundBeginTime: integer('soundBeginTime'),
+    data: json<'data', ProjectData>('data').notNull(),
     collaborationCode: varchar('collaborationCode', { length: 6 }),
     collaborationCodeExpiresAt: timestamp('collaborationCodeExpiresAt', { mode: 'string' }),
 });

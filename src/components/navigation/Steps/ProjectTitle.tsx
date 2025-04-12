@@ -12,10 +12,10 @@ import { useLocalStorage } from 'src/hooks/useLocalStorage';
 
 export const ProjectTitle = () => {
     const [projectId] = useLocalStorage('projectId');
-    const { project } = useCurrentProject();
+    const { project, name } = useCurrentProject();
 
     const { t } = useTranslation();
-    if (!project || !projectId) {
+    if (!project || !projectId || !name) {
         return null;
     }
     return (
@@ -40,7 +40,7 @@ export const ProjectTitle = () => {
                     fontSize: '1.5rem',
                 }}
             >
-                {project.name}
+                {name}
             </Title>
             <Link href={`/my-videos/${projectId}`} passHref legacyBehavior>
                 <IconButton

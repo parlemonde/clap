@@ -3,11 +3,11 @@
 import * as React from 'react';
 
 import { Text, Title } from 'src/components/layout/Typography';
-import type { LocalProject } from 'src/hooks/useLocalStorage/local-storage';
+import type { ProjectData } from 'src/database/schemas/projects';
 import { COLORS } from 'src/lib/colors';
 
 interface StudentQuestionChoiceProps {
-    project: LocalProject;
+    project: ProjectData;
     onSelectQuestion?: (questionId: number) => void;
 }
 export const StudentQuestionChoice = ({ project, onSelectQuestion }: StudentQuestionChoiceProps) => {

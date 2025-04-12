@@ -76,7 +76,7 @@ type VideoJob = {
 export default function ResultPage() {
     const { t } = useTranslation();
     const { user } = React.useContext(userContext);
-    const { project } = useCurrentProject();
+    const { project, name } = useCurrentProject();
     useCollaboration(); // Listen to collaboration updates
     const sounds = useDeepMemo(getSounds(project?.questions || []));
 
@@ -122,7 +122,7 @@ export default function ResultPage() {
 
     const generateMP4 = async () => {
         setIsLoading(true);
-        const response = await createVideoJob(project);
+        const response = await createVideoJob(project, name || ''); // TODO generate name
         setIsLoading(false);
         if (response) {
             setVideoJob(response);
@@ -142,7 +142,7 @@ export default function ResultPage() {
             return;
         }
         setIsLoading(true);
-        const url = await getMltZip(project);
+        const url = await getMltZip(project, name || ''); // TODO generate name
         setIsLoading(false);
         if (url) {
             const link = document.createElement('a');

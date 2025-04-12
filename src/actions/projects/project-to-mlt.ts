@@ -4,8 +4,8 @@
 import type { MLT, Playlist } from 'mlt-xml';
 import { mltToXml } from 'mlt-xml';
 
+import type { ProjectData } from 'src/database/schemas/projects';
 import type { FileType } from 'src/fileUpload';
-import type { LocalProject } from 'src/hooks/useLocalStorage/local-storage';
 
 export type File = {
     fileType: FileType;
@@ -32,7 +32,7 @@ const toLocalUrl = (url: string) => {
     return url.replace(/^\/api\/images\/(?:users\/)?/, '').replace(/^\/api\/audios\/(?:users\/)?/, '');
 };
 
-export async function projectToMlt(project: LocalProject, urlKind: 'full' | 'local') {
+export async function projectToMlt(project: ProjectData, name: string, urlKind: 'full' | 'local') {
     const questions = project.questions.filter((q) => q.title !== undefined || q.plans.length > 0);
     const totalFrames = getFramesCount(
         questions.reduce(
@@ -49,7 +49,7 @@ export async function projectToMlt(project: LocalProject, urlKind: 'full' | 'loc
     const urlTransform = urlKind === 'full' ? toFullUrl : toLocalUrl;
 
     const mlt: MLT = {
-        title: project.name,
+        title: name,
         elements: [
             {
                 name: 'profile',

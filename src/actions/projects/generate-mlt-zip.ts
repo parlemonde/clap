@@ -10,8 +10,8 @@ import { v4 } from 'uuid';
 
 import type { File } from './project-to-mlt';
 import { projectToMlt } from './project-to-mlt';
+import type { ProjectData } from 'src/database/schemas/projects';
 import { getFile, uploadFile } from 'src/fileUpload';
-import type { LocalProject } from 'src/hooks/useLocalStorage/local-storage';
 
 async function getFileStream(file: File): Promise<internal.Readable | null> {
     if (file.isLocal) {
@@ -21,8 +21,8 @@ async function getFileStream(file: File): Promise<internal.Readable | null> {
     }
 }
 
-export async function getMltZip(project: LocalProject) {
-    const { mltStr, files } = await projectToMlt(project, 'local');
+export async function getMltZip(project: ProjectData, name: string) {
+    const { mltStr, files } = await projectToMlt(project, name, 'local');
 
     const id: string = v4();
     const __dirname = process.env.VERCEL === '1' ? '/tmp' : path.join(dirname(fileURLToPath(import.meta.url)), '../../../temp');

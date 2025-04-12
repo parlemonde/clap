@@ -2,7 +2,7 @@
 
 import isEqual from 'fast-deep-equal/es6';
 
-import type { Project } from 'src/database/schemas/projects';
+import type { ProjectData } from 'src/database/schemas/projects';
 import type { Scenario } from 'src/database/schemas/scenarios';
 import type { Theme } from 'src/database/schemas/themes';
 
@@ -19,21 +19,13 @@ export type LocalScenario = Omit<Scenario, 'id' | 'themeId'> & {
 };
 export const isLocalScenario = (scenario: Scenario | LocalScenario): scenario is LocalScenario => typeof scenario.id === 'string';
 
-export type LocalProject = Pick<
-    Project,
-    'name' | 'language' | 'questions' | 'scenarioName' | 'themeName' | 'soundBeginTime' | 'soundUrl' | 'soundVolume'
-> & {
-    scenarioId: string | number | null;
-    themeId: string | number | null;
-};
-
 export type LocalStorageKey = 'themes' | 'scenarios' | 'project' | 'projectId' | 'videoJobId';
 export type ObjectType<T extends LocalStorageKey> = T extends 'themes'
     ? LocalTheme[]
     : T extends 'scenarios'
       ? LocalScenario[]
       : T extends 'project'
-        ? LocalProject
+        ? ProjectData
         : T extends 'projectId'
           ? number
           : T extends 'videoJobId'

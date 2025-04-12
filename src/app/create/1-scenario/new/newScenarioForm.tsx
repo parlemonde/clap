@@ -41,8 +41,6 @@ export const NewScenarioForm = ({ backUrl, themeId }: NewScenarioFormProps) => {
 
     const createNewProject = (scenario: Scenario | LocalScenario) => {
         setProject({
-            name: '',
-            language: currentLocale,
             themeId: scenario.themeId,
             themeName:
                 typeof scenario.themeId === 'number'
@@ -51,9 +49,6 @@ export const NewScenarioForm = ({ backUrl, themeId }: NewScenarioFormProps) => {
             scenarioId: scenario.id,
             scenarioName: scenario.names[currentLocale] || scenario.names[Object.keys(scenario.names)[0]] || '',
             questions: [],
-            soundBeginTime: 0,
-            soundUrl: null,
-            soundVolume: 100,
         });
     };
 

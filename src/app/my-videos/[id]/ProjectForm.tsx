@@ -80,30 +80,26 @@ export const ProjectForm = ({ project }: ProjectFormProps) => {
                 <label style={{ marginRight: '0.5rem' }}>
                     <strong>{t('pdf_theme')}</strong>
                 </label>
-                {project.themeName}
+                {project.data.themeName}
             </div>
             <div style={{ marginTop: '0.5rem' }}>
                 <label style={{ marginRight: '0.5rem' }}>
                     <strong>{t('pdf_scenario')}</strong>
                 </label>
-                {project.scenarioName}
+                {project.data.scenarioName}
             </div>
-            {project.questions !== null && (
-                <>
-                    <div style={{ marginTop: '0.5rem' }}>
-                        <label style={{ marginRight: '0.5rem' }}>
-                            <strong>{t('project_question_number')}</strong>
-                        </label>
-                        {project.questions?.length || 0}
-                    </div>
-                    <div style={{ marginTop: '0.5rem' }}>
-                        <label style={{ marginRight: '0.5rem' }}>
-                            <strong>{t('project_plan_number')}</strong>
-                        </label>
-                        {project.questions?.reduce<number>((n, q) => n + (q.plans || []).length, 0) ?? 0}
-                    </div>
-                </>
-            )}
+            <div style={{ marginTop: '0.5rem' }}>
+                <label style={{ marginRight: '0.5rem' }}>
+                    <strong>{t('project_question_number')}</strong>
+                </label>
+                {project.data.questions.length || 0}
+            </div>
+            <div style={{ marginTop: '0.5rem' }}>
+                <label style={{ marginRight: '0.5rem' }}>
+                    <strong>{t('project_plan_number')}</strong>
+                </label>
+                {project.data.questions.reduce<number>((n, q) => n + (q.plans || []).length, 0) ?? 0}
+            </div>
             <Button
                 label={t('project_see_plans')}
                 marginTop="md"

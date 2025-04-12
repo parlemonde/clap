@@ -11,7 +11,7 @@ import { Button } from 'src/components/layout/Button';
 import { Field, Form, Input } from 'src/components/layout/Form';
 import { Title } from 'src/components/layout/Typography';
 import { Loader } from 'src/components/ui/Loader';
-import type { LocalProject } from 'src/hooks/useLocalStorage/local-storage';
+import type { ProjectData } from 'src/database/schemas/projects';
 import { setToLocalStorage } from 'src/hooks/useLocalStorage/local-storage';
 
 export const LoginStudentForm = () => {
@@ -19,7 +19,7 @@ export const LoginStudentForm = () => {
     const [message, setMessage] = React.useState('');
     const [isLoading, setIsLoading] = React.useState(false);
     const [projectCode, setProjectCode] = React.useState('');
-    const [project, setProject] = React.useState<LocalProject | null>(null);
+    const [project, setProject] = React.useState<ProjectData | null>(null);
 
     const onSubmit = async (ev: React.FormEvent) => {
         ev.preventDefault();
@@ -29,7 +29,7 @@ export const LoginStudentForm = () => {
             setMessage('Code de collaboration invalide');
         } else {
             setMessage('');
-            setProject(project);
+            setProject(project.data);
         }
         setIsLoading(false);
     };

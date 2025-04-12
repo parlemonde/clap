@@ -58,8 +58,6 @@ export const Scenarios = ({ scenarios }: ScenariosProps) => {
                         // Create a new project with the selected scenario and selected theme
                         deleteFromLocalStorage('projectId');
                         setToLocalStorage('project', {
-                            name: '',
-                            language: currentLocale,
                             themeId: s.themeId,
                             themeName:
                                 typeof s.themeId === 'number'
@@ -72,9 +70,6 @@ export const Scenarios = ({ scenarios }: ScenariosProps) => {
                                 question: question.question,
                                 plans: [],
                             })),
-                            soundBeginTime: 0,
-                            soundUrl: null,
-                            soundVolume: 100,
                         });
                         router.push('/create/2-questions');
                     }}

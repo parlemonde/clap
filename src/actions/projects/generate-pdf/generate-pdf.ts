@@ -10,7 +10,7 @@ import { getCurrentUser } from 'src/actions/get-current-user';
 import { getTranslation } from 'src/actions/get-translation';
 import { getScenario } from 'src/actions/scenarios/get-scenario';
 import { invokeLambda } from 'src/aws/lambda';
-import type { LocalProject } from 'src/hooks/useLocalStorage/local-storage';
+import type { ProjectData } from 'src/database/schemas/projects';
 import { registerService } from 'src/lib/register-service';
 
 const isObjectLiteral = (value: unknown): value is Record<string, unknown> => typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -24,12 +24,12 @@ function getToPdfHtml(): pug.compileTemplate {
     return toPdfHtml;
 }
 
-export async function generatePdf(project: LocalProject): Promise<string | false> {
+export async function generatePdf(project: ProjectData): Promise<string | false> {
     const user = await getCurrentUser();
-    const { t } = await getTranslation();
+    const { t, currentLocale } = await getTranslation();
 
     const scenario = typeof project.scenarioId === 'number' ? await getScenario(project.scenarioId) : null;
-    const scenarioDescription = scenario?.descriptions[project.language] || null;
+    const scenarioDescription = scenario?.descriptions[currentLocale] || scenario?.descriptions.fr || null;
 
     try {
         const html = getToPdfHtml()({

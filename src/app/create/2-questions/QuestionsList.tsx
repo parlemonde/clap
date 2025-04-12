@@ -4,12 +4,12 @@ import { QuestionCard } from 'src/components/create/QuestionCard';
 import { Modal } from 'src/components/layout/Modal';
 import { Sortable } from 'src/components/ui/Sortable';
 import { useTranslation } from 'src/contexts/translationContext';
-import type { LocalProject } from 'src/hooks/useLocalStorage/local-storage';
+import type { ProjectData } from 'src/database/schemas/projects';
 import type { Sequence } from 'src/lib/project.types';
 
 interface QuestionsListProps {
-    project: LocalProject;
-    setProject: (newProject: LocalProject) => void;
+    project: ProjectData;
+    setProject: (newProject: ProjectData) => void;
 }
 
 export const QuestionsList = ({ project, setProject }: QuestionsListProps) => {
