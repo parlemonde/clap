@@ -11,7 +11,13 @@ import type { Scenario } from 'src/database/schemas/scenarios';
 import type { Theme } from 'src/database/schemas/themes';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import { useLocalStorage } from 'src/hooks/useLocalStorage';
-import { deleteFromLocalStorage, setToLocalStorage, type LocalScenario } from 'src/hooks/useLocalStorage/local-storage';
+import {
+    deleteFromLocalStorage,
+    isLocalScenario,
+    isLocalTheme,
+    setToLocalStorage,
+    type LocalScenario,
+} from 'src/hooks/useLocalStorage/local-storage';
 import { jsonFetcher } from 'src/lib/json-fetcher';
 import { serializeToQueryUrl } from 'src/lib/serialize-to-query-url';
 
@@ -38,43 +44,56 @@ export const Scenarios = ({ scenarios }: ScenariosProps) => {
 
     return (
         <>
-            {scenarios.map((s) => (
-                <ScenarioCard
-                    key={s.id}
-                    name={s.names[currentLocale] || s.names[Object.keys(s.names)[0]] || ''}
-                    description={s.descriptions[currentLocale] || s.descriptions[Object.keys(s.descriptions)[0]] || ''}
-                    questionsCount={getQuestionCountString(s.questionsCount)}
-                    href="/create/2-questions"
-                    onClick={async (event) => {
-                        if (project && project.themeId === s.themeId && project.scenarioId === s.id && !projectId) {
-                            return; // Go to the next page if the project is already created with the default link action
-                        }
+            {scenarios.map((s) => {
+                const name = isLocalScenario(s) ? s.name : s.names[currentLocale] || s.names[Object.keys(s.names)[0]] || '';
+                const description = isLocalScenario(s)
+                    ? s.description
+                    : s.descriptions[currentLocale] || s.descriptions[Object.keys(s.descriptions)[0]] || '';
+                return (
+                    <ScenarioCard
+                        key={s.id}
+                        name={name}
+                        description={description}
+                        questionsCount={isLocalScenario(s) ? undefined : getQuestionCountString(s.questionsCount)}
+                        href="/create/2-questions"
+                        onClick={async (event) => {
+                            if (project && project.themeId === s.themeId && project.scenarioId === s.id && !projectId) {
+                                return; // Go to the next page if the project is already created with the default link action
+                            }
 
-                        // Prevent navigation to the next page and create a new project
-                        event.preventDefault();
-                        const questions = await jsonFetcher<QuestionTemplate[]>(
-                            `/api/questions-templates${serializeToQueryUrl({ scenarioId: s.id })}`,
-                        );
-                        // Create a new project with the selected scenario and selected theme
-                        deleteFromLocalStorage('projectId');
-                        setToLocalStorage('project', {
-                            themeId: s.themeId,
-                            themeName:
+                            // Prevent navigation to the next page and create a new project
+                            event.preventDefault();
+                            const questions = await jsonFetcher<QuestionTemplate[]>(
+                                `/api/questions-templates${serializeToQueryUrl({ scenarioId: s.id })}`,
+                            );
+                            const theme =
                                 typeof s.themeId === 'number'
-                                    ? themes?.find((theme) => theme.id === s.themeId)?.names[currentLocale] || ''
-                                    : localThemes.find((theme) => theme.id === s.themeId)?.names[currentLocale] || '',
-                            scenarioId: s.id,
-                            scenarioName: s.names[currentLocale] || s.names[Object.keys(s.names)[0]] || '',
-                            questions: questions.map((question, index) => ({
-                                id: index,
-                                question: question.question,
-                                plans: [],
-                            })),
-                        });
-                        router.push('/create/2-questions');
-                    }}
-                />
-            ))}
+                                    ? themes?.find((theme) => theme.id === s.themeId)
+                                    : localThemes.find((theme) => theme.id === s.themeId);
+                            const themeName =
+                                theme && isLocalTheme(theme)
+                                    ? theme.name
+                                    : theme
+                                      ? theme.names[currentLocale] || theme.names[Object.keys(theme.names)[0]] || ''
+                                      : '';
+                            // Create a new project with the selected scenario and selected theme
+                            deleteFromLocalStorage('projectId');
+                            setToLocalStorage('project', {
+                                themeId: s.themeId,
+                                themeName,
+                                scenarioId: s.id,
+                                scenarioName: name,
+                                questions: questions.map((question, index) => ({
+                                    id: index,
+                                    question: question.question,
+                                    plans: [],
+                                })),
+                            });
+                            router.push('/create/2-questions');
+                        }}
+                    />
+                );
+            })}
         </>
     );
 };

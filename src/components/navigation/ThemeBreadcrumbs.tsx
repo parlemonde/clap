@@ -3,13 +3,13 @@
 import React from 'react';
 import useSWR from 'swr';
 
-import { LocalThemeName } from 'src/components/create/LocalThemeName';
 import { Breadcrumbs } from 'src/components/layout/Breadcrumbs';
 import { Placeholder } from 'src/components/layout/Placeholder';
 import { useTranslation } from 'src/contexts/translationContext';
 import { userContext } from 'src/contexts/userContext';
 import type { Theme } from 'src/database/schemas/themes';
 import { useLocalStorage } from 'src/hooks/useLocalStorage';
+import { isLocalTheme } from 'src/hooks/useLocalStorage/local-storage';
 import { jsonFetcher } from 'src/lib/json-fetcher';
 
 type ThemeBreadcrumbsProps = {
@@ -38,13 +38,7 @@ export const ThemeBreadcrumbs = ({ themeId }: ThemeBreadcrumbsProps) => {
     }
 
     const theme = typeof themeId === 'number' ? themes?.find((theme) => theme.id === themeId) : localThemes.find((theme) => theme.id === themeId);
+    const themeName = theme && isLocalTheme(theme) ? theme.name : theme ? theme.names[currentLocale] || theme.names.fr || '' : '';
 
-    return (
-        <Breadcrumbs
-            marginTop="sm"
-            links={[{ href: '/', label: t('all_themes') }]}
-            currentLabel={theme ? theme?.names[currentLocale] || theme?.names.fr || '' : <LocalThemeName themeId={`${themeId}`} />}
-            className="for-tablet-up-only"
-        />
-    );
+    return <Breadcrumbs marginTop="sm" links={[{ href: '/', label: t('all_themes') }]} currentLabel={themeName} className="for-tablet-up-only" />;
 };

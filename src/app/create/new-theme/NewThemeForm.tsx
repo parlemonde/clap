@@ -17,7 +17,7 @@ import type { LocalTheme } from 'src/hooks/useLocalStorage/local-storage';
 
 export const NewThemeForm = () => {
     const router = useRouter();
-    const { t, currentLocale } = useTranslation();
+    const { t } = useTranslation();
     const { user } = React.useContext(userContext);
     const [themeName, setThemeName] = React.useState('');
     const [isLoading, setIsLoading] = React.useState(false);
@@ -39,13 +39,7 @@ export const NewThemeForm = () => {
             const nextId = Math.max(0, ...localThemes.map((theme) => Number(theme.id.split('_')[1] || '0'))) + 1;
             const newTheme: LocalTheme = {
                 id: `local_${nextId}`,
-                order: 0,
-                isDefault: false,
-                userId: null,
-                imageUrl: null,
-                names: {
-                    [currentLocale]: themeName,
-                },
+                name: themeName,
             };
             setLocalThemes([...localThemes, newTheme]);
             router.push(`/create/1-scenario?themeId=${newTheme.id}`);

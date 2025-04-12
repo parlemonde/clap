@@ -17,7 +17,7 @@ import type { Scenario } from 'src/database/schemas/scenarios';
 import type { Theme } from 'src/database/schemas/themes';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import { useLocalStorage } from 'src/hooks/useLocalStorage';
-import type { LocalScenario } from 'src/hooks/useLocalStorage/local-storage';
+import { isLocalScenario, isLocalTheme, type LocalScenario } from 'src/hooks/useLocalStorage/local-storage';
 import { jsonFetcher } from 'src/lib/json-fetcher';
 
 type NewScenarioFormProps = {
@@ -40,14 +40,18 @@ export const NewScenarioForm = ({ backUrl, themeId }: NewScenarioFormProps) => {
     const [localScenarios, setLocalScenarios] = useLocalStorage('scenarios', []);
 
     const createNewProject = (scenario: Scenario | LocalScenario) => {
+        const theme =
+            typeof scenario.themeId === 'number'
+                ? themes?.find((theme) => theme.id === scenario.themeId)
+                : localThemes.find((theme) => theme.id === scenario.themeId);
         setProject({
             themeId: scenario.themeId,
             themeName:
-                typeof scenario.themeId === 'number'
-                    ? themes?.find((theme) => theme.id === scenario.themeId)?.names[currentLocale] || ''
-                    : localThemes.find((theme) => theme.id === scenario.themeId)?.names[currentLocale] || '',
+                theme && isLocalTheme(theme) ? theme.name : theme ? theme.names[currentLocale] || theme.names[Object.keys(theme.names)[0]] || '' : '',
             scenarioId: scenario.id,
-            scenarioName: scenario.names[currentLocale] || scenario.names[Object.keys(scenario.names)[0]] || '',
+            scenarioName: isLocalScenario(scenario)
+                ? scenario.name
+                : scenario.names[currentLocale] || scenario.names[Object.keys(scenario.names)[0]] || '',
             questions: [],
         });
     };
@@ -73,14 +77,8 @@ export const NewScenarioForm = ({ backUrl, themeId }: NewScenarioFormProps) => {
             const nextId = Math.max(0, ...localScenarios.map((scenario) => Number(scenario.id.split('_')[1] || '0'))) + 1;
             const newScenario: LocalScenario = {
                 id: `local_${nextId}`,
-                userId: null,
-                names: {
-                    [currentLocale]: name,
-                },
-                descriptions: {
-                    [currentLocale]: description,
-                },
-                isDefault: false,
+                name,
+                description,
                 themeId,
             };
             setLocalScenarios([...localScenarios, newScenario]);

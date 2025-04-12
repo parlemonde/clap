@@ -8,13 +8,16 @@ import type { Theme } from 'src/database/schemas/themes';
 
 export const UPDATE_EVENT_NAME = 'local-storage-update';
 
-export type LocalTheme = Omit<Theme, 'id'> & {
+export type LocalTheme = {
     id: string;
+    name: string;
 };
 export const isLocalTheme = (theme: Theme | LocalTheme): theme is LocalTheme => typeof theme.id === 'string';
 
-export type LocalScenario = Omit<Scenario, 'id' | 'themeId'> & {
+export type LocalScenario = {
     id: string;
+    name: string;
+    description: string;
     themeId: string | number;
 };
 export const isLocalScenario = (scenario: Scenario | LocalScenario): scenario is LocalScenario => typeof scenario.id === 'string';
