@@ -5,7 +5,7 @@ import * as React from 'react';
 import styles from './title-card.module.scss';
 import { IconButton } from 'src/components/layout/Button/IconButton';
 import { useTranslation } from 'src/contexts/translationContext';
-import type { Sequence } from 'src/lib/project.types';
+import type { Sequence } from 'src/database/schemas/projects';
 import { serializeToQueryUrl } from 'src/lib/serialize-to-query-url';
 
 type TitleCardProps = {

@@ -17,10 +17,10 @@ import { Inverted } from 'src/components/ui/Inverted';
 import { Trans } from 'src/components/ui/Trans';
 import { useTranslation } from 'src/contexts/translationContext';
 import { userContext } from 'src/contexts/userContext';
+import type { Sequence } from 'src/database/schemas/projects';
 import { useCollaboration } from 'src/hooks/useCollaboration';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import { COLORS } from 'src/lib/colors';
-import type { Sequence } from 'src/lib/project.types';
 
 export default function PreMountingPage() {
     const router = useRouter();

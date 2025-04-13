@@ -1,4 +1,4 @@
-import type { Sequence } from 'src/lib/project.types';
+import type { Sequence } from 'src/database/schemas/projects';
 
 export function getStatus(status: Sequence['status']) {
     if (!status || status === 'storyboard') {

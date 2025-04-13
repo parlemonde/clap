@@ -1,5 +1,5 @@
 import { getSequenceDuration } from './get-sequence-duration';
-import type { Sequence } from './project.types';
+import type { Sequence } from 'src/database/schemas/projects';
 
 export type Sound = {
     soundUrl: string;

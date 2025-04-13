@@ -1,4 +1,4 @@
-import type { Sequence } from './project.types';
+import type { Sequence } from 'src/database/schemas/projects';
 
 export function isSequenceAvailable(sequence: Sequence) {
     return sequence.title !== null || (sequence.plans || []).some((plan) => plan.description || plan.imageUrl);

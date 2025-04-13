@@ -4,8 +4,7 @@ import { QuestionCard } from 'src/components/create/QuestionCard';
 import { Modal } from 'src/components/layout/Modal';
 import { Sortable } from 'src/components/ui/Sortable';
 import { useTranslation } from 'src/contexts/translationContext';
-import type { ProjectData } from 'src/database/schemas/projects';
-import type { Sequence } from 'src/lib/project.types';
+import type { ProjectData, Sequence } from 'src/database/schemas/projects';
 
 interface QuestionsListProps {
     project: ProjectData;

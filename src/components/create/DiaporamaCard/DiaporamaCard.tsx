@@ -5,8 +5,8 @@ import React from 'react';
 
 import styles from './diaporama-card.module.scss';
 import { useTranslation } from 'src/contexts/translationContext';
+import type { Sequence } from 'src/database/schemas/projects';
 import { getSequenceDuration } from 'src/lib/get-sequence-duration';
-import type { Sequence } from 'src/lib/project.types';
 import { serializeToQueryUrl } from 'src/lib/serialize-to-query-url';
 import TimerIcon from 'src/svg/timer.svg';
 

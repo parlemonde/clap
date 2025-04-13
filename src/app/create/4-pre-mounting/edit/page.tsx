@@ -14,10 +14,10 @@ import { ThemeBreadcrumbs } from 'src/components/navigation/ThemeBreadcrumbs';
 import { Inverted } from 'src/components/ui/Inverted';
 import { useTranslation } from 'src/contexts/translationContext';
 import { userContext } from 'src/contexts/userContext';
+import type { Sequence } from 'src/database/schemas/projects';
 import { useCollaboration } from 'src/hooks/useCollaboration';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import type { ServerPageProps } from 'src/lib/page-props.types';
-import type { Sequence } from 'src/lib/project.types';
 
 export default function MontagePage(props: ServerPageProps) {
     const router = useRouter();

@@ -13,14 +13,57 @@ export type LocalTheme = {
     name: string;
 };
 export const isLocalTheme = (theme: Theme | LocalTheme): theme is LocalTheme => typeof theme.id === 'string';
+function isLocalThemeShape(value: unknown): value is LocalTheme {
+    return (
+        typeof value === 'object' &&
+        value !== null &&
+        'id' in value &&
+        typeof value.id === 'string' &&
+        'name' in value &&
+        typeof value.name === 'string'
+    );
+}
 
 export type LocalScenario = {
     id: string;
     name: string;
-    description: string;
+    description?: string;
     themeId: string | number;
 };
 export const isLocalScenario = (scenario: Scenario | LocalScenario): scenario is LocalScenario => typeof scenario.id === 'string';
+function isLocalScenarioShape(value: unknown): value is LocalScenario {
+    return (
+        typeof value === 'object' &&
+        value !== null &&
+        'id' in value &&
+        typeof value.id === 'string' &&
+        'name' in value &&
+        typeof value.name === 'string' &&
+        ('description' in value ? typeof value.description === 'string' : true) &&
+        'themeId' in value &&
+        (typeof value.themeId === 'string' || typeof value.themeId === 'number')
+    );
+}
+
+function isProjectShape(value: unknown): value is ProjectData {
+    return (
+        typeof value === 'object' &&
+        value !== null &&
+        'themeId' in value &&
+        (typeof value.themeId === 'string' || typeof value.themeId === 'number') &&
+        'themeName' in value &&
+        typeof value.themeName === 'string' &&
+        'scenarioId' in value &&
+        (typeof value.scenarioId === 'string' || typeof value.scenarioId === 'number') &&
+        'scenarioName' in value &&
+        typeof value.scenarioName === 'string' &&
+        'questions' in value &&
+        Array.isArray(value.questions) && // Ignore type guard for questions
+        ('soundUrl' in value ? typeof value.soundUrl === 'string' : true) &&
+        ('soundVolume' in value ? typeof value.soundVolume === 'number' : true) &&
+        ('soundBeginTime' in value ? typeof value.soundBeginTime === 'number' : true)
+    );
+}
 
 export type LocalStorageKey = 'themes' | 'scenarios' | 'project' | 'projectId' | 'videoJobId';
 export type ObjectType<T extends LocalStorageKey> = T extends 'themes'
@@ -43,15 +86,24 @@ const localStorageCache: Record<LocalStorageKey, unknown> = {
     videoJobId: undefined,
 };
 
+const typeGuards: Record<LocalStorageKey, (value: unknown) => boolean> = {
+    themes: isLocalThemeShape,
+    scenarios: isLocalScenarioShape,
+    project: isProjectShape,
+    projectId: (value) => typeof value === 'number',
+    videoJobId: (value) => typeof value === 'string',
+};
+
 export function getFromLocalStorage<T extends LocalStorageKey>(key: T): ObjectType<T> | undefined {
     try {
         const localItemStr = localStorage.getItem(key);
-        const localItem = localItemStr ? (JSON.parse(localItemStr) as ObjectType<T>) : undefined;
-        if (isEqual(localStorageCache[key], localItem)) {
+        const localItem = localItemStr ? JSON.parse(localItemStr) : undefined;
+        const isValidShape = typeGuards[key](localItem);
+        if (isValidShape && isEqual(localStorageCache[key], localItem)) {
             return localStorageCache[key] as ObjectType<T>;
         }
         localStorageCache[key] = localItem;
-        return localItem;
+        return isValidShape ? localItem : undefined;
     } catch {
         return undefined;
     }

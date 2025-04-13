@@ -18,10 +18,10 @@ import { Loader } from 'src/components/ui/Loader';
 import { Trans } from 'src/components/ui/Trans';
 import { useTranslation } from 'src/contexts/translationContext';
 import { userContext } from 'src/contexts/userContext';
+import type { Sequence } from 'src/database/schemas/projects';
 import { useCollaboration } from 'src/hooks/useCollaboration';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import { COLORS } from 'src/lib/colors';
-import type { Sequence } from 'src/lib/project.types';
 import PictureAsPdf from 'src/svg/pdf.svg';
 
 export default function StoryboardPage() {

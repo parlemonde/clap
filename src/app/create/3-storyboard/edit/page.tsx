@@ -10,10 +10,10 @@ import { Steps } from 'src/components/navigation/Steps';
 import { ThemeBreadcrumbs } from 'src/components/navigation/ThemeBreadcrumbs';
 import { Inverted } from 'src/components/ui/Inverted';
 import { useTranslation } from 'src/contexts/translationContext';
+import type { Plan } from 'src/database/schemas/projects';
 import { useCollaboration } from 'src/hooks/useCollaboration';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import type { ServerPageProps } from 'src/lib/page-props.types';
-import type { Plan } from 'src/lib/project.types';
 
 export default function StoryboardPlanPage(props: ServerPageProps) {
     const router = useRouter();
