@@ -13,9 +13,12 @@ export async function deleteLanguage(languageCode: string): Promise<void> {
         return;
     }
 
-    await db.delete(languages).where(eq(languages.value, languageCode));
-
-    revalidatePath('/');
-    revalidatePath('/admin/languages');
-    revalidatePath('/api/languages');
+    try {
+        await db.delete(languages).where(eq(languages.value, languageCode));
+        revalidatePath('/');
+        revalidatePath('/admin/languages');
+        revalidatePath('/api/languages');
+    } catch {
+        // Ignore error
+    }
 }

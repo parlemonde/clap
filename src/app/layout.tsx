@@ -1,5 +1,3 @@
-import { Analytics } from '@vercel/analytics/react';
-import { SpeedInsights } from '@vercel/speed-insights/next';
 import classNames from 'clsx';
 import type { Metadata, Viewport } from 'next';
 import { cookies } from 'next/headers';
@@ -27,7 +25,7 @@ const APP_NAME = 'Clap!';
 const APP_DESCRIPTION = 'Clap! Une application pour créer de super vidéos.';
 
 export const metadata: Metadata = {
-    metadataBase: new URL(APP_URL),
+    metadataBase: APP_URL ? new URL(APP_URL) : undefined,
     title: APP_NAME,
     description: APP_DESCRIPTION,
     applicationName: APP_NAME,
@@ -92,8 +90,6 @@ export default async function RootLayout({ children }: React.PropsWithChildren) 
                 </TooltipProvider>
                 <Toasts />
                 <NProgressDone />
-                <Analytics />
-                <SpeedInsights />
             </body>
         </html>
     );

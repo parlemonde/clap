@@ -1,0 +1,37 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+  RoleArn:
+    Type: String
+  S3Bucket:
+    Type: String
+  GitSha:
+    Type: String
+  BranchHash:
+    Type: String
+  AppSecret:
+    Type: String
+  DatabaseUrl:
+    Type: String
+Resources:
+  Function:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Join ['-', ['clap', !Ref BranchHash]]
+      Runtime: nodejs22.x
+      Architectures:
+        - x86_64
+      MemorySize: 512
+      Timeout: 10
+      Role: !Ref RoleArn
+      Handler: index.handler
+      Code:
+        S3Bucket: !Ref S3Bucket
+        S3Key: !Join ['', [!Ref BranchHash, '/app_', !Ref GitSha, '.zip']]
+      Environment:
+        Variables:
+          HOST_URL: !Join ['', ['https://', !Ref BranchHash, '.clap-preview.daviddev.link']]
+          APP_SECRET: !Ref AppSecret
+          DATABASE_URL: !Ref DatabaseUrl
+          DYNAMODB_TABLE_NAME: clap
+          NODE_ENV: production
+          S3_BUCKET_NAME: david-robert-ansart-clap

@@ -1,0 +1,57 @@
+name: Preview
+on: 
+  push:
+    branches-ignore:
+      - main
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  Preview:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Build the app
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+      - run: pnpm install
+      - run: pnpm build:lambda
+      - run: (cd .open-next/server-functions/default && zip --symlinks -r - .) > app.zip
+
+      # 2. Push artifacts to S3
+      - name: Hash branch name
+        uses: felix-schaipp/hash-branch-name@main
+        id: hash
+        with:
+          branch-name: ${GITHUB_REF_NAME}
+          output-length: 12
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+      - name: Delete existing assets
+        run: aws s3 rm s3://${{ secrets.AWS_BUCKET_NAME }}/${{ steps.hash.outputs.hashedBranchName }} --recursive
+      - name: Upload app.zip to S3
+        run: aws s3 cp app.zip s3://${{ secrets.AWS_BUCKET_NAME }}/${{ steps.hash.outputs.hashedBranchName }}/app_${{ github.sha }}.zip
+      - name: Upload assets to S3
+        run: aws s3 cp .open-next/assets s3://${{ secrets.AWS_BUCKET_NAME }}/${{ steps.hash.outputs.hashedBranchName }} --recursive
+      - name: Deploy lambda function
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        with:
+          name: clap-preview-${{ steps.hash.outputs.hashedBranchName }}
+          template: preview-lambda-function.yaml
+          no-fail-on-empty-changeset: "1"
+          parameter-overrides: >-
+            RoleArn=${{ secrets.AWS_LAMBDA_ROLE_ARN }},
+            S3Bucket=${{ secrets.AWS_BUCKET_NAME }},
+            GitSha=${{ github.sha }},
+            BranchHash=${{ steps.hash.outputs.hashedBranchName }},
+            AppSecret=${{ secrets.APP_SECRET }},
+            DatabaseUrl=${{ secrets.DATABASE_URL }}
