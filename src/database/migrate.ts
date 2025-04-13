@@ -11,17 +11,15 @@ import { users } from './schemas/users';
 const DATABASE_URL = process.env.DATABASE_URL || '';
 
 async function createDatabase(): Promise<void> {
+    if (!DATABASE_URL.includes('localhost')) {
+        // Skip database creation on non-local environments.
+        return;
+    }
     try {
-        const ssl = DATABASE_URL.includes('localhost') ? false : 'verify-full';
-        // eslint-disable-next-line camelcase
-        const client = postgres(DATABASE_URL.replace(/\/[^/]*$/, ''), { debug: true, ssl, connect_timeout: 4 });
-        const dbName = DATABASE_URL.split('/').pop()?.replace(/\?.*$/, '');
-        if (!dbName) {
-            throw new Error('Database name not found in DATABASE_URL');
-        }
-        const res = await client`SELECT datname FROM pg_catalog.pg_database WHERE datname = ${dbName}`;
+        const client = postgres(DATABASE_URL.replace(/\/[^/]*$/, ''), { debug: true });
+        const res = await client`SELECT datname FROM pg_catalog.pg_database WHERE datname = 'clap'`;
         if (res.length === 0) {
-            await client`CREATE DATABASE ${dbName}`;
+            await client`CREATE DATABASE clap`;
         }
         await client.end();
     } catch (e) {
@@ -81,7 +79,8 @@ const start = async () => {
     await createAdminUser();
     await createDefaultLanguage();
     await migrationClient.end();
-    process.exit();
 };
 
-start().catch(console.error);
+start()
+    .catch(console.error)
+    .finally(() => process.exit());
