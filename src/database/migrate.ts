@@ -6,7 +6,6 @@ import postgres from 'postgres';
 
 import { db } from './database';
 import { languages } from './schemas/languages';
-import type { NewUser } from './schemas/users';
 import { users } from './schemas/users';
 
 const DATABASE_URL = process.env.DATABASE_URL || '';
@@ -43,11 +42,11 @@ async function createAdminUser(): Promise<void> {
         if (results.length > 0) {
             return;
         }
-        const user: NewUser = {
+        const user = {
             name: adminName,
             email: adminEmail,
             passwordHash: await hash(adminPassword),
-            role: 'admin',
+            role: 'admin' as const,
         };
         await db.insert(users).values(user);
     } catch {

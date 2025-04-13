@@ -5,26 +5,26 @@ import { revalidatePath } from 'next/cache';
 
 import { getCurrentUser } from '../get-current-user';
 import { db } from 'src/database';
-import { questionTemplates } from 'src/database/schemas/question-template';
+import { questions } from 'src/database/schemas/questions';
 
-type EditQuestionTemplate = {
+type UpdatedQuestion = {
     id: number;
     question: string;
 };
-export async function editQuestionTemplate(editQuestionTemplate: EditQuestionTemplate): Promise<void> {
+export async function editQuestion(updatedQuestion: UpdatedQuestion): Promise<void> {
     const user = await getCurrentUser();
     if (!user || user.role !== 'admin') {
         return;
     }
 
     await db
-        .update(questionTemplates)
+        .update(questions)
         .set({
-            question: editQuestionTemplate.question,
+            question: updatedQuestion.question,
         })
-        .where(eq(questionTemplates.id, editQuestionTemplate.id));
+        .where(eq(questions.id, updatedQuestion.id));
 
-    // Return new scenario
+    // Return new question
     revalidatePath('/');
     revalidatePath('/admin/questions');
 }

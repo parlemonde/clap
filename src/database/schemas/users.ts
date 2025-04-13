@@ -19,4 +19,3 @@ export type User = Pick<FullUser, 'id' | 'name' | 'email' | 'role'> & {
     projectId?: number;
     questionId?: number;
 };
-export type NewUser = Omit<typeof users.$inferInsert, 'id'>;

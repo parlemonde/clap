@@ -4,7 +4,7 @@ import * as React from 'react';
 
 import { QuestionsTile } from './QuestionsTile';
 import { ScenarioSelect } from './ScenarioSelect';
-import { listQuestionsTemplates } from 'src/actions/questions-templates/list-questions-templates';
+import { listQuestions } from 'src/actions/questions/list-questions';
 import { listScenarios } from 'src/actions/scenarios/list-scenarios';
 import { AdminTile } from 'src/components/admin/AdminTile';
 import { Container } from 'src/components/layout/Container';
@@ -17,7 +17,7 @@ export default async function AdminQuestionsPage(props: ServerPageProps) {
     const scenarios = await listScenarios();
 
     const selectedScenario = scenarios.find((s) => s.id === selectedScenarioId);
-    const questions = selectedScenarioId ? await listQuestionsTemplates(selectedScenarioId) : [];
+    const questions = selectedScenarioId ? await listQuestions(selectedScenarioId) : [];
 
     return (
         <Container>

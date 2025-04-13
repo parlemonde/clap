@@ -6,7 +6,7 @@ import useSWR from 'swr';
 
 import { ScenarioCard } from 'src/components/create/ScenarioCard';
 import { useTranslation } from 'src/contexts/translationContext';
-import type { QuestionTemplate } from 'src/database/schemas/question-template';
+import type { Question } from 'src/database/schemas/questions';
 import type { Scenario } from 'src/database/schemas/scenarios';
 import type { Theme } from 'src/database/schemas/themes';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
@@ -63,9 +63,7 @@ export const Scenarios = ({ scenarios }: ScenariosProps) => {
 
                             // Prevent navigation to the next page and create a new project
                             event.preventDefault();
-                            const questions = await jsonFetcher<QuestionTemplate[]>(
-                                `/api/questions-templates${serializeToQueryUrl({ scenarioId: s.id })}`,
-                            );
+                            const questions = await jsonFetcher<Question[]>(`/api/questions-templates${serializeToQueryUrl({ scenarioId: s.id })}`);
                             const theme =
                                 typeof s.themeId === 'number'
                                     ? themes?.find((theme) => theme.id === s.themeId)

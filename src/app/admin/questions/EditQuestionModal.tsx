@@ -2,13 +2,13 @@
 
 import React from 'react';
 
-import { editQuestionTemplate } from 'src/actions/questions-templates/edit-question-template';
+import { editQuestion } from 'src/actions/questions/edit-question';
 import { Field, Input } from 'src/components/layout/Form';
 import { Modal } from 'src/components/layout/Modal';
-import type { QuestionTemplate } from 'src/database/schemas/question-template';
+import type { Question } from 'src/database/schemas/questions';
 
 interface EditQuestionModalProps {
-    question?: QuestionTemplate | null;
+    question?: Question | null;
     onClose?(): void;
 }
 export const EditQuestionModal = ({ question = null, onClose = () => {} }: EditQuestionModalProps) => {
@@ -34,7 +34,7 @@ export const EditQuestionModal = ({ question = null, onClose = () => {} }: EditQ
         }
 
         setIsLoading(true);
-        await editQuestionTemplate({ question: q, id: question.id });
+        await editQuestion({ question: q, id: question.id });
         setQ('');
         onClose();
         setIsLoading(false);

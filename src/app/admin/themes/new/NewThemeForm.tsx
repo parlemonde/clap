@@ -17,6 +17,7 @@ import { Cropper } from 'src/components/ui/Cropper';
 import { Loader } from 'src/components/ui/Loader';
 import { sendToast } from 'src/components/ui/Toasts';
 import type { Theme } from 'src/database/schemas/themes';
+import { useLanguages } from 'src/hooks/useLanguages';
 
 type Language = {
     label: string;
@@ -26,16 +27,7 @@ type Language = {
 export const NewThemeForm = () => {
     const router = useRouter();
 
-    const languages: Language[] = [
-        {
-            label: 'Français',
-            value: 'fr',
-        },
-        {
-            label: 'Anglais',
-            value: 'en',
-        },
-    ];
+    const languages = useLanguages();
     const languagesMap = languages.reduce(
         (acc: { [key: string]: number }, language: Language, index: number) => ({ ...acc, [language.value]: index }),
         {},
@@ -108,7 +100,7 @@ export const NewThemeForm = () => {
             await createDefaultTheme({
                 names: themeNames,
                 isDefault: true,
-                imageUrl: imageUrlToSubmit,
+                imageUrl: imageUrlToSubmit || null,
             });
 
             // 3. Redirect to list.

@@ -1,9 +1,10 @@
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 
+import { inviteTokens } from './schemas/invite-tokens';
 import { languages } from './schemas/languages';
 import { projects } from './schemas/projects';
-import { questionTemplates } from './schemas/question-template';
+import { questions } from './schemas/questions';
 import { scenarios } from './schemas/scenarios';
 import { themes } from './schemas/themes';
 import { users } from './schemas/users';
@@ -15,6 +16,6 @@ const queryClient = postgres(process.env.DATABASE_URL || '', { max: 10, ssl });
 export const db = registerService('db', () =>
     drizzle(queryClient, {
         logger: process.env.NODE_ENV !== 'production',
-        schema: { users, themes, scenarios, questionTemplates, languages, projects },
+        schema: { users, themes, scenarios, questions, inviteTokens, languages, projects },
     }),
 );

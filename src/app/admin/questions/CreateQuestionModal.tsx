@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import { createQuestionTemplate } from 'src/actions/questions-templates/create-question-template';
+import { createQuestion } from 'src/actions/questions/create-question';
 import { Field, Input } from 'src/components/layout/Form';
 import { Modal } from 'src/components/layout/Modal';
 
@@ -24,7 +24,7 @@ export const CreateQuestionModal = ({ scenarioId, languageCode, open = false, on
 
     const onSubmit = async () => {
         setIsLoading(true);
-        await createQuestionTemplate({ question, scenarioId, languageCode });
+        await createQuestion({ question, scenarioId, languageCode });
         setQuestion('');
         onClose();
         setIsLoading(false);

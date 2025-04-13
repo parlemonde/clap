@@ -39,18 +39,30 @@ export default async function ScenarioPage(props: ServerPageProps) {
             <Title color="inherit" variant="h2" marginBottom="md">
                 {t('part1_subtitle2')}
             </Title>
-            <ScenarioCard
-                isNew
-                name={t('new_scenario_card_title')}
-                description={t('new_scenario_card_desc')}
-                href={`/create/1-scenario/new${serializeToQueryUrl({ themeId })}`}
-            />
-            {typeof themeId === 'number' && (
+            {typeof themeId === 'number' ? (
                 <React.Suspense fallback={<ScenarioCardPlaceholder />}>
-                    <BackendScenarios themeId={themeId}></BackendScenarios>
+                    <>
+                        <ScenarioCard
+                            isNew
+                            name={t('new_scenario_card_title')}
+                            description={t('new_scenario_card_desc')}
+                            href={`/create/1-scenario/new${serializeToQueryUrl({ themeId })}`}
+                        />
+                        <BackendScenarios themeId={themeId}></BackendScenarios>
+                        <LocalScenarios themeId={themeId}></LocalScenarios>
+                    </>
                 </React.Suspense>
+            ) : (
+                <>
+                    <ScenarioCard
+                        isNew
+                        name={t('new_scenario_card_title')}
+                        description={t('new_scenario_card_desc')}
+                        href={`/create/1-scenario/new${serializeToQueryUrl({ themeId })}`}
+                    />
+                    <LocalScenarios themeId={themeId}></LocalScenarios>
+                </>
             )}
-            <LocalScenarios themeId={themeId}></LocalScenarios>
         </Container>
     );
 }

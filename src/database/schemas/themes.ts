@@ -15,4 +15,3 @@ export const themes = pgTable('themes', {
 });
 
 export type Theme = typeof themes.$inferSelect;
-export type NewTheme = Omit<typeof themes.$inferInsert, 'id'>;

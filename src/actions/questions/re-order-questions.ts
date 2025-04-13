@@ -5,9 +5,9 @@ import { revalidatePath } from 'next/cache';
 
 import { getCurrentUser } from '../get-current-user';
 import { db } from 'src/database';
-import { questionTemplates } from 'src/database/schemas/question-template';
+import { questions } from 'src/database/schemas/questions';
 
-export async function reOrderQuestionsTemplates(order: number[]) {
+export async function reOrderQuestions(order: number[]) {
     const user = await getCurrentUser();
     if (!user || user.role !== 'admin') {
         return;
@@ -15,11 +15,11 @@ export async function reOrderQuestionsTemplates(order: number[]) {
 
     for (const [index, id] of order.entries()) {
         await db
-            .update(questionTemplates)
+            .update(questions)
             .set({
                 order: index,
             })
-            .where(eq(questionTemplates.id, id));
+            .where(eq(questions.id, id));
     }
     revalidatePath('/');
     revalidatePath('/admin/questions');

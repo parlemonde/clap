@@ -2,7 +2,7 @@ import { integer, pgTable, serial, varchar, char } from 'drizzle-orm/pg-core';
 
 import { scenarios } from './scenarios';
 
-export const questionTemplates = pgTable('question-templates', {
+export const questions = pgTable('questions', {
     id: serial('id').primaryKey(),
     question: varchar('question', { length: 280 }).notNull(),
     order: integer('order').notNull().default(0),
@@ -14,5 +14,4 @@ export const questionTemplates = pgTable('question-templates', {
         .notNull(),
 });
 
-export type QuestionTemplate = typeof questionTemplates.$inferSelect;
-export type NewQuestionTemplate = Omit<typeof questionTemplates.$inferInsert, 'id'>;
+export type Question = typeof questions.$inferSelect;

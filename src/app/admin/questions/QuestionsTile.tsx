@@ -5,7 +5,7 @@ import React from 'react';
 import { CreateQuestionModal } from './CreateQuestionModal';
 import { DeleteQuestionModal } from './DeleteQuestionModal';
 import { EditQuestionModal } from './EditQuestionModal';
-import { reOrderQuestionsTemplates } from 'src/actions/questions-templates/re-order-questions-templates';
+import { reOrderQuestions } from 'src/actions/questions/re-order-questions';
 import { AdminTile } from 'src/components/admin/AdminTile';
 import { Table } from 'src/components/admin/Table';
 import { Button } from 'src/components/layout/Button';
@@ -16,13 +16,13 @@ import { Tooltip } from 'src/components/layout/Tooltip';
 import { Title } from 'src/components/layout/Typography';
 import { Sortable } from 'src/components/ui/Sortable';
 import { sendToast } from 'src/components/ui/Toasts';
-import type { QuestionTemplate } from 'src/database/schemas/question-template';
+import type { Question } from 'src/database/schemas/questions';
 import type { Scenario } from 'src/database/schemas/scenarios';
 import { useLanguages } from 'src/hooks/useLanguages';
 
 interface QuestionsTileProps {
     selectedScenario: Scenario;
-    questions: QuestionTemplate[];
+    questions: Question[];
 }
 
 export const QuestionsTile = ({ selectedScenario, questions: allQuestions }: QuestionsTileProps) => {
@@ -42,8 +42,8 @@ export const QuestionsTile = ({ selectedScenario, questions: allQuestions }: Que
     const [editQuestionIndex, setEditQuestionIndex] = React.useState<number>(-1);
     const [deleteQuestionIndex, setDeleteQuestionIndex] = React.useState<number>(-1);
 
-    const setQuestionsOrder = (questions: QuestionTemplate[]) => {
-        reOrderQuestionsTemplates(questions.map((t) => t.id)).catch((error) => {
+    const setQuestionsOrder = (questions: Question[]) => {
+        reOrderQuestions(questions.map((t) => t.id)).catch((error) => {
             console.error(error);
             sendToast({ message: "Erreur lors de la mise à jour de l'ordre des questions...", type: 'error' });
         });

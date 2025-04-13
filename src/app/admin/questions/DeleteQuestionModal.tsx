@@ -2,12 +2,12 @@
 
 import React from 'react';
 
-import { deleteQuestionTemplate } from 'src/actions/questions-templates/delete-question-template';
+import { deleteQuestion } from 'src/actions/questions/delete-question';
 import { Modal } from 'src/components/layout/Modal';
-import type { QuestionTemplate } from 'src/database/schemas/question-template';
+import type { Question } from 'src/database/schemas/questions';
 
 interface DeleteQuestionModalProps {
-    question?: QuestionTemplate | null;
+    question?: Question | null;
     onClose?(): void;
 }
 export const DeleteQuestionModal = ({ question = null, onClose = () => {} }: DeleteQuestionModalProps) => {
@@ -19,7 +19,7 @@ export const DeleteQuestionModal = ({ question = null, onClose = () => {} }: Del
         }
 
         setIsLoading(true);
-        await deleteQuestionTemplate(question.id);
+        await deleteQuestion(question.id);
         onClose();
         setIsLoading(false);
     };

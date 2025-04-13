@@ -6,7 +6,7 @@ import { cookies } from 'next/headers';
 
 import { getCurrentUser } from '../get-current-user';
 import { db } from 'src/database';
-import type { NewTheme, Theme } from 'src/database/schemas/themes';
+import type { Theme } from 'src/database/schemas/themes';
 import { themes } from 'src/database/schemas/themes';
 
 // User action to create a new theme
@@ -35,7 +35,8 @@ export async function createTheme(themeName: string): Promise<Theme | undefined>
 }
 
 // Admin action to add a new default theme
-export async function createDefaultTheme(newTheme: Omit<NewTheme, 'order' | 'userId'>): Promise<Theme | undefined> {
+type NewTheme = Omit<Theme, 'id' | 'order' | 'userId'>;
+export async function createDefaultTheme(newTheme: NewTheme): Promise<Theme | undefined> {
     const user = await getCurrentUser();
     if (!user || user.role !== 'admin') {
         return;
