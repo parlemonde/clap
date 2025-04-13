@@ -20,7 +20,7 @@ import { TranslationContextProvider } from 'src/contexts/translationContext';
 import { UserContextProvider } from 'src/contexts/userContext';
 import { openSansFont, alegreyaSansFont, littleDaysFont } from 'src/fonts';
 
-const APP_URL = process.env.VERCEL_ENV === 'preview' ? `https://${process.env.VERCEL_URL || ''}` : process.env.HOST_URL || '';
+const APP_URL = process.env.HOST_URL || '';
 const APP_NAME = 'Clap!';
 const APP_DESCRIPTION = 'Clap! Une application pour créer de super vidéos.';
 

@@ -28,9 +28,6 @@ yarn-error.log*
 # local env files
 .env*.local
 
-# vercel
-.vercel
-
 # typescript
 *.tsbuildinfo
 
@@ -46,10 +43,6 @@ temp
 # Websocket server
 server-websockets/target
 server-websockets/cargo.lock
-
-# Image resize server
-server-image-resize/target
-server-image-resize/cargo.lock
 
 # Pdf server
 server-pdf-generation/node_modules

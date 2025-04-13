@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 
 import type { FileData } from './file-upload.types';
 
-const __dirname = process.env.VERCEL === '1' ? '/tmp' : path.join(dirname(fileURLToPath(import.meta.url)), '../../temp');
+const __dirname = process.env.AWS_LAMBDA_FUNCTION_NAME !== undefined ? '/tmp' : path.join(dirname(fileURLToPath(import.meta.url)), '../../temp');
 const getFilePath = (fileUrl: string) => path.join(__dirname, 'files', fileUrl);
 
 export async function getLocalFileData(key: string): Promise<FileData | null> {

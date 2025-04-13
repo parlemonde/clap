@@ -25,7 +25,8 @@ export async function getMltZip(project: ProjectData, name: string) {
     const { mltStr, files } = await projectToMlt(project, name, 'local');
 
     const id: string = v4();
-    const __dirname = process.env.VERCEL === '1' ? '/tmp' : path.join(dirname(fileURLToPath(import.meta.url)), '../../../temp');
+    const __dirname =
+        process.env.AWS_LAMBDA_FUNCTION_NAME !== undefined ? '/tmp' : path.join(dirname(fileURLToPath(import.meta.url)), '../../../temp');
     const directory: string = path.join(__dirname, id);
     await fs.mkdirs(directory);
 

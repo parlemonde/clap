@@ -9,13 +9,8 @@ import resetPasswordHtml from './templates/reset-password.html';
 import resetPasswordText from './templates/reset-password.txt';
 import { getTranslation } from 'src/actions/get-translation';
 
-const DOMAIN =
-    process.env.VERCEL_ENV === 'production'
-        ? process.env.VERCEL_PROJECT_PRODUCTION_URL || ''
-        : process.env.VERCEL_ENV === 'preview'
-          ? process.env.VERCEL_URL || ''
-          : process.env.HOST_DOMAIN || '';
-const HOST_URL = process.env.VERCEL === '1' ? `https://${DOMAIN}` : process.env.HOST_URL || '';
+const DOMAIN = process.env.HOST_DOMAIN || process.env.HOST_URL?.split('://')[1] || '';
+const HOST_URL = process.env.HOST_URL || '';
 
 type ResetPasswordEmail = {
     kind: 'reset-password';
