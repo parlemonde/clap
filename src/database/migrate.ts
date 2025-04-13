@@ -17,10 +17,16 @@ async function createDatabase(): Promise<void> {
         return;
     }
     try {
-        const client = postgres(DATABASE_URL.replace(/\/[^/]*$/, ''), { debug: true });
-        const res = await client`SELECT datname FROM pg_catalog.pg_database WHERE datname = ${'clap'}`;
+        const ssl = DATABASE_URL.includes('localhost') ? false : 'verify-full';
+        // eslint-disable-next-line camelcase
+        const client = postgres(DATABASE_URL.replace(/\/[^/]*$/, ''), { debug: true, ssl, connect_timeout: 4 });
+        const dbName = DATABASE_URL.split('/').pop()?.replace(/\?.*$/, '');
+        if (!dbName) {
+            throw new Error('Database name not found in DATABASE_URL');
+        }
+        const res = await client`SELECT datname FROM pg_catalog.pg_database WHERE datname = ${dbName}`;
         if (res.length === 0) {
-            await client`CREATE DATABASE clap`;
+            await client`CREATE DATABASE ${dbName}`;
         }
         await client.end();
     } catch (e) {
