@@ -33,10 +33,6 @@ const adminTabs: Tab[] = [
         label: 'Utilisateurs',
         path: '/admin/users',
     },
-    {
-        label: 'Statistiques',
-        path: '/admin/statistics',
-    },
 ];
 
 export const AdminDrawer = () => {
