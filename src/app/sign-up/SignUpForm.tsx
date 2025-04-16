@@ -1,7 +1,6 @@
 'use client';
 
 import { EyeOpenIcon, EyeNoneIcon } from '@radix-ui/react-icons';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 
@@ -9,6 +8,7 @@ import { createUser } from 'src/actions/users/create-user';
 import { Button } from 'src/components/layout/Button';
 import { IconButton } from 'src/components/layout/Button/IconButton';
 import { Field, Form, Input } from 'src/components/layout/Form';
+import { Link } from 'src/components/navigation/Link';
 import { Loader } from 'src/components/ui/Loader';
 import { sendToast } from 'src/components/ui/Toasts';
 import { useTranslation } from 'src/contexts/translationContext';

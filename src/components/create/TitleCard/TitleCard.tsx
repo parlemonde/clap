@@ -1,9 +1,9 @@
 import { TrashIcon } from '@radix-ui/react-icons';
-import Link from 'next/link';
 import * as React from 'react';
 
 import styles from './title-card.module.scss';
 import { IconButton } from 'src/components/layout/Button/IconButton';
+import { Link } from 'src/components/navigation/Link';
 import { useTranslation } from 'src/contexts/translationContext';
 import type { Sequence } from 'src/database/schemas/projects';
 import { serializeToQueryUrl } from 'src/lib/serialize-to-query-url';

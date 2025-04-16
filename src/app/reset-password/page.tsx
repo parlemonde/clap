@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import React from 'react';
 
 import { resetPassword } from 'src/actions/authentication/reset-password';
@@ -8,6 +7,7 @@ import { Button } from 'src/components/layout/Button';
 import { Container } from 'src/components/layout/Container';
 import { Field, Form, Input } from 'src/components/layout/Form';
 import { Title } from 'src/components/layout/Typography';
+import { Link } from 'src/components/navigation/Link';
 import { Loader } from 'src/components/ui/Loader';
 import { sendToast } from 'src/components/ui/Toasts';
 import { useTranslation } from 'src/contexts/translationContext';

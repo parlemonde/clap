@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 
@@ -10,6 +9,7 @@ import { getProjectByCode } from 'src/actions/projects/get-project';
 import { Button } from 'src/components/layout/Button';
 import { Field, Form, Input } from 'src/components/layout/Form';
 import { Title } from 'src/components/layout/Typography';
+import { Link } from 'src/components/navigation/Link';
 import { Loader } from 'src/components/ui/Loader';
 import type { ProjectData } from 'src/database/schemas/projects';
 import { setToLocalStorage } from 'src/hooks/useLocalStorage/local-storage';

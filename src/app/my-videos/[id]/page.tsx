@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import * as React from 'react';
 
 import { ProjectForm } from './ProjectForm';
@@ -9,6 +8,7 @@ import { Button } from 'src/components/layout/Button';
 import { Container } from 'src/components/layout/Container';
 import { Flex } from 'src/components/layout/Flex';
 import { Text, Title } from 'src/components/layout/Typography';
+import { Link } from 'src/components/navigation/Link';
 import type { ServerPageProps } from 'src/lib/page-props.types';
 
 export default async function EditProjectPage(props: ServerPageProps) {

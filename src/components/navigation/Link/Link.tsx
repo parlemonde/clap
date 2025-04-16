@@ -48,6 +48,7 @@ const LinkWithRef = (props: React.PropsWithChildren<LinkProps>, ref: React.Forwa
         <NextLink
             onClick={props.legacyBehavior ? undefined : (event) => startNProgress(props.href, event)}
             {...props}
+            prefetch={false}
             ref={(node) => {
                 if (typeof ref === 'function') {
                     ref(node);

@@ -1,9 +1,9 @@
 import { FileTextIcon, SpeakerLoudIcon } from '@radix-ui/react-icons';
 import classNames from 'clsx';
-import Link from 'next/link';
 import React from 'react';
 
 import styles from './diaporama-card.module.scss';
+import { Link } from 'src/components/navigation/Link';
 import { useTranslation } from 'src/contexts/translationContext';
 import type { Sequence } from 'src/database/schemas/projects';
 import { getSequenceDuration } from 'src/lib/get-sequence-duration';

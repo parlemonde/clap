@@ -2,13 +2,13 @@
 
 import { ChevronLeftIcon } from '@radix-ui/react-icons';
 import classNames from 'clsx';
-import Link from 'next/link';
 import * as React from 'react';
 
 import { ProjectTitle } from './ProjectTitle';
 import styles from './steps.module.scss';
 import { Button } from 'src/components/layout/Button';
 import { Text } from 'src/components/layout/Typography';
+import { Link } from 'src/components/navigation/Link';
 import { useTranslation } from 'src/contexts/translationContext';
 import { userContext } from 'src/contexts/userContext';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';

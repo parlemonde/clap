@@ -1,7 +1,6 @@
 'use client';
 
 import { EyeNoneIcon, EyeOpenIcon } from '@radix-ui/react-icons';
-import Link from 'next/link';
 import * as React from 'react';
 
 import { login } from 'src/actions/authentication/login';
@@ -9,6 +8,7 @@ import { loginWithSSO } from 'src/actions/authentication/login-with-sso';
 import { Button } from 'src/components/layout/Button';
 import { IconButton } from 'src/components/layout/Button/IconButton';
 import { Field, Form, Input } from 'src/components/layout/Form';
+import { Link } from 'src/components/navigation/Link';
 import { FormLoader, Loader } from 'src/components/ui/Loader';
 import { useTranslation } from 'src/contexts/translationContext';
 
