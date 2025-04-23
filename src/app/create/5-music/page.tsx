@@ -4,8 +4,8 @@ import { UploadIcon } from '@radix-ui/react-icons';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 
-import { deleteSound } from 'src/actions/delete-sound';
-import { uploadSound } from 'src/actions/upload-sound';
+import { deleteSound } from 'src/actions/files/delete-sound';
+import { uploadSound } from 'src/actions/files/upload-sound';
 import { DiaporamaPlayer } from 'src/components/create/DiaporamaPlayer';
 import { Button } from 'src/components/layout/Button';
 import { Container } from 'src/components/layout/Container';

@@ -3,13 +3,13 @@
 
 import type { MLT, Playlist } from 'mlt-xml';
 import { mltToXml } from 'mlt-xml';
+import path from 'node:path';
 
 import type { ProjectData } from 'src/database/schemas/projects';
-import type { FileType } from 'src/fileUpload';
 
 export type File = {
-    fileType: FileType;
-    name: string;
+    fileUrl: string;
+    fileName: string;
     isLocal: boolean;
 };
 
@@ -22,14 +22,11 @@ const clamp = (min: number, max: number, value: number) => Math.max(min, Math.mi
 
 const HOST_URL = process.env.HOST_URL || '';
 const toFullUrl = (url: string) => {
-    if (url.startsWith('/api')) {
+    if (url.startsWith('/api/images/') || url.startsWith('/static/')) {
         return `${HOST_URL}${url}`;
     } else {
         return url;
     }
-};
-const toLocalUrl = (url: string) => {
-    return url.replace(/^\/api\/images\/(?:users\/)?/, '').replace(/^\/api\/audios\/(?:users\/)?/, '');
 };
 
 export async function projectToMlt(project: ProjectData, name: string, urlKind: 'full' | 'local') {
@@ -45,8 +42,27 @@ export async function projectToMlt(project: ProjectData, name: string, urlKind: 
     );
     const fileNames = new Set<string>();
     const files: Array<File> = [];
+    let imageCount = 0;
+    let audioCount = 0;
 
-    const urlTransform = urlKind === 'full' ? toFullUrl : toLocalUrl;
+    const fileToLocalUrlMap: Record<string, string> = {};
+    const getLocalName = (fileUrl: string, fileType: 'images' | 'audios') => {
+        if (fileToLocalUrlMap[fileUrl]) {
+            return fileToLocalUrlMap[fileUrl];
+        }
+        if (fileType === 'images') {
+            imageCount += 1;
+            const imageExtension = path.extname(fileUrl).slice(1);
+            fileToLocalUrlMap[fileUrl] = `image_${imageCount}.${imageExtension}`;
+            return fileToLocalUrlMap[fileUrl];
+        } else {
+            audioCount += 1;
+            const audioExtension = path.extname(fileUrl).slice(1);
+            fileToLocalUrlMap[fileUrl] = `audio_${audioCount}.${audioExtension}`;
+            return fileToLocalUrlMap[fileUrl];
+        }
+    };
+    const urlTransform = urlKind === 'full' ? toFullUrl : (fileUrl: string, fileType: 'images' | 'audios') => `./${getLocalName(fileUrl, fileType)}`;
 
     const mlt: MLT = {
         title: name,
@@ -169,10 +185,11 @@ export async function projectToMlt(project: ProjectData, name: string, urlKind: 
             if (plan.imageUrl) {
                 if (!fileNames.has(plan.imageUrl)) {
                     fileNames.add(plan.imageUrl);
+                    const isLocal = plan.imageUrl.startsWith('/api/images/');
                     files.push({
-                        fileType: 'images',
-                        name: plan.imageUrl.replace('/api/images/', ''),
-                        isLocal: plan.imageUrl.startsWith('/api'),
+                        fileUrl: isLocal ? plan.imageUrl.slice(5) : plan.imageUrl,
+                        fileName: getLocalName(plan.imageUrl, 'images'),
+                        isLocal,
                     });
                 }
                 producerId += 1;
@@ -182,7 +199,7 @@ export async function projectToMlt(project: ProjectData, name: string, urlKind: 
                         id: `producer${producerId}`,
                         in: 0,
                         out: planDuration,
-                        resource: urlTransform(plan.imageUrl),
+                        resource: urlTransform(plan.imageUrl, 'images'),
                         mlt_service: 'qimage',
                         length: planDuration,
                         eof: 'pause',
@@ -227,10 +244,11 @@ export async function projectToMlt(project: ProjectData, name: string, urlKind: 
 
             if (!fileNames.has(question.soundUrl)) {
                 fileNames.add(question.soundUrl);
+                const isLocal = question.soundUrl.startsWith('/static/');
                 files.push({
-                    fileType: 'audios',
-                    name: question.soundUrl.replace('/api/audios/', ''),
-                    isLocal: question.soundUrl.startsWith('/api'),
+                    fileUrl: isLocal ? question.soundUrl.slice(8) : question.soundUrl,
+                    fileName: getLocalName(question.soundUrl, 'audios'),
+                    isLocal,
                 });
             }
 
@@ -241,7 +259,7 @@ export async function projectToMlt(project: ProjectData, name: string, urlKind: 
                     id: `producer${producerId}`,
                     in: deltaSound,
                     out: audioDuration + deltaSound,
-                    resource: urlTransform(question.soundUrl),
+                    resource: urlTransform(question.soundUrl, 'audios'),
                     length: audioDuration,
                     eof: 'pause',
                     mlt_service: 'avformat-novalidate',
@@ -310,10 +328,11 @@ export async function projectToMlt(project: ProjectData, name: string, urlKind: 
         producerId += 1;
         if (!fileNames.has(project.soundUrl)) {
             fileNames.add(project.soundUrl);
+            const isLocal = project.soundUrl.startsWith('/static/');
             files.push({
-                fileType: 'audios',
-                name: project.soundUrl.replace('/api/audios/', ''),
-                isLocal: project.soundUrl.startsWith('/api'),
+                fileUrl: isLocal ? project.soundUrl.slice(8) : project.soundUrl,
+                fileName: getLocalName(project.soundUrl, 'audios'),
+                isLocal,
             });
         }
 
@@ -323,7 +342,7 @@ export async function projectToMlt(project: ProjectData, name: string, urlKind: 
                 id: `producer${producerId}`,
                 in: deltaSound,
                 out: audioDuration + deltaSound,
-                resource: urlTransform(project.soundUrl),
+                resource: urlTransform(project.soundUrl, 'audios'),
                 length: audioDuration,
                 eof: 'pause',
                 mlt_service: 'avformat-novalidate',

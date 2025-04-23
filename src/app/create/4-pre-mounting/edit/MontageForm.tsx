@@ -1,8 +1,8 @@
 import { FileTextIcon, SpeakerLoudIcon, TimerIcon, UploadIcon } from '@radix-ui/react-icons';
 import * as React from 'react';
 
-import { deleteSound } from 'src/actions/delete-sound';
-import { uploadSound } from 'src/actions/upload-sound';
+import { deleteSound } from 'src/actions/files/delete-sound';
+import { uploadSound } from 'src/actions/files/upload-sound';
 import { DiaporamaPlayer } from 'src/components/create/DiaporamaPlayer';
 import { Button } from 'src/components/layout/Button';
 import { Flex, FlexItem } from 'src/components/layout/Flex';

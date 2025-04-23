@@ -10,14 +10,14 @@ import { v4 } from 'uuid';
 
 import type { File } from './project-to-mlt';
 import { projectToMlt } from './project-to-mlt';
+import { getFile, uploadFile } from 'src/actions/files/file-upload';
 import type { ProjectData } from 'src/database/schemas/projects';
-import { getFile, uploadFile } from 'src/fileUpload';
 
 async function getFileStream(file: File): Promise<internal.Readable | null> {
     if (file.isLocal) {
-        return getFile(file.fileType, file.name);
+        return getFile(file.fileUrl);
     } else {
-        return new Promise<http.IncomingMessage>((resolve) => http.get(file.name, resolve));
+        return new Promise<http.IncomingMessage>((resolve) => http.get(file.fileUrl, resolve));
     }
 }
 
@@ -53,7 +53,7 @@ export async function getMltZip(project: ProjectData, name: string) {
                 for (let i = 0; i < files.length; i++) {
                     const result = streamResults[i];
                     if (result.status === 'fulfilled' && result.value !== null) {
-                        archive.append(result.value, { name: files[i].name.replace(/^users\//, '') });
+                        archive.append(result.value, { name: files[i].fileName });
                     }
                 }
             })
@@ -67,11 +67,12 @@ export async function getMltZip(project: ProjectData, name: string) {
 
     // Push to S3.
     const fileBuffer = await fs.readFile(path.join(directory, `Montage.zip`));
-    await uploadFile('zip', `${id}.zip`, false, fileBuffer, 'application/zip');
+    const fileName = `zip/${id}/Montage.zip`;
+    await uploadFile(fileName, fileBuffer, 'application/zip');
 
     // Delete temp directory.
     await fs.remove(directory);
 
     // Return the URL.
-    return `/api/zip/${id}/Montage.zip`;
+    return `/static/${fileName}`;
 }

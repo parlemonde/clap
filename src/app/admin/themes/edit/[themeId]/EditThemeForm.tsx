@@ -5,9 +5,9 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 
-import { deleteImage } from 'src/actions/delete-image';
+import { deleteImage } from 'src/actions/files/delete-image';
+import { uploadImage } from 'src/actions/files/upload-image';
 import { updateDefaultTheme } from 'src/actions/themes/update-theme';
-import { uploadImage } from 'src/actions/upload-image';
 import { NameInput } from 'src/components/admin/NameInput';
 import { Button } from 'src/components/layout/Button';
 import { Field, Form } from 'src/components/layout/Form';

@@ -3,8 +3,8 @@ import Image from 'next/legacy/image';
 import React from 'react';
 import Camera from 'react-html5-camera-photo';
 
-import { deleteImage } from 'src/actions/delete-image';
-import { uploadImage } from 'src/actions/upload-image';
+import { deleteImage } from 'src/actions/files/delete-image';
+import { uploadImage } from 'src/actions/files/upload-image';
 import { Canvas } from 'src/components/create/Canvas';
 import { Button } from 'src/components/layout/Button';
 import { Flex, FlexItem } from 'src/components/layout/Flex';

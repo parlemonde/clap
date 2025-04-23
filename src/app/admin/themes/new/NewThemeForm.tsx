@@ -5,8 +5,8 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 
+import { uploadImage } from 'src/actions/files/upload-image';
 import { createDefaultTheme } from 'src/actions/themes/create-theme';
-import { uploadImage } from 'src/actions/upload-image';
 import { NameInput } from 'src/components/admin/NameInput';
 import { Button } from 'src/components/layout/Button';
 import { Field, Form } from 'src/components/layout/Form';

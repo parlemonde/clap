@@ -4,12 +4,14 @@ import { NextResponse } from 'next/server';
 import path from 'path';
 import { v4 } from 'uuid';
 
-import { uploadFile } from 'src/fileUpload';
+import { uploadFile } from 'src/actions/files/file-upload';
+import { getCurrentUser } from 'src/actions/get-current-user';
 
 export async function POST(request: NextRequest) {
     try {
+        const currentUser = await getCurrentUser();
         const formData = await request.formData();
-        const file: FormDataEntryValue | undefined = formData.getAll('audio')[0];
+        const file: FormDataEntryValue | undefined = formData.getAll('file')[0];
 
         if (!file || !(file instanceof File)) {
             return new NextResponse('No file found in request', {
@@ -26,11 +28,10 @@ export async function POST(request: NextRequest) {
 
         const uuid = v4();
         const extension = path.extname(file.name).substring(1);
-        const filename = `${uuid}.${extension}`;
-
-        const contentType = mime.lookup(filename) || undefined;
-        const url = await uploadFile('audios', filename, false, Buffer.from(await file.arrayBuffer()), contentType);
-        return Response.json({ url });
+        const fileName = currentUser ? `audios/users/${currentUser?.id}/${uuid}.${extension}` : `audios/temp/${uuid}.${extension}`;
+        const contentType = mime.lookup(fileName) || undefined;
+        await uploadFile(fileName, Buffer.from(await file.arrayBuffer()), contentType);
+        return Response.json({ url: `/static/${fileName}` });
     } catch {
         return new NextResponse('Unknown error happened', {
             status: 500,
