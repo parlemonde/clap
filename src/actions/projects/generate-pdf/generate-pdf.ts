@@ -47,11 +47,11 @@ export async function generatePdf(project: ProjectData): Promise<string | false>
             payload: {
                 html,
                 s3BucketName: process.env.S3_BUCKET_NAME || '',
-                s3Key: `pdf/users/${id}.pdf`,
+                s3Key: `pdf/${id}/Plan-de-tournage.pdf`,
             },
         });
         if (isPdfResult(result)) {
-            return `/api/pdf/${id}/Plan-de-tournage.pdf`;
+            return `/static/pdf/${id}/Plan-de-tournage.pdf`;
         }
     } catch (e) {
         console.error(e);

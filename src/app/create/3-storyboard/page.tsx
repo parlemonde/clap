@@ -15,6 +15,7 @@ import { Steps } from 'src/components/navigation/Steps';
 import { ThemeBreadcrumbs } from 'src/components/navigation/ThemeBreadcrumbs';
 import { Inverted } from 'src/components/ui/Inverted';
 import { Loader } from 'src/components/ui/Loader';
+import { sendToast } from 'src/components/ui/Toasts';
 import { Trans } from 'src/components/ui/Trans';
 import { useTranslation } from 'src/contexts/translationContext';
 import { userContext } from 'src/contexts/userContext';
@@ -49,12 +50,27 @@ export default function StoryboardPage() {
 
     const onGeneratePDF = async () => {
         setIsGeneratingPDF(true);
+        // Open immediately a new tab to avoid the browser blocking the new window
+        const newWindow = window.open('/create/3-storyboard/generating-pdf', '_blank');
         try {
             const url = await generatePdf(projectData);
-            if (url) {
-                window.open(url);
+            if (url && newWindow) {
+                newWindow.location = url;
+                newWindow.focus();
+            } else if (url && !newWindow) {
+                // download the pdf, the newWindow is blocked by the browser
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'Plan-de-tournage.pdf';
+                a.click();
+            } else {
+                throw new Error('Server failed to generate the pdf');
             }
         } catch (e) {
+            sendToast({
+                message: t('unknown_error'),
+                type: 'error',
+            });
             console.error(e);
         }
         setIsGeneratingPDF(false);
