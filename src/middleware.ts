@@ -1,6 +1,11 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
+const S3_POST_URL =
+    process.env.S3_BUCKET_NAME && process.env.AWS_REGION
+        ? `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com`
+        : undefined;
+
 export const config = {
     matcher: [
         {
@@ -20,7 +25,8 @@ export function middleware(request: NextRequest) {
 
     const nonce = Buffer.from(crypto.randomUUID()).toString('base64');
     const cspHeader = `
-      default-src 'self';
+      default-src 'self'${S3_POST_URL ? ` ${S3_POST_URL}` : ''};
+      connect-src 'self' blob: ${S3_POST_URL ? ` ${S3_POST_URL}` : ''};
       style-src 'self' 'unsafe-inline';
       font-src 'self';
       object-src 'none';
