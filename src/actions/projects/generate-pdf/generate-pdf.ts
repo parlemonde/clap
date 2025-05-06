@@ -6,6 +6,7 @@ import { v4 } from 'uuid';
 import logoFont from './font_base64.txt';
 import generatePdfPug from './generate-pdf-template.pug';
 import userLogo from './userLogo_base64.txt';
+import { getSignedImageUrl } from 'src/actions/files/get-signed-image-url';
 import { getCurrentUser } from 'src/actions/get-current-user';
 import { getTranslation } from 'src/actions/get-translation';
 import { getScenario } from 'src/actions/scenarios/get-scenario';
@@ -24,12 +25,23 @@ function getToPdfHtml(): pug.compileTemplate {
     return toPdfHtml;
 }
 
-export async function generatePdf(project: ProjectData): Promise<string | false> {
+export async function generatePdf(projectData: ProjectData): Promise<string | false> {
     const user = await getCurrentUser();
     const { t, currentLocale } = await getTranslation();
 
+    const project = structuredClone(projectData); // Deep clone to avoid mutating the original project data
     const scenario = typeof project.scenarioId === 'number' ? await getScenario(project.scenarioId) : null;
     const scenarioDescription = scenario?.descriptions[currentLocale] || scenario?.descriptions.fr || null;
+
+    const allImages = [...new Set(project.questions.flatMap((question) => question.plans.map((plan) => plan.imageUrl)))];
+    const signedUrls = Object.fromEntries(
+        (await Promise.all(allImages.map((image) => getSignedImageUrl(image, user?.id ?? -1)))).map((url, index) => [allImages[index], url]),
+    );
+    for (const question of project.questions) {
+        for (const plan of question.plans) {
+            plan.imageUrl = signedUrls[plan.imageUrl]; // Replace all image urls with signed urls
+        }
+    }
 
     try {
         const html = getToPdfHtml()({

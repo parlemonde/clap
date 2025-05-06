@@ -1,6 +1,6 @@
 'use client';
 
-import { getS3UploadParameters } from 'src/aws/s3';
+import { getS3UploadParameters } from 'src/aws/get-s3-upload-parameters';
 
 export async function uploadSound(file: File): Promise<string> {
     const formData = new FormData();

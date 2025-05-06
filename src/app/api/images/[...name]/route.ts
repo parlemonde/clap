@@ -6,6 +6,7 @@ import sharp from 'sharp';
 import { Readable } from 'stream';
 
 import { getFile, getFileData } from 'src/actions/files/file-upload';
+import { isSignedImageUrlValid } from 'src/actions/files/get-signed-image-url';
 import { getCurrentUser } from 'src/actions/get-current-user';
 
 const notFoundResponse = () => {
@@ -19,7 +20,8 @@ export async function GET(request: NextRequest, props: { params: Promise<{ name:
     const currentUser = await getCurrentUser();
 
     const params = await props.params;
-    if (params.name.length >= 2 && params.name[0] === 'users' && params.name[1] !== `${currentUser?.id}`) {
+    const isUserImage = params.name.length >= 2 && params.name[0] === 'users';
+    if (isUserImage && params.name[1] !== `${currentUser?.id}` && !(await isSignedImageUrlValid(request.url))) {
         return notFoundResponse();
     }
     const fileName = `images/${params.name.map((path) => sanitize(path)).join('/')}`;

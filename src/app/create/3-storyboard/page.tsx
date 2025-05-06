@@ -64,13 +64,18 @@ export default function StoryboardPage() {
                 a.download = 'Plan-de-tournage.pdf';
                 a.click();
             } else {
-                throw new Error('Server failed to generate the pdf');
+                sendToast({
+                    message: t('unknown_error'),
+                    type: 'error',
+                });
+                newWindow?.close();
             }
         } catch (e) {
             sendToast({
                 message: t('unknown_error'),
                 type: 'error',
             });
+            newWindow?.close();
             console.error(e);
         }
         setIsGeneratingPDF(false);
