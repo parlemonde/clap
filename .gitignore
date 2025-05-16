@@ -47,6 +47,9 @@ server-websockets/cargo.lock
 # Pdf server
 server-pdf-generation/node_modules
 
+# Video server
+server-video-generation/node_modules
+
 # Rust proxy server
 server-preview-proxy/target
 server-preview-proxy/cargo.lock

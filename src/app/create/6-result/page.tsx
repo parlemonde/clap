@@ -4,7 +4,7 @@ import { VideoIcon } from '@radix-ui/react-icons';
 import * as React from 'react';
 
 import { getMltZip } from 'src/actions/projects/generate-mlt-zip';
-import { createVideoJob, getVideoJob } from 'src/actions/projects/generate-video';
+import { generateVideo, getVideoProgress } from 'src/actions/projects/generate-video';
 import { DiaporamaPlayer } from 'src/components/create/DiaporamaPlayer';
 import { Button } from 'src/components/layout/Button';
 import { Container } from 'src/components/layout/Container';
@@ -23,6 +23,7 @@ import { userContext } from 'src/contexts/userContext';
 import { useCollaboration } from 'src/hooks/useCollaboration';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import { useDeepMemo } from 'src/hooks/useDeepMemo';
+import { useLocalStorage } from 'src/hooks/useLocalStorage';
 import { getSounds } from 'src/lib/get-sounds';
 import VideoFile from 'src/svg/plan.svg';
 
@@ -65,56 +66,50 @@ const Or = () => {
     );
 };
 
-type VideoJob = {
-    id: string;
-    url?: string;
-    progress: number;
-    // projectId: number;
-    // projectLastUpdateDate: string; // For validity
-};
-
 export default function ResultPage() {
     const { t } = useTranslation();
     const { user } = React.useContext(userContext);
+    const [projectId] = useLocalStorage('projectId');
     const { projectData, name } = useCurrentProject();
     useCollaboration(); // Listen to collaboration updates
     const sounds = useDeepMemo(getSounds(projectData?.questions || []));
 
     const [isLoading, setIsLoading] = React.useState(false);
-    const [videoJob, setVideoJob] = React.useState<VideoJob | undefined>(undefined);
+    const [videoProgress, setVideoProgress] = React.useState<{
+        percentage: number;
+        url: string;
+    } | null>(null);
 
     // Automatically download the video when it's ready
     const willAutoDownload = React.useRef(false);
     const downloadVideoRef = React.useRef<HTMLAnchorElement | null>(null);
     React.useEffect(() => {
-        if (videoJob?.url && willAutoDownload.current && downloadVideoRef.current) {
+        if (videoProgress?.url && willAutoDownload.current && downloadVideoRef.current) {
             willAutoDownload.current = false;
             downloadVideoRef.current.click();
         }
-    }, [videoJob]);
+    }, [videoProgress]);
 
     // Fetch video job status every second
     React.useEffect(() => {
-        if (!videoJob || videoJob.progress === 100) {
+        if (!videoProgress || videoProgress.percentage === 100) {
             return;
         }
-        const fetchVideoJob = async () => {
-            const newJob = await getVideoJob(videoJob.id);
-            if (newJob) {
-                setVideoJob(newJob);
-            } else {
+        const fetchVideoProgress = async () => {
+            const newProgress = await getVideoProgress(projectId);
+            setVideoProgress(newProgress);
+            if (newProgress === null) {
                 sendToast({
                     message: t('unknown_error'),
                     type: 'error',
                 });
-                setVideoJob(undefined);
             }
         };
-        const timeout = setTimeout(fetchVideoJob, 1000);
+        const timeout = setTimeout(fetchVideoProgress, 1000);
         return () => {
             clearTimeout(timeout);
         };
-    }, [t, videoJob]);
+    }, [t, videoProgress, projectId]);
 
     if (!projectData || user?.role === 'student') {
         return null;
@@ -122,12 +117,18 @@ export default function ResultPage() {
 
     const generateMP4 = async () => {
         setIsLoading(true);
-        const response = await createVideoJob(projectData, name || ''); // TODO generate name
+        const response = await generateVideo(projectData, name || 'video', projectId);
         setIsLoading(false);
         if (response) {
-            setVideoJob(response);
-            if (response.progress !== 100) {
+            setVideoProgress(response);
+            if (response.percentage !== 100) {
                 willAutoDownload.current = true; // Will auto download when the video is ready
+            }
+            if (response.percentage === 100 && response.url) {
+                const link = document.createElement('a');
+                link.href = response.url;
+                link.download = 'video.mp4';
+                link.click();
             }
         } else {
             sendToast({
@@ -142,7 +143,7 @@ export default function ResultPage() {
             return;
         }
         setIsLoading(true);
-        const url = await getMltZip(projectData, name || ''); // TODO generate name
+        const url = await getMltZip(projectData, name || 'video');
         setIsLoading(false);
         if (url) {
             const link = document.createElement('a');
@@ -181,11 +182,11 @@ export default function ResultPage() {
                 {t('part6_subtitle2')}
             </Title>
             <Flex flexDirection="column" alignItems="center" marginX="auto" marginY="lg" style={{ maxWidth: '400px' }}>
-                {videoJob?.url ? (
+                {videoProgress?.url ? (
                     <Button
                         label={t('part6_mp4_download_button')}
                         as="a"
-                        href={videoJob.url}
+                        href={videoProgress.url}
                         ref={downloadVideoRef}
                         className="full-width"
                         variant="contained"
@@ -194,7 +195,7 @@ export default function ResultPage() {
                         leftIcon={<VideoIcon style={{ marginRight: '10px', width: '24px', height: '24px' }} />}
                         download
                     />
-                ) : videoJob ? (
+                ) : videoProgress ? (
                     <div
                         style={{
                             width: '100%',
@@ -209,7 +210,7 @@ export default function ResultPage() {
                         <Text className="color-secondary" style={{ fontSize: '0.8rem', marginBottom: '0.5rem' }}>
                             {t('part6_mp4_loading')}
                         </Text>
-                        <LinearProgressWithLabel value={videoJob.progress} />
+                        <LinearProgressWithLabel value={videoProgress.percentage} />
                     </div>
                 ) : (
                     <Tooltip content={user === null ? t('part6_mp4_user_disabled') : ''} hasArrow>

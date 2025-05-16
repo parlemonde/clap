@@ -5,7 +5,7 @@ import { getAwsClient } from './awsClient';
 import type { FileData } from 'src/actions/files/file-data.types';
 
 const S3_BASE_URL = `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com`;
-function getS3FileUrl(key: string): string {
+export function getS3FileUrl(key: string): string {
     return `${S3_BASE_URL}/${key}`;
 }
 

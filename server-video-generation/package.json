@@ -1,0 +1,21 @@
+{
+  "name": "server-video-generation",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "prebuild": "rm -rf dist",
+    "build": "esbuild index.ts --minify --bundle --platform=node --target=node20 --outfile=dist/index.js"
+  },
+  "devDependencies": {
+    "@types/node": "22.10.2",
+    "esbuild": "^0.25.1",
+    "typescript": "5.7.2"
+  },
+  "dependencies": {
+    "@aws-sdk/util-dynamodb": "^3.808.0",
+    "aws4fetch": "^1.0.20",
+    "fs-extra": "^11.2.0",
+    "mlt-xml": "^2.0.2",
+    "uuid": "^11.0.3"
+  }
+}
