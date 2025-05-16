@@ -4,7 +4,7 @@ import { v4 } from 'uuid';
 
 import { getCurrentUser } from '../get-current-user';
 import { projectToMlt } from './project-to-mlt';
-import { getDynamoDBItem } from 'src/aws/dynamoDb';
+import { getDynamoDBItem, setDynamoDBItem } from 'src/aws/dynamoDb';
 import { invokeLambda } from 'src/aws/lambda';
 import { deleteS3File, getS3FileUrl } from 'src/aws/s3';
 import type { ProjectData } from 'src/database/schemas/projects';
@@ -47,9 +47,10 @@ export async function generateVideo(
                 url: currentProgress.percentage === 100 ? `/static/${currentProgress.s3Key}` : '',
             };
         }
+        await setDynamoDBItem(videoKey, undefined); // delete old progress
         if (currentProgress && currentProgress.s3Key) {
             try {
-                await deleteS3File(currentProgress.s3Key);
+                await deleteS3File(currentProgress.s3Key); // delete old video
             } catch (e) {
                 console.error(e);
             }
