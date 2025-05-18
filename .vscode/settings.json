@@ -14,7 +14,6 @@
     "**/.open-next": true,
   },
   "files.exclude": {
-    "**/.next": true,
     "**/.minio-data": true,
     "**/.postgres-data": true,
     "**/.dynamodb": true,
