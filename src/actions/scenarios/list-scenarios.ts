@@ -1,7 +1,8 @@
 'use server';
 
-import { or, eq, and, count } from 'drizzle-orm';
+import { or, eq, and, count, isNotNull } from 'drizzle-orm';
 
+import { getCurrentUser } from '../get-current-user';
 import { db } from 'src/database';
 import { questions } from 'src/database/schemas/questions';
 import { scenarios, type Scenario } from 'src/database/schemas/scenarios';
@@ -39,5 +40,18 @@ export async function listScenarios({ themeId, userId, questionLanguageCode }: L
         }
     }
 
+    return scenarioList;
+}
+
+export async function listUserScenarios(): Promise<Scenario[]> {
+    const user = await getCurrentUser();
+    if (user?.role !== 'admin') {
+        return [];
+    }
+
+    const scenarioList: Scenario[] = await db
+        .select()
+        .from(scenarios)
+        .where(and(isNotNull(scenarios.userId), eq(scenarios.isDefault, false)));
     return scenarioList;
 }

@@ -5,7 +5,8 @@ import * as React from 'react';
 
 import { ScenariosTable } from './ScenariosTable';
 import { ScenariosTablePlaceholder } from './ScenariosTablePlaceholder';
-import { listScenarios } from 'src/actions/scenarios/list-scenarios';
+import { UserScenariosTable } from './UserScenariosTable';
+import { listScenarios, listUserScenarios } from 'src/actions/scenarios/list-scenarios';
 import { listThemes } from 'src/actions/themes/list-themes';
 import { AdminTile } from 'src/components/admin/AdminTile';
 import { Button } from 'src/components/layout/Button';
@@ -17,6 +18,12 @@ const ScenariosTableWithData = async () => {
     const [themes, scenarios] = await Promise.all([listThemes(), listScenarios()]);
 
     return <ScenariosTable themes={themes} scenarios={scenarios} />;
+};
+
+const UserScenariosTableWithData = async () => {
+    const [themes, scenarios] = await Promise.all([listThemes(), listUserScenarios()]);
+
+    return <UserScenariosTable themes={themes} scenarios={scenarios} />;
 };
 
 export default async function AdminScenariosPage() {
@@ -42,6 +49,10 @@ export default async function AdminScenariosPage() {
                     <ScenariosTableWithData />
                 </React.Suspense>
             </AdminTile>
+
+            <React.Suspense>
+                <UserScenariosTableWithData />
+            </React.Suspense>
         </Container>
     );
 }

@@ -3,7 +3,8 @@ import * as React from 'react';
 
 import { ThemesTable } from './ThemesTable';
 import { ThemesTablePlaceholder } from './ThemesTablePlaceholder';
-import { listThemes } from 'src/actions/themes/list-themes';
+import { UserThemesTable } from './UserThemesTable';
+import { listThemes, listUserThemes } from 'src/actions/themes/list-themes';
 import { AdminTile } from 'src/components/admin/AdminTile';
 import { Button } from 'src/components/layout/Button';
 import { Container } from 'src/components/layout/Container';
@@ -14,6 +15,12 @@ const ThemesTableWithData = async () => {
     const defaultThemes = await listThemes();
 
     return <ThemesTable defaultThemes={defaultThemes} />;
+};
+
+const UserThemesTableWithData = async () => {
+    const userThemes = await listUserThemes();
+
+    return <UserThemesTable userThemes={userThemes} />;
 };
 
 export default async function AdminThemesPage() {
@@ -39,6 +46,10 @@ export default async function AdminThemesPage() {
                     <ThemesTableWithData />
                 </React.Suspense>
             </AdminTile>
+
+            <React.Suspense>
+                <UserThemesTableWithData />
+            </React.Suspense>
         </Container>
     );
 }
