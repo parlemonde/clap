@@ -12,9 +12,9 @@ export default async function SettingsPage() {
 
     return (
         <Container paddingBottom="xl">
-            <Title marginY="md">{t('settings')}</Title>
+            <Title marginY="md">{t('settings_page.header.title')}</Title>
             <Title color="inherit" variant="h2" marginTop="sm" marginBottom="md" style={{ width: '100%', textAlign: 'left' }}>
-                {t('change_language')}
+                {t('settings_page.language_header.title')}
             </Title>
             <LanguageSelect languages={languages} />
         </Container>

@@ -57,7 +57,7 @@ export const UpdateEmailForm = ({ user }: UpdateEmailFormProps) => {
                     setIsUpdateModalOpen(true);
                 }}
             >
-                {t('account_change_button')}
+                {t('my_account_page.change_email_button.label')}
             </a>
             <Modal
                 isOpen={isUpdateModalOpen}
@@ -67,9 +67,9 @@ export const UpdateEmailForm = ({ user }: UpdateEmailFormProps) => {
                     setEmail(user.email);
                 }}
                 onConfirm={onSubmit}
-                confirmLabel={t('edit')}
-                cancelLabel={t('cancel')}
-                title={t('account_change_name')}
+                confirmLabel={t('common.actions.edit')}
+                cancelLabel={t('common.actions.cancel')}
+                title={t('my_account_page.change_email_modal.title')}
                 onOpenAutoFocus={false}
                 isFullWidth
             >
@@ -90,11 +90,11 @@ export const UpdateEmailForm = ({ user }: UpdateEmailFormProps) => {
                         }}
                     >
                         <InfoCircledIcon style={{ width: 20, height: 20, marginRight: 8, paddingTop: 1 }} />
-                        {t('account_change_email_info')}
+                        {t('my_account_page.change_email_modal.info')}
                     </Flex>
                     <Field
                         name="email"
-                        label={t('signup_email')}
+                        label={t('my_account_page.email_field.label')}
                         input={
                             <Input
                                 name="email"
@@ -109,7 +109,7 @@ export const UpdateEmailForm = ({ user }: UpdateEmailFormProps) => {
                                 hasError={!isValidEmail}
                             />
                         }
-                        helperText={!isValidEmail ? t('signup_email_error') : ''}
+                        helperText={!isValidEmail ? t('my_account_page.email_field.error') : ''}
                         helperTextStyle={{ textAlign: 'left', color: 'rgb(211, 47, 47)' }}
                     ></Field>
                 </div>

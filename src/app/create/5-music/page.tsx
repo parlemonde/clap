@@ -53,7 +53,7 @@ export default function MusicPage() {
                 setProjectData({ ...projectData, soundUrl, soundBeginTime: 0 });
             } catch {
                 sendToast({
-                    message: t('error_upload_sound'),
+                    message: t('common.errors.upload_sound'),
                     type: 'error',
                 });
             }
@@ -67,10 +67,10 @@ export default function MusicPage() {
             <ThemeBreadcrumbs themeId={projectData.themeId}></ThemeBreadcrumbs>
             <Steps activeStep={4} themeId={projectData.themeId}></Steps>
             <Title color="primary" variant="h1" marginY="md">
-                <Inverted isRound>5</Inverted> {t('part5_title')}
+                <Inverted isRound>5</Inverted> {t('5_music_page.header.title')}
             </Title>
             <Title color="inherit" variant="h2">
-                {t('part5_subtitle1')}
+                {t('5_music_page.secondary.title')}
             </Title>
             <div style={{ margin: '16px 0' }}>
                 <DiaporamaPlayer
@@ -90,10 +90,10 @@ export default function MusicPage() {
             </div>
             <div className="text-center">
                 <label htmlFor="sequence-sound-upload" className="text-center" style={{ marginBottom: '10px' }}>
-                    Format accepté: .acc, .ogg, .opus, .mp3, .wav, .m4a
+                    {t('4_edit_pre_mounting_page.audio_import_button.formats')}
                 </label>
                 <Button
-                    label={t('import_music')}
+                    label={t('4_edit_pre_mounting_page.audio_import_button.label')}
                     variant="outlined"
                     color="secondary"
                     as="label"

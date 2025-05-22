@@ -6,6 +6,7 @@ import { Breadcrumbs } from 'src/components/layout/Breadcrumbs';
 import { Container } from 'src/components/layout/Container';
 import { Title } from 'src/components/layout/Typography';
 import { BackButton } from 'src/components/navigation/BackButton';
+import { Inverted } from 'src/components/ui/Inverted';
 import { Trans } from 'src/components/ui/Trans';
 
 export default async function NewThemePage() {
@@ -16,12 +17,14 @@ export default async function NewThemePage() {
             <Breadcrumbs
                 className="for-tablet-up-only"
                 marginTop="sm"
-                links={[{ href: '/', label: t('all_themes') }]}
-                currentLabel={t('create_new_theme')}
+                links={[{ href: '/', label: t('common.filters.all_themes') }]}
+                currentLabel={t('new_theme_page.common.add_theme')}
             />
             <BackButton href="/" />
             <Title marginY="md">
-                <Trans i18nKey="create_new_theme">Ajouter votre thème</Trans>
+                <Trans i18nKey="new_theme_page.header.title">
+                    Créer votre <Inverted>thème</Inverted> :
+                </Trans>
             </Title>
             <NewThemeForm />
         </Container>

@@ -19,7 +19,7 @@ export default async function LoginPage(props: ServerPageProps) {
     return (
         <Container className="text-center">
             <Title color="primary" variant="h1" marginTop={48} marginBottom="lg">
-                {t('login_title')}
+                {t('login_page.header.title')}
             </Title>
             <LoginForm ssoHost={SSO_HOST} clientId={CLIENT_ID} stateQueryParam={stateQueryParam} codeQueryParam={codeQueryParam} />
         </Container>

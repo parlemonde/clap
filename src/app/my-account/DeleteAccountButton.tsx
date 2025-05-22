@@ -18,7 +18,7 @@ export const DeleteAccountButton = () => {
 
     const [confirmText, setConfirmText] = React.useState('');
 
-    const isConfirmTextValid = confirmText.toLowerCase() === t('account_delete_confirm').toLowerCase();
+    const isConfirmTextValid = confirmText.toLowerCase() === t('my_account_page.delete_account_modal.delete_confirm').toLowerCase();
 
     const onSubmit = async () => {
         if (!isConfirmTextValid) {
@@ -34,7 +34,7 @@ export const DeleteAccountButton = () => {
     return (
         <>
             <Button
-                label={t('account_delete_button')}
+                label={t('my_account_page.delete_account_button.label')}
                 style={{ marginTop: '0.8rem' }}
                 className="mobile-full-width"
                 variant="contained"
@@ -53,10 +53,10 @@ export const DeleteAccountButton = () => {
                     setConfirmText('');
                 }}
                 onConfirm={onSubmit}
-                confirmLabel={t('delete')}
+                confirmLabel={t('common.actions.delete')}
                 confirmLevel="error"
-                cancelLabel={t('cancel')}
-                title={t('account_delete_button')}
+                cancelLabel={t('common.actions.cancel')}
+                title={t('my_account_page.delete_account_modal.title')}
                 isConfirmDisabled={!isConfirmTextValid}
                 isFullWidth
             >
@@ -78,11 +78,14 @@ export const DeleteAccountButton = () => {
                     >
                         <InfoCircledIcon style={{ width: 20, height: 20, marginRight: 8, paddingTop: 1 }} />
                         <span>
-                            <Trans i18nKey="account_delete_warning1">
+                            <Trans i18nKey="my_account_page.delete_account_modal.warning1">
                                 Attention! Êtes-vous sur de vouloir supprimer votre compte ? Cette action est <strong>irréversible</strong>.
                             </Trans>
                             <br />
-                            <Trans i18nKey="account_delete_warning2" i18nParams={{ deleteConfirm: t('account_delete_confirm') }}>
+                            <Trans
+                                i18nKey="my_account_page.delete_account_modal.warning2"
+                                i18nParams={{ deleteConfirm: t('my_account_page.delete_account_modal.delete_confirm') }}
+                            >
                                 Pour supprimer votre compte, veuillez taper <strong>supprimer</strong> ci-dessous et cliquez sur supprimer.
                             </Trans>
                         </span>
@@ -90,7 +93,9 @@ export const DeleteAccountButton = () => {
                     <Input
                         isFullWidth
                         value={confirmText}
-                        placeholder={t('account_delete_placeholder', { deleteConfirm: t('account_delete_confirm') })}
+                        placeholder={t('my_account_page.delete_account_modal.placeholder', {
+                            deleteConfirm: t('my_account_page.delete_account_modal.delete_confirm'),
+                        })}
                         color="secondary"
                         onChange={(event) => {
                             setConfirmText(event.target.value);

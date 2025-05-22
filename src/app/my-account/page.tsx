@@ -23,33 +23,33 @@ export default async function AccountPage() {
         <Container>
             <div className="text-center">
                 <Title color="primary" variant="h1" marginY="md">
-                    {t('my_account')}
+                    {t('my_account_page.header.title')}
                 </Title>
             </div>
             <Title color="inherit" variant="h2">
-                {t('account_connexion_title')}
+                {t('my_account_page.connection_subheader.title')}
             </Title>
             <div style={{ marginTop: '0.5rem' }}>
                 <label>
-                    <strong>{t('signup_name')} : </strong>
+                    <strong>{t('my_account_page.name_field.label')} : </strong>
                 </label>
                 {user.name} - <UpdateNameForm user={user} />
             </div>
             <div style={{ marginTop: '4px' }}>
                 <label>
-                    <strong>{t('signup_email')} : </strong>
+                    <strong>{t('my_account_page.email_field.label')} : </strong>
                 </label>
                 {user.email} - <UpdateEmailForm user={user} />
             </div>
             <UpdatePasswordButton />
             <Divider marginY="lg" />
             <Title color="inherit" variant="h2">
-                {t('logout_button')}
+                {t('my_account_page.logout_button.title')}
             </Title>
             <LogoutForm />
             <Divider marginY="lg" />
             <Title color="inherit" variant="h2">
-                {t('my_account')}
+                {t('my_account_page.delete_account_button.title')}
             </Title>
             <DeleteAccountButton />
         </Container>

@@ -68,12 +68,11 @@ export const QuestionsList = ({ project, setProject }: QuestionsListProps) => {
                     setProject({ ...project, questions: newQuestions });
                     setDeleteQuestionIndex(-1);
                 }}
-                title={t('part2_delete_question_title')}
-                confirmLabel={t('delete')}
+                title={t('2_questions_page.delete_sequence_modal.title')}
+                confirmLabel={t('common.actions.delete')}
                 confirmLevel="error"
-                isLoading={false} // TODO
             >
-                {t('part2_delete_question_desc')} {questions[deleteQuestionIndex]?.question || ''} ?
+                {t('2_questions_page.delete_sequence_modal.desc')} {questions[deleteQuestionIndex]?.question || ''} ?
             </Modal>
         </>
     );

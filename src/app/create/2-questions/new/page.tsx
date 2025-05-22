@@ -42,7 +42,7 @@ export default function QuestionNewPage() {
             <Steps activeStep={1} themeId={projectData.themeId}></Steps>
             <Title color="primary" marginY="md" variant="h1">
                 <Inverted isRound>2</Inverted>{' '}
-                <Trans i18nKey="part2_title">
+                <Trans i18nKey="2_questions_page.header.title">
                     Mes <Inverted>séquences</Inverted>
                 </Trans>
             </Title>
@@ -51,7 +51,7 @@ export default function QuestionNewPage() {
                     name="question"
                     label={
                         <Title color="inherit" variant="h2">
-                            {t('part2_add_question')}
+                            {t('2_new_questions_page.question_field.label')}
                         </Title>
                     }
                     input={
@@ -63,7 +63,7 @@ export default function QuestionNewPage() {
                             }}
                             required
                             id="question"
-                            placeholder={t('part2_add_question_placeholder')}
+                            placeholder={t('2_new_questions_page.question_field.placeholder')}
                             isFullWidth
                             color="secondary"
                             autoComplete="off"

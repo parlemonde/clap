@@ -108,11 +108,11 @@ export const Scenario = ({
                 ))}
                 {sequence.plans.length < 5 && !isDragging && canEdit && (
                     <div className="plan-button-container add">
-                        <Tooltip position="bottom" content={t('part3_add_plan')} hasArrow>
+                        <Tooltip position="bottom" content={t('3_storyboard_page.button.add_plan')} hasArrow>
                             <IconButton
                                 color="primary"
                                 variant="contained"
-                                aria-label={t('part3_add_plan')}
+                                aria-label={t('3_storyboard_page.button.add_plan')}
                                 onClick={() => {
                                     const plans = sequence.plans;
                                     const ids = plans.map((plan) => plan.id);
@@ -160,11 +160,11 @@ export const Scenario = ({
                     onUpdateSequence?.(newSequence);
                     setDeletePlanIndex(-1);
                 }}
-                title={t('part3_delete_plan_question')}
-                confirmLabel={t('delete')}
+                title={t('3_storyboard_page.delete_plan_modal.title')}
+                confirmLabel={t('common.actions.delete')}
                 confirmLevel="error"
             >
-                {t('part3_delete_plan_desc', { planNumber: planStartIndex + deletePlanIndex })}
+                {t('3_storyboard_page.delete_plan_modal.desc', { planNumber: planStartIndex + deletePlanIndex })}
             </Modal>
             <Modal
                 isOpen={showDeleteTitle}
@@ -176,11 +176,11 @@ export const Scenario = ({
                     onUpdateSequence?.(newSequence);
                     setShowDeleteTitle(false);
                 }}
-                title={t('part3_delete_plan_title')}
-                confirmLabel={t('delete')}
+                title={t('3_storyboard_page.delete_title_modal.title')}
+                confirmLabel={t('common.actions.delete')}
                 confirmLevel="error"
             >
-                {t('part3_delete_plan_title_desc')}
+                {t('3_storyboard_page.delete_title_modal.desc')}
             </Modal>
         </div>
     );

@@ -63,7 +63,7 @@ export default function QuestionPage() {
             router.push('/create/3-storyboard');
         } else {
             sendToast({
-                message: t('unknown_error'),
+                message: t('common.errors.unknown'),
                 type: 'error',
             });
         }
@@ -76,17 +76,23 @@ export default function QuestionPage() {
             <Flex flexDirection="row" alignItems="center" marginY="md">
                 <Title color="primary" variant="h1" marginRight="xl">
                     <Inverted isRound>2</Inverted>{' '}
-                    <Trans i18nKey="part2_title">
+                    <Trans i18nKey="2_questions_page.header.title">
                         Mes <Inverted>séquences</Inverted>
                     </Trans>
                 </Title>
                 {collaborationButton}
             </Flex>
             <Title color="inherit" variant="h2" marginBottom="lg">
-                {t('part2_desc')}
+                {t('2_questions_page.secondary.title')}
             </Title>
             <Link href={`/create/2-questions/new`} passHref legacyBehavior>
-                <Button as="a" label={t('add_question')} variant="outlined" color="secondary" isUpperCase={false}></Button>
+                <Button
+                    as="a"
+                    label={t('2_questions_page.add_question_button.label')}
+                    variant="outlined"
+                    color="secondary"
+                    isUpperCase={false}
+                ></Button>
             </Link>
             <QuestionsList project={projectData} setProject={setProjectData} />
             <NextButton
@@ -106,15 +112,15 @@ export default function QuestionPage() {
                 }}
                 onConfirm={onSaveProject}
                 hasCloseButton={false}
-                title={t('project_save_title')}
-                cancelLabel={t('project_save_cancel')}
-                confirmLabel={t('project_save_confirm')}
+                title={t('2_questions_page.save_project_modal.title')}
+                cancelLabel={t('2_questions_page.save_project_modal.cancel')}
+                confirmLabel={t('2_questions_page.save_project_modal.confirm')}
                 confirmLevel="secondary"
                 isConfirmDisabled={title.length === 0}
                 isLoading={isCreatingProject}
             >
                 <div id="save-project-form">
-                    <p>{t('project_save_desc')}</p>
+                    <p>{t('2_questions_page.save_project_modal.desc')}</p>
                     <Form
                         className="project-form"
                         noValidate
@@ -127,7 +133,7 @@ export default function QuestionPage() {
                     >
                         <Field
                             name="project-name"
-                            label={t('project_save_label')}
+                            label={t('2_questions_page.save_project_name_field.label')}
                             input={
                                 <Input
                                     id="project-name"

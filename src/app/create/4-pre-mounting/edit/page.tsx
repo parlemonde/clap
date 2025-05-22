@@ -44,12 +44,12 @@ export default function MontagePage(props: ServerPageProps) {
             <Flex flexDirection="row" alignItems="center" isFullWidth marginY="md">
                 <Title color="primary" variant="h1">
                     <Inverted isRound>4</Inverted>
-                    {t('pre_mount_title', { number: questionIndex + 1 })}
+                    {t('4_edit_pre_mounting_page.header.title', { number: questionIndex + 1 })}
                 </Title>
                 {isStudent && sequence.status === 'pre-mounting' && <FeedbackModal question={sequence} />}
             </Flex>
             <Title variant="h2" color="inherit" marginBottom="md">
-                {t('pre_mount_title_desc')}
+                {t('4_edit_pre_mounting_page.secondary.title')}
             </Title>
             <MontageForm
                 sequence={newQuestion || sequence}

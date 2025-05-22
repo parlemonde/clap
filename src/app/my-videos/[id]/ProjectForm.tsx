@@ -53,8 +53,8 @@ export const ProjectForm = ({ project }: ProjectFormProps) => {
     return (
         <>
             <div style={{ marginTop: '0.5rem' }}>
-                <label>
-                    <strong>{t('project_name')} : </strong>
+                <label style={{ marginRight: '0.5rem' }}>
+                    <strong>{t('video_page.name_field.label')}</strong>
                 </label>
                 {project.name} -{' '}
                 <a
@@ -73,35 +73,35 @@ export const ProjectForm = ({ project }: ProjectFormProps) => {
                         setShowTitleModal(true);
                     }}
                 >
-                    {t('account_change_button')}
+                    {t('video_page.update_name_button.label')}
                 </a>
             </div>
             <div style={{ marginTop: '0.5rem' }}>
                 <label style={{ marginRight: '0.5rem' }}>
-                    <strong>{t('pdf_theme')}</strong>
+                    <strong>{t('video_page.theme_field.label')}</strong>
                 </label>
                 {project.data.themeName}
             </div>
             <div style={{ marginTop: '0.5rem' }}>
                 <label style={{ marginRight: '0.5rem' }}>
-                    <strong>{t('pdf_scenario')}</strong>
+                    <strong>{t('video_page.scenario_field.label')}</strong>
                 </label>
                 {project.data.scenarioName}
             </div>
             <div style={{ marginTop: '0.5rem' }}>
                 <label style={{ marginRight: '0.5rem' }}>
-                    <strong>{t('project_question_number')}</strong>
+                    <strong>{t('video_page.question_number_field.label')}</strong>
                 </label>
                 {project.data.questions.length || 0}
             </div>
             <div style={{ marginTop: '0.5rem' }}>
                 <label style={{ marginRight: '0.5rem' }}>
-                    <strong>{t('project_plan_number')}</strong>
+                    <strong>{t('video_page.plan_number_field.label')}</strong>
                 </label>
                 {project.data.questions.reduce<number>((n, q) => n + (q.plans || []).length, 0) ?? 0}
             </div>
             <Button
-                label={t('project_see_plans')}
+                label={t('video_page.see_plans_button.label')}
                 marginTop="md"
                 className="mobile-full-width"
                 variant="contained"
@@ -115,10 +115,10 @@ export const ProjectForm = ({ project }: ProjectFormProps) => {
             ></Button>
             <Divider marginY="md" />
             <Title color="inherit" variant="h2">
-                {t('project_delete')}
+                {t('video_page.delete_button.label')}
             </Title>
             <Button
-                label={t('project_delete')}
+                label={t('video_page.delete_button.label')}
                 marginTop="md"
                 onClick={() => setShowDeleteModal(true)}
                 className="mobile-full-width"
@@ -132,9 +132,9 @@ export const ProjectForm = ({ project }: ProjectFormProps) => {
                     setShowTitleModal(false);
                 }}
                 onConfirm={onUpdateName}
-                confirmLabel={t('edit')}
-                cancelLabel={t('cancel')}
-                title={t('project_name')}
+                confirmLabel={t('common.actions.edit')}
+                cancelLabel={t('common.actions.cancel')}
+                title={t('video_page.edit_name_modal.title')}
                 isLoading={isUpdating}
                 onOpenAutoFocus={false}
                 isFullWidth
@@ -142,14 +142,14 @@ export const ProjectForm = ({ project }: ProjectFormProps) => {
                 <div id="project-dialog-description">
                     <Field
                         name="description"
-                        label={t('project_name')}
+                        label={t('video_page.edit_name_field.label')}
                         input={
                             <Input
                                 name="description"
                                 id="description"
                                 isFullWidth
                                 value={projectTitle}
-                                placeholder={t('project_name')}
+                                placeholder={t('video_page.edit_name_field.placeholder')}
                                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                                     setProjectTitle(event.target.value.slice(0, 200));
                                 }}
@@ -164,10 +164,10 @@ export const ProjectForm = ({ project }: ProjectFormProps) => {
                 isOpen={showDeleteModal}
                 onClose={() => setShowDeleteModal(false)}
                 onConfirm={onDelete}
-                confirmLabel={t('delete')}
+                confirmLabel={t('common.actions.delete')}
                 confirmLevel="error"
-                cancelLabel={t('cancel')}
-                title={t('project_delete_title')}
+                cancelLabel={t('common.actions.cancel')}
+                title={t('video_page.delete_modal.title')}
                 isLoading={isDeleting}
                 isFullWidth
             >
@@ -188,7 +188,7 @@ export const ProjectForm = ({ project }: ProjectFormProps) => {
                         }}
                     >
                         <InfoCircledIcon style={{ width: 20, height: 20, marginRight: 8, paddingTop: 1 }} />
-                        <Trans i18nKey="project_delete_desc1" i18nParams={{ projectTitle: project.name }}>
+                        <Trans i18nKey="video_page.delete_modal.desc1" i18nParams={{ projectTitle: project.name }}>
                             Attention! Êtes-vous sur de vouloir supprimer le projet <strong>{project.name}</strong> ? Cette action est{' '}
                             <strong>irréversible</strong> et supprimera toutes les données du projet incluant questions, plans et images.
                         </Trans>

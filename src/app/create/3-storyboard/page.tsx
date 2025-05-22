@@ -65,14 +65,14 @@ export default function StoryboardPage() {
                 a.click();
             } else {
                 sendToast({
-                    message: t('unknown_error'),
+                    message: t('common.errors.unknown'),
                     type: 'error',
                 });
                 newWindow?.close();
             }
         } catch (e) {
             sendToast({
-                message: t('unknown_error'),
+                message: t('common.errors.unknown'),
                 type: 'error',
             });
             newWindow?.close();
@@ -88,14 +88,14 @@ export default function StoryboardPage() {
             <Flex flexDirection="row" alignItems="center" marginY="md">
                 <Title color="primary" variant="h1" marginRight="xl">
                     <Inverted isRound>3</Inverted>{' '}
-                    <Trans i18nKey="part3_title">
+                    <Trans i18nKey="3_storyboard_page.header.title">
                         Création du <Inverted>Storyboard</Inverted>
                     </Trans>
                 </Title>
                 {!isStudent && collaborationButton}
             </Flex>
             <Title color="inherit" variant="h2">
-                {t('part3_desc')}
+                {t('3_storyboard_page.secondary.title')}
             </Title>
             {filteredQuestions.map((sequence) => (
                 <Scenario
@@ -130,7 +130,7 @@ export default function StoryboardPage() {
             {!isStudent && (
                 <div style={{ margin: '32px 0' }}>
                     <Button
-                        label={t('part6_pdf_button')}
+                        label={t('3_storyboard_page.pdf_button.label')}
                         leftIcon={<PictureAsPdf style={{ marginRight: '10px' }} />}
                         variant="outlined"
                         color="secondary"
@@ -143,9 +143,9 @@ export default function StoryboardPage() {
                 isDisabled={studentQuestion?.status === 'storyboard-validating'}
                 label={
                     studentQuestion?.status === 'storyboard-validating'
-                        ? 'En attente de validation du storyboard'
+                        ? t('3_storyboard_page.collaboration.awaiting_validation')
                         : isStudent && (!studentQuestion?.status || studentQuestion?.status === 'storyboard')
-                          ? 'Envoyer pour vérification'
+                          ? t('3_storyboard_page.collaboration.send_for_validation')
                           : undefined
                 }
                 onNext={() => {

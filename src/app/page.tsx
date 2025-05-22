@@ -22,14 +22,14 @@ export default async function Page() {
     return (
         <Container paddingBottom="xl">
             <Title marginY="md">
-                <Trans i18nKey="create_theme_title">
+                <Trans i18nKey="home_page.header.title">
                     Sur quel <Inverted>thème</Inverted> sera votre vidéo ?
                 </Trans>
             </Title>
             <div className="themes-grid">
                 <React.Suspense fallback={<ThemeCardPlaceholder />}>
                     <>
-                        <ThemeCard href="/create/new-theme" name={t('create_new_theme')} />
+                        <ThemeCard href="/create/new-theme" name={t('new_theme_page.common.add_theme')} />
                         <Themes />
                         <LocalThemes />
                     </>

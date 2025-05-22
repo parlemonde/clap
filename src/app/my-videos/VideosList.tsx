@@ -42,7 +42,7 @@ export const VideoList = ({ projects }: VideoListProps) => {
                 </React.Fragment>
             ) : (
                 <ProjectCard
-                    title={t('my_videos_empty')}
+                    title={t('my_videos_page.empty_list.title')}
                     onClick={() => {
                         router.push('/');
                     }}

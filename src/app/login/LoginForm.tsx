@@ -80,7 +80,7 @@ export const LoginForm = ({ ssoHost, clientId, stateQueryParam, codeQueryParam }
             {ssoHost && clientId ? (
                 <>
                     <Button
-                        label={`Se connecter avec ${ssoHostName}`}
+                        label={t('login_page.sso_button.label', { ssoHostName })}
                         variant="contained"
                         color="secondary"
                         onClick={onLoginWithSSO}
@@ -95,12 +95,12 @@ export const LoginForm = ({ ssoHost, clientId, stateQueryParam, codeQueryParam }
             ) : null}
             <Field
                 name="email"
-                label={<span style={{ display: 'inline-block', marginBottom: 4 }}>{t('login_username')}</span>}
+                label={<span style={{ display: 'inline-block', marginBottom: 4 }}>{t('login_page.email_field.label')}</span>}
                 input={<Input id="email" name="email" type="text" color="secondary" isFullWidth required disabled={isConnectingWithSso} />}
             ></Field>
             <Field
                 name="password"
-                label={<span style={{ display: 'inline-block', marginBottom: 4 }}>{t('login_password')}</span>}
+                label={<span style={{ display: 'inline-block', marginBottom: 4 }}>{t('login_page.password_field.label')}</span>}
                 input={
                     <Input
                         type={showPassword ? 'text' : 'password'}
@@ -125,14 +125,17 @@ export const LoginForm = ({ ssoHost, clientId, stateQueryParam, codeQueryParam }
                     />
                 }
             ></Field>
-            <Button label={t('login_connect')} variant="contained" color="secondary" type="submit" value="Submit"></Button>
+            <Button label={t('login_page.connect_button.label')} variant="contained" color="secondary" type="submit" value="Submit"></Button>
             <Link href="/join" passHref legacyBehavior>
-                <Button marginTop="lg" as="a" isFullWidth label="Je suis un·e élève" variant="outlined" color="secondary"></Button>
+                <Button marginTop="lg" as="a" isFullWidth label={t('login_page.student_button.label')} variant="outlined" color="secondary"></Button>
             </Link>
             <div className="text-center">
                 <Link href="/reset-password" className="color-primary">
-                    {t('login_forgot_password')}
+                    {t('login_page.forgot_password_link.label')}
                 </Link>
+            </div>
+            <div className="text-center" style={{ marginBottom: '2rem' }}>
+                {t('login_page.no_account.text')} <Link href="/sign-up">{t('login_page.no_account.link')}</Link>
             </div>
             <div className="loader-wrapper">
                 <FormLoader />

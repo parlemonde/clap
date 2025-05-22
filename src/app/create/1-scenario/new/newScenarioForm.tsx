@@ -70,7 +70,7 @@ export const NewScenarioForm = ({ backUrl, themeId }: NewScenarioFormProps) => {
                 createNewProject(newScenario);
                 router.push('/create/2-questions');
             } else {
-                sendToast({ message: t('unknown_error'), type: 'error' });
+                sendToast({ message: t('common.errors.unknown'), type: 'error' });
             }
             setIsLoading(false);
         } else {
@@ -94,7 +94,7 @@ export const NewScenarioForm = ({ backUrl, themeId }: NewScenarioFormProps) => {
                     name="scenario_title"
                     label={
                         <Title color="inherit" variant="h2">
-                            <Trans i18nKey="new_scenario_title_label">
+                            <Trans i18nKey="1_new_scenario_page.title_field.label">
                                 Choisis ton titre<span style={{ color: 'red' }}>*</span> :
                             </Trans>
                         </Title>
@@ -107,7 +107,7 @@ export const NewScenarioForm = ({ backUrl, themeId }: NewScenarioFormProps) => {
                                 setName(event.target.value.slice(0, 200));
                             }}
                             required
-                            placeholder={t('new_scenario_title_placeholder')}
+                            placeholder={t('1_new_scenario_page.title_field.placeholder')}
                             isFullWidth
                             marginTop="sm"
                             color="secondary"
@@ -121,7 +121,7 @@ export const NewScenarioForm = ({ backUrl, themeId }: NewScenarioFormProps) => {
                     name="scenario_description"
                     label={
                         <Title color="inherit" variant="h2">
-                            {t('new_scenario_desc_label')}
+                            {t('1_new_scenario_page.desc_field.label')}
                         </Title>
                     }
                     input={
@@ -131,7 +131,7 @@ export const NewScenarioForm = ({ backUrl, themeId }: NewScenarioFormProps) => {
                             onChange={(event) => {
                                 setDescription(event.target.value.slice(0, 400));
                             }}
-                            placeholder={t('new_scenario_desc_placeholder')}
+                            placeholder={t('1_new_scenario_page.desc_field.placeholder')}
                             isFullWidth
                             style={{ marginTop: '0.5rem' }}
                             color="secondary"

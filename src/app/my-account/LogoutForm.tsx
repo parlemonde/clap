@@ -27,7 +27,7 @@ export const LogoutForm = () => {
         >
             <Button
                 style={{ marginTop: '0.8rem' }}
-                label={t('logout_button')}
+                label={t('my_account_page.logout_button.label')}
                 variant="outlined"
                 color="error"
                 className="mobile-full-width"

@@ -53,7 +53,7 @@ export const SignUpForm = ({ inviteCode }: SignUpFormProps) => {
             <Form onSubmit={onSubmit} className="signup-form" autoComplete="off">
                 <Field
                     name="username"
-                    label={t('signup_name')}
+                    label={t('signup_page.name_field.label')}
                     input={
                         <Input
                             id="username"
@@ -71,7 +71,7 @@ export const SignUpForm = ({ inviteCode }: SignUpFormProps) => {
                 />
                 <Field
                     name="email"
-                    label={t('signup_email')}
+                    label={t('signup_page.email_field.label')}
                     input={
                         <Input
                             id="email"
@@ -90,12 +90,12 @@ export const SignUpForm = ({ inviteCode }: SignUpFormProps) => {
                             hasError={!isEmailValid}
                         />
                     }
-                    helperText={!isEmailValid ? t('signup_email_error') : ''}
+                    helperText={!isEmailValid ? t('signup_page.email_field.error') : ''}
                     helperTextStyle={{ textAlign: 'left', color: 'rgb(211, 47, 47)' }}
                 />
                 <Field
                     name="password"
-                    label={t('account_new_password')}
+                    label={t('signup_page.password_field.label')}
                     input={
                         <Input
                             type={showPassword ? 'text' : 'password'}
@@ -125,12 +125,12 @@ export const SignUpForm = ({ inviteCode }: SignUpFormProps) => {
                             hasError={!isPasswordValid}
                         />
                     }
-                    helperText={!isPasswordValid ? t('signup_password_error') : ''}
+                    helperText={!isPasswordValid ? t('signup_page.password_field.error') : ''}
                     helperTextStyle={{ textAlign: 'left', color: 'rgb(211, 47, 47)' }}
                 />
                 <Field
                     name="password_confirm"
-                    label={t('signup_password_confirm')}
+                    label={t('signup_page.password_confirm_field.label')}
                     input={
                         <Input
                             style={{ marginTop: '1rem' }}
@@ -162,13 +162,13 @@ export const SignUpForm = ({ inviteCode }: SignUpFormProps) => {
                             hasError={hasConfirmError}
                         />
                     }
-                    helperText={hasConfirmError ? t('signup_password_confirm_error') : ''}
+                    helperText={hasConfirmError ? t('signup_page.password_confirm_field.error') : ''}
                     helperTextStyle={{ textAlign: 'left', color: 'rgb(211, 47, 47)' }}
                 />
-                <Button label={t('signup_button')} variant="contained" color={'secondary'} type="submit" value="Submit"></Button>
+                <Button label={t('signup_page.submit_button.label')} variant="contained" color={'secondary'} type="submit" value="Submit"></Button>
             </Form>
             <div className="text-center" style={{ marginBottom: '2rem' }}>
-                {t('signup_already')} <Link href="/login">{t('login_connect')}</Link>
+                {t('signup_page.login_link.already')} <Link href="/login">{t('signup_page.login_link.label')}</Link>
             </div>
             <Loader isLoading={false} />
         </>

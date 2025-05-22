@@ -27,7 +27,7 @@ export default async function SignUpPage(props: ServerPageProps) {
     return (
         <Container className="text-center">
             <Title color="primary" variant="h1" marginTop="lg" marginBottom="md">
-                {t('signup_title')}
+                {t('signup_page.header.title')}
             </Title>
 
             {isCodeValid ? <SignUpForm inviteCode={tokenQueryParam} /> : <InviteTokenForm initialCode={tokenQueryParam} />}

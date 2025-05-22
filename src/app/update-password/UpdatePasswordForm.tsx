@@ -40,12 +40,12 @@ export const UpdatePasswordForm = ({ email, verifyToken }: UpdatePasswordFormPro
         if (success) {
             router.push('/login');
             sendToast({
-                message: t('update_password_success'),
+                message: t('update_password_page.toast_message.update_success'),
                 type: 'success',
             });
         } else {
             sendToast({
-                message: t('unknown_error'),
+                message: t('common.errors.unknown'),
                 type: 'error',
             });
         }
@@ -55,7 +55,7 @@ export const UpdatePasswordForm = ({ email, verifyToken }: UpdatePasswordFormPro
         <Form className="login-form" autoComplete="off" onSubmit={onSubmit}>
             <Field
                 name="new_password"
-                label={t('account_new_password')}
+                label={t('update_password_page.password_field.label')}
                 input={
                     <Input
                         type={showPassword ? 'text' : 'password'}
@@ -82,12 +82,12 @@ export const UpdatePasswordForm = ({ email, verifyToken }: UpdatePasswordFormPro
                         hasError={!isValidPassword}
                     />
                 }
-                helperText={!isValidPassword ? t('signup_password_error') : ''}
+                helperText={!isValidPassword ? t('update_password_page.password_field.error') : ''}
                 helperTextStyle={{ textAlign: 'left', color: 'rgb(211, 47, 47)' }}
             />
             <Field
                 name="new_password_confirm"
-                label={t('signup_password_confirm')}
+                label={t('update_password_page.password_confirm_field.label')}
                 input={
                     <Input
                         style={{ marginTop: '1rem' }}
@@ -119,10 +119,10 @@ export const UpdatePasswordForm = ({ email, verifyToken }: UpdatePasswordFormPro
                         hasError={hasConfirmError}
                     />
                 }
-                helperText={hasConfirmError ? t('signup_password_confirm_error') : ''}
+                helperText={hasConfirmError ? t('update_password_page.password_confirm_field.error') : ''}
                 helperTextStyle={{ textAlign: 'left', color: 'rgb(211, 47, 47)' }}
             />
-            <Button label={t('validate')} variant="contained" color="secondary" type="submit"></Button>
+            <Button label={t('update_password_page.submit_button.label')} variant="contained" color="secondary" type="submit"></Button>
             <Loader isLoading={isLoading} />
         </Form>
     );

@@ -36,14 +36,14 @@ export const ProjectCard = ({ title = '', themeName = '', onClick, onClickEdit, 
             </Title>
             {themeName !== '' && (
                 <div className={styles.ProjectCard__ThemeName}>
-                    <label>{t('my_videos_themes')}</label> {themeName}
+                    <label>{t('my_videos_page.project_card.theme_name', { themeName })}</label>
                 </div>
             )}
             {onClickEdit !== undefined && (
                 <div className={styles.ProjectCard__EditButton}>
                     <IconButton
                         color="primary"
-                        aria-label={t('delete')}
+                        aria-label={t('common.actions.edit')}
                         size="sm"
                         onClick={(event) => {
                             event.preventDefault();

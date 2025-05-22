@@ -7,6 +7,7 @@ import styles from './modal.module.scss';
 import { Button } from '../Button';
 import { IconButton } from '../Button/IconButton';
 import { CircularProgress } from '../CircularProgress';
+import { useTranslation } from 'src/contexts/translationContext';
 
 type ModalProps = {
     // --
@@ -34,9 +35,9 @@ export const Modal = ({
     title,
     hasCloseButton = true,
     hasCancelButton = true,
-    cancelLabel = 'Annuler',
+    cancelLabel,
     cancelLevel = 'secondary',
-    confirmLabel = 'Oui',
+    confirmLabel,
     confirmLevel = 'secondary',
     isConfirmDisabled = false,
     width = 'md',
@@ -45,6 +46,10 @@ export const Modal = ({
     onOpenAutoFocus = true,
     children,
 }: React.PropsWithChildren<ModalProps>) => {
+    const { t } = useTranslation();
+    const defaultCancelLabel = t('common.actions.cancel');
+    const defaultConfirmLabel = t('common.actions.validate');
+
     return (
         <Dialog.Root
             open={isOpen}
@@ -72,10 +77,12 @@ export const Modal = ({
                     <Dialog.Title className={styles.title}>{title}</Dialog.Title>
                     <div className={styles.content}>{children}</div>
                     <div className={styles.footer}>
-                        {hasCancelButton && <Button label={cancelLabel} onClick={onClose} color={cancelLevel} variant="outlined"></Button>}
+                        {hasCancelButton && (
+                            <Button label={cancelLabel || defaultCancelLabel} onClick={onClose} color={cancelLevel} variant="outlined"></Button>
+                        )}
                         {onConfirm && (
                             <Button
-                                label={confirmLabel}
+                                label={confirmLabel || defaultConfirmLabel}
                                 onClick={onConfirm}
                                 color={confirmLevel}
                                 variant="contained"

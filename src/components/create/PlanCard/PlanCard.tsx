@@ -122,11 +122,11 @@ export const PlanCard = ({
                 <div className={classNames('pill', styles.planCard__bolt, { ['pill--green']: Boolean(plan.description) })}>
                     <LightningBoltIcon />
                 </div>
-                {!isDragging && <div className={styles.planCard__editButton}>{t('edit')}</div>}
+                {!isDragging && <div className={styles.planCard__editButton}>{t('common.actions.edit')}</div>}
                 {canDelete && !isDragging && (
                     <IconButton
                         className={styles.planCard__deleteButton}
-                        aria-label={t('delete')}
+                        aria-label={t('common.actions.delete')}
                         icon={TrashIcon}
                         color="error"
                         variant="contained"

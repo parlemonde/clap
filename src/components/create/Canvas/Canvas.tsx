@@ -176,27 +176,27 @@ const CanvasComponent = (_: unknown, ref: React.ForwardedRef<HTMLCanvasElement |
             <div className="draw-canvas-container-max-width">
                 <div>
                     <div role="group" className="actions-buttons-container" aria-label="outlined primary button group">
-                        <Tooltip sideOffset={0} position="bottom" hasArrow content={t('tool_color')}>
+                        <Tooltip sideOffset={0} position="bottom" hasArrow content={t('canvas.color_tool.label')}>
                             <IconButton
                                 style={{ ...IconButtonStyle, backgroundColor: color === 'white' ? 'grey' : undefined }}
-                                aria-label={t('tool_color')}
+                                aria-label={t('canvas.color_tool.label')}
                                 onClick={handleOpenModalColor}
                                 icon={BlendingModeIcon}
                                 iconProps={{ color }}
                             ></IconButton>
                         </Tooltip>
-                        <Tooltip sideOffset={0} position="bottom" hasArrow content={t('tool_stroke_width')}>
+                        <Tooltip sideOffset={0} position="bottom" hasArrow content={t('canvas.size_tool.label')}>
                             <IconButton
                                 style={IconButtonStyle}
-                                aria-label={t('tool_stroke_width')}
+                                aria-label={t('canvas.size_tool.label')}
                                 onClick={handleOpenModalSize}
                                 icon={DiscIcon}
                             ></IconButton>
                         </Tooltip>
-                        <Tooltip sideOffset={0} position="bottom" hasArrow content={t('tool_go_back')}>
+                        <Tooltip sideOffset={0} position="bottom" hasArrow content={t('canvas.undo.label')}>
                             <IconButton
                                 style={IconButtonStyle}
-                                aria-label={t('tool_go_back')}
+                                aria-label={t('canvas.undo.label')}
                                 onClick={handleUndo}
                                 icon={ResetIcon}
                                 iconProps={{
@@ -204,10 +204,10 @@ const CanvasComponent = (_: unknown, ref: React.ForwardedRef<HTMLCanvasElement |
                                 }}
                             ></IconButton>
                         </Tooltip>
-                        <Tooltip sideOffset={0} position="bottom" hasArrow content={t('tool_go_forward')}>
+                        <Tooltip sideOffset={0} position="bottom" hasArrow content={t('canvas.redo.label')}>
                             <IconButton
                                 style={{ ...IconButtonStyle, borderRight: '1px solid' }}
-                                aria-label={t('tool_go_forward')}
+                                aria-label={t('canvas.redo.label')}
                                 onClick={handleRedo}
                                 icon={ResetIcon}
                                 iconProps={{
@@ -217,10 +217,10 @@ const CanvasComponent = (_: unknown, ref: React.ForwardedRef<HTMLCanvasElement |
                             ></IconButton>
                         </Tooltip>
                         <div style={{ flex: 1 }} />
-                        <Tooltip sideOffset={0} position="bottom" hasArrow content={t('tool_clear')}>
+                        <Tooltip sideOffset={0} position="bottom" hasArrow content={t('canvas.clear.label')}>
                             <IconButton
                                 style={{ ...IconButtonStyle, borderRight: '1px solid', transform: 'translate(2px, 1px)' }}
-                                aria-label={t('tool_clear')}
+                                aria-label={t('canvas.clear.label')}
                                 onClick={handleOpenModalClear}
                                 icon={Cross1Icon}
                                 iconProps={{

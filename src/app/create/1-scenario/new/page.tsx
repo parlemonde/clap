@@ -22,7 +22,7 @@ export default async function ScenarioPage(props: ServerPageProps) {
             <Steps activeStep={0} themeId={themeId} backHref={backUrl}></Steps>
             <Title color="primary" marginY="md" variant="h1">
                 <Inverted isRound>1</Inverted>{' '}
-                <Trans i18nKey="new_scenario_title">
+                <Trans i18nKey="1_new_scenario_page.header.title">
                     Crée ton nouveau <Inverted>scénario</Inverted> !
                 </Trans>
             </Title>

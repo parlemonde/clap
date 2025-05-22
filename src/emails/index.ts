@@ -18,13 +18,7 @@ type ResetPasswordEmail = {
         resetCode: string;
     };
 };
-type ConfirmEmailEmail = {
-    kind: 'confirm-email';
-    data: {
-        verifyCode: string;
-    };
-};
-type EmailKind = ResetPasswordEmail | ConfirmEmailEmail;
+type EmailKind = ResetPasswordEmail;
 
 /**
  * Register service: Stores instances in `global` to prevent memory leaks in development.
@@ -56,6 +50,7 @@ export async function sendMail(to: string, kind: EmailKind): Promise<void> {
 
     const { t } = await getTranslation();
 
+    const subject = 'email.reset_password_subject';
     const emailData: Record<string, string> = {
         frontUrl: HOST_URL,
         receiverEmail: to,
@@ -63,12 +58,8 @@ export async function sendMail(to: string, kind: EmailKind): Promise<void> {
     };
     switch (kind.kind) {
         case 'reset-password': {
-            emailData.subject = 'email_reset_password_subject';
+            // subject = 'email.reset_password_subject';
             emailData.resetUrl = `${HOST_URL}/update-password?email=${encodeURI(to)}&verify-token=${encodeURI(kind.data.resetCode)}`;
-            break;
-        }
-        case 'confirm-email': {
-            emailData.subject = 'email_verify_subject';
             break;
         }
     }
@@ -83,7 +74,7 @@ export async function sendMail(to: string, kind: EmailKind): Promise<void> {
         const info = await nodeMailer.sendMail({
             from: `"Par Le Monde" <ne-pas-repondre@${DOMAIN}>`, // sender address
             to, // receiver address
-            subject: t(emailData.subject), // Subject line
+            subject: t(subject), // Subject line
             text, // plain text body
             html, // html body
         });

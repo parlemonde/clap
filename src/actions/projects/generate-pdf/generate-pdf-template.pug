@@ -201,26 +201,26 @@ header
 main
   .text-center
     h1(style='margin: 0.5rem 0')
-      | #{t("pdf_title")}
+      | #{t("pdf.title")}
   if project.name !== null
     .text-center
       h2(style='margin: 0 0 0.5rem 0')
         | #{project.name}
   div
     h2
-      | #{t("pdf_subtitle_description")}
+      | #{t("pdf.subtitle_description")}
     .content
       div(style='margin: 0.1rem 0')
-        label #{t("pdf_theme")}
+        label #{t("pdf.theme")}
         p.inline #{" "}#{project.themeName}
       div(style='margin: 0.1rem 0')
-        label #{t("pdf_scenario")}
+        label #{t("pdf.scenario")}
         p.inline #{" "}#{project.scenarioName}
       if scenarioDescription != null
         p #{scenarioDescription}
   div
     h2
-      | #{t("pdf_subtitle_storyboard")}
+      | #{t("pdf.subtitle_storyboard")}
     - let count = 0
     each question, index in project.questions
       .content.scene
@@ -245,9 +245,9 @@ main
   if QRCode != null
     div
       h2
-        | #{t("pdf_subtitle_tocamera")}
+        | #{t("pdf.subtitle_tocamera")}
       .content
         p
-          | #{t("pdf_tocamera_desc")}
+          | #{t("pdf.tocamera_desc")}
         div.text-center(style="margin-top: 1rem;")
           img(alt="qrcode" style="width:4cm;height:4cm" src=QRCode)

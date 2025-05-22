@@ -11,8 +11,15 @@ interface ClearModalProps {
 export const ClearModal: React.FunctionComponent<ClearModalProps> = ({ isOpen = false, onClear = () => () => {} }: ClearModalProps) => {
     const { t } = useTranslation();
     return (
-        <Modal width="sm" isOpen={isOpen} onClose={onClear(false)} onConfirm={onClear(true)} confirmLevel="error" title={t('tool_clear_title')}>
-            {t('tool_clear_desc')}
+        <Modal
+            width="sm"
+            isOpen={isOpen}
+            onClose={onClear(false)}
+            onConfirm={onClear(true)}
+            confirmLevel="error"
+            title={t('canvas.clear_modal.title')}
+        >
+            {t('canvas.clear_modal.desc')}
         </Modal>
     );
 };

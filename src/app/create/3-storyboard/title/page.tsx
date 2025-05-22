@@ -51,17 +51,19 @@ export default function StoryboardTitlePage(props: ServerPageProps) {
             <ThemeBreadcrumbs themeId={projectData.themeId}></ThemeBreadcrumbs>
             <Steps activeStep={2} themeId={projectData.themeId} backHref="/create/3-storyboard"></Steps>
             <Title color="primary" variant="h1" marginY="md">
-                <Inverted isRound>3</Inverted> {t('part3_edit_title', { planNumber: questionIndex + 1 })}
+                <Inverted isRound>3</Inverted> {t('3_title_storyboard_page.header.title', { planNumber: questionIndex + 1 })}
             </Title>
             <Title color="inherit" variant="h2">
-                <span>{t('part3_question')}</span> {sequence.question}
+                {t('3_edit_storyboard_page.secondary.question_name', {
+                    sequenceName: sequence.question,
+                })}
             </Title>
             <Title color="inherit" variant="h2" marginTop="md">
-                <span>{t('part3_edit_title_desc')}</span>
+                {t('3_title_storyboard_page.secondary.title')}
             </Title>
             <TitleForm title={newTitle || title} onTitleChange={setNewTitle} />
             <NextButton
-                label={t('continue')}
+                label={t('common.actions.continue')}
                 backHref="/create/3-storyboard"
                 onNext={() => {
                     const newQuestions = [...projectData.questions];

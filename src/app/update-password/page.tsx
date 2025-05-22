@@ -18,7 +18,7 @@ export default async function UpdatePasswordPage(props: ServerPageProps) {
     return (
         <Container className="text-center">
             <Title color="primary" variant="h1" marginTop={48} marginBottom="lg">
-                {t('forgot_password_title')}
+                {t('update_password_page.header.title')}
             </Title>
             <UpdatePasswordForm email={email} verifyToken={verifyToken} />
         </Container>

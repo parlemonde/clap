@@ -29,7 +29,7 @@ export const ProjectTitle = () => {
                 }}
                 marginRight="sm"
             >
-                {t('project')}
+                {t('video_page.header.title')}
             </Title>
             <Title
                 color="inherit"

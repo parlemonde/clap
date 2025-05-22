@@ -6,6 +6,7 @@ import React from 'react';
 
 import { Button } from 'src/components/layout/Button';
 import { Field, Form, Input } from 'src/components/layout/Form';
+import { Link } from 'src/components/navigation/Link';
 import { useTranslation } from 'src/contexts/translationContext';
 
 interface InviteTokenFormProps {
@@ -29,11 +30,11 @@ export const InviteTokenForm = ({ initialCode }: InviteTokenFormProps) => {
 
     return (
         <Form onSubmit={onSubmit} className="signup-form" autoComplete="off" style={{ textAlign: 'left' }}>
-            <label style={{ fontWeight: 'bold', fontSize: '1rem' }}>{t('signup_invite_title')}</label>
+            <label style={{ fontWeight: 'bold', fontSize: '1rem' }}>{t('signup_page.invite_code_field.title')}</label>
             <Field
                 marginTop="md"
                 name="inviteCode"
-                label={t('signup_invite_placeholder')}
+                label={t('signup_page.invite_code_field.label')}
                 input={
                     <Input
                         id="inviteCode"
@@ -49,10 +50,13 @@ export const InviteTokenForm = ({ initialCode }: InviteTokenFormProps) => {
                         hasError={!!initialCode}
                     />
                 }
-                helperText={initialCode ? t('signup_invite_error') : ''}
+                helperText={initialCode ? t('signup_page.invite_code_field.error') : ''}
                 helperTextStyle={{ textAlign: 'left', color: 'rgb(211, 47, 47)' }}
             ></Field>
-            <Button label={t('continue')} variant="contained" color="secondary" type="submit" value="Submit"></Button>
+            <Button label={t('signup_page.continue_button.label')} variant="contained" color="secondary" type="submit" value="Submit"></Button>
+            <div className="text-center" style={{ marginBottom: '2rem' }}>
+                {t('signup_page.login_link.already')} <Link href="/login">{t('signup_page.login_link.label')}</Link>
+            </div>
         </Form>
     );
 };

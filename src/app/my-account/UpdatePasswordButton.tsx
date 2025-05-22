@@ -50,7 +50,7 @@ export const UpdatePasswordButton = () => {
     return (
         <>
             <Button
-                label={t('account_password_change')}
+                label={t('my_account_page.change_password_button.label')}
                 style={{ marginTop: '0.8rem' }}
                 className="mobile-full-width"
                 onClick={() => {
@@ -71,16 +71,16 @@ export const UpdatePasswordButton = () => {
                     setPasswordConfirm('');
                 }}
                 onConfirm={onSubmit}
-                confirmLabel={t('edit')}
-                cancelLabel={t('cancel')}
-                title={t('account_change_password')}
+                confirmLabel={t('common.actions.edit')}
+                cancelLabel={t('common.actions.cancel')}
+                title={t('my_account_page.change_password_modal.title')}
                 onOpenAutoFocus={false}
                 isFullWidth
             >
                 <div id="mdp-dialog-description">
                     <Field
                         name="old_password"
-                        label={t('account_current_password')}
+                        label={t('my_account_page.current_password_field.label')}
                         input={
                             <Input
                                 type={showPassword ? 'text' : 'password'}
@@ -110,7 +110,7 @@ export const UpdatePasswordButton = () => {
                     <Divider marginY="lg" />
                     <Field
                         name="new_password"
-                        label={t('account_new_password')}
+                        label={t('my_account_page.new_password_field.label')}
                         input={
                             <Input
                                 type={showPassword ? 'text' : 'password'}
@@ -137,12 +137,12 @@ export const UpdatePasswordButton = () => {
                                 hasError={!isValidPassword}
                             />
                         }
-                        helperText={!isValidPassword ? t('signup_password_error') : ''}
+                        helperText={!isValidPassword ? t('my_account_page.new_password_field.error') : ''}
                         helperTextStyle={{ textAlign: 'left', color: 'rgb(211, 47, 47)' }}
                     />
                     <Field
                         name="new_password_confirm"
-                        label={t('signup_password_confirm')}
+                        label={t('my_account_page.new_password_confirm_field.label')}
                         input={
                             <Input
                                 style={{ marginTop: '1rem' }}
@@ -174,7 +174,7 @@ export const UpdatePasswordButton = () => {
                                 hasError={hasConfirmError}
                             />
                         }
-                        helperText={hasConfirmError ? t('signup_password_confirm_error') : ''}
+                        helperText={hasConfirmError ? t('my_account_page.new_password_confirm_field.error') : ''}
                         helperTextStyle={{ textAlign: 'left', color: 'rgb(211, 47, 47)' }}
                     />
                 </div>

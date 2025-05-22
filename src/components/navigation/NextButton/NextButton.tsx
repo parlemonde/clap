@@ -26,7 +26,7 @@ export const NextButton = ({ label, backHref, type, onNext, isDisabled, ...margi
                 <Link href={backHref} passHref legacyBehavior>
                     <Button
                         className={styles.nextButton__back}
-                        label={t('cancel')}
+                        label={t('common.actions.cancel')}
                         as="a"
                         variant="outlined"
                         color="secondary"
@@ -39,7 +39,7 @@ export const NextButton = ({ label, backHref, type, onNext, isDisabled, ...margi
             )}
             <Button
                 className={styles.nextButton__next}
-                label={label || t('next')}
+                label={label || t('common.actions.next')}
                 variant="contained"
                 color="secondary"
                 type={type}

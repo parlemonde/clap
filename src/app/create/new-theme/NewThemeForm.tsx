@@ -32,7 +32,7 @@ export const NewThemeForm = () => {
             if (newTheme) {
                 router.push(`/create/1-scenario?themeId=${newTheme.id}`);
             } else {
-                sendToast({ message: t('unknown_error'), type: 'error' });
+                sendToast({ message: t('common.errors.unknown'), type: 'error' });
             }
             setIsLoading(false);
         } else {
@@ -53,7 +53,7 @@ export const NewThemeForm = () => {
                     name="themeName"
                     label={
                         <Title color="inherit" variant="h2">
-                            <Trans i18nKey="new_theme_title_label">
+                            <Trans i18nKey="new_theme_page.name_field.label">
                                 Nom du thème<span style={{ color: 'red' }}>*</span> :
                             </Trans>
                         </Title>
@@ -69,7 +69,7 @@ export const NewThemeForm = () => {
                                 setThemeName(event.target.value.slice(0, 200));
                             }}
                             required
-                            placeholder={t('new_theme_title_placeholder')}
+                            placeholder={t('new_theme_page.name_field.placeholder')}
                             style={{ marginTop: '8px' }}
                             color="secondary"
                             autoComplete="off"

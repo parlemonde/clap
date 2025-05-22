@@ -21,39 +21,39 @@ const UserIcon = (
 const defaultTabs = [
     {
         icon: <CreateLogo style={{ fill: 'currentcolor', height: '20px' }} />,
-        label: 'create',
+        label: 'common.navigation.create',
         path: '/',
     },
     {
         icon: <SettingsLogo style={{ fill: 'currentcolor', height: '20px' }} />,
-        label: 'settings',
+        label: 'common.navigation.settings',
         path: '/settings',
     },
     {
         icon: UserIcon,
-        label: 'login',
+        label: 'common.navigation.login',
         path: '/login',
     },
 ];
 
 const teacherTabs = [
     {
-        label: 'create',
+        label: 'common.navigation.create',
         path: '/',
         icon: <CreateLogo style={{ fill: 'currentcolor' }} />,
     },
     {
-        label: 'my_videos',
+        label: 'common.navigation.my_videos',
         path: '/my-videos',
         icon: <MoviesLogo style={{ fill: 'currentcolor' }} />,
     },
     {
         icon: <SettingsLogo style={{ fill: 'currentcolor' }} />,
-        label: 'settings',
+        label: 'common.navigation.settings',
         path: '/settings',
     },
     {
-        label: 'my_account',
+        label: 'common.navigation.my_account',
         path: '/my-account',
         icon: UserIcon,
     },
@@ -61,20 +61,20 @@ const teacherTabs = [
 
 const studentTabs = [
     {
-        label: 'create',
+        label: 'common.navigation.create',
         path: '/create/3-storyboard',
         icon: <CreateLogo style={{ fill: 'currentcolor' }} />,
     },
     {
         icon: <SettingsLogo style={{ fill: 'currentcolor' }} />,
-        label: 'settings',
+        label: 'common.navigation.settings',
         path: '/settings',
     },
 ];
 
 const adminTabs = [
     {
-        label: 'app',
+        label: 'common.navigation.app',
         path: '/',
         icon: null,
     },
@@ -105,7 +105,7 @@ export const getTabs = (
             return [
                 ...teacherTabs,
                 {
-                    label: 'admin',
+                    label: 'common.navigation.admin',
                     path: '/admin/themes',
                     icon: <SettingsLogo style={{ fill: 'currentcolor' }} />,
                 },

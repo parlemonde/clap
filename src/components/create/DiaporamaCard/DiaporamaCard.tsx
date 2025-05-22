@@ -107,7 +107,7 @@ export const DiaporamaCard = ({ questionIndex, sequence, isDisabled }: Diaporama
                 </p>
             )}
 
-            <div className={styles.DiaporamaCard__editButton}>{t('edit')}</div>
+            <div className={styles.DiaporamaCard__editButton}>{t('common.actions.edit')}</div>
             <div className={classNames('pill', styles.DiaporamaCard__voice, { ['pill--green']: Boolean(sequence.voiceText) })}>
                 {/* Boolean(sequence.voiceOff) */}
                 <FileTextIcon />

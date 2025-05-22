@@ -18,7 +18,7 @@ export const LanguageSelect = ({ languages }: LanguageSelectProps) => {
         <Form preventSubmit>
             <Field
                 name="language"
-                label={t('language')}
+                label={t('settings_page.language_field.label')}
                 input={
                     <Select
                         name="language"

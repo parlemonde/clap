@@ -60,7 +60,7 @@ const Or = () => {
     return (
         <div className="or-horizontal-divider">
             <div style={styles.verticalLine} />
-            <Text className="color-secondary">{t('or').toUpperCase()}</Text>
+            <Text className="color-secondary">{t('common.actions.or').toUpperCase()}</Text>
             <div style={styles.verticalLine} />
         </div>
     );
@@ -100,7 +100,7 @@ export default function ResultPage() {
             setVideoProgress(newProgress);
             if (newProgress === null) {
                 sendToast({
-                    message: t('unknown_error'),
+                    message: t('common.errors.unknown'),
                     type: 'error',
                 });
             }
@@ -116,6 +116,9 @@ export default function ResultPage() {
     }
 
     const generateMP4 = async () => {
+        if (!user || !projectId) {
+            return;
+        }
         setIsLoading(true);
         const response = await generateVideo(projectData, name || 'video', projectId);
         setIsLoading(false);
@@ -132,7 +135,7 @@ export default function ResultPage() {
             }
         } else {
             sendToast({
-                message: t('unknown_error'),
+                message: t('common.errors.unknown'),
                 type: 'error',
             });
         }
@@ -159,12 +162,12 @@ export default function ResultPage() {
             <Steps activeStep={5} themeId={projectData.themeId}></Steps>
             <Title color="primary" variant="h1" marginY="md">
                 <Inverted isRound>6</Inverted>
-                <Trans i18nKey="part6_title">
+                <Trans i18nKey="6_result_page.header.title">
                     À votre <Inverted>caméra</Inverted> !
                 </Trans>
             </Title>
             <Title color="inherit" variant="h2">
-                {t('part6_subtitle1')}
+                {t('6_result_page.secondary.title')}
             </Title>
             <div style={{ margin: '16px 0' }}>
                 <DiaporamaPlayer
@@ -179,12 +182,12 @@ export default function ResultPage() {
             </div>
 
             <Title variant="h2" style={{ margin: '16px 0' }}>
-                {t('part6_subtitle2')}
+                {t('6_result_page.downloads_buttons.title')}
             </Title>
             <Flex flexDirection="column" alignItems="center" marginX="auto" marginY="lg" style={{ maxWidth: '400px' }}>
                 {videoProgress?.url ? (
                     <Button
-                        label={t('part6_mp4_download_button')}
+                        label={t('6_result_page.download_mp4_button.label')}
                         as="a"
                         href={videoProgress.url}
                         ref={downloadVideoRef}
@@ -208,19 +211,28 @@ export default function ResultPage() {
                         }}
                     >
                         <Text className="color-secondary" style={{ fontSize: '0.8rem', marginBottom: '0.5rem' }}>
-                            {t('part6_mp4_loading')}
+                            {t('6_result_page.download_mp4_button.loading')}
                         </Text>
                         <LinearProgressWithLabel value={videoProgress.percentage} />
                     </div>
                 ) : (
-                    <Tooltip content={user === null ? t('part6_mp4_user_disabled') : ''} hasArrow>
+                    <Tooltip
+                        content={
+                            user === undefined
+                                ? t('6_result_page.download_mp4_button.user_disabled')
+                                : !projectId
+                                  ? t('6_result_page.download_mp4_button.project_disabled')
+                                  : ''
+                        }
+                        hasArrow
+                    >
                         <Button
-                            label={t('part6_mp4_download_button')}
+                            label={t('6_result_page.download_mp4_button.generate')}
                             className="full-width"
                             variant="contained"
                             color="secondary"
                             onClick={generateMP4}
-                            disabled={user === null}
+                            disabled={user === undefined || !projectId}
                             style={{ width: '100%' }}
                             leftIcon={<VideoIcon style={{ marginRight: '10px', width: '24px', height: '24px' }} />}
                         ></Button>
@@ -228,7 +240,7 @@ export default function ResultPage() {
                 )}
                 <Or />
                 <Button
-                    label={t('part6_mlt_button')}
+                    label={t('6_result_page.download_mlt_button.label')}
                     leftIcon={<VideoFile style={{ marginRight: '10px' }} />}
                     className="full-width"
                     variant="contained"

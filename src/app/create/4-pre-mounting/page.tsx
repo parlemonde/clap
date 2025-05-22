@@ -53,14 +53,14 @@ export default function PreMountingPage() {
             <Flex flexDirection="row" alignItems="center" marginY="md">
                 <Title color="primary" variant="h1" marginRight="xl">
                     <Inverted isRound>4</Inverted>{' '}
-                    <Trans i18nKey="part4_title">
+                    <Trans i18nKey="4_pre_mounting_page.header.title">
                         Prémontez votre <Inverted>film</Inverted>
                     </Trans>
                 </Title>
                 {!isStudent && collaborationButton}
             </Flex>
             <Title color="inherit" variant="h2">
-                {t('part4_subtitle1')}
+                {t('4_pre_mounting_page.secondary.title')}
             </Title>
             {filteredQuestions.map((q) => {
                 const hasBeenEdited = q.title !== undefined || (q.plans || []).some((plan) => plan.description || plan.imageUrl);
@@ -79,7 +79,7 @@ export default function PreMountingPage() {
                                 <DiaporamaCard sequence={q} questionIndex={index} isDisabled={!canEdit} />
                             </div>
                         ) : (
-                            <p style={{ marginTop: '1rem' }}>{t('part4_placeholder')}</p>
+                            <p style={{ marginTop: '1rem' }}>{t('4_pre_mounting_page.not_edited.placeholder')}</p>
                         )}
                     </div>
                 );
@@ -88,9 +88,9 @@ export default function PreMountingPage() {
                 <NextButton
                     label={
                         isStudent && studentQuestion?.status === 'pre-mounting-validating'
-                            ? 'En attente de validation du prémontage'
+                            ? t('4_pre_mounting_page.collaboration.awaiting_validation')
                             : isStudent
-                              ? 'Envoyer pour vérification'
+                              ? t('4_pre_mounting_page.collaboration.send_for_validation')
                               : undefined
                     }
                     isDisabled={isStudent && studentQuestion?.status !== 'pre-mounting'}

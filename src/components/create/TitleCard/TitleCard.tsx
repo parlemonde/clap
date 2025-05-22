@@ -76,15 +76,15 @@ export const TitleCard = ({ title, questionIndex, onDelete = () => {}, isDisable
             ) : (
                 <>
                     <span className={styles.titleCard__placeholder}>T</span>
-                    <span className={styles.titleCard__placeholderDesc}>{t('part3_add_title')}</span>
+                    <span className={styles.titleCard__placeholderDesc}>{t('3_title_storyboard_page.add_title_card.label')}</span>
                 </>
             )}
             {title && (
                 <>
-                    <div className={styles.titleCard__editButton}>{t('edit')}</div>
+                    <div className={styles.titleCard__editButton}>{t('common.actions.edit')}</div>
                     <IconButton
                         className={styles.titleCard__deleteButton}
-                        aria-label={t('delete')}
+                        aria-label={t('common.actions.delete')}
                         icon={TrashIcon}
                         color="error"
                         variant="contained"

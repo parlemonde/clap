@@ -26,40 +26,39 @@ export default async function ScenarioPage(props: ServerPageProps) {
         return null;
     }
 
+    const newScenarioCard = (
+        <ScenarioCard
+            isNew
+            name={t('1_scenario_page.new_scenario_card.name')}
+            description={t('1_scenario_page.new_scenario_card.desc')}
+            href={`/create/1-scenario/new${serializeToQueryUrl({ themeId })}`}
+        />
+    );
+
     return (
         <Container paddingBottom="xl">
             <ThemeBreadcrumbs themeId={themeId}></ThemeBreadcrumbs>
             <Steps activeStep={0} themeId={themeId}></Steps>
             <Title color="primary" marginY="md" variant="h1">
                 <Inverted isRound>1</Inverted>{' '}
-                <Trans i18nKey="part1_title">
+                <Trans i18nKey="1_scenario_page.header.title">
                     Quel <Inverted>scénario</Inverted> choisir ?
                 </Trans>
             </Title>
             <Title color="inherit" variant="h2" marginBottom="md">
-                {t('part1_subtitle2')}
+                {t('1_scenario_page.secondary.title')}
             </Title>
             {typeof themeId === 'number' ? (
                 <React.Suspense fallback={<ScenarioCardPlaceholder />}>
                     <>
-                        <ScenarioCard
-                            isNew
-                            name={t('new_scenario_card_title')}
-                            description={t('new_scenario_card_desc')}
-                            href={`/create/1-scenario/new${serializeToQueryUrl({ themeId })}`}
-                        />
+                        {newScenarioCard}
                         <BackendScenarios themeId={themeId}></BackendScenarios>
                         <LocalScenarios themeId={themeId}></LocalScenarios>
                     </>
                 </React.Suspense>
             ) : (
                 <>
-                    <ScenarioCard
-                        isNew
-                        name={t('new_scenario_card_title')}
-                        description={t('new_scenario_card_desc')}
-                        href={`/create/1-scenario/new${serializeToQueryUrl({ themeId })}`}
-                    />
+                    {newScenarioCard}
                     <LocalScenarios themeId={themeId}></LocalScenarios>
                 </>
             )}

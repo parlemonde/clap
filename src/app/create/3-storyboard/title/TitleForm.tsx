@@ -79,11 +79,11 @@ export const TitleForm = ({ title, onTitleChange }: TitleFormProps) => {
                         cursor: 'pointer',
                     }}
                 >
-                    <option value={'white'}>{t('white')}</option>
-                    <option value={'black'}>{t('black')}</option>
-                    <option value={'#ffadac'}>{t('red')}</option>
-                    <option value={'#dad7fe'}>{t('blue')}</option>
-                    <option value={'#e2fbd7'}>{t('green')}</option>
+                    <option value={'white'}>{t('3_title_storyboard_page.title_form_color.white')}</option>
+                    <option value={'black'}>{t('3_title_storyboard_page.title_form_color.black')}</option>
+                    <option value={'#ffadac'}>{t('3_title_storyboard_page.title_form_color.red')}</option>
+                    <option value={'#dad7fe'}>{t('3_title_storyboard_page.title_form_color.blue')}</option>
+                    <option value={'#e2fbd7'}>{t('3_title_storyboard_page.title_form_color.green')}</option>
                 </select>
             </div>
             <KeepRatio
@@ -215,9 +215,9 @@ export const TitleForm = ({ title, onTitleChange }: TitleFormProps) => {
                                     cursor: 'pointer',
                                 }}
                             >
-                                <option value={6}>{t('small')}</option>
-                                <option value={8}>{t('medium')}</option>
-                                <option value={10}>{t('big')}</option>
+                                <option value={6}>{t('3_title_storyboard_page.title_form_size.small')}</option>
+                                <option value={8}>{t('3_title_storyboard_page.title_form_size.medium')}</option>
+                                <option value={10}>{t('3_title_storyboard_page.title_form_size.big')}</option>
                             </select>
                             <div style={{ height: '1rem', width: '1px', backgroundColor: '#fff', margin: '0 4px' }}></div>
                             <select
@@ -237,10 +237,10 @@ export const TitleForm = ({ title, onTitleChange }: TitleFormProps) => {
                                     cursor: 'pointer',
                                 }}
                             >
-                                <option value={'left'}>{t('left')}</option>
-                                <option value={'center'}>{t('center')}</option>
-                                <option value={'right'}>{t('right')}</option>
-                                <option value={'justify'}>{t('justify')}</option>
+                                <option value={'left'}>{t('3_title_storyboard_page.title_form_alignment.left')}</option>
+                                <option value={'center'}>{t('3_title_storyboard_page.title_form_alignment.center')}</option>
+                                <option value={'right'}>{t('3_title_storyboard_page.title_form_alignment.right')}</option>
+                                <option value={'justify'}>{t('3_title_storyboard_page.title_form_alignment.justify')}</option>
                             </select>
                         </div>
                         <div

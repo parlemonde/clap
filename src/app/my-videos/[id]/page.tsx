@@ -28,10 +28,10 @@ export default async function EditProjectPage(props: ServerPageProps) {
             <Container paddingBottom="xl">
                 <Flex isFullWidth flexDirection="column" alignItems="center">
                     <Text variant="p" marginTop="xl">
-                        Project not found
+                        {t('video_page.not_found.text')}
                     </Text>
                     <Link href="/" passHref legacyBehavior>
-                        <Button as="a" label="Home" color="primary" variant="contained" marginTop="md"></Button>
+                        <Button as="a" label={t('video_page.not_found_button.label')} color="primary" variant="contained" marginTop="md"></Button>
                     </Link>
                 </Flex>
             </Container>
@@ -42,14 +42,14 @@ export default async function EditProjectPage(props: ServerPageProps) {
         <Container paddingBottom="xl">
             <div className="text-center" style={{ margin: '1rem 0' }}>
                 <Title color="primary" variant="h1" style={{ display: 'inline' }}>
-                    {t('project')}
+                    {t('video_page.header.title')}
                 </Title>
                 <Title color="inherit" variant="h1" style={{ display: 'inline' }} marginLeft="sm">
                     {project.name}
                 </Title>
             </div>
             <Title color="inherit" variant="h2">
-                {t('project_details')}
+                {t('video_page.header.subtitle')}
             </Title>
             <ProjectForm project={project} />
         </Container>

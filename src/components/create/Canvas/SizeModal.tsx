@@ -19,7 +19,7 @@ export const SizeModal: React.FunctionComponent<SizeModalProps> = ({ isOpen = fa
     };
 
     return (
-        <Modal width="sm" isOpen={isOpen} onClose={handleCloseModalSize()} title={t('tool_stroke_width_title')} hasCancelButton={false}>
+        <Modal width="sm" isOpen={isOpen} onClose={handleCloseModalSize()} title={t('canvas.size_modal.title')} hasCancelButton={false}>
             <div className="canvas-colors-container" id="size-dialog-description">
                 <button
                     type="button"

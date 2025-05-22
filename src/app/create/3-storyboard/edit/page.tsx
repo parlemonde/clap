@@ -45,13 +45,17 @@ export default function StoryboardPlanPage(props: ServerPageProps) {
             <ThemeBreadcrumbs themeId={projectData.themeId}></ThemeBreadcrumbs>
             <Steps activeStep={2} themeId={projectData.themeId} backHref="/create/3-storyboard"></Steps>
             <Title color="primary" variant="h1" marginY="md">
-                <Inverted isRound>3</Inverted> {t('part3_edit_plan')}
+                <Inverted isRound>3</Inverted> {t('3_edit_storyboard_page.header.title')}
             </Title>
             <Title color="inherit" variant="h2">
-                <span>{t('part3_question')}</span> {sequence?.question || ''}
+                {t('3_edit_storyboard_page.secondary.question_name', {
+                    sequenceName: sequence?.question || '',
+                })}
             </Title>
             <Title color="inherit" variant="h2" marginY="md">
-                <span>{t('part3_plan_number')}</span> {planStartIndex + planIndex}
+                {t('3_edit_storyboard_page.secondary.plan_number', {
+                    planNumber: planStartIndex + planIndex,
+                })}
             </Title>
             <PlanForm
                 plan={newPlan || plan}

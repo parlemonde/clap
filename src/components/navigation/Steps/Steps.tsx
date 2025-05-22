@@ -21,27 +21,27 @@ type StepData = {
 
 const STEPS: StepData[] = [
     {
-        name: 'step1',
+        name: 'common.steps.step1',
         href: (themeId) => `/create/1-scenario${serializeToQueryUrl({ themeId })}`,
     },
     {
-        name: 'step2',
+        name: 'common.steps.step2',
         href: '/create/2-questions',
     },
     {
-        name: 'step3',
+        name: 'common.steps.step3',
         href: '/create/3-storyboard',
     },
     {
-        name: 'step4',
+        name: 'common.steps.step4',
         href: '/create/4-pre-mounting',
     },
     {
-        name: 'step5',
+        name: 'common.steps.step5',
         href: '/create/5-music',
     },
     {
-        name: 'step6',
+        name: 'common.steps.step6',
         href: '/create/6-result',
     },
 ];
@@ -124,7 +124,7 @@ export const Steps = ({ activeStep, backHref, themeId }: StepsProps) => {
                             as="a"
                             leftIcon={<ChevronLeftIcon />}
                             className={styles.mobileBackButton}
-                            label={t('back')}
+                            label={t('common.actions.back')}
                             color="primary"
                             variant="borderless"
                         />

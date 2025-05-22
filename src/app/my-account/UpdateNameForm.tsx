@@ -52,7 +52,7 @@ export const UpdateNameForm = ({ user }: UpdateNameFormProps) => {
                     setIsUpdateModalOpen(true);
                 }}
             >
-                {t('account_change_button')}
+                {t('my_account_page.change_name_button.label')}
             </a>
             <Modal
                 isOpen={isUpdateModalOpen}
@@ -62,16 +62,16 @@ export const UpdateNameForm = ({ user }: UpdateNameFormProps) => {
                     setName(user.name);
                 }}
                 onConfirm={onSubmit}
-                confirmLabel={t('edit')}
-                cancelLabel={t('cancel')}
-                title={t('account_change_name')}
+                confirmLabel={t('common.actions.edit')}
+                cancelLabel={t('common.actions.cancel')}
+                title={t('my_account_page.change_name_modal.title')}
                 onOpenAutoFocus={false}
                 isFullWidth
             >
                 <div id="pseudo-dialog-description">
                     <Field
                         name="pseudo"
-                        label={t('signup_name')}
+                        label={t('my_account_page.name_field.label')}
                         input={
                             <Input
                                 id="name"
@@ -86,7 +86,7 @@ export const UpdateNameForm = ({ user }: UpdateNameFormProps) => {
                                 hasError={!isValidName}
                             />
                         }
-                        helperText={isValidName ? '' : t('signup_required')}
+                        helperText={isValidName ? '' : t('my_account_page.name_field.error')}
                         helperTextStyle={{ textAlign: 'left', color: 'rgb(211, 47, 47)' }}
                     ></Field>
                 </div>

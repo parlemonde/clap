@@ -30,7 +30,7 @@ export const ThemeBreadcrumbs = ({ themeId }: ThemeBreadcrumbsProps) => {
         return (
             <Breadcrumbs
                 marginTop="sm"
-                links={[{ href: '/', label: t('all_themes') }]}
+                links={[{ href: '/', label: t('common.filters.all_themes') }]}
                 currentLabel={<Placeholder variant="text" width="100px" style={{ verticalAlign: 'bottom' }} />}
                 className="for-tablet-up-only"
             />
@@ -40,5 +40,12 @@ export const ThemeBreadcrumbs = ({ themeId }: ThemeBreadcrumbsProps) => {
     const theme = typeof themeId === 'number' ? themes?.find((theme) => theme.id === themeId) : localThemes.find((theme) => theme.id === themeId);
     const themeName = theme && isLocalTheme(theme) ? theme.name : theme ? theme.names[currentLocale] || theme.names.fr || '' : '';
 
-    return <Breadcrumbs marginTop="sm" links={[{ href: '/', label: t('all_themes') }]} currentLabel={themeName} className="for-tablet-up-only" />;
+    return (
+        <Breadcrumbs
+            marginTop="sm"
+            links={[{ href: '/', label: t('common.filters.all_themes') }]}
+            currentLabel={themeName}
+            className="for-tablet-up-only"
+        />
+    );
 };

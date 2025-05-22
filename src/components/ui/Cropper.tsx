@@ -177,12 +177,12 @@ export const Cropper = ({ ratio, imageUrl, isOpen, maxWidth = '800px', onClose, 
     return (
         <Modal
             width="lg"
-            title={t('part3_resize_image')}
+            title={t('cropper.resize_image_modal.title')}
             isOpen={isOpen}
             onClose={onClose}
             onConfirm={onConfirm}
-            confirmLabel={t('validate')}
-            cancelLabel={t('cancel')}
+            confirmLabel={t('common.actions.validate')}
+            cancelLabel={t('common.actions.cancel')}
             isLoading={isLoading}
         >
             <div style={{ width: '100%', maxWidth, margin: '0 auto', userSelect: 'none' }}>

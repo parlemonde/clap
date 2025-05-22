@@ -37,7 +37,7 @@ export const Scenarios = ({ scenarios }: ScenariosProps) => {
     const getQuestionCountString = (questionsCounts: Record<string, number> = {}) => {
         const count = questionsCounts[currentLocale] || questionsCounts.fr || 0;
         if (count) {
-            return t('step', { count });
+            return t('1_scenario_page.scenario_card.step_count', { count });
         }
         return undefined;
     };

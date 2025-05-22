@@ -25,7 +25,7 @@ export const ColorModal: React.FunctionComponent<ColorModalProps> = ({
     };
 
     return (
-        <Modal width="sm" isOpen={isOpen} onClose={handleCloseModalColor()} title={t('tool_color_title')} hasCancelButton={false}>
+        <Modal width="sm" isOpen={isOpen} onClose={handleCloseModalColor()} title={t('canvas.color_modal.title')} hasCancelButton={false}>
             <div className="canvas-colors-container" id="color-dialog-description">
                 {colors.map((c) => (
                     <button

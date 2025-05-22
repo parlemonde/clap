@@ -57,7 +57,7 @@ export const MontageForm = ({ sequence, setSequence, onSubmit, feedbackForm }: M
             } catch (error) {
                 console.error(error);
                 sendToast({
-                    message: t('error_upload_sound'),
+                    message: t('common.errors.upload_sound'),
                     type: 'error',
                 });
                 setIsUploading(false);
@@ -82,7 +82,7 @@ export const MontageForm = ({ sequence, setSequence, onSubmit, feedbackForm }: M
                 </div>
                 <FlexItem flexGrow={1} flexBasis={0}>
                     <Title color="inherit" variant="h2" style={{ margin: '1rem 0' }}>
-                        {t('pre_mount_voice_off')}
+                        {t('4_edit_pre_mounting_page.voice_off_field.label')}
                     </Title>
                 </FlexItem>
             </Flex>
@@ -95,7 +95,7 @@ export const MontageForm = ({ sequence, setSequence, onSubmit, feedbackForm }: M
                         onChange={(event) => {
                             setSequence({ ...sequence, voiceText: event.target.value.slice(0, 4000) });
                         }}
-                        placeholder={t('part4_plan_desc_placeholder')}
+                        placeholder={t('4_edit_pre_mounting_page.voice_off_field.placeholder')}
                         isFullWidth
                         rows={4}
                         color="secondary"
@@ -112,7 +112,7 @@ export const MontageForm = ({ sequence, setSequence, onSubmit, feedbackForm }: M
                 </div>
                 <FlexItem flexGrow={1} flexBasis={0}>
                     <Title color="inherit" variant="h2" style={{ margin: '1rem 0' }}>
-                        {t('pre_mount_duration')}
+                        {t('4_edit_pre_mounting_page.duration_field.label')}
                     </Title>
                 </FlexItem>
             </Flex>
@@ -140,16 +140,16 @@ export const MontageForm = ({ sequence, setSequence, onSubmit, feedbackForm }: M
                 </div>
                 <FlexItem flexGrow={1} flexBasis={0}>
                     <Title color="inherit" variant="h2" style={{ margin: '1rem 0' }}>
-                        {t('pre_mount_no_sound')}
+                        {t('4_edit_pre_mounting_page.audio_field.label')}
                     </Title>
                 </FlexItem>
             </Flex>
             <div className="text-center">
                 <label htmlFor="sequence-sound-upload" className="text-center" style={{ marginBottom: '10px' }}>
-                    Format accepté: .acc, .ogg, .opus, .mp3, .wav
+                    {t('4_edit_pre_mounting_page.audio_import_button.formats')}
                 </label>
                 <Button
-                    label={t('import_voice_off')}
+                    label={t('4_edit_pre_mounting_page.audio_import_button.label')}
                     variant="outlined"
                     color="secondary"
                     as="label"
@@ -174,7 +174,7 @@ export const MontageForm = ({ sequence, setSequence, onSubmit, feedbackForm }: M
                 style={{ display: 'none' }}
             />
             {feedbackForm}
-            <NextButton label={t('continue')} backHref="/create/4-pre-mounting" type="submit" />
+            <NextButton label={t('common.actions.continue')} backHref="/create/4-pre-mounting" type="submit" />
             <Loader isLoading={isUploading} />
         </Form>
     );

@@ -17,7 +17,7 @@ export default async function SettingsPage() {
     return (
         <Container paddingBottom="xl">
             <Title color="primary" variant="h1" marginY="md">
-                <Trans i18nKey="my_videos_title">
+                <Trans i18nKey="my_videos_page.header.title">
                     Mes <Inverted>supers</Inverted> vidéos
                 </Trans>
             </Title>
