@@ -59,14 +59,10 @@ export const useAudio = (soundUrl: string, initialVolume: number, sounds: Sound[
             audioContextRef.current.resume().catch(console.error);
         }
 
-        if (audioRef.current && audioRef.current.paused && time >= beginTime && time - beginTime < (audioRef.current.duration * 1000 || 0)) {
+        if (audioRef.current && audioRef.current.paused && time >= beginTime && time - beginTime < audioRef.current.duration * 1000) {
             audioRef.current.currentTime = (time - beginTime) / 1000;
             audioRef.current.play().catch(console.error);
-        } else if (
-            audioRef.current &&
-            !audioRef.current.paused &&
-            (time < beginTime || time - beginTime >= (audioRef.current.duration * 1000 || 0))
-        ) {
+        } else if (audioRef.current && !audioRef.current.paused && (time < beginTime || time - beginTime >= audioRef.current.duration * 1000)) {
             audioRef.current.pause();
         }
 
@@ -76,13 +72,10 @@ export const useAudio = (soundUrl: string, initialVolume: number, sounds: Sound[
             if (!audio || !sound) {
                 continue;
             }
-            if (audio.paused && time >= sound.beginTime && time - sound.beginTime < Math.min((audio.duration || 0) * 1000, sound.maxDuration)) {
+            if (audio.paused && time >= sound.beginTime && time - sound.beginTime < Math.min(audio.duration * 1000, sound.maxDuration)) {
                 audio.currentTime = (time - sound.beginTime + sound.deltaBeginTime) / 1000;
                 audio.play().catch(console.error);
-            } else if (
-                !audio.paused &&
-                (time < sound.beginTime || time - sound.beginTime >= Math.min((audio.duration || 0) * 1000, sound.maxDuration))
-            ) {
+            } else if (!audio.paused && (time < sound.beginTime || time - sound.beginTime >= Math.min(audio.duration * 1000, sound.maxDuration))) {
                 audio.pause();
             }
         }

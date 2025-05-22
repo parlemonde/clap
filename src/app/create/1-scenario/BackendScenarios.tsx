@@ -15,7 +15,7 @@ export const BackendScenarios = async ({ themeId }: BackendScenariosProps) => {
         return null;
     }
     const user = await getCurrentUser();
-    const scenarios = await listScenarios({ themeId: Number(themeId), userId: user?.id });
+    const scenarios = await listScenarios({ themeId: Number(themeId), userId: user?.id, questionLanguageCode: currentLocale });
 
     return <Scenarios scenarios={scenarios.filter((s) => s.names[currentLocale] !== undefined || s.isDefault === false)} />;
 };

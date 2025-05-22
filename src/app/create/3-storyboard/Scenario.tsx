@@ -125,7 +125,7 @@ export const Scenario = ({
                                                 id: newId,
                                                 description: '',
                                                 imageUrl: '',
-                                                duration: 1000,
+                                                duration: 3000,
                                             },
                                         ],
                                     };

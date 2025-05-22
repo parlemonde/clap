@@ -34,9 +34,7 @@ export async function projectToMlt(project: ProjectData, name: string, urlKind: 
     const totalFrames = getFramesCount(
         questions.reduce(
             (d, sequence) =>
-                d +
-                (sequence.title ? sequence.title.duration || 1000 : 0) +
-                (sequence.plans || []).reduce<number>((acc, plan) => acc + plan.duration || 1000, 0),
+                d + (sequence.title ? sequence.title.duration : 0) + sequence.plans.reduce<number>((acc, plan) => acc + plan.duration, 0),
             0,
         ),
     );
@@ -118,7 +116,7 @@ export async function projectToMlt(project: ProjectData, name: string, urlKind: 
 
         // [1] Add question title
         if (question.title) {
-            const titleDuration = getFramesCount(question.title.duration || 1000);
+            const titleDuration = getFramesCount(question.title.duration);
             questionDuration += titleDuration;
             spentDuration += titleDuration;
 
@@ -178,7 +176,7 @@ export async function projectToMlt(project: ProjectData, name: string, urlKind: 
 
         // [2] Add plans
         for (const plan of question.plans || []) {
-            const planDuration = getFramesCount(plan.duration || 1000);
+            const planDuration = getFramesCount(plan.duration);
             questionDuration += planDuration;
             spentDuration += planDuration;
 

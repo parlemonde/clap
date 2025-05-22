@@ -20,5 +20,5 @@ export const scenarios = pgTable('scenarios', {
 });
 
 export type Scenario = typeof scenarios.$inferSelect & {
-    questionsCount?: Record<string, number>;
+    questionsCount?: number;
 };

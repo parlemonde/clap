@@ -138,10 +138,10 @@ export const DiaporamaPlayer = ({
         if (!question) {
             return [];
         }
-        let currentTime = question.title ? question.title.duration || 1000 : 0;
+        let currentTime = question.title ? question.title.duration : 0;
         return (question.plans || []).reduce<number[]>((acc, plan) => {
             acc.push(currentTime);
-            currentTime += plan.duration || 1000;
+            currentTime += plan.duration;
             return acc;
         }, []);
     }, [questions]);
@@ -171,12 +171,12 @@ export const DiaporamaPlayer = ({
             const x = planStartDurations[draggedIndexRef.current];
             const finalDeltaTime = Math.max(minTime - x, Math.min(maxTime - x, newDeltaTime));
             const newPlans = [...(questions[0].plans || [])];
-            newPlans[draggedIndexRef.current].duration = (newPlans[draggedIndexRef.current].duration || 1000) - finalDeltaTime;
+            newPlans[draggedIndexRef.current].duration = newPlans[draggedIndexRef.current].duration - finalDeltaTime;
             let newTitle = questions[0].title;
             if (draggedIndexRef.current === 0 && newTitle) {
-                newTitle = { ...newTitle, duration: (newTitle.duration || 1000) + finalDeltaTime };
+                newTitle = { ...newTitle, duration: newTitle.duration + finalDeltaTime };
             } else if (draggedIndexRef.current > 0) {
-                newPlans[draggedIndexRef.current - 1].duration = (newPlans[draggedIndexRef.current - 1].duration || 1000) + finalDeltaTime;
+                newPlans[draggedIndexRef.current - 1].duration = newPlans[draggedIndexRef.current - 1].duration + finalDeltaTime;
             }
             const newQuestion = {
                 ...questions[0],
@@ -220,9 +220,9 @@ export const DiaporamaPlayer = ({
         const plans = question.plans || [];
         let newTitle = question.title;
         if (newTitle && plans.length === 0) {
-            newTitle = { ...newTitle, duration: (newTitle.duration || 1000) + delta };
+            newTitle = { ...newTitle, duration: newTitle.duration + delta };
         }
-        const newPlans = plans.map((plan, index) => (index === plans.length - 1 ? { ...plan, duration: (plan.duration || 1000) + delta } : plan));
+        const newPlans = plans.map((plan, index) => (index === plans.length - 1 ? { ...plan, duration: plan.duration + delta } : plan));
         const newQuestion = {
             ...questions[0],
             plans: newPlans,
@@ -459,7 +459,7 @@ export const DiaporamaPlayer = ({
                             <div className={styles.DiaporamaPlayer__mountingPlans}>
                                 {questions[0].title && (
                                     <div
-                                        style={{ flexGrow: (questions[0].title.duration || 1000) + (draggedIndex === 0 ? deltaTime : 0) }}
+                                        style={{ flexGrow: questions[0].title.duration + (draggedIndex === 0 ? deltaTime : 0) }}
                                         className={styles.DiaporamaPlayer__mountingPlan}
                                     >
                                         <div className={styles.DiaporamaPlayer__mountingPlanTitleFrame}>Titre</div>
@@ -470,8 +470,7 @@ export const DiaporamaPlayer = ({
                                         key={index}
                                         style={{
                                             flexGrow:
-                                                (plan.duration || 1000) +
-                                                (draggedIndex === index + 1 ? deltaTime : draggedIndex === index ? -deltaTime : 0),
+                                                plan.duration + (draggedIndex === index + 1 ? deltaTime : draggedIndex === index ? -deltaTime : 0),
                                         }}
                                         className={styles.DiaporamaPlayer__mountingPlan}
                                     >

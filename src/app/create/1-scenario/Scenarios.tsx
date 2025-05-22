@@ -9,7 +9,6 @@ import { useTranslation } from 'src/contexts/translationContext';
 import type { Question } from 'src/database/schemas/questions';
 import type { Scenario } from 'src/database/schemas/scenarios';
 import type { Theme } from 'src/database/schemas/themes';
-import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import { useLocalStorage } from 'src/hooks/useLocalStorage';
 import {
     deleteFromLocalStorage,
@@ -28,19 +27,9 @@ interface ScenariosProps {
 export const Scenarios = ({ scenarios }: ScenariosProps) => {
     const router = useRouter();
     const { t, currentLocale } = useTranslation();
-    const [projectId] = useLocalStorage('projectId');
-    const { projectData } = useCurrentProject();
 
     const { data: themes } = useSWR<Theme[]>('/api/themes', jsonFetcher);
     const [localThemes] = useLocalStorage('themes', []);
-
-    const getQuestionCountString = (questionsCounts: Record<string, number> = {}) => {
-        const count = questionsCounts[currentLocale] || questionsCounts.fr || 0;
-        if (count) {
-            return t('1_scenario_page.scenario_card.step_count', { count });
-        }
-        return undefined;
-    };
 
     return (
         <>
@@ -54,13 +43,15 @@ export const Scenarios = ({ scenarios }: ScenariosProps) => {
                         key={s.id}
                         name={name}
                         description={description}
-                        questionsCount={isLocalScenario(s) ? undefined : getQuestionCountString(s.questionsCount)}
+                        questionsCount={
+                            isLocalScenario(s)
+                                ? undefined
+                                : s.questionsCount
+                                  ? t('1_scenario_page.scenario_card.step_count', { count: s.questionsCount })
+                                  : undefined
+                        }
                         href="/create/2-questions"
                         onClick={async (event) => {
-                            if (projectData && projectData.themeId === s.themeId && projectData.scenarioId === s.id && !projectId) {
-                                return; // Go to the next page if the project is already created with the default link action
-                            }
-
                             // Prevent navigation to the next page and create a new project
                             event.preventDefault();
                             const questions = await jsonFetcher<Question[]>(`/api/questions-templates${serializeToQueryUrl({ scenarioId: s.id })}`);
@@ -84,7 +75,14 @@ export const Scenarios = ({ scenarios }: ScenariosProps) => {
                                 questions: questions.map((question, index) => ({
                                     id: index,
                                     question: question.question,
-                                    plans: [],
+                                    plans: [
+                                        {
+                                            id: 0,
+                                            description: '',
+                                            imageUrl: '',
+                                            duration: 3000,
+                                        },
+                                    ],
                                 })),
                             });
                             router.push('/create/2-questions');

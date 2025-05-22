@@ -18,7 +18,7 @@ export const getCurrentFrame = (questions: Sequence[], time: number): ImageFrame
     let currentTime = 0;
     for (const question of questions) {
         if (question.title) {
-            const titleDuration = question.title.duration || 1000;
+            const titleDuration = question.title.duration;
             if (currentTime + titleDuration > time) {
                 return {
                     kind: 'title',
@@ -29,7 +29,7 @@ export const getCurrentFrame = (questions: Sequence[], time: number): ImageFrame
             }
         }
         for (const plan of question.plans || []) {
-            const planDuration = plan.duration || 1000;
+            const planDuration = plan.duration;
             if (currentTime + planDuration > time) {
                 if (!plan.imageUrl) {
                     return null;
