@@ -9,7 +9,7 @@ import { getPlmUser } from '../legacy-plm/get-plm-user';
 export async function loginWithSSO(code: string): Promise<string> {
     const user = await getPlmUser(code);
     if (!user) {
-        return 'Could not connect with SSO.';
+        return 'common.errors.sso_connection_failed';
     }
 
     const accessToken = await getAccessToken({ userId: user.id });

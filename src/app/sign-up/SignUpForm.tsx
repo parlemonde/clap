@@ -12,6 +12,7 @@ import { Link } from 'src/components/navigation/Link';
 import { Loader } from 'src/components/ui/Loader';
 import { sendToast } from 'src/components/ui/Toasts';
 import { useTranslation } from 'src/contexts/translationContext';
+import type { I18nKeys } from 'src/i18n/locales';
 
 const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/;
 const EMAIL_REGEX = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
@@ -40,7 +41,7 @@ export const SignUpForm = ({ inviteCode }: SignUpFormProps) => {
         const error = await createUser({ name, email, password, inviteCode });
         if (error) {
             sendToast({
-                message: error,
+                message: t(error as I18nKeys),
                 type: 'error',
             });
         } else {

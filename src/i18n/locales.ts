@@ -164,6 +164,11 @@ export const locales = {
     'common.errors.unknown': 'Une erreur est survenue...',
     'common.errors.upload_sound': "Une erreur est survenue lors de l'importation du son.",
     'common.errors.upload_image': "Une erreur est survenue lors de l'importation de l'image.",
+    'common.errors.sso_connection_failed': 'Impossible de se connecter avec prof.ParLeMonde.org',
+    'common.errors.account_blocked': 'Compte bloqué. Veuillez réinitialiser le mot de passe.',
+    'common.errors.sso_connection_required': 'Veuillez utiliser la connection avec prof.ParLeMonde.org pour vous connecter.',
+    'common.errors.invalid_credentials': 'Identifiants invalides.',
+    'common.errors.invalid_invite_code': "Code d'invitation invalide.",
 
     'common.steps.step1': 'Choix du scénario',
     'common.steps.step2': 'Choix des séquences',

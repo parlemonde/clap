@@ -14,6 +14,7 @@ import { Loader } from 'src/components/ui/Loader';
 import { useTranslation } from 'src/contexts/translationContext';
 import type { ProjectData } from 'src/database/schemas/projects';
 import { setToLocalStorage } from 'src/hooks/useLocalStorage/local-storage';
+import type { I18nKeys } from 'src/i18n/locales';
 
 export const LoginStudentForm = () => {
     const router = useRouter();
@@ -40,7 +41,7 @@ export const LoginStudentForm = () => {
         setIsLoading(true);
         const result = await loginForStudent(projectCode, questionId);
         if ('errorMessage' in result) {
-            setMessage(result.errorMessage);
+            setMessage(t(result.errorMessage as I18nKeys));
         } else {
             setToLocalStorage('projectId', result.projectId);
             router.push('/create/3-storyboard');

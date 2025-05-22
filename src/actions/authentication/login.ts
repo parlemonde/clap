@@ -40,20 +40,20 @@ export async function login(_previousState: string, formData: FormData): Promise
     });
 
     if (!user) {
-        return 'Unauthorized - Invalid credentials.';
+        return 'common.errors.invalid_credentials';
     }
     if (user.accountRegistration === 4) {
-        return 'Unauthorized - Account blocked. Please reset password.';
+        return 'common.errors.account_blocked';
     }
     if (user.accountRegistration === 10) {
-        return 'Unauthorized - Please use SSO.';
+        return 'common.errors.sso_connection_required';
     }
 
     let isPasswordCorrect: boolean = false;
     try {
         isPasswordCorrect = await verify((user.passwordHash || '').trim(), password);
     } catch {
-        return 'Unauthorized - Invalid credentials.';
+        return 'common.errors.invalid_credentials';
     }
 
     if (!isPasswordCorrect) {
@@ -63,7 +63,7 @@ export async function login(_previousState: string, formData: FormData): Promise
                 accountRegistration: Math.min(user.accountRegistration + 1, 4), // Max 4 attempts
             })
             .where(eq(users.id, user.id));
-        return 'Unauthorized - Invalid credentials.';
+        return 'common.errors.invalid_credentials';
     } else if (user.accountRegistration > 0) {
         await db
             .update(users)

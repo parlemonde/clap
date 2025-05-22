@@ -11,6 +11,7 @@ import { Field, Form, Input } from 'src/components/layout/Form';
 import { Link } from 'src/components/navigation/Link';
 import { FormLoader, Loader } from 'src/components/ui/Loader';
 import { useTranslation } from 'src/contexts/translationContext';
+import type { I18nKeys } from 'src/i18n/locales';
 
 interface LoginFormProps {
     ssoHost: string;
@@ -31,7 +32,7 @@ export const LoginForm = ({ ssoHost, clientId, stateQueryParam, codeQueryParam }
     const { t } = useTranslation();
 
     const [showPassword, setShowPassword] = React.useState(false);
-    const [ssoErrorMessage, setSsoErrorMessage] = React.useState('');
+    const [ssoErrorMessage, setSsoErrorMessage] = React.useState<I18nKeys | ''>('');
     const [isConnectingWithSso, setIsConnectingWithSso] = React.useState(stateQueryParam !== undefined && codeQueryParam !== undefined);
 
     const onLoginWithSSO = () => {
@@ -55,7 +56,7 @@ export const LoginForm = ({ ssoHost, clientId, stateQueryParam, codeQueryParam }
         }
         const state = window.sessionStorage.getItem('oauth-state') || '';
         if (state !== decodeURI(stateQueryParam || '')) {
-            setSsoErrorMessage("Couldn't connect with SSO.");
+            setSsoErrorMessage('common.errors.sso_connection_failed');
             clearSSOState();
             setIsConnectingWithSso(false);
             return;
@@ -63,7 +64,7 @@ export const LoginForm = ({ ssoHost, clientId, stateQueryParam, codeQueryParam }
         loginWithSSO(codeQueryParam)
             .then((errorMsg) => {
                 if (errorMsg) {
-                    setSsoErrorMessage(errorMsg);
+                    setSsoErrorMessage(errorMsg as I18nKeys);
                 }
                 clearSSOState();
                 setIsConnectingWithSso(false);
@@ -75,8 +76,8 @@ export const LoginForm = ({ ssoHost, clientId, stateQueryParam, codeQueryParam }
 
     return (
         <Form className="login-form" action={formAction}>
-            {message && <span style={{ color: 'rgb(211, 47, 47)', display: 'block' }}>{message}</span>}
-            {ssoErrorMessage && <span style={{ color: 'rgb(211, 47, 47)', display: 'block' }}>{ssoErrorMessage}</span>}
+            {message && <span style={{ color: 'rgb(211, 47, 47)', display: 'block' }}>{t(message as I18nKeys)}</span>}
+            {ssoErrorMessage && <span style={{ color: 'rgb(211, 47, 47)', display: 'block' }}>{t(ssoErrorMessage)}</span>}
             {ssoHost && clientId ? (
                 <>
                     <Button

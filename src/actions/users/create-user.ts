@@ -25,7 +25,7 @@ interface CreateUserArgs {
 }
 export async function createUser({ name, email, password, inviteCode }: CreateUserArgs): Promise<string> {
     if (!(await isVerifyCodeValid(inviteCode))) {
-        return 'Invalid invite code';
+        return 'common.errors.invalid_invite_code';
     }
 
     try {
@@ -59,6 +59,6 @@ export async function createUser({ name, email, password, inviteCode }: CreateUs
         return '';
     } catch (e) {
         console.error(e);
-        return "Couldn't create user";
+        return 'common.errors.unknown';
     }
 }

@@ -16,7 +16,7 @@ export async function loginForStudent(projectCode: string, questionId: number): 
     });
 
     if (!project) {
-        return { errorMessage: 'Unauthorized' };
+        return { errorMessage: 'join_page.errors.invalid_code' };
     }
 
     const accessToken = await getAccessToken({ projectId: project.id, questionId });
