@@ -101,8 +101,8 @@ function getModalContent(
                 title: 'Travail à vérifier',
                 content: (
                     <div>
-                        Le groupe d'élèves affecté à la <span style={{ color: COLORS[questionIndex] }}>séquence n° {questionIndex}</span> a terminé la
-                        partie <b>3 - storyboard</b>. Vous pouvez vérifier leur travail.
+                        Le groupe d&apos;élèves affecté à la <span style={{ color: COLORS[questionIndex] }}>séquence n° {questionIndex}</span> a
+                        terminé la partie <b>3 - storyboard</b>. Vous pouvez vérifier leur travail.
                     </div>
                 ),
                 confirmLabel: 'Voir le travail',
@@ -135,8 +135,8 @@ function getModalContent(
                 title: 'Travail à vérifier',
                 content: (
                     <div>
-                        Le groupe d'élèves affecté à la <span style={{ color: COLORS[questionIndex] }}>séquence n° {questionIndex}</span> a terminé la
-                        partie <b>4 - prémontage</b>. Vous pouvez vérifier leur travail.
+                        Le groupe d&apos;élèves affecté à la <span style={{ color: COLORS[questionIndex] }}>séquence n° {questionIndex}</span> a
+                        terminé la partie <b>4 - prémontage</b>. Vous pouvez vérifier leur travail.
                     </div>
                 ),
                 confirmLabel: 'Voir le travail',

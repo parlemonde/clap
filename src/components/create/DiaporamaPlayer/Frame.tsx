@@ -94,7 +94,7 @@ export const Frame = ({ questions, time, className }: FrameProps) => {
             ref={onResizeRef}
         >
             {currentFrame === null ? null : currentFrame.kind === 'image' ? (
-                <Image unoptimized layout="fill" objectFit="contain" src={currentFrame.imageUrl} />
+                <Image unoptimized layout="fill" objectFit="contain" src={currentFrame.imageUrl} alt="Plan" />
             ) : (
                 <p
                     className={className}

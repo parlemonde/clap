@@ -146,7 +146,7 @@ export const PlanForm = ({ plan, setPlan, onSubmit }: PlanFormProps) => {
                     }}
                 >
                     {imageUrl ? (
-                        <Image unoptimized layout="fill" objectFit="contain" src={imageUrl} />
+                        <Image unoptimized layout="fill" objectFit="contain" src={imageUrl} alt="Plan" />
                     ) : (
                         <EditImageButtons
                             imageUploadId="plan-img-upload"

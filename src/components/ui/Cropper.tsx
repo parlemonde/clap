@@ -204,6 +204,7 @@ export const Cropper = ({ ratio, imageUrl, isOpen, maxWidth = '800px', onClose, 
                                     }
                                     setImageSize({ width: target.naturalWidth, height: target.naturalHeight });
                                 }}
+                                alt="Image to crop"
                             />
                         )}
                         {/* invisible overlay to prevent click through */}

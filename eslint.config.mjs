@@ -1,30 +1,25 @@
 import eslintJS from '@eslint/js';
-import nextPlugin from '@next/eslint-plugin-next';
-import hooksPlugin from 'eslint-plugin-react-hooks';
 import eslintPrettier from 'eslint-plugin-prettier/recommended';
 import eslintTS from 'typescript-eslint';
-import importPlugin from 'eslint-plugin-import';
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+import { FlatCompat } from '@eslint/eslintrc';
 
 const project = './tsconfig.json';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const compat = new FlatCompat({
+    baseDirectory: __dirname,
+});
+
 export default [
     // Next.js config
-    {
-        plugins: {
-            'react-hooks': hooksPlugin,
-            '@next/next': nextPlugin,
-        },
-        rules: {
-            ...hooksPlugin.configs.recommended.rules,
-            ...nextPlugin.configs.recommended.rules,
-            ...nextPlugin.configs['core-web-vitals'].rules,
-        },
-    },
+    ...compat.extends('next/core-web-vitals'),
     // JS and TS config
     eslintJS.configs.recommended,
     ...eslintTS.configs.recommendedTypeChecked,
-    // Import plugin config
-    importPlugin.flatConfigs.recommended,
     // Custom rules
     {
         files: ['**/*.{js,jsx,mjs,cjs,ts,tsx,mts,cts}'],
@@ -137,8 +132,13 @@ export default [
             '.prettierrc.js',
             '.svgrrc.js',
             'eslint.config.mjs',
-            'server-pdf-generation/',
-            '.open-next/'
+            '.open-next/',
+            'server-preview-proxy',
+            'server-pdf-generation/dist',
+            'server-pdf-generation/node_modules',
+            'server-websockets',
+            'server-video-generation/dist',
+            'server-video-generation/node_modules',
         ],
     },
 ];

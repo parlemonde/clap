@@ -278,7 +278,7 @@ export const UsersTable = ({ users }: UsersTableWithDataProps) => {
                 isLoading={isDeleting}
             >
                 <p>
-                    Voulez-vous vraiment supprimer l'utilisateur <strong>{deleteIndex !== null && usersToDisplay[deleteIndex].name}</strong> ?
+                    Voulez-vous vraiment supprimer l&apos;utilisateur <strong>{deleteIndex !== null && usersToDisplay[deleteIndex].name}</strong> ?
                 </p>
             </Modal>
             <Modal

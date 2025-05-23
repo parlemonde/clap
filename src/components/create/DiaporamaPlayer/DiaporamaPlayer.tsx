@@ -495,7 +495,7 @@ export const DiaporamaPlayer = ({
                                             </>
                                         )}
                                         <div className={styles.DiaporamaPlayer__mountingPlanFrame}>
-                                            {plan.imageUrl && <Image unoptimized layout="fill" objectFit="contain" src={plan.imageUrl} />}
+                                            {plan.imageUrl && <Image unoptimized layout="fill" objectFit="contain" src={plan.imageUrl} alt="Plan" />}
                                         </div>
                                     </div>
                                 ))}

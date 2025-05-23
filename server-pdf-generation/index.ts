@@ -1,13 +1,12 @@
-import puppeteer from 'puppeteer-core';
 import chromium from '@sparticuz/chromium';
-import { AwsClient } from 'aws4fetch'
+import { AwsClient } from 'aws4fetch';
+import puppeteer from 'puppeteer-core';
 
 type Response = {
     url: string;
 };
 
-const isObjectLiteral = (value: unknown): value is Record<string, unknown> => 
-    typeof value === 'object' && value !== null && !Array.isArray(value);
+const isObjectLiteral = (value: unknown): value is Record<string, unknown> => typeof value === 'object' && value !== null && !Array.isArray(value);
 const isString = (value: unknown): value is string => typeof value === 'string';
 
 export async function handler(event: unknown): Promise<Response> {
@@ -17,7 +16,7 @@ export async function handler(event: unknown): Promise<Response> {
     const s3Region = isString(payload.s3Region) ? payload.s3Region : process.env.AWS_REGION;
     const s3Key = isString(payload.s3Key) ? payload.s3Key : '';
 
-    if (!html || !s3BucketName || !s3Region ||!s3Key) {
+    if (!html || !s3BucketName || !s3Region || !s3Key) {
         return {
             url: '',
         };
