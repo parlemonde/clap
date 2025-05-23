@@ -38,6 +38,8 @@
     "./src/**/*.txt"
   ],
   "exclude": [
-    "server-pdf-generation"
+    "server-pdf-generation",
+    "node_modules",
+    ".next"
   ]
 }

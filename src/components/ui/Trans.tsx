@@ -3,9 +3,10 @@
 import * as React from 'react';
 
 import { useTranslation } from 'src/contexts/translationContext';
+import type { I18nKeys } from 'src/i18n/locales';
 
 export interface TransProps {
-    i18nKey: string;
+    i18nKey: I18nKeys;
     i18nParams?: { [key: string]: string | number };
 }
 

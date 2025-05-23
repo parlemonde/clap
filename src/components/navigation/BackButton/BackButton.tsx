@@ -8,16 +8,17 @@ import styles from './back-button.module.scss';
 import { Button } from 'src/components/layout/Button';
 import { Link, startNProgress } from 'src/components/navigation/Link';
 import { useTranslation } from 'src/contexts/translationContext';
+import type { I18nKeys } from 'src/i18n/locales';
 
 type BackButtonProps = {
     href: string;
-    label?: string;
+    label?: I18nKeys;
     onClick?: () => void;
     className?: string;
     style?: React.CSSProperties;
 };
 
-export const BackButton = ({ href, label = 'back', onClick, className, style }: BackButtonProps) => {
+export const BackButton = ({ href, label = 'common.actions.back', onClick, className, style }: BackButtonProps) => {
     const { t } = useTranslation();
     return (
         <Link href={href} passHref legacyBehavior>

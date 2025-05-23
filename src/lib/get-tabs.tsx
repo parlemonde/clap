@@ -3,6 +3,7 @@ import * as React from 'react';
 import type { JSX } from 'react';
 
 import type { User } from 'src/database/schemas/users';
+import type { I18nKeys } from 'src/i18n/locales';
 import CreateLogo from 'src/svg/create.svg';
 import MoviesLogo from 'src/svg/movies.svg';
 import SettingsLogo from 'src/svg/settings.svg';
@@ -18,7 +19,13 @@ const UserIcon = (
     </svg>
 );
 
-const defaultTabs = [
+type Tab = {
+    icon: JSX.Element | null;
+    label: I18nKeys;
+    path: string;
+};
+
+const defaultTabs: Tab[] = [
     {
         icon: <CreateLogo style={{ fill: 'currentcolor', height: '20px' }} />,
         label: 'common.navigation.create',
@@ -36,7 +43,7 @@ const defaultTabs = [
     },
 ];
 
-const teacherTabs = [
+const teacherTabs: Tab[] = [
     {
         label: 'common.navigation.create',
         path: '/',
@@ -59,7 +66,7 @@ const teacherTabs = [
     },
 ];
 
-const studentTabs = [
+const studentTabs: Tab[] = [
     {
         label: 'common.navigation.create',
         path: '/create/3-storyboard',
@@ -72,7 +79,7 @@ const studentTabs = [
     },
 ];
 
-const adminTabs = [
+const adminTabs: Tab[] = [
     {
         label: 'common.navigation.app',
         path: '/',
@@ -80,14 +87,7 @@ const adminTabs = [
     },
 ];
 
-export const getTabs = (
-    userRole?: User['role'],
-    isOnAdminPages: boolean = false,
-): Array<{
-    icon: JSX.Element | null;
-    label: string;
-    path: string;
-}> => {
+export const getTabs = (userRole?: User['role'], isOnAdminPages: boolean = false): Tab[] => {
     if (!userRole) {
         return defaultTabs;
     }

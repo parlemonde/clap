@@ -12,10 +12,11 @@ import { Link } from 'src/components/navigation/Link';
 import { useTranslation } from 'src/contexts/translationContext';
 import { userContext } from 'src/contexts/userContext';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
+import type { I18nKeys } from 'src/i18n/locales';
 import { serializeToQueryUrl } from 'src/lib/serialize-to-query-url';
 
 type StepData = {
-    name: string;
+    name: I18nKeys;
     href: string | ((themeId?: number | string | null) => string);
 };
 
