@@ -29,7 +29,6 @@ export async function getDynamoDBItem<T>(key: string): Promise<T | undefined> {
         });
         const data = await response.json();
 
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         return isAttributeItemObject(data) ? unmarshall(data.Item).value : undefined;
     } catch (e) {
         console.error(e);

@@ -4,12 +4,11 @@ import path from 'path';
 const nextConfig: NextConfig = {
     poweredByHeader: false,
     webpack: (config) => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
         config.module.rules.push({
             test: /\.svg$/,
             use: ['@svgr/webpack'],
         });
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+
         config.module.rules.push({
             test: /\.(html|txt|pug)$/,
             use: ['raw-loader'],

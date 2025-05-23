@@ -29,22 +29,19 @@
     }
   },
   "include": [
+    "customWrapper.ts",
+    "drizzle.config.ts",
     "next-env.d.ts",
+    "next.config.ts",
+    "open-next.config.ts",
+    "src/**/*.html",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.txt",
     "src/image-loader.js",
-    "**/*.ts",
-    "./src/**/*.tsx",
-    ".next/types/**/*.ts",
-    "./src/**/*.html",
-    "./src/**/*.txt"
+    ".next/types/**/*.ts"
   ],
   "exclude": [
-    "server-preview-proxy",
-    "server-pdf-generation/dist",
-    "server-pdf-generation/node_modules",
-    "server-websockets",
-    "server-video-generation/dist",
-    "server-video-generation/node_modules",
-    "node_modules",
-    ".next"
+    "node_modules"
   ]
 }
