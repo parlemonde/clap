@@ -29,7 +29,7 @@
     }
   },
   "include": [
-    "customWrapper.ts",
+    "open-next/**/*.ts",
     "drizzle.config.ts",
     "next-env.d.ts",
     "next.config.ts",

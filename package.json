@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
-    "build:lambda": "rm -rf .open-next && open-next build",
+    "build:lambda": "rm -rf .open-next && open-next build --config-path ./open-next/open-next.config.ts && node ./open-next/install-deps.mjs",
     "start": "next start",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
@@ -58,7 +58,7 @@
     "@eslint/eslintrc": "3.3.1",
     "@eslint/js": "9.27.0",
     "@next/eslint-plugin-next": "15.1.8",
-    "@opennextjs/aws": "3.5.1",
+    "@opennextjs/aws": "3.6.2",
     "@svgr/webpack": "8.1.0",
     "@types/archiver": "6.0.3",
     "@types/aws-lambda": "8.10.149",
