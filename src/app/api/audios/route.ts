@@ -28,7 +28,8 @@ export async function POST(request: NextRequest) {
 
         const uuid = v4();
         const extension = path.extname(file.name).substring(1);
-        const fileName = currentUser ? `audios/users/${currentUser?.id}/${uuid}.${extension}` : `audios/temp/${uuid}.${extension}`;
+        const userAudioId = currentUser?.role === 'student' ? currentUser.teacherId : currentUser?.id;
+        const fileName = userAudioId !== undefined ? `audios/users/${userAudioId}/${uuid}.${extension}` : `audios/temp/${uuid}.${extension}`;
         const contentType = mime.lookup(fileName) || undefined;
         await uploadFile(fileName, Buffer.from(await file.arrayBuffer()), contentType);
         return Response.json({ url: `/static/${fileName}` });

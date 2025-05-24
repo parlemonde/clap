@@ -11,3 +11,8 @@ axum = "0.8.1"
 fastwebsockets = { version= "0.10.0", features = ["upgrade", "with_axum", "unstable-split"] }
 serde = { version = "1.0.218", features = ["derive"] }
 uuid = { version = "1.15.1", features = ["v4"] }
+hmac = "0.12"
+sha2 = "0.10"
+hex = "0.4"
+chrono = "0.4"
+dotenv = "0.15.0"

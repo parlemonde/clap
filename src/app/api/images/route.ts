@@ -45,10 +45,11 @@ export async function POST(request: NextRequest) {
             .toFormat('webp');
         const imageBuffer = await sharpPipeline.toBuffer();
 
+        const userImageId = currentUser?.role === 'student' ? currentUser.teacherId : currentUser?.id;
         const fileName = isAdminImage
             ? `images/${uuid}.webp`
-            : currentUser
-              ? `images/users/${currentUser?.id}/${uuid}.webp`
+            : userImageId !== undefined
+              ? `images/users/${userImageId}/${uuid}.webp`
               : `images/temp/${uuid}.webp`;
         await uploadFile(fileName, imageBuffer, 'image/webp');
         return Response.json({ url: `/api/${fileName}` });

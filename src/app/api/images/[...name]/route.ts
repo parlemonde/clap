@@ -21,7 +21,8 @@ export async function GET(request: NextRequest, props: { params: Promise<{ name:
 
     const params = await props.params;
     const isUserImage = params.name.length >= 2 && params.name[0] === 'users';
-    if (isUserImage && params.name[1] !== `${currentUser?.id}` && !(await isSignedImageUrlValid(request.url))) {
+    const userImageId = currentUser?.role === 'student' ? currentUser.teacherId : currentUser?.id;
+    if (isUserImage && params.name[1] !== `${userImageId}` && !(await isSignedImageUrlValid(request.url))) {
         return notFoundResponse();
     }
     const fileName = `images/${params.name.map((path) => sanitize(path)).join('/')}`;

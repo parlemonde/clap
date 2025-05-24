@@ -21,13 +21,14 @@ const getUserById = cache(async (userId: number): Promise<User | undefined> => {
 
 const getUserByProjectId = cache(async (projectId: number, questionId: number): Promise<User | undefined> => {
     const project = await db.query.projects.findFirst({
-        columns: { id: true, collaborationCodeExpiresAt: true },
+        columns: { id: true, collaborationCodeExpiresAt: true, userId: true },
         where: eq(projects.id, projectId),
     });
     if (project && project.collaborationCodeExpiresAt !== null && new Date(project.collaborationCodeExpiresAt).getTime() > new Date().getTime()) {
         // Return guest user
         return {
             id: 0,
+            teacherId: project.userId,
             name: 'Student',
             role: 'student',
             email: '',

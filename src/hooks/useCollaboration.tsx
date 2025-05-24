@@ -22,15 +22,25 @@ export const onSendCurrentProjectUpdateMsg = () => {
 export const useCollaboration = () => {
     const [projectId] = useLocalStorage('projectId');
     const { data, mutate } = useSWR<Project>(projectId !== undefined ? `/api/projects/${projectId}` : null, jsonFetcher);
+    const { data: collaborationUrlData } = useSWR<{ url: string }>(
+        projectId !== undefined ? `/api/projects/${projectId}/get-collaboration-url` : null,
+        jsonFetcher,
+        {
+            revalidateIfStale: false,
+            revalidateOnFocus: false,
+        },
+    );
+    const collaborationUrl = collaborationUrlData?.url;
 
-    const isCollaborationAvailable = process.env.NEXT_PUBLIC_COLLABORATION_SERVER_URL !== undefined && projectId !== undefined;
+    const isCollaborationAvailable = projectId !== undefined;
     const collaborationCode =
         data && data.collaborationCodeExpiresAt !== null && new Date(data.collaborationCodeExpiresAt).getTime() > new Date().getTime()
             ? data.collaborationCode || undefined
             : undefined;
-    const isCollaborationEnabled = isCollaborationAvailable && collaborationCode !== undefined;
+
+    const isCollaborationEnabled = Boolean(collaborationUrl) && isCollaborationAvailable && collaborationCode !== undefined;
     const socket = useWebsockets({
-        room: projectId ? `clap_project_${projectId}` : '',
+        url: collaborationUrl || '',
         isEnabled: isCollaborationEnabled,
         onSocketError: React.useCallback(() => {
             if (projectId) {

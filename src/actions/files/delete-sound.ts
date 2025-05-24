@@ -9,9 +9,10 @@ export async function deleteSound(soundUrl: string): Promise<void> {
     }
 
     const currentUser = await getCurrentUser();
+    const userAudioId = currentUser?.role === 'student' ? currentUser.teacherId : currentUser?.id;
     if (
         (!currentUser && soundUrl.startsWith('/static/audios/temp/')) || // temp images can be deleted by anyone
-        (currentUser && soundUrl.startsWith(`/static/audios/users/${currentUser.id}/`)) // user images can be deleted by the user themselves
+        (currentUser && soundUrl.startsWith(`/static/audios/users/${userAudioId}/`)) // user images can be deleted by the user themselves
     ) {
         try {
             await deleteFile(soundUrl.slice('/static/'.length));
