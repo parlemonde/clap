@@ -13,10 +13,18 @@ import { users } from 'src/database/schemas/users';
 const APP_SECRET = new TextEncoder().encode(process.env.APP_SECRET || '');
 
 const getUserById = cache(async (userId: number): Promise<User | undefined> => {
-    return await db.query.users.findFirst({
-        columns: { id: true, name: true, email: true, role: true },
+    const maybeUser = await db.query.users.findFirst({
+        columns: { id: true, name: true, email: true, role: true, accountRegistration: true },
         where: eq(users.id, userId),
     });
+    if (!maybeUser) {
+        return undefined;
+    }
+    const { accountRegistration, ...user } = maybeUser;
+    return {
+        ...user,
+        useSSO: accountRegistration === 10,
+    };
 });
 
 const getUserByProjectId = cache(async (projectId: number, questionId: number): Promise<User | undefined> => {

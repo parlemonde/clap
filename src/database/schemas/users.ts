@@ -1,4 +1,4 @@
-import { pgTable, serial, varchar, char, smallint } from 'drizzle-orm/pg-core';
+import { pgTable, serial, varchar, char, smallint, integer } from 'drizzle-orm/pg-core';
 
 const ROLES_ENUM = ['admin', 'teacher', 'student'] as const;
 
@@ -6,6 +6,7 @@ export type Role = (typeof ROLES_ENUM)[number];
 
 export const users = pgTable('users', {
     id: serial('id').primaryKey(),
+    plmId: integer('plmId').unique(),
     email: varchar('email', { length: 150 }).notNull().unique(),
     name: varchar('name', { length: 150 }).notNull(),
     passwordHash: char('passwordHash', { length: 100 }),
@@ -16,6 +17,7 @@ export const users = pgTable('users', {
 
 type FullUser = typeof users.$inferSelect;
 export type User = Pick<FullUser, 'id' | 'name' | 'email' | 'role'> & {
+    useSSO?: boolean;
     teacherId?: number;
     projectId?: number;
     questionId?: number;

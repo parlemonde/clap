@@ -31,15 +31,36 @@ export async function getPlmUser(code: string): Promise<User | null> {
         const plmUser = await jsonFetcher<PLMUser>(`${SSO_HOST_URL}/oauth/me?access_token=${access_token}`, {
             method: 'GET',
         });
-        let user = await db.query.users.findFirst({
+        // First try to find the user by plmId
+        let user: (User & { plmId?: number | null }) | undefined = await db.query.users.findFirst({
             columns: {
                 id: true,
                 email: true,
                 name: true,
                 role: true,
+                plmId: true,
             },
-            where: eq(users.email, plmUser.email),
+            where: eq(users.plmId, Number(plmUser.id) || 0),
         });
+        // If no user is found by plmId, try to find the user by email
+        if (!user) {
+            user = await db.query.users.findFirst({
+                columns: {
+                    id: true,
+                    email: true,
+                    name: true,
+                    role: true,
+                    plmId: true,
+                },
+                where: eq(users.email, plmUser.email),
+            });
+        }
+        if (user && user.plmId !== Number(plmUser.id)) {
+            await db
+                .update(users)
+                .set({ plmId: Number(plmUser.id) })
+                .where(eq(users.id, user.id));
+        }
         if (user === undefined) {
             user = await createPlmUser(plmUser);
         }

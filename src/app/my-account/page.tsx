@@ -41,7 +41,7 @@ export default async function AccountPage() {
                 </label>
                 {user.email} - <UpdateEmailForm user={user} />
             </div>
-            <UpdatePasswordButton />
+            {!user.useSSO && <UpdatePasswordButton />}
             <Divider marginY="lg" />
             <Title color="inherit" variant="h2">
                 {t('my_account_page.logout_button.title')}

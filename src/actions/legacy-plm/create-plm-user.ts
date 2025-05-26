@@ -22,7 +22,7 @@ export async function createPlmUser(plmUser: PLMUser): Promise<User> {
     };
     const [{ id }] = await db
         .insert(users)
-        .values({ ...user, accountRegistration: 10 })
+        .values({ ...user, accountRegistration: 10, plmId: Number(plmUser.id) || null })
         .returning();
     return { ...user, id };
 }
