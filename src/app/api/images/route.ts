@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
             ? `media/images/${uuid}.webp`
             : userImageId !== undefined
               ? `media/images/users/${userImageId}/${uuid}.webp`
-              : `media/images/temp/${uuid}.webp`;
+              : `media/images/tmp/${uuid}.webp`;
         await uploadFile(fileName, imageBuffer, 'image/webp');
         return Response.json({ url: `/${fileName}` });
     } catch {

@@ -16,7 +16,7 @@ export async function getS3UploadParameters(fileName: string): Promise<{ formPar
     const currentUser = await getCurrentUser();
     const uuid = v4();
     const extension = path.extname(fileName).substring(1);
-    const key = currentUser ? `media/audios/users/${currentUser?.id}/${uuid}.${extension}` : `media/audios/temp/${uuid}.${extension}`;
+    const key = currentUser ? `media/audios/users/${currentUser?.id}/${uuid}.${extension}` : `media/audios/tmp/${uuid}.${extension}`;
     const contentType = mime.lookup(key) || undefined;
 
     if (!contentType || !contentType.startsWith('audio/')) {

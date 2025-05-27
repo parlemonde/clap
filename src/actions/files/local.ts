@@ -5,7 +5,7 @@ import type { Readable } from 'node:stream';
 
 import type { FileData } from './file-data.types';
 
-const temporaryDirectory = process.env.AWS_LAMBDA_FUNCTION_NAME !== undefined ? '/tmp' : path.join(process.cwd(), 'temp');
+const temporaryDirectory = process.env.AWS_LAMBDA_FUNCTION_NAME !== undefined ? '/tmp' : path.join(process.cwd(), 'tmp');
 const getFilePath = (fileUrl: string) => path.join(temporaryDirectory, fileUrl);
 
 export async function getLocalFileData(key: string): Promise<FileData | null> {
