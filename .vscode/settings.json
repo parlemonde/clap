@@ -10,7 +10,7 @@
     "**/.dynamodb": true,
     "**/.redis-data": true,
     "**/node_modules": true,
-    "**/temp": true,
+    "**/tmp": true,
     "**/.open-next": true,
   },
   "files.exclude": {
@@ -18,6 +18,6 @@
     "**/.postgres-data": true,
     "**/.dynamodb": true,
     "**/.redis-data": true,
-    "**/temp": true,
+    "**/tmp": true,
   }
 }
