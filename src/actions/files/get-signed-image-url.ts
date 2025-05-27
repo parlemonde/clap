@@ -5,7 +5,7 @@ const SECRET = process.env.APP_SECRET;
 export async function getSignedImageUrl(url: string, userId: number): Promise<string> {
     try {
         const imageUrl = url.startsWith('/') ? url : `${new URL(url).pathname}${new URL(url).search}`;
-        if (!SECRET || !imageUrl.startsWith(`/api/images/users/${userId}/`)) {
+        if (!SECRET || !imageUrl.startsWith(`/media/images/users/${userId}/`)) {
             return imageUrl; // not a user image
         }
 
@@ -31,7 +31,7 @@ export async function getSignedImageUrl(url: string, userId: number): Promise<st
 export async function isSignedImageUrlValid(url: string): Promise<boolean> {
     try {
         const imageUrl = url.startsWith('/') ? url : `${new URL(url).pathname}${new URL(url).search}`;
-        if (!SECRET || !imageUrl.startsWith(`/api/images/users/`)) {
+        if (!SECRET || !imageUrl.startsWith(`/media/images/users/`)) {
             return false; // not a user image
         }
 

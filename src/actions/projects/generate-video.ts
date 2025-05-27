@@ -44,7 +44,7 @@ export async function generateVideo(
         ) {
             return {
                 percentage: currentProgress.percentage,
-                url: currentProgress.percentage === 100 ? `/static/${currentProgress.s3Key}` : '',
+                url: currentProgress.percentage === 100 ? `/${currentProgress.s3Key}` : '',
             };
         }
         await setDynamoDBItem(videoKey, undefined); // delete old progress
@@ -56,7 +56,7 @@ export async function generateVideo(
             }
         }
         const jobId = v4();
-        const s3Key = `videos/${jobId}/video.mp4`;
+        const s3Key = `media/videos/${jobId}/video.mp4`;
         const s3Files = files
             .filter((f) => f.isLocal)
             .map((f) => ({
@@ -109,7 +109,7 @@ export async function getVideoProgress(projectId?: number): Promise<{
         if (currentProgress) {
             return {
                 percentage: currentProgress.percentage,
-                url: currentProgress.percentage === 100 ? `/static/${currentProgress.s3Key}` : '',
+                url: currentProgress.percentage === 100 ? `/${currentProgress.s3Key}` : '',
             };
         } else {
             // Video might be in queue to be processed. So we return 0% progress.

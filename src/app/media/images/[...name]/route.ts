@@ -25,7 +25,7 @@ export async function GET(request: NextRequest, props: { params: Promise<{ name:
     if (isUserImage && params.name[1] !== `${userImageId}` && !(await isSignedImageUrlValid(request.url))) {
         return notFoundResponse();
     }
-    const fileName = `images/${params.name.map((path) => sanitize(path)).join('/')}`;
+    const fileName = `media/images/${params.name.map((path) => sanitize(path)).join('/')}`;
     const data = await getFileData(fileName);
 
     if (!data || data.ContentLength === 0) {

@@ -9,7 +9,7 @@ const S3_POST_URL =
 export const config = {
     matcher: [
         {
-            source: '/((?!api|static|_next/static|_next/image|favicon).*)',
+            source: '/((?!api|media|_next/static|_next/image|favicon).*)',
             missing: [
                 { type: 'header', key: 'next-router-prefetch' },
                 { type: 'header', key: 'purpose', value: 'prefetch' },

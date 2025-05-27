@@ -65,12 +65,12 @@ export async function getMltZip(project: ProjectData, name: string) {
 
     // Push to S3.
     const fileBuffer = await fs.readFile(path.join(directory, `Montage.zip`));
-    const fileName = `zip/${id}/Montage.zip`;
+    const fileName = `media/zip/${id}/Montage.zip`;
     await uploadFile(fileName, fileBuffer, 'application/zip');
 
     // Delete temp directory.
     await fs.remove(directory);
 
     // Return the URL.
-    return `/static/${fileName}`;
+    return `/${fileName}`;
 }

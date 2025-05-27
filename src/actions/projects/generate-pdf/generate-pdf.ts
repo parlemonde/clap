@@ -54,16 +54,17 @@ export async function generatePdf(projectData: ProjectData): Promise<string | fa
             t,
         });
         const id = v4();
+        const s3Key = `media/pdf/${id}/Plan-de-tournage.pdf`;
         const result = await invokeLambda({
             kind: 'pdf',
             payload: {
                 html,
                 s3BucketName: process.env.S3_BUCKET_NAME || '',
-                s3Key: `pdf/${id}/Plan-de-tournage.pdf`,
+                s3Key,
             },
         });
         if (isPdfResult(result)) {
-            return `/static/pdf/${id}/Plan-de-tournage.pdf`;
+            return `/${s3Key}`;
         }
     } catch (e) {
         console.error(e);

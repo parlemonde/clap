@@ -24,7 +24,7 @@ export async function uploadSound(file: File): Promise<string> {
         if (!response.ok) {
             throw new Error('Failed to upload sound');
         }
-        return `/static/${key}`;
+        return `/${key}`;
     } else {
         formData.append('file', file);
         const response = await fetch('/api/audios', {

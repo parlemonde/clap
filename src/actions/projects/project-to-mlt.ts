@@ -22,7 +22,7 @@ const clamp = (min: number, max: number, value: number) => Math.max(min, Math.mi
 
 const HOST_URL = process.env.HOST_URL || '';
 const toFullUrl = (url: string) => {
-    if (url.startsWith('/api/images/') || url.startsWith('/static/')) {
+    if (url.startsWith('/media/')) {
         return `${HOST_URL}${url}`;
     } else {
         return url;
@@ -183,7 +183,7 @@ export async function projectToMlt(project: ProjectData, name: string, urlKind: 
             if (plan.imageUrl) {
                 if (!fileNames.has(plan.imageUrl)) {
                     fileNames.add(plan.imageUrl);
-                    const isLocal = plan.imageUrl.startsWith('/api/images/');
+                    const isLocal = plan.imageUrl.startsWith('/media/');
                     files.push({
                         fileUrl: isLocal ? plan.imageUrl.slice(5) : plan.imageUrl,
                         fileName: getLocalName(plan.imageUrl, 'images'),
@@ -242,7 +242,7 @@ export async function projectToMlt(project: ProjectData, name: string, urlKind: 
 
             if (!fileNames.has(question.soundUrl)) {
                 fileNames.add(question.soundUrl);
-                const isLocal = question.soundUrl.startsWith('/static/');
+                const isLocal = question.soundUrl.startsWith('/media/');
                 files.push({
                     fileUrl: isLocal ? question.soundUrl.slice(8) : question.soundUrl,
                     fileName: getLocalName(question.soundUrl, 'audios'),
@@ -326,7 +326,7 @@ export async function projectToMlt(project: ProjectData, name: string, urlKind: 
         producerId += 1;
         if (!fileNames.has(project.soundUrl)) {
             fileNames.add(project.soundUrl);
-            const isLocal = project.soundUrl.startsWith('/static/');
+            const isLocal = project.soundUrl.startsWith('/media/');
             files.push({
                 fileUrl: isLocal ? project.soundUrl.slice(8) : project.soundUrl,
                 fileName: getLocalName(project.soundUrl, 'audios'),

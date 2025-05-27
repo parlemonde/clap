@@ -15,8 +15,7 @@ const getContentTypeFromFileName = (filename: string): string | null => mime.loo
 
 export async function GET(_request: NextRequest, props: { params: Promise<{ filepath: string[] }> }) {
     const filePath = (await props.params).filepath;
-    const fileName = filePath.map((path) => sanitize(path)).join('/');
-
+    const fileName = `media/${filePath.map((path) => sanitize(path)).join('/')}`;
     const data = await getFileData(fileName);
     if (!data || data.ContentLength === 0) {
         return notFoundResponse();

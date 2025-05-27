@@ -47,12 +47,12 @@ export async function POST(request: NextRequest) {
 
         const userImageId = currentUser?.role === 'student' ? currentUser.teacherId : currentUser?.id;
         const fileName = isAdminImage
-            ? `images/${uuid}.webp`
+            ? `media/images/${uuid}.webp`
             : userImageId !== undefined
-              ? `images/users/${userImageId}/${uuid}.webp`
-              : `images/temp/${uuid}.webp`;
+              ? `media/images/users/${userImageId}/${uuid}.webp`
+              : `media/images/temp/${uuid}.webp`;
         await uploadFile(fileName, imageBuffer, 'image/webp');
-        return Response.json({ url: `/api/${fileName}` });
+        return Response.json({ url: `/${fileName}` });
     } catch {
         return new NextResponse('Unknown error happened', {
             status: 500,
