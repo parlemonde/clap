@@ -10,30 +10,28 @@ import type { Question } from 'src/database/schemas/questions';
 import type { Scenario } from 'src/database/schemas/scenarios';
 import type { Theme } from 'src/database/schemas/themes';
 import { useLocalStorage } from 'src/hooks/useLocalStorage';
-import {
-    deleteFromLocalStorage,
-    isLocalScenario,
-    isLocalTheme,
-    setToLocalStorage,
-    type LocalScenario,
-} from 'src/hooks/useLocalStorage/local-storage';
+import { deleteFromLocalStorage, isLocalScenario, isLocalTheme, setToLocalStorage } from 'src/hooks/useLocalStorage/local-storage';
 import { jsonFetcher } from 'src/lib/json-fetcher';
 import { serializeToQueryUrl } from 'src/lib/serialize-to-query-url';
 
 interface ScenariosProps {
-    scenarios: Array<Scenario | LocalScenario>;
+    scenarios: Scenario[];
+    themeId: string | number;
 }
 
-export const Scenarios = ({ scenarios }: ScenariosProps) => {
+export const Scenarios = ({ scenarios, themeId }: ScenariosProps) => {
     const router = useRouter();
     const { t, currentLocale } = useTranslation();
 
     const { data: themes } = useSWR<Theme[]>('/api/themes', jsonFetcher);
     const [localThemes] = useLocalStorage('themes', []);
+    const [localScenarios] = useLocalStorage('scenarios', []);
+
+    const allScenarios = [...scenarios, ...localScenarios.filter((s) => Boolean(s.name) && s.themeId === themeId)];
 
     return (
         <>
-            {scenarios.map((s) => {
+            {allScenarios.map((s) => {
                 const name = isLocalScenario(s) ? s.name : s.names[currentLocale] || s.names[Object.keys(s.names)[0]] || '';
                 const description = isLocalScenario(s)
                     ? s.description

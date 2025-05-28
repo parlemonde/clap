@@ -1,11 +1,10 @@
 import * as React from 'react';
 
-import { BackendScenarios } from './BackendScenarios';
-import { LocalScenarios } from './LocalScenarios';
+import { Scenarios } from './Scenarios';
 import { getCurrentUser } from 'src/actions/get-current-user';
 import { getTranslation } from 'src/actions/get-translation';
+import { listScenarios } from 'src/actions/scenarios/list-scenarios';
 import { ScenarioCard } from 'src/components/create/ScenarioCard';
-import { ScenarioCardPlaceholder } from 'src/components/create/ScenarioCard/ScenarioCard';
 import { Container } from 'src/components/layout/Container';
 import { Title } from 'src/components/layout/Typography';
 import { Steps } from 'src/components/navigation/Steps';
@@ -16,24 +15,25 @@ import type { ServerPageProps } from 'src/lib/page-props.types';
 import { getThemeId } from 'src/lib/search-params/get-theme-id';
 import { serializeToQueryUrl } from 'src/lib/serialize-to-query-url';
 
+const getScenarios = async (themeId: number, userId: number | undefined, questionLanguageCode: string) => {
+    if (themeId === -1 || Number.isNaN(themeId) || !Number.isFinite(themeId)) {
+        return [];
+    }
+    const scenarios = await listScenarios({ themeId: Number(themeId), userId, questionLanguageCode });
+    return scenarios.filter((s) => s.names[questionLanguageCode] !== undefined || s.isDefault === false);
+};
+
 export default async function ScenarioPage(props: ServerPageProps) {
     const searchParams = await props.searchParams;
     const themeId = getThemeId(searchParams);
-    const { t } = await getTranslation();
+    const { t, currentLocale } = await getTranslation();
     const user = await getCurrentUser();
 
     if (user?.role === 'student') {
         return null;
     }
 
-    const newScenarioCard = (
-        <ScenarioCard
-            isNew
-            name={t('1_scenario_page.new_scenario_card.name')}
-            description={t('1_scenario_page.new_scenario_card.desc')}
-            href={`/create/1-scenario/new${serializeToQueryUrl({ themeId })}`}
-        />
-    );
+    const scenarios = await getScenarios(Number(themeId), user?.id, currentLocale);
 
     return (
         <Container paddingBottom="xl">
@@ -48,20 +48,13 @@ export default async function ScenarioPage(props: ServerPageProps) {
             <Title color="inherit" variant="h2" marginBottom="md">
                 {t('1_scenario_page.secondary.title')}
             </Title>
-            {typeof themeId === 'number' ? (
-                <React.Suspense fallback={<ScenarioCardPlaceholder />}>
-                    <>
-                        {newScenarioCard}
-                        <BackendScenarios themeId={themeId}></BackendScenarios>
-                        <LocalScenarios themeId={themeId}></LocalScenarios>
-                    </>
-                </React.Suspense>
-            ) : (
-                <>
-                    {newScenarioCard}
-                    <LocalScenarios themeId={themeId}></LocalScenarios>
-                </>
-            )}
+            <ScenarioCard
+                isNew
+                name={t('1_scenario_page.new_scenario_card.name')}
+                description={t('1_scenario_page.new_scenario_card.desc')}
+                href={`/create/1-scenario/new${serializeToQueryUrl({ themeId })}`}
+            />
+            <Scenarios scenarios={scenarios.filter((s) => s.names[currentLocale] !== undefined || s.isDefault === false)} themeId={themeId} />
         </Container>
     );
 }

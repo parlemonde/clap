@@ -23,6 +23,9 @@ function isLocalThemeShape(value: unknown): value is LocalTheme {
         typeof value.name === 'string'
     );
 }
+function isLocalThemesShape(value: unknown): value is LocalTheme[] {
+    return Array.isArray(value) && value.every(isLocalThemeShape);
+}
 
 export type LocalScenario = {
     id: string;
@@ -43,6 +46,9 @@ function isLocalScenarioShape(value: unknown): value is LocalScenario {
         'themeId' in value &&
         (typeof value.themeId === 'string' || typeof value.themeId === 'number')
     );
+}
+function isLocalScenariosShape(value: unknown): value is LocalScenario[] {
+    return Array.isArray(value) && value.every(isLocalScenarioShape);
 }
 
 function isProjectShape(value: unknown): value is ProjectData {
@@ -87,8 +93,8 @@ const localStorageCache: Record<LocalStorageKey, unknown> = {
 };
 
 const typeGuards: Record<LocalStorageKey, (value: unknown) => boolean> = {
-    themes: isLocalThemeShape,
-    scenarios: isLocalScenarioShape,
+    themes: isLocalThemesShape,
+    scenarios: isLocalScenariosShape,
     project: isProjectShape,
     projectId: (value) => typeof value === 'number',
     videoJobId: (value) => typeof value === 'string',

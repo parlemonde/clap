@@ -1,20 +1,24 @@
-'use server';
+'use client';
 
 import * as React from 'react';
 
-import { getCurrentUser } from 'src/actions/get-current-user';
-import { getLocales } from 'src/actions/get-locales';
-import { listThemes } from 'src/actions/themes/list-themes';
 import { ThemeCard } from 'src/components/create/ThemeCard';
+import { useTranslation } from 'src/contexts/translationContext';
+import type { Theme } from 'src/database/schemas/themes';
+import { useLocalStorage } from 'src/hooks/useLocalStorage';
 
-export default async function Themes() {
-    const { currentLocale } = await getLocales();
-    const user = await getCurrentUser();
-    const themes = await listThemes({ userId: user?.id });
+interface ThemesProps {
+    themes: Theme[];
+}
+
+export const Themes = ({ themes }: ThemesProps) => {
+    const { t, currentLocale } = useTranslation();
+    const [localThemes] = useLocalStorage('themes', []);
 
     return (
-        <>
-            {themes.map((theme, index) => (
+        <div className="themes-grid">
+            <ThemeCard href="/create/new-theme" name={t('new_theme_page.common.add_theme')} />
+            {themes?.map((theme, index) => (
                 <ThemeCard
                     key={theme.id}
                     index={index + 1}
@@ -23,6 +27,9 @@ export default async function Themes() {
                     href={`/create/1-scenario?themeId=${theme.id}`}
                 />
             ))}
-        </>
+            {localThemes.map((theme, index) => (
+                <ThemeCard key={theme.id} index={index + 1} name={theme.name} href={`/create/1-scenario?themeId=${theme.id}`} />
+            ))}
+        </div>
     );
-}
+};
