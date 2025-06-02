@@ -21,7 +21,12 @@ export const UploadLanguageModal = ({ language = null, onClose = () => {} }: Upl
         }
         setIsLoading(true);
         try {
-            // TODO
+            const formData = new FormData();
+            formData.append('language', file);
+            await fetch(`/api/locales/${language.value}.${file.name.endsWith('.po') ? 'po' : 'json'}`, {
+                method: 'PUT',
+                body: formData,
+            });
             sendToast({ message: 'Traductions modifiées avec succès!', type: 'success' });
             setFile(null);
             onClose();
@@ -85,7 +90,7 @@ export const UploadLanguageModal = ({ language = null, onClose = () => {} }: Upl
                     htmlFor="new-language-po"
                     leftIcon={<UploadIcon style={{ width: '16px', height: '16px', marginRight: '8px' }} />}
                 />
-                <input style={{ display: 'none' }} type="file" accept=".po" id="new-language-po" onChange={onFileChange}></input>
+                <input style={{ display: 'none' }} type="file" accept=".po,.json" id="new-language-po" onChange={onFileChange}></input>
             </div>
         </Modal>
     );

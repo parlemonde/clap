@@ -11,7 +11,6 @@ import { db } from 'src/database';
 import { languages } from 'src/database/schemas/languages';
 
 const LOCALE_REGEX = /^\w\w(\.(po|json))?$/;
-const PO_REGEX = /^\w\w\.po$/;
 
 export async function GET(_request: NextRequest, props: { params: Promise<{ languageCode: string }> }) {
     const params = await props.params;
@@ -62,7 +61,7 @@ export async function PUT(request: NextRequest, props: { params: Promise<{ langu
 
     const value = params.languageCode;
     // Only allow language codes that match the regex
-    if (!PO_REGEX.test(value)) {
+    if (!LOCALE_REGEX.test(value)) {
         return new NextResponse('Error 404, not found.', {
             status: 404,
         });
@@ -83,7 +82,7 @@ export async function PUT(request: NextRequest, props: { params: Promise<{ langu
         const formData = await request.formData();
         const file: FormDataEntryValue | undefined = formData.getAll('language')[0];
 
-        if (!file || !(file instanceof File) || !file.name.endsWith('.po')) {
+        if (!file || !(file instanceof File) || (!file.name.endsWith('.po') && !file.name.endsWith('.json'))) {
             return new NextResponse('Error 400, no file found in request', {
                 status: 400,
             });
@@ -96,13 +95,14 @@ export async function PUT(request: NextRequest, props: { params: Promise<{ langu
             });
         }
 
-        const newTranslations = await poToJson(Buffer.from(await file.arrayBuffer()));
+        const newTranslations = file.name.endsWith('.po') ? await poToJson(Buffer.from(await file.arrayBuffer())) : JSON.parse(await file.text());
         await setDynamoDBItem(`locales:${language.value}`, newTranslations);
 
         return new Response(null, {
             status: 204,
         });
-    } catch {
+    } catch (error) {
+        console.error(error);
         return new NextResponse('Error 500, unknown error happened', {
             status: 500,
         });
