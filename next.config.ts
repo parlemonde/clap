@@ -41,6 +41,9 @@ const nextConfig: NextConfig = {
         includePaths: [path.join('src', 'styles')],
     },
     output: 'standalone',
+    outputFileTracingExcludes: {
+        '/*': ['./tmp/**/*'],
+    },
     images: {
         loader: 'custom',
         loaderFile: './src/image-loader.js',
