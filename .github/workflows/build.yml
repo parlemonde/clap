@@ -28,4 +28,8 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
-      - run: aws s3 cp dist s3://${{ secrets.AWS_BUCKET_NAME }}/${{ github.sha }} --recursive
+      - run: aws s3 cp dist s3://${{ secrets.AWS_BUCKET_NAME }}/builds/${{ github.sha }} --recursive
+
+    # Update the build data if deploys are not paused
+      - name: Update build data
+        run: "aws dynamodb update-item --table-name clap --key '{\"key\":{\"S\":\"deploy-data\"}}' --update-expression\"SET #v.liveCommitId = :sha\" --condition-expression \"#v.isDeploymentPaused = :b\" --expression-attribute-values '{\":sha\":{\"S\":\"${{ github.sha }}\"}, \":b\":{\"BOOL\": false}}' --expression-attribute-names '{\"#v\":\"value\"}' || true"

@@ -37,11 +37,11 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
       - name: Delete existing assets
-        run: aws s3 rm s3://${{ secrets.AWS_BUCKET_NAME }}/${{ steps.hash.outputs.hashedBranchName }} --recursive
+        run: aws s3 rm s3://${{ secrets.AWS_BUCKET_NAME }}/previews/${{ steps.hash.outputs.hashedBranchName }} --recursive
       - name: Upload app.zip to S3
-        run: aws s3 cp app.zip s3://${{ secrets.AWS_BUCKET_NAME }}/${{ steps.hash.outputs.hashedBranchName }}/app_${{ github.sha }}.zip
+        run: aws s3 cp app.zip s3://${{ secrets.AWS_BUCKET_NAME }}/previews/${{ steps.hash.outputs.hashedBranchName }}/app_${{ github.sha }}.zip
       - name: Upload assets to S3
-        run: aws s3 cp .open-next/assets s3://${{ secrets.AWS_BUCKET_NAME }}/${{ steps.hash.outputs.hashedBranchName }} --recursive
+        run: aws s3 cp .open-next/assets s3://${{ secrets.AWS_BUCKET_NAME }}/previews/${{ steps.hash.outputs.hashedBranchName }} --recursive
       - name: Deploy lambda function
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
