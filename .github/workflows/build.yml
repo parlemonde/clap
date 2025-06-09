@@ -32,4 +32,4 @@ jobs:
 
     # Update the build data if deploys are not paused
       - name: Update build data
-        run: "aws dynamodb update-item --table-name clap --key '{\"key\":{\"S\":\"deploy-data\"}}' --update-expression\"SET #v.liveCommitId = :sha\" --condition-expression \"#v.isDeploymentPaused = :b\" --expression-attribute-values '{\":sha\":{\"S\":\"${{ github.sha }}\"}, \":b\":{\"BOOL\": false}}' --expression-attribute-names '{\"#v\":\"value\"}' || true"
+        run: "aws dynamodb update-item --table-name clap --key '{\"key\":{\"S\":\"deploy-data\"}}' --update-expression \"SET #v.liveCommitId = :sha\" --condition-expression \"#v.isDeploymentPaused = :b\" --expression-attribute-values '{\":sha\":{\"S\":\"${{ github.sha }}\"}, \":b\":{\"BOOL\": false}}' --expression-attribute-names '{\"#v\":\"value\"}' || true"

@@ -30,5 +30,6 @@ jobs:
     needs: get-build-data
     if: needs.get-build-data.outputs.is-deployment-paused == 'false'
     steps:
-      - run: echo "Deploying sha: ${{ needs.get-build-data.outputs.sha-to-deploy }}"
-
+      - run: echo "Deploying sha $SHA"
+        env:
+          SHA: ${{ needs.get-build-data.outputs.sha-to-deploy }}
