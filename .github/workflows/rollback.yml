@@ -1,0 +1,22 @@
+name: Rollback to specific build
+on:
+  workflow_dispatch:
+    inputs:
+      sha:
+        description: "The sha to rollback to"
+        required: true
+        type: string
+concurrency: production
+jobs:
+  rollback:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Rolling back to sha ${{ github.event.inputs.sha }}"
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+      - name: Update build data
+        run: "aws dynamodb update-item --table-name clap --key '{\"key\":{\"S\":\"deploy-data\"}}' --update-expression \"SET #v.liveCommitId = :sha\" --expression-attribute-values '{\":sha\":{\"S\":\"${{ github.event.inputs.sha }}\"}}' --expression-attribute-names '{\"#v\":\"value\"}'"

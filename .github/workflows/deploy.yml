@@ -1,18 +1,17 @@
 name: Deploy
 on:
-  workflow_dispatch:
   workflow_run:
     workflows: [Build]
     types: [completed]
-concurrency:
-  group: deploy-group
-  cancel-in-progress: true
+concurrency: production
 jobs:
   get-build-data:
     runs-on: ubuntu-latest
+    outputs:
+      is-paused: ${{ steps.is-deployment-paused.outputs.paused }}
     steps:
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -21,15 +20,18 @@ jobs:
         run: aws dynamodb get-item --table-name clap --key '{"key":{"S":"deploy-data"}}' > build.json
       - name: Check if build is paused
         id: is-deployment-paused
-        run: cat build.json | jq -r '.Item.value.M.isDeploymentPaused.BOOL' >> "$GITHUB_OUTPUT"
-      - name: Get sha to deploy
-        id: sha-to-deploy
-        run: cat build.json | jq -r '.Item.value.M.liveCommitId.S' >> "$GITHUB_OUTPUT"
-  deploy-clap:
+        run: echo "paused='$(cat build.json | jq -r '.Item.value.M.isDeploymentPaused.BOOL')'" >> "$GITHUB_OUTPUT"
+  deploy:
     runs-on: ubuntu-latest
     needs: get-build-data
-    if: needs.get-build-data.outputs.is-deployment-paused == 'false'
+    if: needs.get-build-data.outputs.is-paused == 'false'
     steps:
-      - run: echo "Deploying sha $SHA"
-        env:
-          SHA: ${{ needs.get-build-data.outputs.sha-to-deploy }}
+      - run: echo "Deploying sha ${{ github.sha }}"
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+      - name: Update build data
+        run: "aws dynamodb update-item --table-name clap --key '{\"key\":{\"S\":\"deploy-data\"}}' --update-expression \"SET #v.liveCommitId = :sha\" --expression-attribute-values '{\":sha\":{\"S\":\"${{ github.sha }}\"}}' --expression-attribute-names '{\"#v\":\"value\"}'"
