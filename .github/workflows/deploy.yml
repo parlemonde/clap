@@ -20,7 +20,7 @@ jobs:
         run: aws dynamodb get-item --table-name clap --key '{"key":{"S":"deploy-data"}}' > build.json
       - name: Check if build is paused
         id: is-deployment-paused
-        run: echo "paused='$(cat build.json | jq -r '.Item.value.M.isDeploymentPaused.BOOL')'" >> "$GITHUB_OUTPUT"
+        run: echo "paused=$(cat build.json | jq -r '.Item.value.M.isDeploymentPaused.BOOL')" >> "$GITHUB_OUTPUT"
   deploy:
     runs-on: ubuntu-latest
     needs: get-build-data
