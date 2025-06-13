@@ -52,7 +52,7 @@ jobs:
       - name: Add Github Actions IP to security-group
         run: aws ec2 authorize-security-group-ingress --group-name ${{ secrets.AWS_SECURITY_GROUP_NAME }} --protocol tcp --port 22 --cidr ${{ steps.get-ip.outputs.ip }}/32
       - run: mkdir -p ~/.ssh/ && echo "${{secrets.SSH_KNOWN_HOSTS}}" > ~/.ssh/known_hosts
-      - run: echo "${{ secrets.SSH_PRIVATE_KEY }}" > server-key.pem
+      - run: echo "${{ secrets.SSH_PRIVATE_KEY }}" > server-key.pem && chmod 600 server-key.pem
       - name: Deploy
         run: ssh -i server-key.pem ${{ secrets.SERVER_URL}} "exec sh ./deploy.sh ${{ github.sha }}"
       - name: Update build data
