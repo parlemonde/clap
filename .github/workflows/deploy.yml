@@ -39,12 +39,22 @@ jobs:
           cache: 'pnpm'
       - run: pnpm install
       - name: Migrate database
-        run: pnpm dotenvx run --env DATABASE_URL=${{ secrets.DATABASE_URL }} -- tsx src/database/migrate.ts
+        run: DATABASE_URL=${{ secrets.DATABASE_URL }} pnpm tsx src/database/migrate.ts
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
+      - name: Get IP address
+        id: get-ip
+        run: echo "ip=$(curl https://api.ipify.org)" >> "$GITHUB_OUTPUT"
+      - name: Add Github Actions IP to security-group
+        run: aws ec2 authorize-security-group-ingress --group-name ${{ secrets.AWS_SECURITY_GROUP_NAME }} --protocol tcp --port 22 --cidr ${{ steps.get-ip.outputs.ip }}/32
+      - run: echo "${{ secrets.SSH_PRIVATE_KEY }}" > server-key.pem
+      - name: Deploy
+        run: ssh -i server-key.pem ${{ secrets.SERVER_URL}} "exec sh ./deploy.sh ${{ github.sha }}"
       - name: Update build data
         run: "aws dynamodb update-item --table-name clap --key '{\"key\":{\"S\":\"deploy-data\"}}' --update-expression \"SET #v.liveCommitId = :sha\" --expression-attribute-values '{\":sha\":{\"S\":\"${{ github.sha }}\"}}' --expression-attribute-names '{\"#v\":\"value\"}'"
+      - name: Revoke Github Actions IP from security-group
+        run: aws ec2 revoke-security-group-ingress --group-name ${{ secrets.AWS_SECURITY_GROUP_NAME }} --protocol tcp --port 22 --cidr ${{ steps.get-ip.outputs.ip }}/32
