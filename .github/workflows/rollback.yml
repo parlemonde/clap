@@ -36,10 +36,12 @@ jobs:
         run: echo "ip=$(curl https://api.ipify.org)" >> "$GITHUB_OUTPUT"
       - name: Add Github Actions IP to security-group
         run: aws ec2 authorize-security-group-ingress --group-name ${{ secrets.AWS_SECURITY_GROUP_NAME }} --protocol tcp --port 22 --cidr ${{ steps.get-ip.outputs.ip }}/32
+      - run: mkdir -p ~/.ssh/ && echo "${{secrets.SSH_KNOWN_HOSTS}}" > ~/.ssh/known_hosts
       - run: echo "${{ secrets.SSH_PRIVATE_KEY }}" > server-key.pem
       - name: Deploy
         run: ssh -i server-key.pem ${{ secrets.SERVER_URL}} "exec sh ./deploy.sh ${{ github.event.inputs.sha }}"
       - name: Update build data
         run: "aws dynamodb update-item --table-name clap --key '{\"key\":{\"S\":\"deploy-data\"}}' --update-expression \"SET #v.liveCommitId = :sha\" --expression-attribute-values '{\":sha\":{\"S\":\"${{ github.event.inputs.sha }}\"}}' --expression-attribute-names '{\"#v\":\"value\"}'"
       - name: Revoke Github Actions IP from security-group
+        if: always()
         run: aws ec2 revoke-security-group-ingress --group-name ${{ secrets.AWS_SECURITY_GROUP_NAME }} --protocol tcp --port 22 --cidr ${{ steps.get-ip.outputs.ip }}/32
