@@ -185,7 +185,7 @@ export async function projectToMlt(project: ProjectData, name: string, urlKind: 
                     fileNames.add(plan.imageUrl);
                     const isLocal = plan.imageUrl.startsWith('/media/');
                     files.push({
-                        fileUrl: plan.imageUrl,
+                        fileUrl: isLocal ? plan.imageUrl.slice(1) : plan.imageUrl,
                         fileName: getLocalName(plan.imageUrl, 'images'),
                         isLocal,
                     });
@@ -244,7 +244,7 @@ export async function projectToMlt(project: ProjectData, name: string, urlKind: 
                 fileNames.add(question.soundUrl);
                 const isLocal = question.soundUrl.startsWith('/media/');
                 files.push({
-                    fileUrl: question.soundUrl,
+                    fileUrl: isLocal ? question.soundUrl.slice(1) : question.soundUrl,
                     fileName: getLocalName(question.soundUrl, 'audios'),
                     isLocal,
                 });
@@ -328,7 +328,7 @@ export async function projectToMlt(project: ProjectData, name: string, urlKind: 
             fileNames.add(project.soundUrl);
             const isLocal = project.soundUrl.startsWith('/media/');
             files.push({
-                fileUrl: project.soundUrl,
+                fileUrl: isLocal ? project.soundUrl.slice(1) : project.soundUrl,
                 fileName: getLocalName(project.soundUrl, 'audios'),
                 isLocal,
             });
