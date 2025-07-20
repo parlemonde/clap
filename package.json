@@ -1,7 +1,15 @@
 {
-  "name": "clap-v2",
-  "version": "0.1.0",
+  "name": "clap",
+  "version": "1.0.0",
   "private": true,
+  "description": "Clap! is an innovative web application that simplifies video creation in educational settings. Teachers can create themes and scenarios, while students can collaborate in real-time to build storyboards and generate videos using a guided workflow.",
+  "author": "Par Le Monde",
+  "license": "GPL-3.0-or-later",
+  "homepage": "https://clap.parlemonde.org",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/parlemonde/clap"
+  },
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
