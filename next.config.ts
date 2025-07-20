@@ -15,25 +15,23 @@ const nextConfig: NextConfig = {
         });
         return config;
     },
-    experimental: {
-        turbo: {
-            rules: {
-                '*.svg': {
-                    loaders: ['@svgr/webpack'],
-                    as: '*.js',
-                },
-                '*.html': {
-                    loaders: ['raw-loader'],
-                    as: '*.js',
-                },
-                '*.txt': {
-                    loaders: ['raw-loader'],
-                    as: '*.js',
-                },
-                '*.pug': {
-                    loaders: ['raw-loader'],
-                    as: '*.js',
-                },
+    turbopack: {
+        rules: {
+            '*.svg': {
+                loaders: ['@svgr/webpack'],
+                as: '*.js',
+            },
+            '*.html': {
+                loaders: ['raw-loader'],
+                as: '*.js',
+            },
+            '*.txt': {
+                loaders: ['raw-loader'],
+                as: '*.js',
+            },
+            '*.pug': {
+                loaders: ['raw-loader'],
+                as: '*.js',
             },
         },
     },
