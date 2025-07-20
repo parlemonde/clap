@@ -1,6 +1,7 @@
 import classNames from 'clsx';
 import type { Metadata, Viewport } from 'next';
 import { cookies } from 'next/headers';
+import { Tooltip } from 'radix-ui';
 import * as React from 'react';
 import 'normalize.css/normalize.css';
 import 'nprogress/nprogress.css';
@@ -15,7 +16,6 @@ import { BottomNavBar } from 'src/components/navigation/BottomNavBar';
 import { NProgressDone } from 'src/components/navigation/NProgress';
 import { TopNavBar } from 'src/components/navigation/TopNavBar';
 import { Toasts } from 'src/components/ui/Toasts';
-import { TooltipProvider } from 'src/contexts/TooltipProvider';
 import { TranslationContextProvider } from 'src/contexts/translationContext';
 import { UserContextProvider } from 'src/contexts/userContext';
 import { openSansFont, alegreyaSansFont, littleDaysFont } from 'src/fonts';
@@ -77,7 +77,7 @@ export default async function RootLayout({ children }: React.PropsWithChildren) 
                 className={classNames(openSansFont.className, styles.body, openSansFont.variable, alegreyaSansFont.variable, littleDaysFont.variable)}
             >
                 <noscript>You need to enable JavaScript to run this app.</noscript>
-                <TooltipProvider delayDuration={0}>
+                <Tooltip.Provider delayDuration={0}>
                     <TranslationContextProvider language={currentLocale} locales={locales}>
                         <UserContextProvider initialUser={user} isSessionExpired={isSessionExpired}>
                             <TopNavBar />
@@ -86,7 +86,7 @@ export default async function RootLayout({ children }: React.PropsWithChildren) 
                             <AlertModal />
                         </UserContextProvider>
                     </TranslationContextProvider>
-                </TooltipProvider>
+                </Tooltip.Provider>
                 <Toasts />
                 <NProgressDone />
             </body>

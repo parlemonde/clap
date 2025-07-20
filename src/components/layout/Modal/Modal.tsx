@@ -1,6 +1,6 @@
-import * as Dialog from '@radix-ui/react-dialog';
 import { Cross2Icon } from '@radix-ui/react-icons';
 import classNames from 'clsx';
+import { Dialog } from 'radix-ui';
 import React from 'react';
 
 import styles from './modal.module.scss';

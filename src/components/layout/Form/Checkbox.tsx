@@ -1,6 +1,6 @@
 'use client';
 
-import * as RadixCheckbox from '@radix-ui/react-checkbox';
+import { Checkbox as RadixCheckbox } from 'radix-ui';
 import * as React from 'react';
 
 import styles from './checkbox.module.scss';

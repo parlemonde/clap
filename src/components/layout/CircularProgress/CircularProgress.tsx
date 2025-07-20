@@ -1,7 +1,7 @@
 'use client';
 
-import * as Progress from '@radix-ui/react-progress';
 import classNames from 'clsx';
+import { Progress } from 'radix-ui';
 import * as React from 'react';
 
 import styles from './circular-progress.module.scss';

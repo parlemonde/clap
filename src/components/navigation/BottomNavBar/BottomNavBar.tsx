@@ -1,8 +1,8 @@
 'use client';
 
-import * as NavigationMenu from '@radix-ui/react-navigation-menu';
 import classNames from 'clsx';
 import { usePathname } from 'next/navigation';
+import { NavigationMenu } from 'radix-ui';
 import * as React from 'react';
 
 import styles from './bottom-nav-bar.module.scss';

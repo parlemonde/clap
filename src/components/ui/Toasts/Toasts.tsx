@@ -1,8 +1,8 @@
 'use client';
 
 import { Cross1Icon } from '@radix-ui/react-icons';
-import * as Toast from '@radix-ui/react-toast';
 import classNames from 'clsx';
+import { Toast } from 'radix-ui';
 import * as React from 'react';
 
 import { TOAST_EVENT } from './toast-events';
