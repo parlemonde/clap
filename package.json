@@ -35,7 +35,7 @@
     "jose": "^6.0.12",
     "mime-types": "^3.0.1",
     "mlt-xml": "^2.0.2",
-    "next": "15.4.2",
+    "next": "15.4.8",
     "nodemailer": "^7.0.5",
     "normalize.css": "^8.0.1",
     "nprogress": "^0.2.0",
