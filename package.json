@@ -13,10 +13,8 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
-    "build:lambda": "rm -rf .open-next && open-next build --config-path ./open-next/open-next.config.ts && node ./open-next/install-deps.mjs",
     "start": "next start",
     "lint": "eslint .",
-    "lint:fix": "eslint --fix .",
     "typecheck": "tsc --noEmit -p .",
     "db:migrate": "dotenvx run -- tsx src/database/migrate.ts",
     "db:generate": "drizzle-kit generate",
