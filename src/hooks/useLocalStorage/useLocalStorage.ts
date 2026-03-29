@@ -28,7 +28,9 @@ export function useLocalStorage<T extends LocalStorageKey>(
             };
         },
         () => {
-            setIsLoading(false);
+            if (isLoading) {
+                setIsLoading(false);
+            }
             return getFromLocalStorage(key) || initialValue;
         },
         () => initialValue,
