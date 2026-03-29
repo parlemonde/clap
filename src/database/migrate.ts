@@ -1,8 +1,7 @@
 import { hash } from '@node-rs/argon2';
 import { eq } from 'drizzle-orm';
-import { drizzle } from 'drizzle-orm/postgres-js';
-import { migrate } from 'drizzle-orm/postgres-js/migrator';
-import postgres from 'postgres';
+import { migrate } from 'drizzle-orm/node-postgres/migrator';
+import { Client } from 'pg';
 
 import { db } from './database';
 import { languages } from './schemas/languages';
@@ -16,10 +15,11 @@ async function createDatabase(): Promise<void> {
         return;
     }
     try {
-        const client = postgres(DATABASE_URL.replace(/\/[^/]*$/, ''), { debug: true });
-        const res = await client`SELECT datname FROM pg_catalog.pg_database WHERE datname = 'clap'`;
-        if (res.length === 0) {
-            await client`CREATE DATABASE clap`;
+        const client = new Client({ connectionString: DATABASE_URL.replace(/\/[^/]*$/, ''), ssl: false });
+        await client.connect();
+        const res = await client.query('SELECT datname FROM pg_catalog.pg_database WHERE datname = $1', ['clap']);
+        if (res.rows.length === 0) {
+            await client.query('CREATE DATABASE clap');
         }
         await client.end();
     } catch (e) {
@@ -72,13 +72,9 @@ async function createDefaultLanguage(): Promise<void> {
 
 const start = async () => {
     await createDatabase();
-    const ssl = DATABASE_URL.includes('localhost') ? false : 'verify-full';
-    const migrationClient = postgres(DATABASE_URL, { max: 1, ssl });
-    const db = drizzle(migrationClient, { logger: process.env.NODE_ENV !== 'production' });
     await migrate(db, { migrationsFolder: './drizzle' });
     await createAdminUser();
     await createDefaultLanguage();
-    await migrationClient.end();
 };
 
 start()
