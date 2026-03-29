@@ -1,11 +1,11 @@
 'use server';
 
 import { or, eq, asc, desc, and, isNotNull } from 'drizzle-orm';
-
-import { getCurrentUser } from '../get-current-user';
 import { db } from 'src/database';
 import type { Theme } from 'src/database/schemas/themes';
 import { themes } from 'src/database/schemas/themes';
+
+import { getCurrentUser } from '../get-current-user';
 
 type ListThemesArgs = {
     userId?: number;

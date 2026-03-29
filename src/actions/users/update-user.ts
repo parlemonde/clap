@@ -2,11 +2,11 @@
 
 import { hash, verify } from '@node-rs/argon2';
 import { eq } from 'drizzle-orm';
-
-import { getCurrentUser } from '../get-current-user';
 import { db } from 'src/database';
 import type { User } from 'src/database/schemas/users';
 import { users } from 'src/database/schemas/users';
+
+import { getCurrentUser } from '../get-current-user';
 
 const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/;
 

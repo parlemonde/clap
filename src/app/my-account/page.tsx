@@ -1,15 +1,15 @@
 import * as React from 'react';
+import { getCurrentUser } from 'src/actions/get-current-user';
+import { getTranslation } from 'src/actions/get-translation';
+import { Container } from 'src/components/layout/Container';
+import { Divider } from 'src/components/layout/Divider';
+import { Title } from 'src/components/layout/Typography';
 
 import { DeleteAccountButton } from './DeleteAccountButton';
 import { LogoutForm } from './LogoutForm';
 import { UpdateEmailForm } from './UpdateEmailForm';
 import { UpdateNameForm } from './UpdateNameForm';
 import { UpdatePasswordButton } from './UpdatePasswordButton';
-import { getCurrentUser } from 'src/actions/get-current-user';
-import { getTranslation } from 'src/actions/get-translation';
-import { Container } from 'src/components/layout/Container';
-import { Divider } from 'src/components/layout/Divider';
-import { Title } from 'src/components/layout/Typography';
 
 export default async function AccountPage() {
     const { t } = await getTranslation();

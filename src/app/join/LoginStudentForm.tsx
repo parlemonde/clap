@@ -2,8 +2,6 @@
 
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
-
-import { StudentQuestionChoice } from './StudentQuestionChoice';
 import { loginForStudent } from 'src/actions/authentication/login-for-student';
 import { getProjectByCode } from 'src/actions/projects/get-project';
 import { Button } from 'src/components/layout/Button';
@@ -15,6 +13,8 @@ import { useTranslation } from 'src/contexts/translationContext';
 import type { ProjectData } from 'src/database/schemas/projects';
 import { setToLocalStorage } from 'src/hooks/useLocalStorage/local-storage';
 import type { I18nKeys } from 'src/i18n/locales';
+
+import { StudentQuestionChoice } from './StudentQuestionChoice';
 
 export const LoginStudentForm = () => {
     const router = useRouter();

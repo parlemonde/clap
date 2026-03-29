@@ -1,11 +1,11 @@
 'use server';
 
 import { or, eq, and, count, isNotNull } from 'drizzle-orm';
-
-import { getCurrentUser } from '../get-current-user';
 import { db } from 'src/database';
 import { questions } from 'src/database/schemas/questions';
 import { scenarios, type Scenario } from 'src/database/schemas/scenarios';
+
+import { getCurrentUser } from '../get-current-user';
 
 type ListScenariosArgs = {
     themeId?: number;

@@ -2,12 +2,12 @@ import nodemailer from 'nodemailer';
 import type Mail from 'nodemailer/lib/mailer';
 import type SESTransport from 'nodemailer/lib/ses-transport';
 import type SMTPTransport from 'nodemailer/lib/smtp-transport';
+import { getTranslation } from 'src/actions/get-translation';
 
 import { getNodeMailer } from './nodemailer';
 import { renderFile } from './render-file';
 import resetPasswordHtml from './templates/reset-password.html';
 import resetPasswordText from './templates/reset-password.txt';
-import { getTranslation } from 'src/actions/get-translation';
 
 const DOMAIN = process.env.HOST_DOMAIN || process.env.HOST_URL?.split('://')[1] || '';
 const HOST_URL = process.env.HOST_URL || '';

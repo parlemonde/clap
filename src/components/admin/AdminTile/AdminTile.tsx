@@ -1,11 +1,11 @@
 import classNames from 'clsx';
 import * as React from 'react';
-
-import styles from './admin-tile.module.scss';
 import type { MarginProps } from 'src/components/layout';
 import { getMarginAndPaddingStyle } from 'src/components/layout';
 import { Flex, FlexItem } from 'src/components/layout/Flex';
 import { Title } from 'src/components/layout/Typography';
+
+import styles from './admin-tile.module.scss';
 
 type AdminTileProps = {
     title: React.ReactNode;

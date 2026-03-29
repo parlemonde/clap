@@ -54,10 +54,11 @@
     "waveform-data": "^4.5.2"
   },
   "devDependencies": {
-    "@dotenvx/dotenvx": "1.48.1",
-    "@eslint/eslintrc": "3.3.1",
-    "@eslint/js": "9.31.0",
-    "@next/eslint-plugin-next": "15.4.2",
+    "@dotenvx/dotenvx": "1.59.1",
+    "@eslint/css": "^1.0.0",
+    "@eslint/js": "9.39.4",
+    "@eslint/json": "^1.2.0",
+    "@next/eslint-plugin-next": "16.2.1",
     "@opennextjs/aws": "3.7.0",
     "@svgr/webpack": "8.1.0",
     "@types/archiver": "6.0.3",
@@ -76,16 +77,16 @@
     "@types/uuid": "10.0.0",
     "aws-lambda": "1.0.7",
     "drizzle-kit": "0.31.10",
-    "eslint": "9.31.0",
-    "eslint-config-next": "15.4.2",
+    "eslint": "9.39.4",
+    "eslint-config-next": "16.2.1",
     "eslint-config-prettier": "10.1.8",
-    "eslint-plugin-prettier": "5.5.3",
-    "eslint-plugin-react-hooks": "5.2.0",
-    "prettier": "3.6.2",
+    "eslint-plugin-prettier": "5.5.5",
+    "eslint-plugin-react-hooks": "7.0.1",
+    "prettier": "3.8.1",
     "raw-loader": "4.0.2",
-    "tsx": "4.20.3",
-    "typescript": "5.8.3",
-    "typescript-eslint": "8.37.0"
+    "tsx": "4.21.0",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.57.2"
   },
   "volta": {
     "node": "22.15.1"
@@ -95,12 +96,6 @@
     "overrides": {
       "@aws-sdk/client-dynamodb": "^3.848.0"
     },
-    "ignoredBuiltDependencies": [
-      "@parcel/watcher",
-      "aws-sdk",
-      "esbuild",
-      "unrs-resolver"
-    ],
     "onlyBuiltDependencies": [
       "sharp"
     ]

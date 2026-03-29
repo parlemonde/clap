@@ -3,7 +3,6 @@
 import { DragHandleDots2Icon, Pencil1Icon, TrashIcon } from '@radix-ui/react-icons';
 import Image from 'next/image';
 import * as React from 'react';
-
 import { deleteTheme } from 'src/actions/themes/delete-theme';
 import { updateThemesOrder } from 'src/actions/themes/update-themes-order';
 import { Table } from 'src/components/admin/Table';

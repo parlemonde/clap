@@ -2,10 +2,10 @@
 
 import { eq } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
-
-import { getCurrentUser } from '../get-current-user';
 import { db } from 'src/database';
 import { scenarios } from 'src/database/schemas/scenarios';
+
+import { getCurrentUser } from '../get-current-user';
 
 export async function deleteScenario(scenarioId: number) {
     const user = await getCurrentUser();

@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-
 import { deleteQuestion } from 'src/actions/questions/delete-question';
 import { Modal } from 'src/components/layout/Modal';
 import type { Question } from 'src/database/schemas/questions';

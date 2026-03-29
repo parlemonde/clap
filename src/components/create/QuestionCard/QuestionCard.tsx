@@ -1,10 +1,10 @@
 import { DragHandleDots2Icon, Pencil1Icon, TrashIcon, ArrowUpIcon, ArrowDownIcon, GearIcon } from '@radix-ui/react-icons';
 import React from 'react';
-
-import styles from './question-card.module.scss';
 import { IconButton } from 'src/components/layout/Button/IconButton';
 import { Link } from 'src/components/navigation/Link';
 import { serializeToQueryUrl } from 'src/lib/serialize-to-query-url';
+
+import styles from './question-card.module.scss';
 
 type QuestionCardProps = {
     projectId: number | null;

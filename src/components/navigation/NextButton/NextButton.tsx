@@ -1,13 +1,13 @@
 'use client';
 
 import * as React from 'react';
-
-import styles from './next-button.module.scss';
 import type { MarginProps } from 'src/components/layout';
 import { Box } from 'src/components/layout/Box';
 import { Button } from 'src/components/layout/Button';
 import { Link, startNProgress } from 'src/components/navigation/Link';
 import { useTranslation } from 'src/contexts/translationContext';
+
+import styles from './next-button.module.scss';
 
 type NextButtonProps = {
     label?: string;

@@ -2,16 +2,16 @@
 
 import { DownloadIcon, Pencil1Icon, PlusCircledIcon, TrashIcon } from '@radix-ui/react-icons';
 import * as React from 'react';
-
-import { AddLanguageModal } from './AddLanguageModal';
-import { DeleteLanguageModal } from './DeleteLanguageModal';
-import { UploadLanguageModal } from './UploadLanguageModal';
 import { AdminTile } from 'src/components/admin/AdminTile';
 import { Table } from 'src/components/admin/Table';
 import { Button } from 'src/components/layout/Button';
 import { IconButton } from 'src/components/layout/Button/IconButton';
 import { Tooltip } from 'src/components/layout/Tooltip';
 import type { Language } from 'src/database/schemas/languages';
+
+import { AddLanguageModal } from './AddLanguageModal';
+import { DeleteLanguageModal } from './DeleteLanguageModal';
+import { UploadLanguageModal } from './UploadLanguageModal';
 
 interface LanguagesTableProps {
     languages: Language[];

@@ -1,10 +1,6 @@
 'use client';
 import { DragHandleDots2Icon, Pencil1Icon, PlusCircledIcon, TrashIcon } from '@radix-ui/react-icons';
 import React from 'react';
-
-import { CreateQuestionModal } from './CreateQuestionModal';
-import { DeleteQuestionModal } from './DeleteQuestionModal';
-import { EditQuestionModal } from './EditQuestionModal';
 import { reOrderQuestions } from 'src/actions/questions/re-order-questions';
 import { AdminTile } from 'src/components/admin/AdminTile';
 import { Table } from 'src/components/admin/Table';
@@ -19,6 +15,10 @@ import { sendToast } from 'src/components/ui/Toasts';
 import type { Question } from 'src/database/schemas/questions';
 import type { Scenario } from 'src/database/schemas/scenarios';
 import { useLanguages } from 'src/hooks/useLanguages';
+
+import { CreateQuestionModal } from './CreateQuestionModal';
+import { DeleteQuestionModal } from './DeleteQuestionModal';
+import { EditQuestionModal } from './EditQuestionModal';
 
 interface QuestionsTileProps {
     selectedScenario: Scenario;

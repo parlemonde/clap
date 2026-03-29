@@ -4,7 +4,6 @@
 import type { MLT, Playlist } from 'mlt-xml';
 import { mltToXml } from 'mlt-xml';
 import path from 'node:path';
-
 import type { ProjectData } from 'src/database/schemas/projects';
 
 export type File = {

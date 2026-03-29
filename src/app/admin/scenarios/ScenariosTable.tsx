@@ -2,7 +2,6 @@
 
 import { Pencil1Icon, QuestionMarkCircledIcon, TrashIcon } from '@radix-ui/react-icons';
 import * as React from 'react';
-
 import { deleteScenario } from 'src/actions/scenarios/delete-scenario';
 import { Table } from 'src/components/admin/Table';
 import { IconButton } from 'src/components/layout/Button/IconButton';

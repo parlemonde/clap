@@ -1,7 +1,6 @@
 'use client';
 
 import * as React from 'react';
-
 import { ThemeCard } from 'src/components/create/ThemeCard';
 import { useTranslation } from 'src/contexts/translationContext';
 import type { Theme } from 'src/database/schemas/themes';

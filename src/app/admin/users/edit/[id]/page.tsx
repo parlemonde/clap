@@ -1,12 +1,12 @@
 import * as React from 'react';
-
-import { EditUserForm } from './EditUserForm';
 import { getUser } from 'src/actions/users/get-user';
 import { AdminTile } from 'src/components/admin/AdminTile';
 import { Breadcrumbs } from 'src/components/layout/Breadcrumbs';
 import { Container } from 'src/components/layout/Container';
 import { Title } from 'src/components/layout/Typography';
 import type { ServerPageProps } from 'src/lib/page-props.types';
+
+import { EditUserForm } from './EditUserForm';
 
 export default async function AdminEditUserPage(props: ServerPageProps) {
     const params = await props.params;

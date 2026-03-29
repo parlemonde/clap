@@ -1,12 +1,12 @@
 'use server';
 
 import * as React from 'react';
-
-import { LoginForm } from './LoginForm';
 import { getTranslation } from 'src/actions/get-translation';
 import { Container } from 'src/components/layout/Container';
 import { Title } from 'src/components/layout/Typography';
 import type { ServerPageProps } from 'src/lib/page-props.types';
+
+import { LoginForm } from './LoginForm';
 
 const CLIENT_ID = process.env.CLIENT_ID || '';
 const SSO_HOST = process.env.SSO_HOST || '';

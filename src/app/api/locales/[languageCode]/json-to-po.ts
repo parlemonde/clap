@@ -1,9 +1,9 @@
 import { Buffer } from 'buffer';
+import { getLocalesForLanguage } from 'src/actions/get-locales';
+import { PO_PLURALS } from 'src/i18n/getPlurals';
 
 import type { Comments, SingleTranslation, translationObject } from './util';
 import { HEADERS, foldLine, compareMsgid, generateHeader } from './util';
-import { getLocalesForLanguage } from 'src/actions/get-locales';
-import { PO_PLURALS } from 'src/i18n/getPlurals';
 
 const FOLD_LENGTH = 76;
 

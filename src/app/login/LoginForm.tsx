@@ -2,7 +2,6 @@
 
 import { EyeNoneIcon, EyeOpenIcon } from '@radix-ui/react-icons';
 import * as React from 'react';
-
 import { login } from 'src/actions/authentication/login';
 import { loginWithSSO } from 'src/actions/authentication/login-with-sso';
 import { Button } from 'src/components/layout/Button';

@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-
 import type { tFunction } from 'src/i18n/translateFunction';
 import { translateFunction } from 'src/i18n/translateFunction';
 

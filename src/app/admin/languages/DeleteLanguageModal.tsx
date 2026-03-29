@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-
 import { deleteLanguage } from 'src/actions/languages/delete-language';
 import { Modal } from 'src/components/layout/Modal';
 import { sendToast } from 'src/components/ui/Toasts';

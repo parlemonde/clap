@@ -1,5 +1,4 @@
 import * as React from 'react';
-
 import { Link } from 'src/components/navigation/Link';
 
 export default function NotFound() {

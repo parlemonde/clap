@@ -1,6 +1,4 @@
 import * as React from 'react';
-
-import { ProjectForm } from './ProjectForm';
 import { getCurrentUser } from 'src/actions/get-current-user';
 import { getTranslation } from 'src/actions/get-translation';
 import { getProject } from 'src/actions/projects/get-project';
@@ -10,6 +8,8 @@ import { Flex } from 'src/components/layout/Flex';
 import { Text, Title } from 'src/components/layout/Typography';
 import { Link } from 'src/components/navigation/Link';
 import type { ServerPageProps } from 'src/lib/page-props.types';
+
+import { ProjectForm } from './ProjectForm';
 
 export default async function EditProjectPage(props: ServerPageProps) {
     const params = await props.params;

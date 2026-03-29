@@ -1,7 +1,6 @@
 'use server';
 
 import { eq } from 'drizzle-orm';
-
 import { db } from 'src/database';
 import { scenarios, type Scenario } from 'src/database/schemas/scenarios';
 

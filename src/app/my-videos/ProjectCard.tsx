@@ -3,11 +3,11 @@
 import { Pencil1Icon } from '@radix-ui/react-icons';
 import clsx from 'clsx';
 import * as React from 'react';
-
-import styles from './project-card.module.scss';
 import { IconButton } from 'src/components/layout/Button/IconButton';
 import { Title } from 'src/components/layout/Typography';
 import { useTranslation } from 'src/contexts/translationContext';
+
+import styles from './project-card.module.scss';
 
 type ProjectCardProps = {
     title?: string;

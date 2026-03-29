@@ -1,5 +1,4 @@
 import { NextResponse, type NextRequest } from 'next/server';
-
 import { getCurrentUser } from 'src/actions/get-current-user';
 import { buf2hex, hmac } from 'src/aws/utils';
 

@@ -3,7 +3,6 @@
 import { Cross1Icon } from '@radix-ui/react-icons';
 import { useRouter } from 'next/navigation';
 import React from 'react';
-
 import { updateScenario } from 'src/actions/scenarios/update-scenario';
 import { Button } from 'src/components/layout/Button';
 import { IconButton } from 'src/components/layout/Button/IconButton';
@@ -93,21 +92,22 @@ export const EditScenarioForm = ({ themes, scenario }: EditScenarioFormProps) =>
 
         setIsLoading(true);
 
+        const newScenarioNames = { ...scenarioNames };
+        // Clear blank spaces
+        for (const [key, value] of Object.entries(scenarioNames)) {
+            newScenarioNames[key] = value.trim();
+        }
+
         // Check if name are not empty with blank space
-        const scenarioNamesValue = Object.values(scenarioNames);
+        const scenarioNamesValue = Object.values(newScenarioNames);
         const clearedScenarioNames = scenarioNamesValue.filter((lang) => lang.trim().length > 0);
         if (scenarioNamesValue.length === 0 || clearedScenarioNames.length !== scenarioNamesValue.length) {
             sendToast({ message: 'Veuillez remplir correctement le nom pour chaque langue sélectionnée', type: 'error' });
         }
 
-        // Clear blank spaces
-        for (const [key, value] of Object.entries(scenarioNames)) {
-            scenarioNames[key] = value.trim();
-        }
-
         try {
             await updateScenario(scenario.id, {
-                names: scenarioNames,
+                names: newScenarioNames,
                 descriptions: scenarioDescriptions,
                 themeId,
             });

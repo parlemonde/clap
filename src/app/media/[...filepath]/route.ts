@@ -2,9 +2,8 @@ import mime from 'mime-types';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import sanitize from 'sanitize-filename';
-import { Readable } from 'stream';
-
 import { getFile, getFileData } from 'src/actions/files/file-upload';
+import { Readable } from 'stream';
 
 const notFoundResponse = () => {
     return new NextResponse(null, {

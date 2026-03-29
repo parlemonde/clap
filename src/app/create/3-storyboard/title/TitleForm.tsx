@@ -1,10 +1,10 @@
 import { DragHandleDots2Icon, PauseIcon } from '@radix-ui/react-icons';
 import React from 'react';
-
-import styles from './title-form.module.scss';
 import { KeepRatio } from 'src/components/layout/KeepRatio';
 import { useTranslation } from 'src/contexts/translationContext';
 import type { Title } from 'src/database/schemas/projects';
+
+import styles from './title-form.module.scss';
 
 const PRIMARY_COLOR = '#6065fc';
 
@@ -14,6 +14,7 @@ interface TitleFormProps {
 }
 
 export const TitleForm = ({ title, onTitleChange }: TitleFormProps) => {
+    const canvasId = `canvas-${React.useId()}`;
     const { t } = useTranslation();
     const [isDragging, setIsDragging] = React.useState(false);
     const [isCenteringX, setIsCenteringX] = React.useState(false);
@@ -25,27 +26,37 @@ export const TitleForm = ({ title, onTitleChange }: TitleFormProps) => {
     const canvasRef = React.useRef<HTMLDivElement>(null);
     const [canvasWidth, setCanvasWidth] = React.useState(0);
     const [canvasHeight, setCanvasHeight] = React.useState(0);
-    const resizeObserverRef = React.useRef<ResizeObserver>(
-        new ResizeObserver((entries) => {
-            for (const entry of entries) {
-                if (entry.target === canvasRef.current) {
-                    setCanvasWidth(entry.contentRect.width);
-                    setCanvasHeight(entry.contentRect.height);
+    const resizeObserver = React.useMemo<ResizeObserver>(
+        () =>
+            new ResizeObserver((entries) => {
+                for (const entry of entries) {
+                    if (entry.target.id === canvasId) {
+                        setCanvasWidth(entry.contentRect.width);
+                        setCanvasHeight(entry.contentRect.height);
+                    }
                 }
-            }
-        }),
+            }),
+        [canvasId],
     );
+
+    // On mount, observe the canvas
     React.useEffect(() => {
         const el = canvasRef.current;
-        const resizeObserver = resizeObserverRef.current;
-        if (el) {
-            resizeObserver.observe(el);
-            return () => {
-                resizeObserver.unobserve(el);
-            };
+        if (!el) {
+            return () => {};
         }
-        return () => {};
-    }, []);
+        resizeObserver.observe(el);
+        return () => {
+            resizeObserver.unobserve(el);
+        };
+    }, [resizeObserver]);
+
+    // On unmount, cleanup the resize observer
+    React.useEffect(() => {
+        return () => {
+            resizeObserver.disconnect();
+        };
+    }, [resizeObserver]);
 
     const x = (title.x * canvasWidth) / 100;
     const y = (title.y * canvasHeight) / 100;
@@ -96,7 +107,7 @@ export const TitleForm = ({ title, onTitleChange }: TitleFormProps) => {
                     backgroundColor: title.backgroundColor,
                 }}
             >
-                <div style={{ width: '100%', height: '100%' }} ref={canvasRef}>
+                <div id={canvasId} style={{ width: '100%', height: '100%' }} ref={canvasRef}>
                     <div
                         style={{
                             display: 'inline-block',

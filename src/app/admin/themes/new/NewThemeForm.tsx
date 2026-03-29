@@ -4,7 +4,6 @@ import { UploadIcon } from '@radix-ui/react-icons';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
-
 import { uploadImage } from 'src/actions/files/upload-image';
 import { createDefaultTheme } from 'src/actions/themes/create-theme';
 import { NameInput } from 'src/components/admin/NameInput';

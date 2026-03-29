@@ -1,11 +1,11 @@
 'use client';
 
 import React from 'react';
+import type { Sequence } from 'src/database/schemas/projects';
 
 import { Button } from '../layout/Button';
 import { Field, TextArea } from '../layout/Form';
 import { sendToast } from '../ui/Toasts';
-import type { Sequence } from 'src/database/schemas/projects';
 
 interface FeedbackFormProps {
     question: Sequence;

@@ -3,7 +3,6 @@
 import { Cross1Icon } from '@radix-ui/react-icons';
 import { useRouter } from 'next/navigation';
 import React from 'react';
-
 import { createAdminScenario } from 'src/actions/scenarios/create-scenario';
 import { Button } from 'src/components/layout/Button';
 import { IconButton } from 'src/components/layout/Button/IconButton';
@@ -93,22 +92,24 @@ export const NewScenarioForm = ({ themes, defaultThemeId = -1 }: NewScenarioForm
 
         setIsLoading(true);
 
+        const newScenarioNames = { ...scenarioNames };
+
+        // Clear blank spaces
+        for (const [key, value] of Object.entries(newScenarioNames)) {
+            newScenarioNames[key] = value.trim();
+        }
+
         // Check if name are not empty with blank space
-        const scenarioNamesValue = Object.values(scenarioNames);
+        const scenarioNamesValue = Object.values(newScenarioNames);
         const clearedScenarioNames = scenarioNamesValue.filter((lang) => lang.trim().length > 0);
         if (scenarioNamesValue.length === 0 || clearedScenarioNames.length !== scenarioNamesValue.length) {
             sendToast({ message: 'Veuillez remplir correctement le nom pour chaque langue sélectionnée', type: 'error' });
         }
 
-        // Clear blank spaces
-        for (const [key, value] of Object.entries(scenarioNames)) {
-            scenarioNames[key] = value.trim();
-        }
-
         try {
             await createAdminScenario({
                 themeId,
-                names: scenarioNames,
+                names: newScenarioNames,
                 descriptions: scenarioDescriptions,
             });
             sendToast({ message: 'Scénario créé avec succès!', type: 'success' });

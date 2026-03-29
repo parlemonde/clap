@@ -1,6 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
 import * as React from 'react';
-
 import { KeepRatio } from 'src/components/layout/KeepRatio';
 import { Modal } from 'src/components/layout/Modal';
 import { sendToast } from 'src/components/ui/Toasts';

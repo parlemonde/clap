@@ -2,15 +2,15 @@
 
 import { redirect } from 'next/navigation';
 import * as React from 'react';
-
-import { InviteTokenForm } from './InviteTokenForm';
-import { SignUpForm } from './SignUpForm';
 import { getCurrentUser } from 'src/actions/get-current-user';
 import { getTranslation } from 'src/actions/get-translation';
 import { isVerifyCodeValid } from 'src/actions/users/create-user';
 import { Container } from 'src/components/layout/Container';
 import { Title } from 'src/components/layout/Typography';
 import type { ServerPageProps } from 'src/lib/page-props.types';
+
+import { InviteTokenForm } from './InviteTokenForm';
+import { SignUpForm } from './SignUpForm';
 
 export default async function SignUpPage(props: ServerPageProps) {
     const currentUser = await getCurrentUser();

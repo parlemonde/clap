@@ -1,7 +1,6 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import React from 'react';
-
 import { Select } from 'src/components/layout/Form/Select';
 
 interface ScenarioSelect {

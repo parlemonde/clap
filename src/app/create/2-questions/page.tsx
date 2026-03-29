@@ -2,8 +2,6 @@
 
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
-
-import { QuestionsList } from './QuestionsList';
 import { createProject } from 'src/actions/projects/create-project';
 import { Button } from 'src/components/layout/Button';
 import { Container } from 'src/components/layout/Container';
@@ -25,6 +23,8 @@ import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import { useLocalStorage } from 'src/hooks/useLocalStorage';
 import { deleteFromLocalStorage } from 'src/hooks/useLocalStorage/local-storage';
 
+import { QuestionsList } from './QuestionsList';
+
 export default function QuestionPage() {
     const router = useRouter();
     const { t, currentLocale } = useTranslation();
@@ -44,17 +44,19 @@ export default function QuestionPage() {
         if (!projectData) {
             return;
         }
+        const newProjectData = { ...projectData };
         // Fix from legacy local project having  an id.
-        if ('id' in projectData) {
-            delete projectData.id;
+        if ('id' in newProjectData) {
+            delete newProjectData.id;
+            setProjectData(newProjectData);
         }
         setIsCreatingProject(true);
         const backendProject = await createProject({
-            data: projectData,
+            data: newProjectData,
             name: title,
             language: currentLocale,
-            themeId: typeof projectData.themeId === 'string' ? null : projectData.themeId,
-            scenarioId: typeof projectData.scenarioId === 'string' ? null : projectData.scenarioId,
+            themeId: typeof newProjectData.themeId === 'string' ? null : newProjectData.themeId,
+            scenarioId: typeof newProjectData.scenarioId === 'string' ? null : newProjectData.scenarioId,
         });
         setIsCreatingProject(false);
         if (backendProject) {

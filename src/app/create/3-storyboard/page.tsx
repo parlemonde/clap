@@ -2,8 +2,6 @@
 
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
-
-import { Scenario } from './Scenario';
 import { generatePdf } from 'src/actions/projects/generate-pdf';
 import { getStatus } from 'src/components/collaboration/get-status';
 import { Button } from 'src/components/layout/Button';
@@ -24,6 +22,8 @@ import { useCollaboration } from 'src/hooks/useCollaboration';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import { COLORS } from 'src/lib/colors';
 import PictureAsPdf from 'src/svg/pdf.svg';
+
+import { Scenario } from './Scenario';
 
 export default function StoryboardPage() {
     const router = useRouter();

@@ -3,9 +3,6 @@
 import { ChevronLeftIcon } from '@radix-ui/react-icons';
 import classNames from 'clsx';
 import * as React from 'react';
-
-import { ProjectTitle } from './ProjectTitle';
-import styles from './steps.module.scss';
 import { Button } from 'src/components/layout/Button';
 import { Text } from 'src/components/layout/Typography';
 import { Link } from 'src/components/navigation/Link';
@@ -14,6 +11,9 @@ import { userContext } from 'src/contexts/userContext';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import type { I18nKeys } from 'src/i18n/locales';
 import { serializeToQueryUrl } from 'src/lib/serialize-to-query-url';
+
+import { ProjectTitle } from './ProjectTitle';
+import styles from './steps.module.scss';
 
 type StepData = {
     name: I18nKeys;

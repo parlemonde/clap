@@ -1,5 +1,4 @@
 import * as React from 'react';
-
 import { getTranslation } from 'src/actions/get-translation';
 import { Title } from 'src/components/layout/Typography';
 import { Loader } from 'src/components/ui/Loader';

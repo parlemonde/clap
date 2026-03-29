@@ -1,10 +1,10 @@
 'use server';
 
 import { and, eq } from 'drizzle-orm';
-
-import { getCurrentUser } from '../get-current-user';
 import { db } from 'src/database';
 import { projects } from 'src/database/schemas/projects';
+
+import { getCurrentUser } from '../get-current-user';
 
 export async function deleteProject(id: number): Promise<void> {
     const user = await getCurrentUser();

@@ -1,12 +1,12 @@
 'use server';
 
 import React from 'react';
-
-import { UpdatePasswordForm } from './UpdatePasswordForm';
 import { getTranslation } from 'src/actions/get-translation';
 import { Container } from 'src/components/layout/Container';
 import { Title } from 'src/components/layout/Typography';
 import type { ServerPageProps } from 'src/lib/page-props.types';
+
+import { UpdatePasswordForm } from './UpdatePasswordForm';
 
 export default async function UpdatePasswordPage(props: ServerPageProps) {
     const searchParams = await props.searchParams;

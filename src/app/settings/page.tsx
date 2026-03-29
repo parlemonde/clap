@@ -1,10 +1,10 @@
 import * as React from 'react';
-
-import { LanguageSelect } from './LanguageSelect';
 import { getTranslation } from 'src/actions/get-translation';
 import { Container } from 'src/components/layout/Container';
 import { Title } from 'src/components/layout/Typography';
 import { db } from 'src/database';
+
+import { LanguageSelect } from './LanguageSelect';
 
 export default async function SettingsPage() {
     const { t } = await getTranslation();

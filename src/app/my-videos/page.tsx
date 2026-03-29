@@ -1,12 +1,12 @@
 import * as React from 'react';
-
-import { VideoList } from './VideosList';
 import { getCurrentUser } from 'src/actions/get-current-user';
 import { getProjects } from 'src/actions/projects/get-projects';
 import { Container } from 'src/components/layout/Container';
 import { Title } from 'src/components/layout/Typography';
 import { Inverted } from 'src/components/ui/Inverted';
 import { Trans } from 'src/components/ui/Trans';
+
+import { VideoList } from './VideosList';
 
 export default async function SettingsPage() {
     const projects = await getProjects();

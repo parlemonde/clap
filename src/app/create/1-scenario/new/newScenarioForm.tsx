@@ -2,8 +2,6 @@
 
 import { useRouter } from 'next/navigation';
 import React from 'react';
-import useSWR from 'swr';
-
 import { createScenario } from 'src/actions/scenarios/create-scenario';
 import { Form, Field, Input, TextArea } from 'src/components/layout/Form';
 import { Title } from 'src/components/layout/Typography';
@@ -19,6 +17,7 @@ import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import { useLocalStorage } from 'src/hooks/useLocalStorage';
 import { isLocalScenario, isLocalTheme, type LocalScenario } from 'src/hooks/useLocalStorage/local-storage';
 import { jsonFetcher } from 'src/lib/json-fetcher';
+import useSWR from 'swr';
 
 type NewScenarioFormProps = {
     backUrl: string;

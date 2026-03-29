@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { Modal } from 'src/components/layout/Modal';
 import { useTranslation } from 'src/contexts/translationContext';
 

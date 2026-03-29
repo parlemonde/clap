@@ -1,6 +1,5 @@
 import { PlusIcon } from '@radix-ui/react-icons';
 import React from 'react';
-
 import { FeedbackForm } from 'src/components/collaboration/FeedbackForm';
 import { FeedbackModal } from 'src/components/collaboration/FeedbackModal';
 import type { GroupColorPillProps } from 'src/components/collaboration/GroupColorPill';

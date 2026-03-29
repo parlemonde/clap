@@ -1,10 +1,10 @@
 import classNames from 'clsx';
 import * as React from 'react';
+import { Flex } from 'src/components/layout/Flex';
 
 import { NavigationLogo } from './NavigationLogo';
 import { NavigationMenu } from './NavigationMenu';
 import styles from './top-nav-bar.module.scss';
-import { Flex } from 'src/components/layout/Flex';
 
 export const TopNavBar = () => {
     return (

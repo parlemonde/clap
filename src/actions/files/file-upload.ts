@@ -1,8 +1,8 @@
 import type { Readable } from 'node:stream';
+import { deleteS3File, getS3File, getS3FileData, uploadS3File } from 'src/aws/s3';
 
 import type { FileData } from './file-data.types';
 import { deleteLocalFile, getLocalFile, getLocalFileData, uploadLocalFile } from './local';
-import { deleteS3File, getS3File, getS3FileData, uploadS3File } from 'src/aws/s3';
 
 export const USE_S3 = process.env.S3_BUCKET_NAME !== undefined;
 

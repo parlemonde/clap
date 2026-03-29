@@ -2,13 +2,11 @@ import classNames from 'clsx';
 import type { Metadata, Viewport } from 'next';
 import { cookies } from 'next/headers';
 import { Tooltip } from 'radix-ui';
-import * as React from 'react';
 import 'normalize.css/normalize.css';
 import 'nprogress/nprogress.css';
 import 'src/styles/globals.scss';
 import 'react-html5-camera-photo/build/css/index.css';
-
-import styles from './app.module.scss';
+import * as React from 'react';
 import { getCurrentUser } from 'src/actions/get-current-user';
 import { getLocales } from 'src/actions/get-locales';
 import { AlertModal } from 'src/components/collaboration/AlertModal';
@@ -19,6 +17,8 @@ import { Toasts } from 'src/components/ui/Toasts';
 import { TranslationContextProvider } from 'src/contexts/translationContext';
 import { UserContextProvider } from 'src/contexts/userContext';
 import { openSansFont, alegreyaSansFont, littleDaysFont } from 'src/fonts';
+
+import styles from './app.module.scss';
 
 const APP_URL = process.env.HOST_URL || '';
 const APP_NAME = 'Clap!';

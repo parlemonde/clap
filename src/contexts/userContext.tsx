@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-
 import { logout } from 'src/actions/authentication/logout';
 import type { User } from 'src/database/schemas/users';
 

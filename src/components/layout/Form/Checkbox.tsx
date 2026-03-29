@@ -2,12 +2,12 @@
 
 import { Checkbox as RadixCheckbox } from 'radix-ui';
 import * as React from 'react';
+import CheckedIcon from 'src/svg/checkedIcon.svg';
+import UncheckedIcon from 'src/svg/uncheckedIcon.svg';
 
 import styles from './checkbox.module.scss';
 import { IconButton } from '../Button/IconButton';
 import type { SVGIcon } from '../Button/IconButton';
-import CheckedIcon from 'src/svg/checkedIcon.svg';
-import UncheckedIcon from 'src/svg/uncheckedIcon.svg';
 
 type CheckboxProps = {
     name: string;

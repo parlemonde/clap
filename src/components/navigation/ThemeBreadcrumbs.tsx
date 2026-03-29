@@ -1,8 +1,6 @@
 'use client';
 
 import React from 'react';
-import useSWR from 'swr';
-
 import { Breadcrumbs } from 'src/components/layout/Breadcrumbs';
 import { Placeholder } from 'src/components/layout/Placeholder';
 import { useTranslation } from 'src/contexts/translationContext';
@@ -11,6 +9,7 @@ import type { Theme } from 'src/database/schemas/themes';
 import { useLocalStorage } from 'src/hooks/useLocalStorage';
 import { isLocalTheme } from 'src/hooks/useLocalStorage/local-storage';
 import { jsonFetcher } from 'src/lib/json-fetcher';
+import useSWR from 'swr';
 
 type ThemeBreadcrumbsProps = {
     themeId?: string | number | null;

@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-
 import { Field, Form } from 'src/components/layout/Form';
 import { Select } from 'src/components/layout/Form/Select';
 import { useTranslation } from 'src/contexts/translationContext';

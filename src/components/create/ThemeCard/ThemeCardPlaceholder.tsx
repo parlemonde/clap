@@ -1,7 +1,6 @@
 'use client';
 
 import * as React from 'react';
-
 import { KeepRatio } from 'src/components/layout/KeepRatio';
 import { Placeholder } from 'src/components/layout/Placeholder';
 import { Text } from 'src/components/layout/Typography';

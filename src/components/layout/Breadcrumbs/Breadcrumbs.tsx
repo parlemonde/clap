@@ -1,11 +1,11 @@
 import classNames from 'clsx';
 import * as React from 'react';
+import { Text } from 'src/components/layout/Typography';
+import { Link } from 'src/components/navigation/Link';
 
 import styles from './breadcrumbs.module.scss';
 import type { MarginProps } from '../css-styles';
 import { getMarginAndPaddingStyle } from '../css-styles';
-import { Text } from 'src/components/layout/Typography';
-import { Link } from 'src/components/navigation/Link';
 
 type BreadcrumbLink = {
     href: string;

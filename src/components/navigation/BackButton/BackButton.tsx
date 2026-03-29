@@ -3,12 +3,12 @@
 import { ChevronLeftIcon } from '@radix-ui/react-icons';
 import classNames from 'clsx';
 import * as React from 'react';
-
-import styles from './back-button.module.scss';
 import { Button } from 'src/components/layout/Button';
 import { Link, startNProgress } from 'src/components/navigation/Link';
 import { useTranslation } from 'src/contexts/translationContext';
 import type { I18nKeys } from 'src/i18n/locales';
+
+import styles from './back-button.module.scss';
 
 type BackButtonProps = {
     href: string;

@@ -1,5 +1,6 @@
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
+import { registerService } from 'src/lib/register-service';
 
 import { inviteTokens } from './schemas/invite-tokens';
 import { languages } from './schemas/languages';
@@ -8,7 +9,6 @@ import { questions } from './schemas/questions';
 import { scenarios } from './schemas/scenarios';
 import { themes } from './schemas/themes';
 import { users } from './schemas/users';
-import { registerService } from 'src/lib/register-service';
 
 const ssl = !process.env.DATABASE_URL?.includes('localhost');
 const queryClient = new Pool({ connectionString: process.env.DATABASE_URL, ssl, max: 10 });

@@ -3,7 +3,6 @@
 import { InfoCircledIcon } from '@radix-ui/react-icons';
 import { useRouter } from 'next/navigation';
 import React from 'react';
-
 import { updateUser } from 'src/actions/users/update-user';
 import { Flex } from 'src/components/layout/Flex';
 import { Field, Input } from 'src/components/layout/Form';

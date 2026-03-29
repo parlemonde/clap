@@ -4,7 +4,6 @@ import { eq } from 'drizzle-orm';
 import { jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
 import { cache } from 'react';
-
 import { db } from 'src/database';
 import { projects } from 'src/database/schemas/projects';
 import type { User } from 'src/database/schemas/users';

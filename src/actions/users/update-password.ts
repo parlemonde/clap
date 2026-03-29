@@ -1,7 +1,6 @@
 'use server';
 import { hash, verify } from '@node-rs/argon2';
 import { eq, and, lt } from 'drizzle-orm';
-
 import { db } from 'src/database';
 import { users } from 'src/database/schemas/users';
 

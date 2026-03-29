@@ -1,10 +1,10 @@
 'use server';
 
 import { eq } from 'drizzle-orm';
-
-import { getCurrentUser } from '../get-current-user';
 import { db } from 'src/database';
 import { projects, type Project } from 'src/database/schemas/projects';
+
+import { getCurrentUser } from '../get-current-user';
 
 export async function getProjects(): Promise<Project[]> {
     const user = await getCurrentUser();

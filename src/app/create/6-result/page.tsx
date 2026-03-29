@@ -2,7 +2,6 @@
 
 import { VideoIcon } from '@radix-ui/react-icons';
 import * as React from 'react';
-
 import { getMltZip } from 'src/actions/projects/generate-mlt-zip';
 import { generateVideo, getVideoProgress } from 'src/actions/projects/generate-video';
 import { DiaporamaPlayer } from 'src/components/create/DiaporamaPlayer';

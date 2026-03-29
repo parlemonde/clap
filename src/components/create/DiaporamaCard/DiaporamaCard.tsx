@@ -1,14 +1,14 @@
 import { FileTextIcon, SpeakerLoudIcon } from '@radix-ui/react-icons';
 import classNames from 'clsx';
 import React from 'react';
-
-import styles from './diaporama-card.module.scss';
 import { Link } from 'src/components/navigation/Link';
 import { useTranslation } from 'src/contexts/translationContext';
 import type { Sequence } from 'src/database/schemas/projects';
 import { getSequenceDuration } from 'src/lib/get-sequence-duration';
 import { serializeToQueryUrl } from 'src/lib/serialize-to-query-url';
 import TimerIcon from 'src/svg/timer.svg';
+
+import styles from './diaporama-card.module.scss';
 
 type DiaporamaCardProps = {
     questionIndex: number;

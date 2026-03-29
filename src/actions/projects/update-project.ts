@@ -2,10 +2,10 @@
 
 import { and, eq } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
-
-import { getCurrentUser } from '../get-current-user';
 import { db } from 'src/database';
 import { projects, type Project } from 'src/database/schemas/projects';
+
+import { getCurrentUser } from '../get-current-user';
 
 export async function updateProject(projectId: number, updatedProject: Partial<Project>, revalidatePage?: boolean): Promise<void> {
     const user = await getCurrentUser();

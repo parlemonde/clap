@@ -1,5 +1,4 @@
 import React from 'react';
-
 import type { Sound } from 'src/lib/get-sounds';
 
 export const useAudio = (soundUrl: string, initialVolume: number, sounds: Sound[]) => {
@@ -9,7 +8,9 @@ export const useAudio = (soundUrl: string, initialVolume: number, sounds: Sound[
     const audioRefs = React.useRef<HTMLAudioElement[]>([]);
 
     const volumeRef = React.useRef(initialVolume);
-    volumeRef.current = initialVolume;
+    React.useEffect(() => {
+        volumeRef.current = initialVolume;
+    }, [initialVolume]);
     React.useEffect(() => {
         const audioContext = new AudioContext();
         audioContextRef.current = audioContext;
@@ -50,36 +51,42 @@ export const useAudio = (soundUrl: string, initialVolume: number, sounds: Sound[
         }
     }, []);
 
-    const onPlay = (time: number, beginTime: number) => {
-        if (audioContextRef.current === null) {
-            return;
-        }
-
-        if (audioContextRef.current.state === 'suspended') {
-            audioContextRef.current.resume().catch(console.error);
-        }
-
-        if (audioRef.current && audioRef.current.paused && time >= beginTime && time - beginTime < audioRef.current.duration * 1000) {
-            audioRef.current.currentTime = (time - beginTime) / 1000;
-            audioRef.current.play().catch(console.error);
-        } else if (audioRef.current && !audioRef.current.paused && (time < beginTime || time - beginTime >= audioRef.current.duration * 1000)) {
-            audioRef.current.pause();
-        }
-
-        for (let i = 0; i < sounds.length; i++) {
-            const audio = audioRefs.current[i];
-            const sound = sounds[i];
-            if (!audio || !sound) {
-                continue;
+    const onPlay = React.useCallback(
+        (time: number, beginTime: number) => {
+            if (audioContextRef.current === null) {
+                return;
             }
-            if (audio.paused && time >= sound.beginTime && time - sound.beginTime < Math.min(audio.duration * 1000, sound.maxDuration)) {
-                audio.currentTime = (time - sound.beginTime + sound.deltaBeginTime) / 1000;
-                audio.play().catch(console.error);
-            } else if (!audio.paused && (time < sound.beginTime || time - sound.beginTime >= Math.min(audio.duration * 1000, sound.maxDuration))) {
-                audio.pause();
+
+            if (audioContextRef.current.state === 'suspended') {
+                audioContextRef.current.resume().catch(console.error);
             }
-        }
-    };
+
+            if (audioRef.current && audioRef.current.paused && time >= beginTime && time - beginTime < audioRef.current.duration * 1000) {
+                audioRef.current.currentTime = (time - beginTime) / 1000;
+                audioRef.current.play().catch(console.error);
+            } else if (audioRef.current && !audioRef.current.paused && (time < beginTime || time - beginTime >= audioRef.current.duration * 1000)) {
+                audioRef.current.pause();
+            }
+
+            for (let i = 0; i < sounds.length; i++) {
+                const audio = audioRefs.current[i];
+                const sound = sounds[i];
+                if (!audio || !sound) {
+                    continue;
+                }
+                if (audio.paused && time >= sound.beginTime && time - sound.beginTime < Math.min(audio.duration * 1000, sound.maxDuration)) {
+                    audio.currentTime = (time - sound.beginTime + sound.deltaBeginTime) / 1000;
+                    audio.play().catch(console.error);
+                } else if (
+                    !audio.paused &&
+                    (time < sound.beginTime || time - sound.beginTime >= Math.min(audio.duration * 1000, sound.maxDuration))
+                ) {
+                    audio.pause();
+                }
+            }
+        },
+        [sounds],
+    );
 
     const onStop = React.useCallback(() => {
         if (audioRef.current) {

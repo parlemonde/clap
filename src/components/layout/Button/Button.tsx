@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/refs */
 import classNames from 'clsx';
 import * as React from 'react';
 import type { JSX } from 'react';

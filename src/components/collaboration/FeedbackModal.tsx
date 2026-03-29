@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { Button } from 'src/components/layout/Button';
 import { Modal } from 'src/components/layout/Modal';
 import type { Sequence } from 'src/database/schemas/projects';

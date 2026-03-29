@@ -1,8 +1,9 @@
 'use server';
 
-import { getCurrentUser } from '../get-current-user';
 import { db } from 'src/database';
 import { projects, type NewProject, type Project } from 'src/database/schemas/projects';
+
+import { getCurrentUser } from '../get-current-user';
 
 export async function createProject(project: NewProject): Promise<Project | undefined> {
     const user = await getCurrentUser();

@@ -1,6 +1,5 @@
 import { and, eq } from 'drizzle-orm';
 import { NextResponse, type NextRequest } from 'next/server';
-
 import { getCurrentUser } from 'src/actions/get-current-user';
 import { db } from 'src/database';
 import { projects } from 'src/database/schemas/projects';

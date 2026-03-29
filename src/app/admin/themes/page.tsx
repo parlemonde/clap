@@ -1,15 +1,15 @@
 import { PlusCircledIcon } from '@radix-ui/react-icons';
 import * as React from 'react';
-
-import { ThemesTable } from './ThemesTable';
-import { ThemesTablePlaceholder } from './ThemesTablePlaceholder';
-import { UserThemesTable } from './UserThemesTable';
 import { listThemes, listUserThemes } from 'src/actions/themes/list-themes';
 import { AdminTile } from 'src/components/admin/AdminTile';
 import { Button } from 'src/components/layout/Button';
 import { Container } from 'src/components/layout/Container';
 import { Title } from 'src/components/layout/Typography';
 import { Link } from 'src/components/navigation/Link';
+
+import { ThemesTable } from './ThemesTable';
+import { ThemesTablePlaceholder } from './ThemesTablePlaceholder';
+import { UserThemesTable } from './UserThemesTable';
 
 const ThemesTableWithData = async () => {
     const defaultThemes = await listThemes();

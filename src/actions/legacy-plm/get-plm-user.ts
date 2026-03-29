@@ -1,12 +1,12 @@
 /* eslint-disable camelcase */
 import { eq } from 'drizzle-orm';
-
-import { createPlmUser } from './create-plm-user';
-import type { PLMUser } from './plm-user.types';
 import { db } from 'src/database';
 import type { User } from 'src/database/schemas/users';
 import { users } from 'src/database/schemas/users';
 import { jsonFetcher } from 'src/lib/json-fetcher';
+
+import { createPlmUser } from './create-plm-user';
+import type { PLMUser } from './plm-user.types';
 
 const SSO_HOST_URL = process.env.SSO_HOST || '';
 const CLAP_HOST_URL = process.env.HOST_URL || '';

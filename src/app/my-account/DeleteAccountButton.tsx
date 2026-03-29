@@ -2,7 +2,6 @@
 
 import { InfoCircledIcon } from '@radix-ui/react-icons';
 import React from 'react';
-
 import { deleteUser } from 'src/actions/users/delete-user';
 import { Button } from 'src/components/layout/Button';
 import { Flex } from 'src/components/layout/Flex';

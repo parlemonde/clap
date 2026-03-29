@@ -4,11 +4,11 @@ import { Cross1Icon } from '@radix-ui/react-icons';
 import classNames from 'clsx';
 import { Toast } from 'radix-ui';
 import * as React from 'react';
+import { Button } from 'src/components/layout/Button';
 
 import { TOAST_EVENT } from './toast-events';
 import styles from './toasts.module.scss';
 import type { ToastMessage } from './toasts.type';
-import { Button } from 'src/components/layout/Button';
 
 type Toast = ToastMessage & {
     id: number;

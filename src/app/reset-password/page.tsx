@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-
 import { resetPassword } from 'src/actions/authentication/reset-password';
 import { Button } from 'src/components/layout/Button';
 import { Container } from 'src/components/layout/Container';

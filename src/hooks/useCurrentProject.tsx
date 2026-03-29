@@ -1,14 +1,14 @@
 'use client';
 
 import React from 'react';
-import useSWR from 'swr';
-
-import { onSendCurrentProjectUpdateMsg } from './useCollaboration';
-import { useLocalStorage } from './useLocalStorage';
 import { updateProject } from 'src/actions/projects/update-project';
 import { userContext } from 'src/contexts/userContext';
 import type { Project, ProjectData } from 'src/database/schemas/projects';
 import { jsonFetcher } from 'src/lib/json-fetcher';
+import useSWR from 'swr';
+
+import { onSendCurrentProjectUpdateMsg } from './useCollaboration';
+import { useLocalStorage } from './useLocalStorage';
 
 interface UseCurrentProjectData {
     name?: string;

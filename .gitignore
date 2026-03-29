@@ -57,3 +57,5 @@ server-preview-proxy/cargo.lock
 .open-next
 
 dump_*
+
+next-env.d.ts

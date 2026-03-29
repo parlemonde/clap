@@ -2,10 +2,6 @@
 
 import { PlusCircledIcon } from '@radix-ui/react-icons';
 import * as React from 'react';
-
-import { ScenariosTable } from './ScenariosTable';
-import { ScenariosTablePlaceholder } from './ScenariosTablePlaceholder';
-import { UserScenariosTable } from './UserScenariosTable';
 import { listScenarios, listUserScenarios } from 'src/actions/scenarios/list-scenarios';
 import { listThemes } from 'src/actions/themes/list-themes';
 import { AdminTile } from 'src/components/admin/AdminTile';
@@ -13,6 +9,10 @@ import { Button } from 'src/components/layout/Button';
 import { Container } from 'src/components/layout/Container';
 import { Title } from 'src/components/layout/Typography';
 import { Link } from 'src/components/navigation/Link';
+
+import { ScenariosTable } from './ScenariosTable';
+import { ScenariosTablePlaceholder } from './ScenariosTablePlaceholder';
+import { UserScenariosTable } from './UserScenariosTable';
 
 const ScenariosTableWithData = async () => {
     const [themes, scenarios] = await Promise.all([listThemes(), listScenarios()]);

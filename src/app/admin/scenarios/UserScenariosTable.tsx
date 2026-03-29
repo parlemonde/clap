@@ -1,7 +1,6 @@
 'use client';
 
 import * as React from 'react';
-
 import { AdminTile } from 'src/components/admin/AdminTile';
 import { Table } from 'src/components/admin/Table';
 import type { Scenario } from 'src/database/schemas/scenarios';

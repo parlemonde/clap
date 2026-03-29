@@ -2,11 +2,11 @@
 
 import mime from 'mime-types';
 import path from 'node:path';
+import { USE_S3 } from 'src/actions/files/file-upload';
+import { getCurrentUser } from 'src/actions/get-current-user';
 import { v4 } from 'uuid';
 
 import { hmac, buf2hex } from './utils';
-import { USE_S3 } from 'src/actions/files/file-upload';
-import { getCurrentUser } from 'src/actions/get-current-user';
 
 export async function getS3UploadParameters(fileName: string): Promise<{ formParameters: Record<string, string>; s3Url: string } | false> {
     if (!USE_S3) {

@@ -4,12 +4,12 @@ import classNames from 'clsx';
 import { usePathname } from 'next/navigation';
 import { NavigationMenu } from 'radix-ui';
 import * as React from 'react';
-
-import styles from './bottom-nav-bar.module.scss';
 import { Link as NextLink, startNProgress } from 'src/components/navigation/Link';
 import { useTranslation } from 'src/contexts/translationContext';
 import { userContext } from 'src/contexts/userContext';
 import { getTabs } from 'src/lib/get-tabs';
+
+import styles from './bottom-nav-bar.module.scss';
 
 export const BottomNavBar = () => {
     const { t } = useTranslation();

@@ -2,7 +2,6 @@
 
 import { cookies } from 'next/headers';
 import { cache } from 'react';
-
 import { getDynamoDBItem, setDynamoDBItem } from 'src/aws/dynamoDb';
 import { locales as defaultLocales } from 'src/i18n/locales';
 

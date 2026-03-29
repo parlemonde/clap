@@ -1,13 +1,13 @@
 import { DiscIcon, ResetIcon, Cross1Icon, BlendingModeIcon } from '@radix-ui/react-icons';
 import React, { useEffect, useState } from 'react';
-
-import { ClearModal } from './ClearModal';
-import { ColorModal } from './ColorModal';
-import { SizeModal } from './SizeModal';
 import { IconButton } from 'src/components/layout/Button/IconButton';
 import { KeepRatio } from 'src/components/layout/KeepRatio';
 import { Tooltip } from 'src/components/layout/Tooltip';
 import { useTranslation } from 'src/contexts/translationContext';
+
+import { ClearModal } from './ClearModal';
+import { ColorModal } from './ColorModal';
+import { SizeModal } from './SizeModal';
 
 const IconButtonStyle: React.CSSProperties = {
     border: '1px solid',
@@ -105,7 +105,10 @@ const CanvasComponent = (_: unknown, ref: React.ForwardedRef<HTMLCanvasElement |
 
     // Resize canvas
     useEffect(() => {
-        setClear(false);
+        if (clear) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
+            setClear(false);
+        }
         const ctx = getCtx();
         if (canvasRef.current && ctx !== null) {
             canvasRef.current.width = canvasRef.current.clientWidth;

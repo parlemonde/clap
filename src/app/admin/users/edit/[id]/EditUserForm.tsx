@@ -2,7 +2,6 @@
 
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
-
 import { updateUserById } from 'src/actions/users/update-user';
 import { Button } from 'src/components/layout/Button';
 import { Field, Form, Input } from 'src/components/layout/Form';

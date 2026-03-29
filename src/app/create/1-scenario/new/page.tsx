@@ -1,6 +1,4 @@
 import * as React from 'react';
-
-import { NewScenarioForm } from './newScenarioForm';
 import { Container } from 'src/components/layout/Container';
 import { Title } from 'src/components/layout/Typography';
 import { Steps } from 'src/components/navigation/Steps';
@@ -10,6 +8,8 @@ import { Trans } from 'src/components/ui/Trans';
 import type { ServerPageProps } from 'src/lib/page-props.types';
 import { getThemeId } from 'src/lib/search-params/get-theme-id';
 import { serializeToQueryUrl } from 'src/lib/serialize-to-query-url';
+
+import { NewScenarioForm } from './newScenarioForm';
 
 export default async function ScenarioPage(props: ServerPageProps) {
     const searchParams = await props.searchParams;

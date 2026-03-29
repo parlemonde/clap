@@ -1,7 +1,6 @@
 'use client';
 
 import * as React from 'react';
-
 import { Text, Title } from 'src/components/layout/Typography';
 import { useTranslation } from 'src/contexts/translationContext';
 import type { ProjectData } from 'src/database/schemas/projects';

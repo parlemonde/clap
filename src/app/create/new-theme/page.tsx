@@ -1,6 +1,4 @@
 import * as React from 'react';
-
-import { NewThemeForm } from './NewThemeForm';
 import { getTranslation } from 'src/actions/get-translation';
 import { Breadcrumbs } from 'src/components/layout/Breadcrumbs';
 import { Container } from 'src/components/layout/Container';
@@ -8,6 +6,8 @@ import { Title } from 'src/components/layout/Typography';
 import { BackButton } from 'src/components/navigation/BackButton';
 import { Inverted } from 'src/components/ui/Inverted';
 import { Trans } from 'src/components/ui/Trans';
+
+import { NewThemeForm } from './NewThemeForm';
 
 export default async function NewThemePage() {
     const { t } = await getTranslation();

@@ -4,10 +4,10 @@ import { eq } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 import { redirect, RedirectType } from 'next/navigation';
-
-import { getCurrentUser } from '../get-current-user';
 import { db } from 'src/database';
 import { users } from 'src/database/schemas/users';
+
+import { getCurrentUser } from '../get-current-user';
 
 export async function deleteUser() {
     const user = await getCurrentUser();

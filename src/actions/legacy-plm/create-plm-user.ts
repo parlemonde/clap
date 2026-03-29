@@ -1,8 +1,9 @@
 'use server';
 
-import type { PLMUser } from './plm-user.types';
 import { db } from 'src/database';
 import { users, type User } from 'src/database/schemas/users';
+
+import type { PLMUser } from './plm-user.types';
 
 export async function createPlmUser(plmUser: PLMUser): Promise<User> {
     // Find role

@@ -2,8 +2,6 @@
 
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
-
-import { MontageForm } from './MontageForm';
 import { FeedbackForm } from 'src/components/collaboration/FeedbackForm';
 import { FeedbackModal } from 'src/components/collaboration/FeedbackModal';
 import { Container } from 'src/components/layout/Container';
@@ -18,6 +16,8 @@ import type { Sequence } from 'src/database/schemas/projects';
 import { useCollaboration } from 'src/hooks/useCollaboration';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import type { ServerPageProps } from 'src/lib/page-props.types';
+
+import { MontageForm } from './MontageForm';
 
 export default function MontagePage(props: ServerPageProps) {
     const router = useRouter();

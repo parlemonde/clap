@@ -2,7 +2,6 @@
 
 import { useRouter } from 'next/navigation';
 import React from 'react';
-
 import { updateUser } from 'src/actions/users/update-user';
 import { Field, Input } from 'src/components/layout/Form';
 import { Modal } from 'src/components/layout/Modal';

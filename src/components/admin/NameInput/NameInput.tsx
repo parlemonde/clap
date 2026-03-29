@@ -1,6 +1,5 @@
 import { Cross1Icon } from '@radix-ui/react-icons';
 import * as React from 'react';
-
 import { IconButton } from 'src/components/layout/Button/IconButton';
 import { Input } from 'src/components/layout/Form';
 

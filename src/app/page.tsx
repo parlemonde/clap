@@ -1,13 +1,13 @@
 import { redirect } from 'next/navigation';
 import * as React from 'react';
-
-import { Themes } from './Themes';
 import { getCurrentUser } from 'src/actions/get-current-user';
 import { listThemes } from 'src/actions/themes/list-themes';
 import { Container } from 'src/components/layout/Container';
 import { Title } from 'src/components/layout/Typography';
 import { Inverted } from 'src/components/ui/Inverted';
 import { Trans } from 'src/components/ui/Trans';
+
+import { Themes } from './Themes';
 
 export default async function Page() {
     const user = await getCurrentUser();

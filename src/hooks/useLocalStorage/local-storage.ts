@@ -1,7 +1,6 @@
 'use client';
 
 import isEqual from 'fast-deep-equal/es6';
-
 import type { ProjectData } from 'src/database/schemas/projects';
 import type { Scenario } from 'src/database/schemas/scenarios';
 import type { Theme } from 'src/database/schemas/themes';

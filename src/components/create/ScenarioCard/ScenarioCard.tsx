@@ -1,10 +1,10 @@
 import { ChevronRightIcon } from '@radix-ui/react-icons';
 import React from 'react';
-
-import styles from './scenario-card.module.scss';
 import { Placeholder } from 'src/components/layout/Placeholder';
 import { Title } from 'src/components/layout/Typography';
 import { Link } from 'src/components/navigation/Link';
+
+import styles from './scenario-card.module.scss';
 
 type ScenarioCardProps = {
     isNew?: boolean;

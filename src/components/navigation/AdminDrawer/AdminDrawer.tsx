@@ -3,9 +3,9 @@
 import { usePathname } from 'next/navigation';
 import { NavigationMenu } from 'radix-ui';
 import * as React from 'react';
+import { Link as NextLink, startNProgress } from 'src/components/navigation/Link';
 
 import styles from './admin-drawer.module.scss';
-import { Link as NextLink, startNProgress } from 'src/components/navigation/Link';
 
 interface Tab {
     label: string;

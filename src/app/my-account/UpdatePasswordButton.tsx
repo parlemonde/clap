@@ -3,7 +3,6 @@
 import { EyeNoneIcon, EyeOpenIcon } from '@radix-ui/react-icons';
 import { useRouter } from 'next/navigation';
 import React from 'react';
-
 import { updateUser } from 'src/actions/users/update-user';
 import { Button } from 'src/components/layout/Button';
 import { IconButton } from 'src/components/layout/Button/IconButton';

@@ -2,7 +2,6 @@ import { CameraIcon, ImageIcon, LightningBoltIcon, Pencil2Icon, UploadIcon } fro
 import Image from 'next/legacy/image';
 import React from 'react';
 import Camera from 'react-html5-camera-photo';
-
 import { deleteImage } from 'src/actions/files/delete-image';
 import { uploadImage } from 'src/actions/files/upload-image';
 import { Canvas } from 'src/components/create/Canvas';

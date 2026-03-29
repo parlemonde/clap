@@ -17,7 +17,7 @@ export function useLocalStorage<T extends LocalStorageKey>(
     key: T,
     initialValue?: ObjectType<T>,
 ): [ObjectType<T> | undefined, (newItem: ObjectType<T>) => void, boolean] {
-    const isLoadingRef = React.useRef(true);
+    const [isLoading, setIsLoading] = React.useState(true);
     const item = React.useSyncExternalStore(
         (callback) => {
             window.addEventListener('storage', callback); // cross-tab events
@@ -28,7 +28,7 @@ export function useLocalStorage<T extends LocalStorageKey>(
             };
         },
         () => {
-            isLoadingRef.current = false;
+            setIsLoading(false);
             return getFromLocalStorage(key) || initialValue;
         },
         () => initialValue,
@@ -41,5 +41,5 @@ export function useLocalStorage<T extends LocalStorageKey>(
         [key],
     );
 
-    return [item, setItem, isLoadingRef.current];
+    return [item, setItem, isLoading];
 }

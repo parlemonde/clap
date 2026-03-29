@@ -1,6 +1,5 @@
 import { UploadIcon } from '@radix-ui/react-icons';
 import React from 'react';
-
 import { Button } from 'src/components/layout/Button';
 import { Modal } from 'src/components/layout/Modal';
 import { sendToast } from 'src/components/ui/Toasts';

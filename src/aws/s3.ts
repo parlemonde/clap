@@ -1,8 +1,8 @@
 import type { ReadableStream } from 'node:stream/web';
+import type { FileData } from 'src/actions/files/file-data.types';
 import { Readable } from 'stream';
 
 import { getAwsClient } from './awsClient';
-import type { FileData } from 'src/actions/files/file-data.types';
 
 const S3_BASE_URL = `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com`;
 export function getS3FileUrl(key: string): string {

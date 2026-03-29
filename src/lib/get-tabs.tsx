@@ -1,7 +1,6 @@
 'use client';
 import * as React from 'react';
 import type { JSX } from 'react';
-
 import type { User } from 'src/database/schemas/users';
 import type { I18nKeys } from 'src/i18n/locales';
 import CreateLogo from 'src/svg/create.svg';

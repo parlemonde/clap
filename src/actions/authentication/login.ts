@@ -5,7 +5,6 @@ import { eq } from 'drizzle-orm';
 import { SignJWT } from 'jose';
 import { cookies } from 'next/headers';
 import { redirect, RedirectType } from 'next/navigation';
-
 import { db } from 'src/database';
 import { users } from 'src/database/schemas/users';
 

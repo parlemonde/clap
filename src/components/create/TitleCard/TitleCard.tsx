@@ -1,12 +1,12 @@
 import { TrashIcon } from '@radix-ui/react-icons';
 import * as React from 'react';
-
-import styles from './title-card.module.scss';
 import { IconButton } from 'src/components/layout/Button/IconButton';
 import { Link } from 'src/components/navigation/Link';
 import { useTranslation } from 'src/contexts/translationContext';
 import type { Sequence } from 'src/database/schemas/projects';
 import { serializeToQueryUrl } from 'src/lib/serialize-to-query-url';
+
+import styles from './title-card.module.scss';
 
 type TitleCardProps = {
     title?: Sequence['title'];
@@ -16,38 +16,50 @@ type TitleCardProps = {
 };
 
 export const TitleCard = ({ title, questionIndex, onDelete = () => {}, isDisabled }: TitleCardProps) => {
+    const canvasId = `canvas-${React.useId()}`;
     const { t } = useTranslation();
 
     // Use a ResizeObserver to get the height of the canvas
     // This is used to calculate the font size and position of the title
     const canvasRef = React.useRef<HTMLAnchorElement>(null);
     const [canvasHeight, setCanvasHeight] = React.useState(0);
-    const resizeObserverRef = React.useRef<ResizeObserver>(
-        new ResizeObserver((entries) => {
-            for (const entry of entries) {
-                if (entry.target === canvasRef.current) {
-                    setCanvasHeight(entry.contentRect.height);
+    const resizeObserver = React.useMemo<ResizeObserver>(
+        () =>
+            new ResizeObserver((entries) => {
+                for (const entry of entries) {
+                    if (entry.target.id === canvasId) {
+                        setCanvasHeight(entry.contentRect.height);
+                    }
                 }
-            }
-        }),
+            }),
+        [canvasId],
     );
+
+    // On mount, observe the canvas
     React.useEffect(() => {
         const el = canvasRef.current;
-        const resizeObserver = resizeObserverRef.current;
-        if (el) {
-            resizeObserver.observe(el);
-            return () => {
-                resizeObserver.unobserve(el);
-            };
+        if (!el) {
+            return () => {};
         }
-        return () => {};
-    }, []);
+        resizeObserver.observe(el);
+        return () => {
+            resizeObserver.unobserve(el);
+        };
+    }, [resizeObserver]);
+
+    // On unmount, cleanup the resize observer
+    React.useEffect(() => {
+        return () => {
+            resizeObserver.disconnect();
+        };
+    }, [resizeObserver]);
 
     return (
         <Link
             href={`/create/3-storyboard/title${serializeToQueryUrl({ question: questionIndex })}`}
             className={styles.titleCard}
             ref={canvasRef}
+            id={canvasId}
             style={{
                 boxSizing: 'border-box',
                 backgroundColor: title ? title.backgroundColor : 'white',

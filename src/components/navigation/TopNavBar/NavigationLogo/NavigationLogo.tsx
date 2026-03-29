@@ -2,11 +2,11 @@
 
 import { usePathname } from 'next/navigation';
 import * as React from 'react';
-
-import styles from './navigation-logo.module.scss';
 import { Box } from 'src/components/layout/Box';
 import { Link as NextLink } from 'src/components/navigation/Link';
 import PelicoSVG from 'src/svg/pelico.svg';
+
+import styles from './navigation-logo.module.scss';
 
 export const NavigationLogo = () => {
     const currentPath = usePathname();

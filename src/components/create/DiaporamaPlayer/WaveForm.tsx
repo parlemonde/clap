@@ -1,10 +1,9 @@
 import React from 'react';
-import useSWR from 'swr';
-import WaveformData from 'waveform-data';
-
 import { CircularProgress } from 'src/components/layout/CircularProgress';
 import { Flex } from 'src/components/layout/Flex';
 import { useDebounce } from 'src/hooks/useDebounced';
+import useSWR from 'swr';
+import WaveformData from 'waveform-data';
 
 const DISPLAYED_SAMPLE = 200;
 
@@ -73,7 +72,6 @@ type WaveFormProps = {
     onUpdateSequenceDuration?: (newAudioDuration: number) => void;
 };
 export const WaveForm = ({ soundUrl, time, duration, volume, beginTime, onUpdateSequenceDuration }: WaveFormProps) => {
-    const [canvas, setCanvas] = React.useState<HTMLCanvasElement | null>(null);
     const [waveform, setWaveForm] = React.useState<WaveformData | null>(null);
     const [isLoading, setIsLoading] = React.useState(false);
 
@@ -81,9 +79,13 @@ export const WaveForm = ({ soundUrl, time, duration, volume, beginTime, onUpdate
 
     // If audio change, get a new waveform.
     const waveformRef = React.useRef(waveform);
-    waveformRef.current = waveform;
+    React.useEffect(() => {
+        waveformRef.current = waveform;
+    }, [waveform]);
     const onUpdateSequenceDurationRef = React.useRef(onUpdateSequenceDuration);
-    onUpdateSequenceDurationRef.current = onUpdateSequenceDuration;
+    React.useEffect(() => {
+        onUpdateSequenceDurationRef.current = onUpdateSequenceDuration;
+    }, [onUpdateSequenceDuration]);
     const prevSoundUrlRef = React.useRef('');
     React.useEffect(() => {
         if (prevSoundUrlRef.current !== soundUrl && audioBuffer !== undefined) {
@@ -114,43 +116,46 @@ export const WaveForm = ({ soundUrl, time, duration, volume, beginTime, onUpdate
     }, [audioBuffer, soundUrl, duration, waveformRef]);
 
     const debouncedVolume = useDebounce(volume, 100);
-    React.useEffect(() => {
-        const context = canvas?.getContext('2d');
-        if (!canvas || !context || !waveform) {
-            return;
-        }
-
-        const dpi = window.devicePixelRatio;
-        const canvasHeight = canvas.clientHeight;
-        const canvasWidth = canvas.clientWidth;
-        canvas.width = canvasWidth * dpi;
-        canvas.height = canvasHeight * dpi;
-        canvas.style.width = `${canvasWidth}px`;
-        canvas.style.height = `${canvasHeight}px`;
-        context.scale(dpi, dpi);
-
-        const channel = waveform.channel(0);
-        const dx = canvasWidth / DISPLAYED_SAMPLE;
-        const offsetX = (DISPLAYED_SAMPLE / duration) * beginTime * dx;
-
-        context.clearRect(0, 0, canvasWidth, canvasHeight);
-        context.translate(offsetX + 0.5, 0.5);
-        const playedIndex = waveform.at_time((time - beginTime) / 1000);
-
-        // Loop forwards, drawing the upper half of the waveform
-        for (let x = 0; x < waveform.length; x++) {
-            const top = scaleY(canvasHeight, (channel.max_sample(x) * debouncedVolume) / 100);
-            const bottom = scaleY(canvasHeight, (channel.min_sample(x) * debouncedVolume) / 100);
-            const left = x * dx + 1;
-            const right = (x + 1) * dx - 1;
-            if (x <= playedIndex) {
-                context.fillStyle = '#638763';
-            } else {
-                context.fillStyle = 'rgb(76, 76, 76)';
+    const updateCanvasCallbackRef = React.useCallback(
+        (canvas: HTMLCanvasElement | null) => {
+            const context = canvas?.getContext('2d');
+            if (!canvas || !context || !waveform) {
+                return;
             }
-            context.fillRect(left, bottom, right - left, top - bottom);
-        }
-    }, [canvas, waveform, time, debouncedVolume, duration, beginTime]);
+
+            const dpi = window.devicePixelRatio;
+            const canvasHeight = canvas.clientHeight;
+            const canvasWidth = canvas.clientWidth;
+            canvas.width = canvasWidth * dpi;
+            canvas.height = canvasHeight * dpi;
+            canvas.style.width = `${canvasWidth}px`;
+            canvas.style.height = `${canvasHeight}px`;
+            context.scale(dpi, dpi);
+
+            const channel = waveform.channel(0);
+            const dx = canvasWidth / DISPLAYED_SAMPLE;
+            const offsetX = (DISPLAYED_SAMPLE / duration) * beginTime * dx;
+
+            context.clearRect(0, 0, canvasWidth, canvasHeight);
+            context.translate(offsetX + 0.5, 0.5);
+            const playedIndex = waveform.at_time((time - beginTime) / 1000);
+
+            // Loop forwards, drawing the upper half of the waveform
+            for (let x = 0; x < waveform.length; x++) {
+                const top = scaleY(canvasHeight, (channel.max_sample(x) * debouncedVolume) / 100);
+                const bottom = scaleY(canvasHeight, (channel.min_sample(x) * debouncedVolume) / 100);
+                const left = x * dx + 1;
+                const right = (x + 1) * dx - 1;
+                if (x <= playedIndex) {
+                    context.fillStyle = '#638763';
+                } else {
+                    context.fillStyle = 'rgb(76, 76, 76)';
+                }
+                context.fillRect(left, bottom, right - left, top - bottom);
+            }
+        },
+        [waveform, time, debouncedVolume, duration, beginTime],
+    );
 
     if ((isLoading || isFetching) && !waveform) {
         return (
@@ -160,12 +165,5 @@ export const WaveForm = ({ soundUrl, time, duration, volume, beginTime, onUpdate
         );
     }
 
-    return (
-        <canvas
-            ref={(ref) => {
-                setCanvas(ref);
-            }}
-            style={{ height: '80px', width: '100%' }}
-        />
-    );
+    return <canvas ref={updateCanvasCallbackRef} style={{ height: '80px', width: '100%' }} />;
 };

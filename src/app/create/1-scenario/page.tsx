@@ -1,6 +1,4 @@
 import * as React from 'react';
-
-import { Scenarios } from './Scenarios';
 import { getCurrentUser } from 'src/actions/get-current-user';
 import { getTranslation } from 'src/actions/get-translation';
 import { listScenarios } from 'src/actions/scenarios/list-scenarios';
@@ -14,6 +12,8 @@ import { Trans } from 'src/components/ui/Trans';
 import type { ServerPageProps } from 'src/lib/page-props.types';
 import { getThemeId } from 'src/lib/search-params/get-theme-id';
 import { serializeToQueryUrl } from 'src/lib/serialize-to-query-url';
+
+import { Scenarios } from './Scenarios';
 
 const getScenarios = async (themeId: number, userId: number | undefined, questionLanguageCode: string) => {
     if (themeId === -1 || Number.isNaN(themeId) || !Number.isFinite(themeId)) {

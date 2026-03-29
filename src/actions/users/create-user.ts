@@ -3,11 +3,11 @@
 import { hash } from '@node-rs/argon2';
 import { eq } from 'drizzle-orm';
 import { cookies } from 'next/headers';
-
-import { getAccessToken } from '../authentication/login';
 import { db } from 'src/database';
 import { inviteTokens } from 'src/database/schemas/invite-tokens';
 import { users } from 'src/database/schemas/users';
+
+import { getAccessToken } from '../authentication/login';
 
 export async function isVerifyCodeValid(inviteCode: string): Promise<boolean> {
     const token = (await db.select().from(inviteTokens).where(eq(inviteTokens.token, inviteCode)).limit(1))[0];

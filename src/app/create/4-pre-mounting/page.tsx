@@ -2,7 +2,6 @@
 
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
-
 import { FeedbackModal } from 'src/components/collaboration/FeedbackModal';
 import { GroupColorPill } from 'src/components/collaboration/GroupColorPill';
 import { getStatus } from 'src/components/collaboration/get-status';

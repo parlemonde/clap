@@ -1,7 +1,6 @@
 'use client';
 
 import * as React from 'react';
-
 import { useTranslation } from 'src/contexts/translationContext';
 import type { I18nKeys } from 'src/i18n/locales';
 

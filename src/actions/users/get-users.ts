@@ -1,8 +1,9 @@
 'use server';
 
-import { getCurrentUser } from '../get-current-user';
 import { db } from 'src/database';
 import { users, type User } from 'src/database/schemas/users';
+
+import { getCurrentUser } from '../get-current-user';
 
 export async function getUsers(): Promise<User[]> {
     const user = await getCurrentUser();

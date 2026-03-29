@@ -1,8 +1,4 @@
 import React from 'react';
-import useSWR from 'swr';
-
-import { useLocalStorage } from './useLocalStorage';
-import { useWebsockets } from './useWebsockets';
 import { logout } from 'src/actions/authentication/logout';
 import { endCollaboration } from 'src/actions/projects/end-collaboration';
 import { startCollaboration } from 'src/actions/projects/start-collaboration';
@@ -14,6 +10,10 @@ import { Text } from 'src/components/layout/Typography';
 import { sendToast } from 'src/components/ui/Toasts';
 import type { Project } from 'src/database/schemas/projects';
 import { jsonFetcher } from 'src/lib/json-fetcher';
+import useSWR from 'swr';
+
+import { useLocalStorage } from './useLocalStorage';
+import { useWebsockets } from './useWebsockets';
 
 export const onSendCurrentProjectUpdateMsg = () => {
     document.dispatchEvent(new CustomEvent('update_project'));

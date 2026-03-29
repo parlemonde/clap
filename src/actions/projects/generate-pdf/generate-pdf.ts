@@ -1,11 +1,6 @@
 'use server';
 
 import pug from 'pug';
-import { v4 } from 'uuid';
-
-import logoFont from './font_base64.txt';
-import generatePdfPug from './generate-pdf-template.pug';
-import userLogo from './userLogo_base64.txt';
 import { getSignedImageUrl } from 'src/actions/files/get-signed-image-url';
 import { getCurrentUser } from 'src/actions/get-current-user';
 import { getTranslation } from 'src/actions/get-translation';
@@ -13,6 +8,11 @@ import { getScenario } from 'src/actions/scenarios/get-scenario';
 import { invokeLambda } from 'src/aws/lambda';
 import type { ProjectData } from 'src/database/schemas/projects';
 import { registerService } from 'src/lib/register-service';
+import { v4 } from 'uuid';
+
+import logoFont from './font_base64.txt';
+import generatePdfPug from './generate-pdf-template.pug';
+import userLogo from './userLogo_base64.txt';
 
 const isObjectLiteral = (value: unknown): value is Record<string, unknown> => typeof value === 'object' && value !== null && !Array.isArray(value);
 const isPdfResult = (value: unknown): value is { url: string } => isObjectLiteral(value) && typeof value.url === 'string' && value.url.length > 0;

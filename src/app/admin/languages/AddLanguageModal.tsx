@@ -1,13 +1,13 @@
 'use client';
 
 import React from 'react';
-
-import allLanguages from './iso_languages.json';
 import { createLanguage } from 'src/actions/languages/create-language';
 import { Field } from 'src/components/layout/Form';
 import { Select } from 'src/components/layout/Form/Select';
 import { Modal } from 'src/components/layout/Modal';
 import { sendToast } from 'src/components/ui/Toasts';
+
+import allLanguages from './iso_languages.json';
 
 interface AddLanguageModalProps {
     open?: boolean;

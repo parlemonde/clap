@@ -2,12 +2,12 @@ import { Cross2Icon } from '@radix-ui/react-icons';
 import classNames from 'clsx';
 import { Dialog } from 'radix-ui';
 import React from 'react';
+import { useTranslation } from 'src/contexts/translationContext';
 
 import styles from './modal.module.scss';
 import { Button } from '../Button';
 import { IconButton } from '../Button/IconButton';
 import { CircularProgress } from '../CircularProgress';
-import { useTranslation } from 'src/contexts/translationContext';
 
 type ModalProps = {
     // --

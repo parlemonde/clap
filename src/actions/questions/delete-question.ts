@@ -2,10 +2,10 @@
 
 import { eq } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
-
-import { getCurrentUser } from '../get-current-user';
 import { db } from 'src/database';
 import { questions } from 'src/database/schemas/questions';
+
+import { getCurrentUser } from '../get-current-user';
 
 export async function deleteQuestion(questionId: number) {
     const user = await getCurrentUser();

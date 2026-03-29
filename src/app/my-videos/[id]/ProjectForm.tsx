@@ -3,7 +3,6 @@
 import { InfoCircledIcon } from '@radix-ui/react-icons';
 import { useRouter } from 'next/navigation';
 import React from 'react';
-
 import { deleteProject } from 'src/actions/projects/delete-project';
 import { updateProject } from 'src/actions/projects/update-project';
 import { Button } from 'src/components/layout/Button';

@@ -2,8 +2,6 @@
 
 import { Pencil1Icon, TrashIcon, ChevronLeftIcon, ChevronRightIcon, ArrowUpIcon, ArrowDownIcon, PlusCircledIcon } from '@radix-ui/react-icons';
 import * as React from 'react';
-
-import { SharedLink } from './SharedLink';
 import { inviteUser } from 'src/actions/authentication/invite-user';
 import { deleteUserById } from 'src/actions/users/delete-user';
 import { AdminTile } from 'src/components/admin/AdminTile';
@@ -19,6 +17,8 @@ import { Loader } from 'src/components/ui/Loader';
 import { sendToast } from 'src/components/ui/Toasts';
 import { userContext } from 'src/contexts/userContext';
 import type { User } from 'src/database/schemas/users';
+
+import { SharedLink } from './SharedLink';
 
 type UsersTableWithDataProps = {
     users: User[];

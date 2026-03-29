@@ -1,5 +1,4 @@
 import { AwsClient } from 'aws4fetch';
-
 import { registerService } from 'src/lib/register-service';
 
 let awsClient: AwsClient | undefined;

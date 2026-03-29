@@ -3,11 +3,11 @@
 import { and, desc, eq, isNull } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
-
-import { getCurrentUser } from '../get-current-user';
 import { db } from 'src/database';
 import type { Theme } from 'src/database/schemas/themes';
 import { themes } from 'src/database/schemas/themes';
+
+import { getCurrentUser } from '../get-current-user';
 
 // User action to create a new theme
 export async function createTheme(themeName: string): Promise<Theme | undefined> {

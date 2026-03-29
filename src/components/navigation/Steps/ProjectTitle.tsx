@@ -2,7 +2,6 @@
 
 import { Pencil1Icon } from '@radix-ui/react-icons';
 import React from 'react';
-
 import { IconButton } from 'src/components/layout/Button/IconButton';
 import { Title } from 'src/components/layout/Typography';
 import { Link } from 'src/components/navigation/Link';

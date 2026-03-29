@@ -2,8 +2,6 @@
 
 import { useRouter } from 'next/navigation';
 import React from 'react';
-import useSWR from 'swr';
-
 import { ScenarioCard } from 'src/components/create/ScenarioCard';
 import { useTranslation } from 'src/contexts/translationContext';
 import type { Question } from 'src/database/schemas/questions';
@@ -13,6 +11,7 @@ import { useLocalStorage } from 'src/hooks/useLocalStorage';
 import { deleteFromLocalStorage, isLocalScenario, isLocalTheme, setToLocalStorage } from 'src/hooks/useLocalStorage/local-storage';
 import { jsonFetcher } from 'src/lib/json-fetcher';
 import { serializeToQueryUrl } from 'src/lib/serialize-to-query-url';
+import useSWR from 'swr';
 
 interface ScenariosProps {
     scenarios: Scenario[];

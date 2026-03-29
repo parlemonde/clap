@@ -1,5 +1,4 @@
 import * as React from 'react';
-
 import { BackDrop } from 'src/components/layout/BackDrop';
 import { CircularProgress } from 'src/components/layout/CircularProgress';
 import { Flex } from 'src/components/layout/Flex';

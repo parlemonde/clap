@@ -2,10 +2,10 @@
 
 import { eq } from 'drizzle-orm';
 import { cookies } from 'next/headers';
-
-import { getAccessToken } from './login';
 import { db } from 'src/database';
 import { projects } from 'src/database/schemas/projects';
+
+import { getAccessToken } from './login';
 
 export async function loginForStudent(projectCode: string, questionId: number): Promise<{ errorMessage: string } | { projectId: number }> {
     const project = await db.query.projects.findFirst({

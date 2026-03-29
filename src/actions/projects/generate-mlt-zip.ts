@@ -5,12 +5,12 @@ import fs from 'fs-extra';
 import http from 'node:http';
 import path from 'node:path';
 import type internal from 'node:stream';
+import { getFile, uploadFile } from 'src/actions/files/file-upload';
+import type { ProjectData } from 'src/database/schemas/projects';
 import { v4 } from 'uuid';
 
 import type { File } from './project-to-mlt';
 import { projectToMlt } from './project-to-mlt';
-import { getFile, uploadFile } from 'src/actions/files/file-upload';
-import type { ProjectData } from 'src/database/schemas/projects';
 
 async function getFileStream(file: File): Promise<internal.Readable | null> {
     if (file.isLocal) {

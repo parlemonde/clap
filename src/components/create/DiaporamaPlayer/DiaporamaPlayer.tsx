@@ -2,22 +2,22 @@ import { MinusIcon, PlusIcon, SpeakerLoudIcon, ImageIcon, SpeakerQuietIcon, Play
 import Head from 'next/head';
 import Image from 'next/legacy/image';
 import React from 'react';
-
-import { Frame } from './Frame';
-import { WaveForm } from './WaveForm';
-import styles from './diaporama-player.module.scss';
-import { useAudio } from './useAudio';
 import { IconButton } from 'src/components/layout/Button/IconButton';
 import { Input } from 'src/components/layout/Form';
 import { KeepRatio } from 'src/components/layout/KeepRatio';
 import { Slider } from 'src/components/layout/Slider';
 import { sendToast } from 'src/components/ui/Toasts';
-import type { Sequence } from 'src/database/schemas/projects';
+import type { Sequence, Title } from 'src/database/schemas/projects';
 import { getFormatedTime } from 'src/lib/get-formatted-time';
 import { getProjectDuration } from 'src/lib/get-project-duration';
 import { isSequenceAvailable } from 'src/lib/get-sequence-duration';
 import type { Sound } from 'src/lib/get-sounds';
 import CodeIcon from 'src/svg/code.svg';
+
+import { Frame } from './Frame';
+import { WaveForm } from './WaveForm';
+import styles from './diaporama-player.module.scss';
+import { useAudio } from './useAudio';
 
 const PLAYER_ID = 'diaporama-player';
 
@@ -86,8 +86,10 @@ export const DiaporamaPlayer = ({
     }, [duration]);
 
     const beginTimeRef = React.useRef(soundBeginTime);
-    beginTimeRef.current = soundBeginTime;
-    const onPlay = () => {
+    React.useEffect(() => {
+        beginTimeRef.current = soundBeginTime;
+    }, [soundBeginTime]);
+    const onPlay = React.useCallback(() => {
         previousTimeRef.current = null;
         let newTime = time;
         let prevTime: number | null = null;
@@ -107,7 +109,7 @@ export const DiaporamaPlayer = ({
         };
         animationFrameRef.current = requestAnimationFrame(animate);
         setIsPlaying(true);
-    };
+    }, [duration, onPlayAudio, onStopAudio, time]);
     const onStop = React.useCallback(() => {
         if (animationFrameRef.current !== null) {
             cancelAnimationFrame(animationFrameRef.current);
@@ -150,7 +152,9 @@ export const DiaporamaPlayer = ({
     const [deltaTime, setDeltaTime] = React.useState(0);
     const [draggedIndex, setDraggedIndex] = React.useState(0);
     const draggedIndexRef = React.useRef(draggedIndex); // use a following ref to get updated value in the drag handlers.
-    draggedIndexRef.current = draggedIndex;
+    React.useEffect(() => {
+        draggedIndexRef.current = draggedIndex;
+    }, [draggedIndex]);
     const onMouseDown = () => {
         if (mountingTableWidth === 0 || isPlaying) {
             return; // no drag
@@ -234,7 +238,9 @@ export const DiaporamaPlayer = ({
     const [deltaSoundX, setDeltaSoundX] = React.useState(0);
     const deltaSound = mountingTableWidth === 0 ? 0 : (deltaSoundX * duration) / mountingTableWidth;
     const timeRef = React.useRef(time);
-    timeRef.current = time;
+    React.useEffect(() => {
+        timeRef.current = time;
+    }, [time]);
     const onSoundMouseDown = (event: React.MouseEvent) => {
         if (mountingTableWidth === 0 || isPlaying) {
             return; // no drag
@@ -278,7 +284,9 @@ export const DiaporamaPlayer = ({
     // Use onPlay following ref to avoid dependency change on function change.
     const [isHovered, setIsHovered] = React.useState(false);
     const onPlayRef = React.useRef(onPlay);
-    onPlayRef.current = onPlay;
+    React.useEffect(() => {
+        onPlayRef.current = onPlay;
+    }, [onPlay]);
     React.useEffect(() => {
         if (!isHovered) {
             return () => {};
@@ -399,7 +407,7 @@ export const DiaporamaPlayer = ({
                                         } else {
                                             const dt = newDuration / count;
                                             const plans = question.plans || [];
-                                            const newTitle = question.title;
+                                            const newTitle: Title | undefined = question.title ? { ...question.title } : undefined;
                                             if (newTitle) {
                                                 newTitle.duration = dt;
                                             }

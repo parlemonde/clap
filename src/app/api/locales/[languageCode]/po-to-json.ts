@@ -1,6 +1,7 @@
+import { getLocalesForLanguage } from 'src/actions/get-locales';
+
 import type { translationObject, Comments, SingleTranslation } from './util';
 import { parseHeader } from './util';
-import { getLocalesForLanguage } from 'src/actions/get-locales';
 
 const SYMBOLS = {
     quotes: /["']/,
