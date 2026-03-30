@@ -4,11 +4,10 @@ import { and, desc, eq, isNull } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 
+import { getCurrentUser } from '@server/auth/get-current-user';
 import { db } from '@server/database';
 import type { Theme } from '@server/database/schemas/themes';
 import { themes } from '@server/database/schemas/themes';
-
-import { getCurrentUser } from '@server-actions/get-current-user';
 
 // User action to create a new theme
 export async function createTheme(themeName: string): Promise<Theme | undefined> {

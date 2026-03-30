@@ -7,7 +7,7 @@ import { getFile, getFileData } from 'src/actions/files/file-upload';
 import { isSignedImageUrlValid } from 'src/actions/files/get-signed-image-url';
 import { Readable } from 'stream';
 
-import { getCurrentUser } from '@server-actions/get-current-user';
+import { getCurrentUser } from '@server/auth/get-current-user';
 
 const notFoundResponse = () => {
     return new NextResponse('Error 404, not found.', {
@@ -90,10 +90,13 @@ export async function GET(request: NextRequest, props: { params: Promise<{ name:
         return response;
     } else if (width) {
         const resizedImage = await getResizedImageBuffer(readable, width, quality || 75, contentType.slice(6));
-        const response = new Response(resizedImage, {
-            status: 200,
-            headers,
-        });
+        const response = new Response(
+            resizedImage as unknown as BodyInit, // TODO: Fix this
+            {
+                status: 200,
+                headers,
+            },
+        );
         response.headers.set('Content-Length', `${resizedImage.byteLength}`);
         return response;
     } else {

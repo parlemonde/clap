@@ -2,14 +2,13 @@
 
 import { or, eq, asc, desc, and, isNotNull } from 'drizzle-orm';
 
+import { getCurrentUser } from '@server/auth/get-current-user';
 import { db } from '@server/database';
 import type { Theme } from '@server/database/schemas/themes';
 import { themes } from '@server/database/schemas/themes';
 
-import { getCurrentUser } from '@server-actions/get-current-user';
-
 type ListThemesArgs = {
-    userId?: number;
+    userId?: string;
 };
 
 export async function listThemes({ userId }: ListThemesArgs = {}): Promise<Theme[]> {

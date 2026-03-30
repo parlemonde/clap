@@ -1,6 +1,5 @@
 import classNames from 'clsx';
 import type { Metadata, Viewport } from 'next';
-import { cookies } from 'next/headers';
 import { Tooltip } from 'radix-ui';
 import * as React from 'react';
 
@@ -13,7 +12,8 @@ import { TranslationContextProvider } from '@frontend/contexts/translationContex
 import { UserContextProvider } from '@frontend/contexts/userContext';
 import { openSansFont, alegreyaSansFont, littleDaysFont } from '@frontend/fonts';
 
-import { getCurrentUser } from '@server-actions/get-current-user';
+import { getCurrentUser } from '@server/auth/get-current-user';
+
 import { getLocales } from '@server-actions/get-locales';
 
 import styles from './app.module.scss';
@@ -70,9 +70,6 @@ export const viewport: Viewport = {
 
 export default async function RootLayout({ children }: React.PropsWithChildren) {
     const [{ currentLocale, locales }, user] = await Promise.all([getLocales(), getCurrentUser()]);
-    const cookieStore = await cookies();
-    const accessTokenCookie = cookieStore.get('access-token');
-    const isSessionExpired = accessTokenCookie !== undefined && user === undefined;
 
     return (
         <html lang={currentLocale}>
@@ -82,7 +79,7 @@ export default async function RootLayout({ children }: React.PropsWithChildren) 
                 <noscript>You need to enable JavaScript to run this app.</noscript>
                 <Tooltip.Provider delayDuration={0}>
                     <TranslationContextProvider language={currentLocale} locales={locales}>
-                        <UserContextProvider initialUser={user} isSessionExpired={isSessionExpired}>
+                        <UserContextProvider initialUser={user}>
                             <TopNavBar />
                             {children}
                             <BottomNavBar />

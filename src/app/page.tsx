@@ -6,7 +6,8 @@ import { Title } from '@frontend/components/layout/Typography';
 import { Inverted } from '@frontend/components/ui/Inverted';
 import { Trans } from '@frontend/components/ui/Trans';
 
-import { getCurrentUser } from '@server-actions/get-current-user';
+import { getCurrentUser } from '@server/auth/get-current-user';
+
 import { listThemes } from '@server-actions/themes/list-themes';
 
 import { Themes } from './Themes';

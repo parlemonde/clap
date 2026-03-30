@@ -2,11 +2,10 @@
 
 import { revalidatePath } from 'next/cache';
 
+import { getCurrentUser } from '@server/auth/get-current-user';
 import { db } from '@server/database';
 import type { Language } from '@server/database/schemas/languages';
 import { languages } from '@server/database/schemas/languages';
-
-import { getCurrentUser } from '@server-actions/get-current-user';
 
 export async function createLanguage(newLanguage: Language): Promise<void> {
     const user = await getCurrentUser();

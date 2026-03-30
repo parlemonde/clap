@@ -2,10 +2,9 @@
 
 import { and, eq } from 'drizzle-orm';
 
+import { getCurrentUser } from '@server/auth/get-current-user';
 import { db } from '@server/database';
 import { projects, type Project } from '@server/database/schemas/projects';
-
-import { getCurrentUser } from '@server-actions/get-current-user';
 
 export async function getProject(id: number): Promise<Project | undefined> {
     const user = await getCurrentUser();

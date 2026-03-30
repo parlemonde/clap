@@ -1,5 +1,5 @@
 import React from 'react';
-import { logout } from 'src/actions/authentication/logout';
+// import { logout } from 'src/actions/authentication/logout';
 import { jsonFetcher } from 'src/lib/json-fetcher';
 import useSWR from 'swr';
 
@@ -62,7 +62,7 @@ export const useCollaboration = () => {
                 mutate().catch(console.error);
             }
             if (msg === 'end_collaboration') {
-                logout('/login').catch(console.error);
+                // logout('/login').catch(console.error); // TODO: Fix this
             }
             if (msg.startsWith('validate_question:')) {
                 const data = JSON.parse(msg.slice('validate_question:'.length)) as VerifyAlertData;

@@ -5,7 +5,7 @@ import path from 'node:path';
 import { USE_S3 } from 'src/actions/files/file-upload';
 import { v4 } from 'uuid';
 
-import { getCurrentUser } from '@server-actions/get-current-user';
+import { getCurrentUser } from '@server/auth/get-current-user';
 
 import { hmac, buf2hex } from './utils';
 

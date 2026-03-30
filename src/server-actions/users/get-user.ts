@@ -2,12 +2,11 @@
 
 import { eq } from 'drizzle-orm';
 
+import { getCurrentUser } from '@server/auth/get-current-user';
 import { db } from '@server/database';
 import { users, type User } from '@server/database/schemas/users';
 
-import { getCurrentUser } from '@server-actions/get-current-user';
-
-export async function getUser(userId: number): Promise<User | undefined> {
+export async function getUser(userId: string): Promise<User | undefined> {
     const user = await getCurrentUser();
     if (!user || user.role !== 'admin') {
         return undefined;

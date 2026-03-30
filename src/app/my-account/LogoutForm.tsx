@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { logout } from 'src/actions/authentication/logout';
+// import { logout } from 'src/actions/authentication/logout';
 
 import { Button } from '@frontend/components/layout/Button';
 import { Loader } from '@frontend/components/ui/Loader';
@@ -18,7 +18,8 @@ export const LogoutForm = () => {
                 ev.preventDefault();
                 setIsLoading(true);
                 try {
-                    await logout();
+                    // await logout();
+                    // TODO: Fix this
                 } catch (e) {
                     console.error(e);
                 }

@@ -7,7 +7,8 @@ import { Flex } from '@frontend/components/layout/Flex';
 import { Text, Title } from '@frontend/components/layout/Typography';
 import { Link } from '@frontend/components/navigation/Link';
 
-import { getCurrentUser } from '@server-actions/get-current-user';
+import { getCurrentUser } from '@server/auth/get-current-user';
+
 import { getTranslation } from '@server-actions/get-translation';
 import { getProject } from '@server-actions/projects/get-project';
 

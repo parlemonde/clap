@@ -1,5 +1,4 @@
-import { sql } from 'drizzle-orm';
-import { integer, pgTable, serial, timestamp, varchar, char } from 'drizzle-orm/pg-core';
+import { integer, pgTable, serial, timestamp, varchar, char, uuid } from 'drizzle-orm/pg-core';
 
 import { json } from '@server/database/lib/custom-json';
 
@@ -50,19 +49,19 @@ export interface ProjectData {
 
 export const projects = pgTable('projects', {
     id: serial('id').primaryKey(),
-    userId: integer('userId')
+    userId: uuid('userId')
         .references(() => users.id, {
             onDelete: 'cascade',
         })
         .notNull(),
     name: varchar('name', { length: 200 }).notNull(),
     language: char('language', { length: 2 }).notNull(),
-    createDate: timestamp('createDate', { mode: 'string' }).notNull().defaultNow(),
-    updateDate: timestamp('updateDate', { mode: 'string' })
+    createDate: timestamp('createDate', { withTimezone: true }).notNull().defaultNow(),
+    updateDate: timestamp('updateDate', { withTimezone: true })
         .notNull()
         .defaultNow()
-        .$onUpdate(() => sql`now()`),
-    deleteDate: timestamp('deleteDate', { mode: 'string' }),
+        .$onUpdate(() => /* @__PURE__ */ new Date()),
+    deleteDate: timestamp('deleteDate', { withTimezone: true }),
     themeId: integer('themeId').references(() => themes.id, {
         onDelete: 'set null',
     }),
@@ -72,7 +71,7 @@ export const projects = pgTable('projects', {
     videoJobId: varchar('videoJobId', { length: 36 }),
     data: json<'data', ProjectData>('data').notNull(),
     collaborationCode: varchar('collaborationCode', { length: 6 }),
-    collaborationCodeExpiresAt: timestamp('collaborationCodeExpiresAt', { mode: 'string' }),
+    collaborationCodeExpiresAt: timestamp('collaborationCodeExpiresAt', { withTimezone: true }),
 });
 
 export type Project = typeof projects.$inferSelect;

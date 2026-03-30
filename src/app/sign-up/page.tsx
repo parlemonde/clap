@@ -7,7 +7,8 @@ import type { ServerPageProps } from 'src/lib/page-props.types';
 import { Container } from '@frontend/components/layout/Container';
 import { Title } from '@frontend/components/layout/Typography';
 
-import { getCurrentUser } from '@server-actions/get-current-user';
+import { getCurrentUser } from '@server/auth/get-current-user';
+
 import { getTranslation } from '@server-actions/get-translation';
 import { isVerifyCodeValid } from '@server-actions/users/create-user';
 

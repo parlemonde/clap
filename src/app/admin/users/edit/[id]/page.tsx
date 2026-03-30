@@ -12,7 +12,7 @@ import { EditUserForm } from './EditUserForm';
 
 export default async function AdminEditUserPage(props: ServerPageProps) {
     const params = await props.params;
-    const user = await getUser(Number(params.id) || 0);
+    const user = await getUser(params.id);
 
     if (!user) {
         return null;

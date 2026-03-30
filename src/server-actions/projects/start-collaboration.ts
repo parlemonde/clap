@@ -3,10 +3,9 @@
 import crypto from 'crypto';
 import { and, eq } from 'drizzle-orm';
 
+import { getCurrentUser } from '@server/auth/get-current-user';
 import { db } from '@server/database/database';
 import { projects } from '@server/database/schemas/projects';
-
-import { getCurrentUser } from '@server-actions/get-current-user';
 
 export async function startCollaboration(projectId: number) {
     const user = await getCurrentUser();
@@ -26,7 +25,7 @@ export async function startCollaboration(projectId: number) {
     }
 
     const collaborationCode = `${crypto.randomInt(100000, 999999)}`;
-    const collaborationCodeExpiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24).toISOString(); // 1 jour
+    const collaborationCodeExpiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24); // 1 jour
 
     await db.update(projects).set({ collaborationCode, collaborationCodeExpiresAt }).where(eq(projects.id, projectId));
 }

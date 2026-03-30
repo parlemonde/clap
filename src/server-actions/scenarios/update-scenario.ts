@@ -3,11 +3,10 @@
 import { eq } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 
+import { getCurrentUser } from '@server/auth/get-current-user';
 import { db } from '@server/database';
 import type { Scenario } from '@server/database/schemas/scenarios';
 import { scenarios } from '@server/database/schemas/scenarios';
-
-import { getCurrentUser } from '@server-actions/get-current-user';
 
 export async function updateScenario(scenarioId: number, updatedScenario: Pick<Scenario, 'descriptions' | 'names' | 'themeId'>) {
     const user = await getCurrentUser();

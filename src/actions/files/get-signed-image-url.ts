@@ -2,7 +2,7 @@ import { buf2hex, hmac } from '@server/aws/utils';
 
 const SECRET = process.env.APP_SECRET;
 
-export async function getSignedImageUrl(url: string, userId: number): Promise<string> {
+export async function getSignedImageUrl(url: string, userId: string): Promise<string> {
     try {
         const imageUrl = url.startsWith('/') ? url : `${new URL(url).pathname}${new URL(url).search}`;
         if (!SECRET || !imageUrl.startsWith(`/media/images/users/${userId}/`)) {
@@ -12,7 +12,7 @@ export async function getSignedImageUrl(url: string, userId: number): Promise<st
         const searchParams = new URLSearchParams(imageUrl.split('?')[1]);
         const now = Date.now();
         searchParams.set('nonce', crypto.randomUUID());
-        searchParams.set('userId', userId.toString());
+        searchParams.set('userId', userId);
         searchParams.set('timestamp', now.toString());
         searchParams.set('expires', (now + 1000 * 60 * 60 * 2).toString()); // 2h
 

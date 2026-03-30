@@ -5,10 +5,10 @@ import { getSignedImageUrl } from 'src/actions/files/get-signed-image-url';
 import { registerService } from 'src/lib/register-service';
 import { v4 } from 'uuid';
 
+import { getCurrentUser } from '@server/auth/get-current-user';
 import { invokeLambda } from '@server/aws/lambda';
 import type { ProjectData } from '@server/database/schemas/projects';
 
-import { getCurrentUser } from '@server-actions/get-current-user';
 import { getTranslation } from '@server-actions/get-translation';
 import { getScenario } from '@server-actions/scenarios/get-scenario';
 
@@ -37,7 +37,7 @@ export async function generatePdf(projectData: ProjectData): Promise<string | fa
 
     const allImages = [...new Set(project.questions.flatMap((question) => question.plans.map((plan) => plan.imageUrl)))];
     const signedUrls = Object.fromEntries(
-        (await Promise.all(allImages.map((image) => getSignedImageUrl(image, user?.id ?? -1)))).map((url, index) => [allImages[index], url]),
+        (await Promise.all(allImages.map((image) => getSignedImageUrl(image, user?.id ?? '')))).map((url, index) => [allImages[index], url]),
     );
     for (const question of project.questions) {
         for (const plan of question.plans) {

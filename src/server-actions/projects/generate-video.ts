@@ -2,12 +2,11 @@
 
 import { v4 } from 'uuid';
 
+import { getCurrentUser } from '@server/auth/get-current-user';
 import { getDynamoDBItem, setDynamoDBItem } from '@server/aws/dynamoDb';
 import { invokeLambda } from '@server/aws/lambda';
 import { deleteS3File, getS3FileUrl } from '@server/aws/s3';
 import type { ProjectData } from '@server/database/schemas/projects';
-
-import { getCurrentUser } from '@server-actions/get-current-user';
 
 import { projectToMlt } from './project-to-mlt';
 

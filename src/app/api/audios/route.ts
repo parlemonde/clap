@@ -5,7 +5,7 @@ import path from 'path';
 import { uploadFile } from 'src/actions/files/file-upload';
 import { v4 } from 'uuid';
 
-import { getCurrentUser } from '@server-actions/get-current-user';
+import { getCurrentUser } from '@server/auth/get-current-user';
 
 export async function POST(request: NextRequest) {
     try {

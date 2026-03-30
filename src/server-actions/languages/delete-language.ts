@@ -3,10 +3,9 @@
 import { eq } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 
+import { getCurrentUser } from '@server/auth/get-current-user';
 import { db } from '@server/database';
 import { languages } from '@server/database/schemas/languages';
-
-import { getCurrentUser } from '@server-actions/get-current-user';
 
 export async function deleteLanguage(languageCode: string): Promise<void> {
     const user = await getCurrentUser();

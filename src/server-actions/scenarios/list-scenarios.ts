@@ -2,15 +2,14 @@
 
 import { or, eq, and, count, isNotNull } from 'drizzle-orm';
 
+import { getCurrentUser } from '@server/auth/get-current-user';
 import { db } from '@server/database';
 import { questions } from '@server/database/schemas/questions';
 import { scenarios, type Scenario } from '@server/database/schemas/scenarios';
 
-import { getCurrentUser } from '@server-actions/get-current-user';
-
 type ListScenariosArgs = {
     themeId?: number;
-    userId?: number;
+    userId?: string;
     questionLanguageCode?: string;
 };
 

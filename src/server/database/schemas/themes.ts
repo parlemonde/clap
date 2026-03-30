@@ -1,4 +1,4 @@
-import { integer, pgTable, serial, varchar, boolean } from 'drizzle-orm/pg-core';
+import { integer, pgTable, serial, varchar, boolean, uuid } from 'drizzle-orm/pg-core';
 
 import { json } from '@server/database/lib/custom-json';
 
@@ -10,7 +10,7 @@ export const themes = pgTable('themes', {
     isDefault: boolean('isDefault').default(false),
     imageUrl: varchar('imageUrl', { length: 2000 }),
     names: json<'names', Record<string, string>>('names').notNull(),
-    userId: integer('userId').references(() => users.id, {
+    userId: uuid('userId').references(() => users.id, {
         onDelete: 'cascade',
     }),
 });

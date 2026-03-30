@@ -3,11 +3,10 @@
 import { eq, desc, and } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 
+import { getCurrentUser } from '@server/auth/get-current-user';
 import { db } from '@server/database';
 import type { Question } from '@server/database/schemas/questions';
 import { questions } from '@server/database/schemas/questions';
-
-import { getCurrentUser } from '@server-actions/get-current-user';
 
 type NewQuestion = {
     question: string;

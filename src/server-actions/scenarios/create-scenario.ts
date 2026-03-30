@@ -3,11 +3,10 @@
 import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 
+import { getCurrentUser } from '@server/auth/get-current-user';
 import { db } from '@server/database';
 import type { Scenario } from '@server/database/schemas/scenarios';
 import { scenarios } from '@server/database/schemas/scenarios';
-
-import { getCurrentUser } from '@server-actions/get-current-user';
 
 // User action to create a new scenario
 type NewUserScenario = {

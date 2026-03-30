@@ -1,9 +1,9 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+// import { useRouter } from 'next/navigation';
 import * as React from 'react';
-import { loginForStudent } from 'src/actions/authentication/login-for-student';
-import type { I18nKeys } from 'src/i18n/locales';
+// import { loginForStudent } from 'src/actions/authentication/login-for-student';
+// import type { I18nKeys } from 'src/i18n/locales';
 
 import { Button } from '@frontend/components/layout/Button';
 import { Field, Form, Input } from '@frontend/components/layout/Form';
@@ -11,7 +11,7 @@ import { Title } from '@frontend/components/layout/Typography';
 import { Link } from '@frontend/components/navigation/Link';
 import { Loader } from '@frontend/components/ui/Loader';
 import { useTranslation } from '@frontend/contexts/translationContext';
-import { setToLocalStorage } from '@frontend/hooks/useLocalStorage/local-storage';
+// import { setToLocalStorage } from '@frontend/hooks/useLocalStorage/local-storage';
 
 import type { ProjectData } from '@server/database/schemas/projects';
 
@@ -20,7 +20,7 @@ import { getProjectByCode } from '@server-actions/projects/get-project';
 import { StudentQuestionChoice } from './StudentQuestionChoice';
 
 export const LoginStudentForm = () => {
-    const router = useRouter();
+    // const router = useRouter();
     const { t } = useTranslation();
     const [message, setMessage] = React.useState('');
     const [isLoading, setIsLoading] = React.useState(false);
@@ -40,16 +40,18 @@ export const LoginStudentForm = () => {
         setIsLoading(false);
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const onSelectQuestion = async (questionId: number) => {
-        setIsLoading(true);
-        const result = await loginForStudent(projectCode, questionId);
-        if ('errorMessage' in result) {
-            setMessage(t(result.errorMessage as I18nKeys));
-        } else {
-            setToLocalStorage('projectId', result.projectId);
-            router.push('/create/3-storyboard');
-        }
-        setIsLoading(false);
+        // TODO: Fix this
+        // setIsLoading(true);
+        // const result = await loginForStudent(projectCode, questionId);
+        // if ('errorMessage' in result) {
+        //     setMessage(t(result.errorMessage as I18nKeys));
+        // } else {
+        //     setToLocalStorage('projectId', result.projectId);
+        //     router.push('/create/3-storyboard');
+        // }
+        // setIsLoading(false);
     };
 
     return (

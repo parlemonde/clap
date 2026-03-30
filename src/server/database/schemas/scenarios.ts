@@ -1,4 +1,4 @@
-import { integer, pgTable, serial, boolean } from 'drizzle-orm/pg-core';
+import { integer, pgTable, serial, boolean, uuid } from 'drizzle-orm/pg-core';
 
 import { json } from '@server/database/lib/custom-json';
 
@@ -10,7 +10,7 @@ export const scenarios = pgTable('scenarios', {
     isDefault: boolean('isDefault').default(false),
     names: json<'names', Record<string, string>>('names').notNull(),
     descriptions: json<'descriptions', Record<string, string>>('descriptions').notNull(),
-    userId: integer('userId').references(() => users.id, {
+    userId: uuid('userId').references(() => users.id, {
         onDelete: 'cascade',
     }),
     themeId: integer('themeId')

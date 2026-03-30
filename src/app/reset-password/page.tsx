@@ -1,27 +1,28 @@
 'use client';
 
 import React from 'react';
-import { resetPassword } from 'src/actions/authentication/reset-password';
+// import { resetPassword } from 'src/actions/authentication/reset-password';
 
 import { Button } from '@frontend/components/layout/Button';
 import { Container } from '@frontend/components/layout/Container';
 import { Field, Form, Input } from '@frontend/components/layout/Form';
 import { Title } from '@frontend/components/layout/Typography';
 import { Link } from '@frontend/components/navigation/Link';
-import { Loader } from '@frontend/components/ui/Loader';
+// import { Loader } from '@frontend/components/ui/Loader';
 import { sendToast } from '@frontend/components/ui/Toasts';
 import { useTranslation } from '@frontend/contexts/translationContext';
 
 export default function ResetPasswordPage() {
     const { t } = useTranslation();
 
-    const [isLoading, setIsLoading] = React.useState(false);
+    // const [isLoading, setIsLoading] = React.useState(false);
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setIsLoading(true);
-        const formData = new FormData(e.currentTarget);
-        await resetPassword(formData);
-        setIsLoading(false);
+        // TODO: Fix this
+        // setIsLoading(true);
+        // const formData = new FormData(e.currentTarget);
+        // await resetPassword(formData);
+        // setIsLoading(false);
         sendToast({
             message: t('reset_password_page.toast_message.reset_success'),
             type: 'success',
@@ -43,7 +44,7 @@ export default function ResetPasswordPage() {
                 <div className="text-center">
                     <Link href="/login">{t('reset_password_page.login_link.label')}</Link>
                 </div>
-                <Loader isLoading={isLoading} />
+                {/* <Loader isLoading={isLoading} /> */}
             </Form>
         </Container>
     );

@@ -11,13 +11,14 @@ import { ThemeBreadcrumbs } from '@frontend/components/navigation/ThemeBreadcrum
 import { Inverted } from '@frontend/components/ui/Inverted';
 import { Trans } from '@frontend/components/ui/Trans';
 
-import { getCurrentUser } from '@server-actions/get-current-user';
+import { getCurrentUser } from '@server/auth/get-current-user';
+
 import { getTranslation } from '@server-actions/get-translation';
 import { listScenarios } from '@server-actions/scenarios/list-scenarios';
 
 import { Scenarios } from './Scenarios';
 
-const getScenarios = async (themeId: number, userId: number | undefined, questionLanguageCode: string) => {
+const getScenarios = async (themeId: number, userId: string | undefined, questionLanguageCode: string) => {
     if (themeId === -1 || Number.isNaN(themeId) || !Number.isFinite(themeId)) {
         return [];
     }

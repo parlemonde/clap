@@ -2,11 +2,11 @@ import { eq } from 'drizzle-orm';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
+import { getCurrentUser } from '@server/auth/get-current-user';
 import { setDynamoDBItem } from '@server/aws/dynamoDb';
 import { db } from '@server/database';
 import { languages } from '@server/database/schemas/languages';
 
-import { getCurrentUser } from '@server-actions/get-current-user';
 import { getLocalesForLanguage } from '@server-actions/get-locales';
 
 import { jsonToPo } from './json-to-po';
@@ -40,13 +40,16 @@ export async function GET(_request: NextRequest, props: { params: Promise<{ lang
     const extension = values.length > 1 ? values[1] : 'json';
     if (extension === 'po') {
         const poFile = await jsonToPo(language.value, await getLocalesForLanguage(language.value));
-        return new Response(poFile, {
-            headers: {
-                'Content-Type': 'text/x-gettext-translation',
-                'Content-Length': poFile.length.toString(),
-                'Content-Disposition': `attachment; filename="${language.value}.po"`,
+        return new Response(
+            poFile as unknown as BodyInit, // TODO: Fix this
+            {
+                headers: {
+                    'Content-Type': 'text/x-gettext-translation',
+                    'Content-Length': poFile.length.toString(),
+                    'Content-Disposition': `attachment; filename="${language.value}.po"`,
+                },
             },
-        });
+        );
     }
     const locales = await getLocalesForLanguage(language.value);
     return NextResponse.json(locales);

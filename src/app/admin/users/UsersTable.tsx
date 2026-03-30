@@ -2,7 +2,7 @@
 
 import { Pencil1Icon, TrashIcon, ChevronLeftIcon, ChevronRightIcon, ArrowUpIcon, ArrowDownIcon, PlusCircledIcon } from '@radix-ui/react-icons';
 import * as React from 'react';
-import { inviteUser } from 'src/actions/authentication/invite-user';
+// import { inviteUser } from 'src/actions/authentication/invite-user';
 
 import { AdminTile } from '@frontend/components/admin/AdminTile';
 import { Table } from '@frontend/components/admin/Table';
@@ -60,7 +60,7 @@ export const UsersTable = ({ users }: UsersTableWithDataProps) => {
 
     const onInviteUser = async () => {
         setIsGeneratingInvite(true);
-        const token = await inviteUser();
+        const token = null; // await inviteUser(); // TODO: Fix this
         setInviteToken(token);
         setIsGeneratingInvite(false);
         if (token === 'null') {

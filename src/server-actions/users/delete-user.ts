@@ -5,10 +5,9 @@ import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 import { redirect, RedirectType } from 'next/navigation';
 
+import { getCurrentUser } from '@server/auth/get-current-user';
 import { db } from '@server/database';
 import { users } from '@server/database/schemas/users';
-
-import { getCurrentUser } from '@server-actions/get-current-user';
 
 export async function deleteUser() {
     const user = await getCurrentUser();
@@ -26,7 +25,7 @@ export async function deleteUser() {
     redirect(`/`, RedirectType.push);
 }
 
-export async function deleteUserById(id: number) {
+export async function deleteUserById(id: string) {
     const user = await getCurrentUser();
 
     if (!user || user.role !== 'admin') {

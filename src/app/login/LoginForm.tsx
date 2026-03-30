@@ -2,8 +2,8 @@
 
 import { EyeNoneIcon, EyeOpenIcon } from '@radix-ui/react-icons';
 import * as React from 'react';
-import { login } from 'src/actions/authentication/login';
-import { loginWithSSO } from 'src/actions/authentication/login-with-sso';
+// import { login } from 'src/actions/authentication/login';
+// import { loginWithSSO } from 'src/actions/authentication/login-with-sso';
 import type { I18nKeys } from 'src/i18n/locales';
 
 import { Button } from '@frontend/components/layout/Button';
@@ -28,7 +28,7 @@ const clearSSOState = () => {
 };
 
 export const LoginForm = ({ ssoHost, clientId, stateQueryParam, codeQueryParam }: LoginFormProps) => {
-    const [message, formAction] = React.useActionState(login, '');
+    // const [message, formAction] = React.useActionState(login, ''); // TODO: Fix this
     const { t } = useTranslation();
 
     const [showPassword, setShowPassword] = React.useState(false);
@@ -61,22 +61,22 @@ export const LoginForm = ({ ssoHost, clientId, stateQueryParam, codeQueryParam }
             setIsConnectingWithSso(false);
             return;
         }
-        loginWithSSO(codeQueryParam)
-            .then((errorMsg) => {
-                if (errorMsg) {
-                    setSsoErrorMessage(errorMsg as I18nKeys);
-                }
-                clearSSOState();
-                setIsConnectingWithSso(false);
-            })
-            .catch(console.error);
+        // loginWithSSO(codeQueryParam)
+        //     .then((errorMsg) => {
+        //         if (errorMsg) {
+        //             setSsoErrorMessage(errorMsg as I18nKeys);
+        //         }
+        //         clearSSOState();
+        //         setIsConnectingWithSso(false);
+        //     })
+        //     .catch(console.error);
     }, [stateQueryParam, codeQueryParam]);
 
     const ssoHostName = ssoHost.replace(/(^\w+:|^)\/\//, '');
 
     return (
-        <Form className="login-form" action={formAction}>
-            {message && <span style={{ color: 'rgb(211, 47, 47)', display: 'block' }}>{t(message as I18nKeys)}</span>}
+        <Form className="login-form" /* action={formAction} */>
+            {/* {message && <span style={{ color: 'rgb(211, 47, 47)', display: 'block' }}>{t(message as I18nKeys)}</span>} */}
             {ssoErrorMessage && <span style={{ color: 'rgb(211, 47, 47)', display: 'block' }}>{t(ssoErrorMessage)}</span>}
             {ssoHost && clientId ? (
                 <>
