@@ -1,7 +1,9 @@
 import * as React from 'react';
-import { getUsers } from 'src/actions/users/get-users';
-import { Container } from 'src/components/layout/Container';
-import { Title } from 'src/components/layout/Typography';
+
+import { Container } from '@frontend/components/layout/Container';
+import { Title } from '@frontend/components/layout/Typography';
+
+import { getUsers } from '@server-actions/users/get-users';
 
 import { UsersTable } from './UsersTable';
 import { UsersTablePlaceholder } from './UsersTablePlaceholder';

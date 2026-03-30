@@ -1,4 +1,4 @@
-import type { Sequence } from 'src/database/schemas/projects';
+import type { Sequence } from '@server/database/schemas/projects';
 
 import { getSequenceDuration } from './get-sequence-duration';
 

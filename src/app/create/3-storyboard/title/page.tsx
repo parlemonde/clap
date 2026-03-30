@@ -2,17 +2,19 @@
 
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
-import { Container } from 'src/components/layout/Container';
-import { Title } from 'src/components/layout/Typography';
-import { NextButton } from 'src/components/navigation/NextButton';
-import { Steps } from 'src/components/navigation/Steps';
-import { ThemeBreadcrumbs } from 'src/components/navigation/ThemeBreadcrumbs';
-import { Inverted } from 'src/components/ui/Inverted';
-import { useTranslation } from 'src/contexts/translationContext';
-import type { Title as SequenceTitle } from 'src/database/schemas/projects';
-import { useCollaboration } from 'src/hooks/useCollaboration';
-import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import type { ServerPageProps } from 'src/lib/page-props.types';
+
+import { Container } from '@frontend/components/layout/Container';
+import { Title } from '@frontend/components/layout/Typography';
+import { NextButton } from '@frontend/components/navigation/NextButton';
+import { Steps } from '@frontend/components/navigation/Steps';
+import { ThemeBreadcrumbs } from '@frontend/components/navigation/ThemeBreadcrumbs';
+import { Inverted } from '@frontend/components/ui/Inverted';
+import { useTranslation } from '@frontend/contexts/translationContext';
+import { useCollaboration } from '@frontend/hooks/useCollaboration';
+import { useCurrentProject } from '@frontend/hooks/useCurrentProject';
+
+import type { Title as SequenceTitle } from '@server/database/schemas/projects';
 
 import { TitleForm } from './TitleForm';
 

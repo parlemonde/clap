@@ -1,11 +1,13 @@
 'use client';
 
 import React from 'react';
-import { createLanguage } from 'src/actions/languages/create-language';
-import { Field } from 'src/components/layout/Form';
-import { Select } from 'src/components/layout/Form/Select';
-import { Modal } from 'src/components/layout/Modal';
-import { sendToast } from 'src/components/ui/Toasts';
+
+import { Field } from '@frontend/components/layout/Form';
+import { Select } from '@frontend/components/layout/Form/Select';
+import { Modal } from '@frontend/components/layout/Modal';
+import { sendToast } from '@frontend/components/ui/Toasts';
+
+import { createLanguage } from '@server-actions/languages/create-language';
 
 import allLanguages from './iso_languages.json';
 

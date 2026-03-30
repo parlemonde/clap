@@ -2,7 +2,7 @@
 
 import { deleteFile } from 'src/actions/files/file-upload';
 
-import { getCurrentUser } from '../get-current-user';
+import { getCurrentUser } from '@server-actions/get-current-user';
 
 export async function deleteImage(imageUrl: string, isAdmin: boolean = false): Promise<void> {
     if (!imageUrl.startsWith('/media/images/')) {

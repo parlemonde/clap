@@ -1,7 +1,7 @@
 'use server';
 
-import { db } from 'src/database';
-import { users, type User } from 'src/database/schemas/users';
+import { db } from '@server/database';
+import { users, type User } from '@server/database/schemas/users';
 
 import type { PLMUser } from './plm-user.types';
 

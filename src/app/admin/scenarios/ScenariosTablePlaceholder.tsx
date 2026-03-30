@@ -1,7 +1,7 @@
 'use server';
 
-import { Table } from 'src/components/admin/Table';
-import { CircularProgress } from 'src/components/layout/CircularProgress';
+import { Table } from '@frontend/components/admin/Table';
+import { CircularProgress } from '@frontend/components/layout/CircularProgress';
 
 export const ScenariosTablePlaceholder = async () => {
     return (

@@ -3,20 +3,23 @@
 import { Pencil1Icon, TrashIcon, ChevronLeftIcon, ChevronRightIcon, ArrowUpIcon, ArrowDownIcon, PlusCircledIcon } from '@radix-ui/react-icons';
 import * as React from 'react';
 import { inviteUser } from 'src/actions/authentication/invite-user';
-import { deleteUserById } from 'src/actions/users/delete-user';
-import { AdminTile } from 'src/components/admin/AdminTile';
-import { Table } from 'src/components/admin/Table';
-import { Button } from 'src/components/layout/Button';
-import { IconButton } from 'src/components/layout/Button/IconButton';
-import { Input } from 'src/components/layout/Form';
-import { Select } from 'src/components/layout/Form/Select';
-import { Modal } from 'src/components/layout/Modal';
-import { Tooltip } from 'src/components/layout/Tooltip';
-import { Link } from 'src/components/navigation/Link';
-import { Loader } from 'src/components/ui/Loader';
-import { sendToast } from 'src/components/ui/Toasts';
-import { userContext } from 'src/contexts/userContext';
-import type { User } from 'src/database/schemas/users';
+
+import { AdminTile } from '@frontend/components/admin/AdminTile';
+import { Table } from '@frontend/components/admin/Table';
+import { Button } from '@frontend/components/layout/Button';
+import { IconButton } from '@frontend/components/layout/Button/IconButton';
+import { Input } from '@frontend/components/layout/Form';
+import { Select } from '@frontend/components/layout/Form/Select';
+import { Modal } from '@frontend/components/layout/Modal';
+import { Tooltip } from '@frontend/components/layout/Tooltip';
+import { Link } from '@frontend/components/navigation/Link';
+import { Loader } from '@frontend/components/ui/Loader';
+import { sendToast } from '@frontend/components/ui/Toasts';
+import { userContext } from '@frontend/contexts/userContext';
+
+import type { User } from '@server/database/schemas/users';
+
+import { deleteUserById } from '@server-actions/users/delete-user';
 
 import { SharedLink } from './SharedLink';
 

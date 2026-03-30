@@ -3,15 +3,17 @@
 import { EyeOpenIcon, EyeNoneIcon } from '@radix-ui/react-icons';
 import { useRouter } from 'next/navigation';
 import React from 'react';
-import { createUser } from 'src/actions/users/create-user';
-import { Button } from 'src/components/layout/Button';
-import { IconButton } from 'src/components/layout/Button/IconButton';
-import { Field, Form, Input } from 'src/components/layout/Form';
-import { Link } from 'src/components/navigation/Link';
-import { Loader } from 'src/components/ui/Loader';
-import { sendToast } from 'src/components/ui/Toasts';
-import { useTranslation } from 'src/contexts/translationContext';
 import type { I18nKeys } from 'src/i18n/locales';
+
+import { Button } from '@frontend/components/layout/Button';
+import { IconButton } from '@frontend/components/layout/Button/IconButton';
+import { Field, Form, Input } from '@frontend/components/layout/Form';
+import { Link } from '@frontend/components/navigation/Link';
+import { Loader } from '@frontend/components/ui/Loader';
+import { sendToast } from '@frontend/components/ui/Toasts';
+import { useTranslation } from '@frontend/contexts/translationContext';
+
+import { createUser } from '@server-actions/users/create-user';
 
 const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/;
 const EMAIL_REGEX = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;

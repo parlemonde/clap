@@ -1,4 +1,4 @@
-import { getLocalesForLanguage } from 'src/actions/get-locales';
+import { getLocalesForLanguage } from '@server-actions/get-locales';
 
 import type { translationObject, Comments, SingleTranslation } from './util';
 import { parseHeader } from './util';

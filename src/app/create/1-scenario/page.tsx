@@ -1,17 +1,19 @@
 import * as React from 'react';
-import { getCurrentUser } from 'src/actions/get-current-user';
-import { getTranslation } from 'src/actions/get-translation';
-import { listScenarios } from 'src/actions/scenarios/list-scenarios';
-import { ScenarioCard } from 'src/components/create/ScenarioCard';
-import { Container } from 'src/components/layout/Container';
-import { Title } from 'src/components/layout/Typography';
-import { Steps } from 'src/components/navigation/Steps';
-import { ThemeBreadcrumbs } from 'src/components/navigation/ThemeBreadcrumbs';
-import { Inverted } from 'src/components/ui/Inverted';
-import { Trans } from 'src/components/ui/Trans';
 import type { ServerPageProps } from 'src/lib/page-props.types';
 import { getThemeId } from 'src/lib/search-params/get-theme-id';
 import { serializeToQueryUrl } from 'src/lib/serialize-to-query-url';
+
+import { ScenarioCard } from '@frontend/components/create/ScenarioCard';
+import { Container } from '@frontend/components/layout/Container';
+import { Title } from '@frontend/components/layout/Typography';
+import { Steps } from '@frontend/components/navigation/Steps';
+import { ThemeBreadcrumbs } from '@frontend/components/navigation/ThemeBreadcrumbs';
+import { Inverted } from '@frontend/components/ui/Inverted';
+import { Trans } from '@frontend/components/ui/Trans';
+
+import { getCurrentUser } from '@server-actions/get-current-user';
+import { getTranslation } from '@server-actions/get-translation';
+import { listScenarios } from '@server-actions/scenarios/list-scenarios';
 
 import { Scenarios } from './Scenarios';
 

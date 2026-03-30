@@ -1,6 +1,8 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { getCurrentUser } from 'src/actions/get-current-user';
-import { buf2hex, hmac } from 'src/aws/utils';
+
+import { buf2hex, hmac } from '@server/aws/utils';
+
+import { getCurrentUser } from '@server-actions/get-current-user';
 
 async function getCollaborationWebsocketUrl(room: string) {
     const secretKey = `secret:${process.env.APP_SECRET}`;

@@ -2,8 +2,9 @@
 
 import { eq } from 'drizzle-orm';
 import { cookies } from 'next/headers';
-import { db } from 'src/database';
-import { projects } from 'src/database/schemas/projects';
+
+import { db } from '@server/database';
+import { projects } from '@server/database/schemas/projects';
 
 import { getAccessToken } from './login';
 

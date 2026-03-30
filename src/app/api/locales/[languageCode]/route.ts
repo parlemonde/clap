@@ -1,11 +1,13 @@
 import { eq } from 'drizzle-orm';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { getCurrentUser } from 'src/actions/get-current-user';
-import { getLocalesForLanguage } from 'src/actions/get-locales';
-import { setDynamoDBItem } from 'src/aws/dynamoDb';
-import { db } from 'src/database';
-import { languages } from 'src/database/schemas/languages';
+
+import { setDynamoDBItem } from '@server/aws/dynamoDb';
+import { db } from '@server/database';
+import { languages } from '@server/database/schemas/languages';
+
+import { getCurrentUser } from '@server-actions/get-current-user';
+import { getLocalesForLanguage } from '@server-actions/get-locales';
 
 import { jsonToPo } from './json-to-po';
 import { poToJson } from './po-to-json';

@@ -2,9 +2,10 @@
 
 import React from 'react';
 import { logout } from 'src/actions/authentication/logout';
-import { Button } from 'src/components/layout/Button';
-import { Loader } from 'src/components/ui/Loader';
-import { useTranslation } from 'src/contexts/translationContext';
+
+import { Button } from '@frontend/components/layout/Button';
+import { Loader } from '@frontend/components/ui/Loader';
+import { useTranslation } from '@frontend/contexts/translationContext';
 
 export const LogoutForm = () => {
     const { t } = useTranslation();

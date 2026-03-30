@@ -1,10 +1,13 @@
 'use client';
 
 import React from 'react';
-import { editQuestion } from 'src/actions/questions/edit-question';
-import { Field, Input } from 'src/components/layout/Form';
-import { Modal } from 'src/components/layout/Modal';
-import type { Question } from 'src/database/schemas/questions';
+
+import { Field, Input } from '@frontend/components/layout/Form';
+import { Modal } from '@frontend/components/layout/Modal';
+
+import type { Question } from '@server/database/schemas/questions';
+
+import { editQuestion } from '@server-actions/questions/edit-question';
 
 interface EditQuestionModalProps {
     question?: Question | null;

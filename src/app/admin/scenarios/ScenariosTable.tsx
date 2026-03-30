@@ -2,16 +2,19 @@
 
 import { Pencil1Icon, QuestionMarkCircledIcon, TrashIcon } from '@radix-ui/react-icons';
 import * as React from 'react';
-import { deleteScenario } from 'src/actions/scenarios/delete-scenario';
-import { Table } from 'src/components/admin/Table';
-import { IconButton } from 'src/components/layout/Button/IconButton';
-import { Select } from 'src/components/layout/Form/Select';
-import { Modal } from 'src/components/layout/Modal';
-import { Tooltip } from 'src/components/layout/Tooltip';
-import { Link } from 'src/components/navigation/Link';
-import type { Scenario } from 'src/database/schemas/scenarios';
-import type { Theme } from 'src/database/schemas/themes';
-import { useLanguages } from 'src/hooks/useLanguages';
+
+import { Table } from '@frontend/components/admin/Table';
+import { IconButton } from '@frontend/components/layout/Button/IconButton';
+import { Select } from '@frontend/components/layout/Form/Select';
+import { Modal } from '@frontend/components/layout/Modal';
+import { Tooltip } from '@frontend/components/layout/Tooltip';
+import { Link } from '@frontend/components/navigation/Link';
+import { useLanguages } from '@frontend/hooks/useLanguages';
+
+import type { Scenario } from '@server/database/schemas/scenarios';
+import type { Theme } from '@server/database/schemas/themes';
+
+import { deleteScenario } from '@server-actions/scenarios/delete-scenario';
 
 type ScenarioData = {
     themeIndex: number;

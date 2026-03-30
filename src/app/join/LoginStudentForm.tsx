@@ -3,16 +3,19 @@
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { loginForStudent } from 'src/actions/authentication/login-for-student';
-import { getProjectByCode } from 'src/actions/projects/get-project';
-import { Button } from 'src/components/layout/Button';
-import { Field, Form, Input } from 'src/components/layout/Form';
-import { Title } from 'src/components/layout/Typography';
-import { Link } from 'src/components/navigation/Link';
-import { Loader } from 'src/components/ui/Loader';
-import { useTranslation } from 'src/contexts/translationContext';
-import type { ProjectData } from 'src/database/schemas/projects';
-import { setToLocalStorage } from 'src/hooks/useLocalStorage/local-storage';
 import type { I18nKeys } from 'src/i18n/locales';
+
+import { Button } from '@frontend/components/layout/Button';
+import { Field, Form, Input } from '@frontend/components/layout/Form';
+import { Title } from '@frontend/components/layout/Typography';
+import { Link } from '@frontend/components/navigation/Link';
+import { Loader } from '@frontend/components/ui/Loader';
+import { useTranslation } from '@frontend/contexts/translationContext';
+import { setToLocalStorage } from '@frontend/hooks/useLocalStorage/local-storage';
+
+import type { ProjectData } from '@server/database/schemas/projects';
+
+import { getProjectByCode } from '@server-actions/projects/get-project';
 
 import { StudentQuestionChoice } from './StudentQuestionChoice';
 

@@ -1,8 +1,10 @@
 import { DragHandleDots2Icon, PauseIcon } from '@radix-ui/react-icons';
 import React from 'react';
-import { KeepRatio } from 'src/components/layout/KeepRatio';
-import { useTranslation } from 'src/contexts/translationContext';
-import type { Title } from 'src/database/schemas/projects';
+
+import { KeepRatio } from '@frontend/components/layout/KeepRatio';
+import { useTranslation } from '@frontend/contexts/translationContext';
+
+import type { Title } from '@server/database/schemas/projects';
 
 import styles from './title-form.module.scss';
 

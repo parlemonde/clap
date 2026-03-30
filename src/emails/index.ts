@@ -2,7 +2,8 @@ import nodemailer from 'nodemailer';
 import type Mail from 'nodemailer/lib/mailer';
 import type SESTransport from 'nodemailer/lib/ses-transport';
 import type SMTPTransport from 'nodemailer/lib/smtp-transport';
-import { getTranslation } from 'src/actions/get-translation';
+
+import { getTranslation } from '@server-actions/get-translation';
 
 import { getNodeMailer } from './nodemailer';
 import { renderFile } from './render-file';

@@ -2,16 +2,18 @@
 
 import { useRouter } from 'next/navigation';
 import React from 'react';
-import { ScenarioCard } from 'src/components/create/ScenarioCard';
-import { useTranslation } from 'src/contexts/translationContext';
-import type { Question } from 'src/database/schemas/questions';
-import type { Scenario } from 'src/database/schemas/scenarios';
-import type { Theme } from 'src/database/schemas/themes';
-import { useLocalStorage } from 'src/hooks/useLocalStorage';
-import { deleteFromLocalStorage, isLocalScenario, isLocalTheme, setToLocalStorage } from 'src/hooks/useLocalStorage/local-storage';
 import { jsonFetcher } from 'src/lib/json-fetcher';
 import { serializeToQueryUrl } from 'src/lib/serialize-to-query-url';
 import useSWR from 'swr';
+
+import { ScenarioCard } from '@frontend/components/create/ScenarioCard';
+import { useTranslation } from '@frontend/contexts/translationContext';
+import { useLocalStorage } from '@frontend/hooks/useLocalStorage';
+import { deleteFromLocalStorage, isLocalScenario, isLocalTheme, setToLocalStorage } from '@frontend/hooks/useLocalStorage/local-storage';
+
+import type { Question } from '@server/database/schemas/questions';
+import type { Scenario } from '@server/database/schemas/scenarios';
+import type { Theme } from '@server/database/schemas/themes';
 
 interface ScenariosProps {
     scenarios: Scenario[];

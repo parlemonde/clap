@@ -5,8 +5,9 @@ import { eq } from 'drizzle-orm';
 import { SignJWT } from 'jose';
 import { cookies } from 'next/headers';
 import { redirect, RedirectType } from 'next/navigation';
-import { db } from 'src/database';
-import { users } from 'src/database/schemas/users';
+
+import { db } from '@server/database';
+import { users } from '@server/database/schemas/users';
 
 const APP_SECRET = new TextEncoder().encode(process.env.APP_SECRET || '');
 

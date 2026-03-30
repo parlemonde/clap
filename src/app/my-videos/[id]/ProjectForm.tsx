@@ -3,19 +3,22 @@
 import { InfoCircledIcon } from '@radix-ui/react-icons';
 import { useRouter } from 'next/navigation';
 import React from 'react';
-import { deleteProject } from 'src/actions/projects/delete-project';
-import { updateProject } from 'src/actions/projects/update-project';
-import { Button } from 'src/components/layout/Button';
-import { Divider } from 'src/components/layout/Divider';
-import { Flex } from 'src/components/layout/Flex';
-import { Field, Input } from 'src/components/layout/Form';
-import { Modal } from 'src/components/layout/Modal';
-import { Title } from 'src/components/layout/Typography';
-import { Trans } from 'src/components/ui/Trans';
-import { useTranslation } from 'src/contexts/translationContext';
-import type { Project } from 'src/database/schemas/projects';
-import { useLocalStorage } from 'src/hooks/useLocalStorage';
-import { deleteFromLocalStorage } from 'src/hooks/useLocalStorage/local-storage';
+
+import { Button } from '@frontend/components/layout/Button';
+import { Divider } from '@frontend/components/layout/Divider';
+import { Flex } from '@frontend/components/layout/Flex';
+import { Field, Input } from '@frontend/components/layout/Form';
+import { Modal } from '@frontend/components/layout/Modal';
+import { Title } from '@frontend/components/layout/Typography';
+import { Trans } from '@frontend/components/ui/Trans';
+import { useTranslation } from '@frontend/contexts/translationContext';
+import { useLocalStorage } from '@frontend/hooks/useLocalStorage';
+import { deleteFromLocalStorage } from '@frontend/hooks/useLocalStorage/local-storage';
+
+import type { Project } from '@server/database/schemas/projects';
+
+import { deleteProject } from '@server-actions/projects/delete-project';
+import { updateProject } from '@server-actions/projects/update-project';
 
 interface ProjectFormProps {
     project: Project;

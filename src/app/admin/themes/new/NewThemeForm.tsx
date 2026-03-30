@@ -5,18 +5,21 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { uploadImage } from 'src/actions/files/upload-image';
-import { createDefaultTheme } from 'src/actions/themes/create-theme';
-import { NameInput } from 'src/components/admin/NameInput';
-import { Button } from 'src/components/layout/Button';
-import { Field, Form } from 'src/components/layout/Form';
-import { Select } from 'src/components/layout/Form/Select';
-import { Modal } from 'src/components/layout/Modal';
-import { Title } from 'src/components/layout/Typography';
-import { Cropper } from 'src/components/ui/Cropper';
-import { Loader } from 'src/components/ui/Loader';
-import { sendToast } from 'src/components/ui/Toasts';
-import type { Theme } from 'src/database/schemas/themes';
-import { useLanguages } from 'src/hooks/useLanguages';
+
+import { NameInput } from '@frontend/components/admin/NameInput';
+import { Button } from '@frontend/components/layout/Button';
+import { Field, Form } from '@frontend/components/layout/Form';
+import { Select } from '@frontend/components/layout/Form/Select';
+import { Modal } from '@frontend/components/layout/Modal';
+import { Title } from '@frontend/components/layout/Typography';
+import { Cropper } from '@frontend/components/ui/Cropper';
+import { Loader } from '@frontend/components/ui/Loader';
+import { sendToast } from '@frontend/components/ui/Toasts';
+import { useLanguages } from '@frontend/hooks/useLanguages';
+
+import type { Theme } from '@server/database/schemas/themes';
+
+import { createDefaultTheme } from '@server-actions/themes/create-theme';
 
 type Language = {
     label: string;

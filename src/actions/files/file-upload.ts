@@ -1,5 +1,6 @@
 import type { Readable } from 'node:stream';
-import { deleteS3File, getS3File, getS3FileData, uploadS3File } from 'src/aws/s3';
+
+import { deleteS3File, getS3File, getS3FileData, uploadS3File } from '@server/aws/s3';
 
 import type { FileData } from './file-data.types';
 import { deleteLocalFile, getLocalFile, getLocalFileData, uploadLocalFile } from './local';

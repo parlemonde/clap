@@ -1,9 +1,10 @@
 /* eslint-disable camelcase */
 import { eq } from 'drizzle-orm';
-import { db } from 'src/database';
-import type { User } from 'src/database/schemas/users';
-import { users } from 'src/database/schemas/users';
 import { jsonFetcher } from 'src/lib/json-fetcher';
+
+import { db } from '@server/database';
+import type { User } from '@server/database/schemas/users';
+import { users } from '@server/database/schemas/users';
 
 import { createPlmUser } from './create-plm-user';
 import type { PLMUser } from './plm-user.types';

@@ -1,9 +1,11 @@
 'use client';
 
 import * as React from 'react';
-import { AdminTile } from 'src/components/admin/AdminTile';
-import { Table } from 'src/components/admin/Table';
-import type { Theme } from 'src/database/schemas/themes';
+
+import { AdminTile } from '@frontend/components/admin/AdminTile';
+import { Table } from '@frontend/components/admin/Table';
+
+import type { Theme } from '@server/database/schemas/themes';
 
 type UserThemesTableProps = {
     userThemes: Theme[];

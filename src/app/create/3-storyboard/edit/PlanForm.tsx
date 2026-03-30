@@ -4,19 +4,21 @@ import React from 'react';
 import Camera from 'react-html5-camera-photo';
 import { deleteImage } from 'src/actions/files/delete-image';
 import { uploadImage } from 'src/actions/files/upload-image';
-import { Canvas } from 'src/components/create/Canvas';
-import { Button } from 'src/components/layout/Button';
-import { Flex, FlexItem } from 'src/components/layout/Flex';
-import { Field, Form, TextArea } from 'src/components/layout/Form';
-import { KeepRatio } from 'src/components/layout/KeepRatio';
-import { Modal } from 'src/components/layout/Modal';
-import { Title } from 'src/components/layout/Typography';
-import { NextButton } from 'src/components/navigation/NextButton';
-import { Cropper } from 'src/components/ui/Cropper';
-import { Loader } from 'src/components/ui/Loader';
-import { sendToast } from 'src/components/ui/Toasts';
-import { useTranslation } from 'src/contexts/translationContext';
-import type { Plan } from 'src/database/schemas/projects';
+
+import { Canvas } from '@frontend/components/create/Canvas';
+import { Button } from '@frontend/components/layout/Button';
+import { Flex, FlexItem } from '@frontend/components/layout/Flex';
+import { Field, Form, TextArea } from '@frontend/components/layout/Form';
+import { KeepRatio } from '@frontend/components/layout/KeepRatio';
+import { Modal } from '@frontend/components/layout/Modal';
+import { Title } from '@frontend/components/layout/Typography';
+import { NextButton } from '@frontend/components/navigation/NextButton';
+import { Cropper } from '@frontend/components/ui/Cropper';
+import { Loader } from '@frontend/components/ui/Loader';
+import { sendToast } from '@frontend/components/ui/Toasts';
+import { useTranslation } from '@frontend/contexts/translationContext';
+
+import type { Plan } from '@server/database/schemas/projects';
 
 const RATIO = 16 / 9;
 

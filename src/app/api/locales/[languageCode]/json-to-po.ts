@@ -1,6 +1,7 @@
 import { Buffer } from 'buffer';
-import { getLocalesForLanguage } from 'src/actions/get-locales';
 import { PO_PLURALS } from 'src/i18n/getPlurals';
+
+import { getLocalesForLanguage } from '@server-actions/get-locales';
 
 import type { Comments, SingleTranslation, translationObject } from './util';
 import { HEADERS, foldLine, compareMsgid, generateHeader } from './util';

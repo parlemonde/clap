@@ -1,10 +1,12 @@
 'use server';
 
 import React from 'react';
-import { getTranslation } from 'src/actions/get-translation';
-import { Container } from 'src/components/layout/Container';
-import { Title } from 'src/components/layout/Typography';
 import type { ServerPageProps } from 'src/lib/page-props.types';
+
+import { Container } from '@frontend/components/layout/Container';
+import { Title } from '@frontend/components/layout/Typography';
+
+import { getTranslation } from '@server-actions/get-translation';
 
 import { UpdatePasswordForm } from './UpdatePasswordForm';
 

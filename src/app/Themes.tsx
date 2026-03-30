@@ -1,10 +1,12 @@
 'use client';
 
 import * as React from 'react';
-import { ThemeCard } from 'src/components/create/ThemeCard';
-import { useTranslation } from 'src/contexts/translationContext';
-import type { Theme } from 'src/database/schemas/themes';
-import { useLocalStorage } from 'src/hooks/useLocalStorage';
+
+import { ThemeCard } from '@frontend/components/create/ThemeCard';
+import { useTranslation } from '@frontend/contexts/translationContext';
+import { useLocalStorage } from '@frontend/hooks/useLocalStorage';
+
+import type { Theme } from '@server/database/schemas/themes';
 
 interface ThemesProps {
     themes: Theme[];

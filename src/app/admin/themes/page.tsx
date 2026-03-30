@@ -1,11 +1,13 @@
 import { PlusCircledIcon } from '@radix-ui/react-icons';
 import * as React from 'react';
-import { listThemes, listUserThemes } from 'src/actions/themes/list-themes';
-import { AdminTile } from 'src/components/admin/AdminTile';
-import { Button } from 'src/components/layout/Button';
-import { Container } from 'src/components/layout/Container';
-import { Title } from 'src/components/layout/Typography';
-import { Link } from 'src/components/navigation/Link';
+
+import { AdminTile } from '@frontend/components/admin/AdminTile';
+import { Button } from '@frontend/components/layout/Button';
+import { Container } from '@frontend/components/layout/Container';
+import { Title } from '@frontend/components/layout/Typography';
+import { Link } from '@frontend/components/navigation/Link';
+
+import { listThemes, listUserThemes } from '@server-actions/themes/list-themes';
 
 import { ThemesTable } from './ThemesTable';
 import { ThemesTablePlaceholder } from './ThemesTablePlaceholder';

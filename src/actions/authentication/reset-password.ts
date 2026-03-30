@@ -2,9 +2,10 @@
 
 import { hash } from '@node-rs/argon2';
 import { eq, and, lt } from 'drizzle-orm';
-import { db } from 'src/database';
-import { users } from 'src/database/schemas/users';
 import { sendMail } from 'src/emails';
+
+import { db } from '@server/database';
+import { users } from '@server/database/schemas/users';
 
 import { generateToken } from './generate-token';
 

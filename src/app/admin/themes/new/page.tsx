@@ -1,8 +1,9 @@
 import * as React from 'react';
-import { AdminTile } from 'src/components/admin/AdminTile';
-import { Breadcrumbs } from 'src/components/layout/Breadcrumbs';
-import { Container } from 'src/components/layout/Container';
-import { Title } from 'src/components/layout/Typography';
+
+import { AdminTile } from '@frontend/components/admin/AdminTile';
+import { Breadcrumbs } from '@frontend/components/layout/Breadcrumbs';
+import { Container } from '@frontend/components/layout/Container';
+import { Title } from '@frontend/components/layout/Typography';
 
 import { NewThemeForm } from './NewThemeForm';
 

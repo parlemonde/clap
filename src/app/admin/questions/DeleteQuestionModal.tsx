@@ -1,9 +1,12 @@
 'use client';
 
 import React from 'react';
-import { deleteQuestion } from 'src/actions/questions/delete-question';
-import { Modal } from 'src/components/layout/Modal';
-import type { Question } from 'src/database/schemas/questions';
+
+import { Modal } from '@frontend/components/layout/Modal';
+
+import type { Question } from '@server/database/schemas/questions';
+
+import { deleteQuestion } from '@server-actions/questions/delete-question';
 
 interface DeleteQuestionModalProps {
     question?: Question | null;

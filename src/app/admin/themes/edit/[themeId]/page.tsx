@@ -1,11 +1,13 @@
 import * as React from 'react';
-import { getLocales } from 'src/actions/get-locales';
-import { getTheme } from 'src/actions/themes/get-theme';
-import { AdminTile } from 'src/components/admin/AdminTile';
-import { Breadcrumbs } from 'src/components/layout/Breadcrumbs';
-import { Container } from 'src/components/layout/Container';
-import { Title } from 'src/components/layout/Typography';
 import type { ServerPageProps } from 'src/lib/page-props.types';
+
+import { AdminTile } from '@frontend/components/admin/AdminTile';
+import { Breadcrumbs } from '@frontend/components/layout/Breadcrumbs';
+import { Container } from '@frontend/components/layout/Container';
+import { Title } from '@frontend/components/layout/Typography';
+
+import { getLocales } from '@server-actions/get-locales';
+import { getTheme } from '@server-actions/themes/get-theme';
 
 import { EditThemeForm } from './EditThemeForm';
 

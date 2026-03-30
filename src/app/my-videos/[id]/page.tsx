@@ -1,13 +1,15 @@
 import * as React from 'react';
-import { getCurrentUser } from 'src/actions/get-current-user';
-import { getTranslation } from 'src/actions/get-translation';
-import { getProject } from 'src/actions/projects/get-project';
-import { Button } from 'src/components/layout/Button';
-import { Container } from 'src/components/layout/Container';
-import { Flex } from 'src/components/layout/Flex';
-import { Text, Title } from 'src/components/layout/Typography';
-import { Link } from 'src/components/navigation/Link';
 import type { ServerPageProps } from 'src/lib/page-props.types';
+
+import { Button } from '@frontend/components/layout/Button';
+import { Container } from '@frontend/components/layout/Container';
+import { Flex } from '@frontend/components/layout/Flex';
+import { Text, Title } from '@frontend/components/layout/Typography';
+import { Link } from '@frontend/components/navigation/Link';
+
+import { getCurrentUser } from '@server-actions/get-current-user';
+import { getTranslation } from '@server-actions/get-translation';
+import { getProject } from '@server-actions/projects/get-project';
 
 import { ProjectForm } from './ProjectForm';
 

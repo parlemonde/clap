@@ -2,11 +2,14 @@
 
 import { useRouter } from 'next/navigation';
 import React from 'react';
-import { updateUser } from 'src/actions/users/update-user';
-import { Field, Input } from 'src/components/layout/Form';
-import { Modal } from 'src/components/layout/Modal';
-import { useTranslation } from 'src/contexts/translationContext';
-import type { User } from 'src/database/schemas/users';
+
+import { Field, Input } from '@frontend/components/layout/Form';
+import { Modal } from '@frontend/components/layout/Modal';
+import { useTranslation } from '@frontend/contexts/translationContext';
+
+import type { User } from '@server/database/schemas/users';
+
+import { updateUser } from '@server-actions/users/update-user';
 
 interface UpdateNameFormProps {
     user: User;

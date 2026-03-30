@@ -5,8 +5,9 @@ import sanitize from 'sanitize-filename';
 import sharp from 'sharp';
 import { getFile, getFileData } from 'src/actions/files/file-upload';
 import { isSignedImageUrlValid } from 'src/actions/files/get-signed-image-url';
-import { getCurrentUser } from 'src/actions/get-current-user';
 import { Readable } from 'stream';
+
+import { getCurrentUser } from '@server-actions/get-current-user';
 
 const notFoundResponse = () => {
     return new NextResponse('Error 404, not found.', {

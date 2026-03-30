@@ -2,29 +2,31 @@
 
 import { VideoIcon } from '@radix-ui/react-icons';
 import * as React from 'react';
-import { getMltZip } from 'src/actions/projects/generate-mlt-zip';
-import { generateVideo, getVideoProgress } from 'src/actions/projects/generate-video';
-import { DiaporamaPlayer } from 'src/components/create/DiaporamaPlayer';
-import { Button } from 'src/components/layout/Button';
-import { Container } from 'src/components/layout/Container';
-import { Flex } from 'src/components/layout/Flex';
-import { LinearProgress } from 'src/components/layout/LinearProgress';
-import { Tooltip } from 'src/components/layout/Tooltip';
-import { Title, Text } from 'src/components/layout/Typography';
-import { Steps } from 'src/components/navigation/Steps';
-import { ThemeBreadcrumbs } from 'src/components/navigation/ThemeBreadcrumbs';
-import { Inverted } from 'src/components/ui/Inverted';
-import { Loader } from 'src/components/ui/Loader';
-import { sendToast } from 'src/components/ui/Toasts';
-import { Trans } from 'src/components/ui/Trans';
-import { useTranslation } from 'src/contexts/translationContext';
-import { userContext } from 'src/contexts/userContext';
-import { useCollaboration } from 'src/hooks/useCollaboration';
-import { useCurrentProject } from 'src/hooks/useCurrentProject';
-import { useDeepMemo } from 'src/hooks/useDeepMemo';
-import { useLocalStorage } from 'src/hooks/useLocalStorage';
 import { getSounds } from 'src/lib/get-sounds';
 import VideoFile from 'src/svg/plan.svg';
+
+import { DiaporamaPlayer } from '@frontend/components/create/DiaporamaPlayer';
+import { Button } from '@frontend/components/layout/Button';
+import { Container } from '@frontend/components/layout/Container';
+import { Flex } from '@frontend/components/layout/Flex';
+import { LinearProgress } from '@frontend/components/layout/LinearProgress';
+import { Tooltip } from '@frontend/components/layout/Tooltip';
+import { Title, Text } from '@frontend/components/layout/Typography';
+import { Steps } from '@frontend/components/navigation/Steps';
+import { ThemeBreadcrumbs } from '@frontend/components/navigation/ThemeBreadcrumbs';
+import { Inverted } from '@frontend/components/ui/Inverted';
+import { Loader } from '@frontend/components/ui/Loader';
+import { sendToast } from '@frontend/components/ui/Toasts';
+import { Trans } from '@frontend/components/ui/Trans';
+import { useTranslation } from '@frontend/contexts/translationContext';
+import { userContext } from '@frontend/contexts/userContext';
+import { useCollaboration } from '@frontend/hooks/useCollaboration';
+import { useCurrentProject } from '@frontend/hooks/useCurrentProject';
+import { useDeepMemo } from '@frontend/hooks/useDeepMemo';
+import { useLocalStorage } from '@frontend/hooks/useLocalStorage';
+
+import { getMltZip } from '@server-actions/projects/generate-mlt-zip';
+import { generateVideo, getVideoProgress } from '@server-actions/projects/generate-video';
 
 const styles: Record<'verticalLine' | 'horizontalLine', React.CSSProperties> = {
     verticalLine: {

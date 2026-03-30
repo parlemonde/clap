@@ -1,20 +1,23 @@
 'use client';
 import { DragHandleDots2Icon, Pencil1Icon, PlusCircledIcon, TrashIcon } from '@radix-ui/react-icons';
 import React from 'react';
-import { reOrderQuestions } from 'src/actions/questions/re-order-questions';
-import { AdminTile } from 'src/components/admin/AdminTile';
-import { Table } from 'src/components/admin/Table';
-import { Button } from 'src/components/layout/Button';
-import { IconButton } from 'src/components/layout/Button/IconButton';
-import { Flex } from 'src/components/layout/Flex';
-import { Select } from 'src/components/layout/Form/Select';
-import { Tooltip } from 'src/components/layout/Tooltip';
-import { Title } from 'src/components/layout/Typography';
-import { Sortable } from 'src/components/ui/Sortable';
-import { sendToast } from 'src/components/ui/Toasts';
-import type { Question } from 'src/database/schemas/questions';
-import type { Scenario } from 'src/database/schemas/scenarios';
-import { useLanguages } from 'src/hooks/useLanguages';
+
+import { AdminTile } from '@frontend/components/admin/AdminTile';
+import { Table } from '@frontend/components/admin/Table';
+import { Button } from '@frontend/components/layout/Button';
+import { IconButton } from '@frontend/components/layout/Button/IconButton';
+import { Flex } from '@frontend/components/layout/Flex';
+import { Select } from '@frontend/components/layout/Form/Select';
+import { Tooltip } from '@frontend/components/layout/Tooltip';
+import { Title } from '@frontend/components/layout/Typography';
+import { Sortable } from '@frontend/components/ui/Sortable';
+import { sendToast } from '@frontend/components/ui/Toasts';
+import { useLanguages } from '@frontend/hooks/useLanguages';
+
+import type { Question } from '@server/database/schemas/questions';
+import type { Scenario } from '@server/database/schemas/scenarios';
+
+import { reOrderQuestions } from '@server-actions/questions/re-order-questions';
 
 import { CreateQuestionModal } from './CreateQuestionModal';
 import { DeleteQuestionModal } from './DeleteQuestionModal';

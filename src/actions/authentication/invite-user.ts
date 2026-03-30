@@ -1,9 +1,10 @@
 'use server';
 
-import { db } from 'src/database';
-import { inviteTokens } from 'src/database/schemas/invite-tokens';
+import { db } from '@server/database';
+import { inviteTokens } from '@server/database/schemas/invite-tokens';
 
-import { getCurrentUser } from '../get-current-user';
+import { getCurrentUser } from '@server-actions/get-current-user';
+
 import { generateToken } from './generate-token';
 
 export async function inviteUser(): Promise<string | null> {

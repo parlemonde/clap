@@ -1,9 +1,11 @@
 import * as React from 'react';
-import { getCurrentUser } from 'src/actions/get-current-user';
-import { getTranslation } from 'src/actions/get-translation';
-import { Container } from 'src/components/layout/Container';
-import { Divider } from 'src/components/layout/Divider';
-import { Title } from 'src/components/layout/Typography';
+
+import { Container } from '@frontend/components/layout/Container';
+import { Divider } from '@frontend/components/layout/Divider';
+import { Title } from '@frontend/components/layout/Typography';
+
+import { getCurrentUser } from '@server-actions/get-current-user';
+import { getTranslation } from '@server-actions/get-translation';
 
 import { DeleteAccountButton } from './DeleteAccountButton';
 import { LogoutForm } from './LogoutForm';

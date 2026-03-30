@@ -1,9 +1,11 @@
 'use client';
 
 import React from 'react';
-import { createQuestion } from 'src/actions/questions/create-question';
-import { Field, Input } from 'src/components/layout/Form';
-import { Modal } from 'src/components/layout/Modal';
+
+import { Field, Input } from '@frontend/components/layout/Form';
+import { Modal } from '@frontend/components/layout/Modal';
+
+import { createQuestion } from '@server-actions/questions/create-question';
 
 interface CreateQuestionModalProps {
     scenarioId: number;

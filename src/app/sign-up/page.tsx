@@ -2,12 +2,14 @@
 
 import { redirect } from 'next/navigation';
 import * as React from 'react';
-import { getCurrentUser } from 'src/actions/get-current-user';
-import { getTranslation } from 'src/actions/get-translation';
-import { isVerifyCodeValid } from 'src/actions/users/create-user';
-import { Container } from 'src/components/layout/Container';
-import { Title } from 'src/components/layout/Typography';
 import type { ServerPageProps } from 'src/lib/page-props.types';
+
+import { Container } from '@frontend/components/layout/Container';
+import { Title } from '@frontend/components/layout/Typography';
+
+import { getCurrentUser } from '@server-actions/get-current-user';
+import { getTranslation } from '@server-actions/get-translation';
+import { isVerifyCodeValid } from '@server-actions/users/create-user';
 
 import { InviteTokenForm } from './InviteTokenForm';
 import { SignUpForm } from './SignUpForm';

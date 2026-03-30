@@ -2,24 +2,26 @@
 
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
-import { FeedbackModal } from 'src/components/collaboration/FeedbackModal';
-import { GroupColorPill } from 'src/components/collaboration/GroupColorPill';
-import { getStatus } from 'src/components/collaboration/get-status';
-import { DiaporamaCard } from 'src/components/create/DiaporamaCard';
-import { Container } from 'src/components/layout/Container';
-import { Flex } from 'src/components/layout/Flex';
-import { Title } from 'src/components/layout/Typography';
-import { NextButton } from 'src/components/navigation/NextButton';
-import { Steps } from 'src/components/navigation/Steps';
-import { ThemeBreadcrumbs } from 'src/components/navigation/ThemeBreadcrumbs';
-import { Inverted } from 'src/components/ui/Inverted';
-import { Trans } from 'src/components/ui/Trans';
-import { useTranslation } from 'src/contexts/translationContext';
-import { userContext } from 'src/contexts/userContext';
-import type { Sequence } from 'src/database/schemas/projects';
-import { useCollaboration } from 'src/hooks/useCollaboration';
-import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import { COLORS } from 'src/lib/colors';
+
+import { FeedbackModal } from '@frontend/components/collaboration/FeedbackModal';
+import { GroupColorPill } from '@frontend/components/collaboration/GroupColorPill';
+import { getStatus } from '@frontend/components/collaboration/get-status';
+import { DiaporamaCard } from '@frontend/components/create/DiaporamaCard';
+import { Container } from '@frontend/components/layout/Container';
+import { Flex } from '@frontend/components/layout/Flex';
+import { Title } from '@frontend/components/layout/Typography';
+import { NextButton } from '@frontend/components/navigation/NextButton';
+import { Steps } from '@frontend/components/navigation/Steps';
+import { ThemeBreadcrumbs } from '@frontend/components/navigation/ThemeBreadcrumbs';
+import { Inverted } from '@frontend/components/ui/Inverted';
+import { Trans } from '@frontend/components/ui/Trans';
+import { useTranslation } from '@frontend/contexts/translationContext';
+import { userContext } from '@frontend/contexts/userContext';
+import { useCollaboration } from '@frontend/hooks/useCollaboration';
+import { useCurrentProject } from '@frontend/hooks/useCurrentProject';
+
+import type { Sequence } from '@server/database/schemas/projects';
 
 export default function PreMountingPage() {
     const router = useRouter();

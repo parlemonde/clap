@@ -3,13 +3,15 @@
 import { EyeNoneIcon, EyeOpenIcon } from '@radix-ui/react-icons';
 import { useRouter } from 'next/navigation';
 import React from 'react';
-import { updateUser } from 'src/actions/users/update-user';
-import { Button } from 'src/components/layout/Button';
-import { IconButton } from 'src/components/layout/Button/IconButton';
-import { Divider } from 'src/components/layout/Divider';
-import { Field, Input } from 'src/components/layout/Form';
-import { Modal } from 'src/components/layout/Modal';
-import { useTranslation } from 'src/contexts/translationContext';
+
+import { Button } from '@frontend/components/layout/Button';
+import { IconButton } from '@frontend/components/layout/Button/IconButton';
+import { Divider } from '@frontend/components/layout/Divider';
+import { Field, Input } from '@frontend/components/layout/Form';
+import { Modal } from '@frontend/components/layout/Modal';
+import { useTranslation } from '@frontend/contexts/translationContext';
+
+import { updateUser } from '@server-actions/users/update-user';
 
 const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/;
 

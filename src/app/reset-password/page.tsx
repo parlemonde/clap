@@ -2,14 +2,15 @@
 
 import React from 'react';
 import { resetPassword } from 'src/actions/authentication/reset-password';
-import { Button } from 'src/components/layout/Button';
-import { Container } from 'src/components/layout/Container';
-import { Field, Form, Input } from 'src/components/layout/Form';
-import { Title } from 'src/components/layout/Typography';
-import { Link } from 'src/components/navigation/Link';
-import { Loader } from 'src/components/ui/Loader';
-import { sendToast } from 'src/components/ui/Toasts';
-import { useTranslation } from 'src/contexts/translationContext';
+
+import { Button } from '@frontend/components/layout/Button';
+import { Container } from '@frontend/components/layout/Container';
+import { Field, Form, Input } from '@frontend/components/layout/Form';
+import { Title } from '@frontend/components/layout/Typography';
+import { Link } from '@frontend/components/navigation/Link';
+import { Loader } from '@frontend/components/ui/Loader';
+import { sendToast } from '@frontend/components/ui/Toasts';
+import { useTranslation } from '@frontend/contexts/translationContext';
 
 export default function ResetPasswordPage() {
     const { t } = useTranslation();

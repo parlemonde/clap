@@ -2,23 +2,26 @@ import classNames from 'clsx';
 import type { Metadata, Viewport } from 'next';
 import { cookies } from 'next/headers';
 import { Tooltip } from 'radix-ui';
+import * as React from 'react';
+
+import { AlertModal } from '@frontend/components/collaboration/AlertModal';
+import { BottomNavBar } from '@frontend/components/navigation/BottomNavBar';
+import { NProgressDone } from '@frontend/components/navigation/NProgress';
+import { TopNavBar } from '@frontend/components/navigation/TopNavBar';
+import { Toasts } from '@frontend/components/ui/Toasts';
+import { TranslationContextProvider } from '@frontend/contexts/translationContext';
+import { UserContextProvider } from '@frontend/contexts/userContext';
+import { openSansFont, alegreyaSansFont, littleDaysFont } from '@frontend/fonts';
+
+import { getCurrentUser } from '@server-actions/get-current-user';
+import { getLocales } from '@server-actions/get-locales';
+
+import styles from './app.module.scss';
+
 import 'normalize.css/normalize.css';
 import 'nprogress/nprogress.css';
 import 'src/styles/globals.scss';
 import 'react-html5-camera-photo/build/css/index.css';
-import * as React from 'react';
-import { getCurrentUser } from 'src/actions/get-current-user';
-import { getLocales } from 'src/actions/get-locales';
-import { AlertModal } from 'src/components/collaboration/AlertModal';
-import { BottomNavBar } from 'src/components/navigation/BottomNavBar';
-import { NProgressDone } from 'src/components/navigation/NProgress';
-import { TopNavBar } from 'src/components/navigation/TopNavBar';
-import { Toasts } from 'src/components/ui/Toasts';
-import { TranslationContextProvider } from 'src/contexts/translationContext';
-import { UserContextProvider } from 'src/contexts/userContext';
-import { openSansFont, alegreyaSansFont, littleDaysFont } from 'src/fonts';
-
-import styles from './app.module.scss';
 
 const APP_URL = process.env.HOST_URL || '';
 const APP_NAME = 'Clap!';

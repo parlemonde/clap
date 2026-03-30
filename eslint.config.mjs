@@ -6,6 +6,8 @@ import eslintNextVitals from 'eslint-config-next/core-web-vitals';
 import eslintPrettier from 'eslint-plugin-prettier/recommended';
 import eslintTS from 'typescript-eslint';
 
+import importBoundariesPlugin from './eslint-plugins/import-boundaries.mjs';
+
 const eslintConfig = defineConfig([
     eslintNextVitals.map((c) => ({
         files: ['**/*.{js,jsx,mjs,ts,tsx,mts,cts}'],
@@ -55,7 +57,16 @@ const eslintConfig = defineConfig([
     },
     {
         files: ['**/*.{js,jsx,mjs,ts,tsx,mts,cts}'],
+        plugins: {
+            'import-boundaries': importBoundariesPlugin,
+        },
         rules: {
+            // Import boundary rules
+            'import-boundaries/frontend-restricted-imports': 'error',
+            'import-boundaries/lib-restricted-imports': 'error',
+            'import-boundaries/server-restricted-imports': 'error',
+            'import-boundaries/server-actions-restricted-imports': 'error',
+            'import-boundaries/enforce-import-aliases': 'error',
             // Disallow useTranslations from next-intl, use useExtracted instead
             'no-restricted-imports': [
                 'error',
@@ -97,7 +108,30 @@ const eslintConfig = defineConfig([
                 {
                     groups: [
                         ['builtin', 'external', 'internal'],
-                        ['parent', 'sibling', 'index'],
+                        ['parent', 'sibling'],
+                        ['index', 'object'],
+                    ],
+                    pathGroups: [
+                        {
+                            pattern: '@frontend/**',
+                            group: 'parent',
+                            position: 'before',
+                        },
+                        {
+                            pattern: '@server/**',
+                            group: 'parent',
+                            position: 'before',
+                        },
+                        {
+                            pattern: '@server-actions/**',
+                            group: 'parent',
+                            position: 'before',
+                        },
+                        {
+                            pattern: '@lib/**',
+                            group: 'parent',
+                            position: 'before',
+                        },
                     ],
                     'newlines-between': 'always',
                     alphabetize: {

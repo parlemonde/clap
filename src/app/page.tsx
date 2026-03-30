@@ -1,11 +1,13 @@
 import { redirect } from 'next/navigation';
 import * as React from 'react';
-import { getCurrentUser } from 'src/actions/get-current-user';
-import { listThemes } from 'src/actions/themes/list-themes';
-import { Container } from 'src/components/layout/Container';
-import { Title } from 'src/components/layout/Typography';
-import { Inverted } from 'src/components/ui/Inverted';
-import { Trans } from 'src/components/ui/Trans';
+
+import { Container } from '@frontend/components/layout/Container';
+import { Title } from '@frontend/components/layout/Typography';
+import { Inverted } from '@frontend/components/ui/Inverted';
+import { Trans } from '@frontend/components/ui/Trans';
+
+import { getCurrentUser } from '@server-actions/get-current-user';
+import { listThemes } from '@server-actions/themes/list-themes';
 
 import { Themes } from './Themes';
 

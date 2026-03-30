@@ -1,10 +1,12 @@
 'use client';
 
 import React from 'react';
-import { Field, Form } from 'src/components/layout/Form';
-import { Select } from 'src/components/layout/Form/Select';
-import { useTranslation } from 'src/contexts/translationContext';
-import type { Language } from 'src/database/schemas/languages';
+
+import { Field, Form } from '@frontend/components/layout/Form';
+import { Select } from '@frontend/components/layout/Form/Select';
+import { useTranslation } from '@frontend/contexts/translationContext';
+
+import type { Language } from '@server/database/schemas/languages';
 
 interface LanguageSelectProps {
     languages: Language[];

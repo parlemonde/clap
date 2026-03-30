@@ -1,0 +1,17 @@
+'use server';
+
+import { eq } from 'drizzle-orm';
+
+import { db } from '@server/database';
+import { projects, type Project } from '@server/database/schemas/projects';
+
+import { getCurrentUser } from '@server-actions/get-current-user';
+
+export async function getProjects(): Promise<Project[]> {
+    const user = await getCurrentUser();
+    if (!user) {
+        return [];
+    }
+
+    return await db.select().from(projects).where(eq(projects.userId, user.id)).orderBy(projects.createDate);
+}

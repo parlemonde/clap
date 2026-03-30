@@ -1,11 +1,12 @@
 'use client';
 import * as React from 'react';
 import type { JSX } from 'react';
-import type { User } from 'src/database/schemas/users';
 import type { I18nKeys } from 'src/i18n/locales';
 import CreateLogo from 'src/svg/create.svg';
 import MoviesLogo from 'src/svg/movies.svg';
 import SettingsLogo from 'src/svg/settings.svg';
+
+import type { User } from '@server/database/schemas/users';
 
 const UserIcon = (
     <svg width="20" height="20" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">

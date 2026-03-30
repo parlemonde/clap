@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { Link } from 'src/components/navigation/Link';
+
+import { Link } from '@frontend/components/navigation/Link';
 
 export default function NotFound() {
     return (

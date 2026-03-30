@@ -2,26 +2,28 @@
 
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
-import { createProject } from 'src/actions/projects/create-project';
-import { Button } from 'src/components/layout/Button';
-import { Container } from 'src/components/layout/Container';
-import { Flex } from 'src/components/layout/Flex';
-import { Field, Form, Input } from 'src/components/layout/Form';
-import { Modal } from 'src/components/layout/Modal';
-import { Title } from 'src/components/layout/Typography';
-import { Link } from 'src/components/navigation/Link';
-import { NextButton } from 'src/components/navigation/NextButton';
-import { Steps } from 'src/components/navigation/Steps';
-import { ThemeBreadcrumbs } from 'src/components/navigation/ThemeBreadcrumbs';
-import { Inverted } from 'src/components/ui/Inverted';
-import { sendToast } from 'src/components/ui/Toasts';
-import { Trans } from 'src/components/ui/Trans';
-import { useTranslation } from 'src/contexts/translationContext';
-import { userContext } from 'src/contexts/userContext';
-import { useCollaboration } from 'src/hooks/useCollaboration';
-import { useCurrentProject } from 'src/hooks/useCurrentProject';
-import { useLocalStorage } from 'src/hooks/useLocalStorage';
-import { deleteFromLocalStorage } from 'src/hooks/useLocalStorage/local-storage';
+
+import { Button } from '@frontend/components/layout/Button';
+import { Container } from '@frontend/components/layout/Container';
+import { Flex } from '@frontend/components/layout/Flex';
+import { Field, Form, Input } from '@frontend/components/layout/Form';
+import { Modal } from '@frontend/components/layout/Modal';
+import { Title } from '@frontend/components/layout/Typography';
+import { Link } from '@frontend/components/navigation/Link';
+import { NextButton } from '@frontend/components/navigation/NextButton';
+import { Steps } from '@frontend/components/navigation/Steps';
+import { ThemeBreadcrumbs } from '@frontend/components/navigation/ThemeBreadcrumbs';
+import { Inverted } from '@frontend/components/ui/Inverted';
+import { sendToast } from '@frontend/components/ui/Toasts';
+import { Trans } from '@frontend/components/ui/Trans';
+import { useTranslation } from '@frontend/contexts/translationContext';
+import { userContext } from '@frontend/contexts/userContext';
+import { useCollaboration } from '@frontend/hooks/useCollaboration';
+import { useCurrentProject } from '@frontend/hooks/useCurrentProject';
+import { useLocalStorage } from '@frontend/hooks/useLocalStorage';
+import { deleteFromLocalStorage } from '@frontend/hooks/useLocalStorage/local-storage';
+
+import { createProject } from '@server-actions/projects/create-project';
 
 import { QuestionsList } from './QuestionsList';
 

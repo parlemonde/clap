@@ -1,4 +1,4 @@
-import { buf2hex, hmac } from 'src/aws/utils';
+import { buf2hex, hmac } from '@server/aws/utils';
 
 const SECRET = process.env.APP_SECRET;
 

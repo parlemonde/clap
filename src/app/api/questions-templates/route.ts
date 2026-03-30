@@ -1,7 +1,8 @@
 import { cookies } from 'next/headers';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { listQuestions } from 'src/actions/questions/list-questions';
+
+import { listQuestions } from '@server-actions/questions/list-questions';
 
 export const dynamic = 'force-dynamic';
 

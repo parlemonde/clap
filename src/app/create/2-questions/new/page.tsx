@@ -2,17 +2,18 @@
 
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
-import { Container } from 'src/components/layout/Container';
-import { Field, Form, Input } from 'src/components/layout/Form';
-import { Title } from 'src/components/layout/Typography';
-import { NextButton } from 'src/components/navigation/NextButton';
-import { Steps } from 'src/components/navigation/Steps';
-import { ThemeBreadcrumbs } from 'src/components/navigation/ThemeBreadcrumbs';
-import { Inverted } from 'src/components/ui/Inverted';
-import { Trans } from 'src/components/ui/Trans';
-import { useTranslation } from 'src/contexts/translationContext';
-import { useCollaboration } from 'src/hooks/useCollaboration';
-import { useCurrentProject } from 'src/hooks/useCurrentProject';
+
+import { Container } from '@frontend/components/layout/Container';
+import { Field, Form, Input } from '@frontend/components/layout/Form';
+import { Title } from '@frontend/components/layout/Typography';
+import { NextButton } from '@frontend/components/navigation/NextButton';
+import { Steps } from '@frontend/components/navigation/Steps';
+import { ThemeBreadcrumbs } from '@frontend/components/navigation/ThemeBreadcrumbs';
+import { Inverted } from '@frontend/components/ui/Inverted';
+import { Trans } from '@frontend/components/ui/Trans';
+import { useTranslation } from '@frontend/contexts/translationContext';
+import { useCollaboration } from '@frontend/hooks/useCollaboration';
+import { useCurrentProject } from '@frontend/hooks/useCurrentProject';
 
 export default function QuestionNewPage() {
     const router = useRouter();

@@ -2,15 +2,18 @@
 
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
-import { updateUserById } from 'src/actions/users/update-user';
-import { Button } from 'src/components/layout/Button';
-import { Field, Form, Input } from 'src/components/layout/Form';
-import { Select } from 'src/components/layout/Form/Select';
-import { Title } from 'src/components/layout/Typography';
-import { Loader } from 'src/components/ui/Loader';
-import { sendToast } from 'src/components/ui/Toasts';
-import { userContext } from 'src/contexts/userContext';
-import type { User } from 'src/database/schemas/users';
+
+import { Button } from '@frontend/components/layout/Button';
+import { Field, Form, Input } from '@frontend/components/layout/Form';
+import { Select } from '@frontend/components/layout/Form/Select';
+import { Title } from '@frontend/components/layout/Typography';
+import { Loader } from '@frontend/components/ui/Loader';
+import { sendToast } from '@frontend/components/ui/Toasts';
+import { userContext } from '@frontend/contexts/userContext';
+
+import type { User } from '@server/database/schemas/users';
+
+import { updateUserById } from '@server-actions/users/update-user';
 
 type EditUserFormProps = {
     user: User;

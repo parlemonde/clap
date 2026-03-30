@@ -2,17 +2,19 @@ import { FileTextIcon, SpeakerLoudIcon, TimerIcon, UploadIcon } from '@radix-ui/
 import * as React from 'react';
 import { deleteSound } from 'src/actions/files/delete-sound';
 import { uploadSound } from 'src/actions/files/upload-sound';
-import { DiaporamaPlayer } from 'src/components/create/DiaporamaPlayer';
-import { Button } from 'src/components/layout/Button';
-import { Flex, FlexItem } from 'src/components/layout/Flex';
-import { Field, Form, TextArea } from 'src/components/layout/Form';
-import { Title } from 'src/components/layout/Typography';
-import { NextButton } from 'src/components/navigation/NextButton';
-import { Loader } from 'src/components/ui/Loader';
-import { sendToast } from 'src/components/ui/Toasts';
-import { useTranslation } from 'src/contexts/translationContext';
-import type { Sequence } from 'src/database/schemas/projects';
 import type { Sound } from 'src/lib/get-sounds';
+
+import { DiaporamaPlayer } from '@frontend/components/create/DiaporamaPlayer';
+import { Button } from '@frontend/components/layout/Button';
+import { Flex, FlexItem } from '@frontend/components/layout/Flex';
+import { Field, Form, TextArea } from '@frontend/components/layout/Form';
+import { Title } from '@frontend/components/layout/Typography';
+import { NextButton } from '@frontend/components/navigation/NextButton';
+import { Loader } from '@frontend/components/ui/Loader';
+import { sendToast } from '@frontend/components/ui/Toasts';
+import { useTranslation } from '@frontend/contexts/translationContext';
+
+import type { Sequence } from '@server/database/schemas/projects';
 
 interface MontageFormProps {
     sequence: Sequence;
