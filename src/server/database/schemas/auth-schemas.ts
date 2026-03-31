@@ -1,13 +1,13 @@
 /* eslint-disable camelcase */
 import { relations } from 'drizzle-orm';
-import { pgTable, text, timestamp, index } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, index, uuid } from 'drizzle-orm/pg-core';
 
 import { users } from './users';
 
 export const auth_sessions = pgTable(
     'auth_sessions',
     {
-        id: text('id').primaryKey(),
+        id: uuid().primaryKey().defaultRandom(),
         expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
         token: text('token').notNull().unique(),
         createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
@@ -16,7 +16,7 @@ export const auth_sessions = pgTable(
             .notNull(),
         ipAddress: text('ip_address'),
         userAgent: text('user_agent'),
-        userId: text('user_id')
+        userId: uuid('user_id')
             .notNull()
             .references(() => users.id, { onDelete: 'cascade' }),
         impersonatedBy: text('impersonated_by'),
@@ -27,10 +27,10 @@ export const auth_sessions = pgTable(
 export const auth_accounts = pgTable(
     'auth_accounts',
     {
-        id: text('id').primaryKey(),
+        id: uuid().primaryKey().defaultRandom(),
         accountId: text('account_id').notNull(),
         providerId: text('provider_id').notNull(),
-        userId: text('user_id')
+        userId: uuid('user_id')
             .notNull()
             .references(() => users.id, { onDelete: 'cascade' }),
         accessToken: text('access_token'),
@@ -51,7 +51,7 @@ export const auth_accounts = pgTable(
 export const auth_verifications = pgTable(
     'auth_verifications',
     {
-        id: text('id').primaryKey(),
+        id: uuid().primaryKey().defaultRandom(),
         identifier: text('identifier').notNull(),
         value: text('value').notNull(),
         expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),

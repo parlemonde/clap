@@ -1,3 +1,4 @@
+import { hash, verify } from '@node-rs/argon2';
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { nextCookies } from 'better-auth/next-js';
@@ -28,6 +29,10 @@ export const auth = registerService('auth', () =>
         plugins: ssoPlugin ? [ssoPlugin, adminPlugin, cookiesPlugin] : [adminPlugin, cookiesPlugin], // make sure `nextCookies()` is the last plugin in the array
         emailAndPassword: {
             enabled: true,
+            password: {
+                hash,
+                verify: ({ hash, password }) => verify(hash, password),
+            },
         },
         advanced: {
             database: {

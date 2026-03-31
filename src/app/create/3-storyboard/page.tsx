@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { COLORS } from 'src/lib/colors';
-import PictureAsPdf from 'src/svg/pdf.svg';
+import PictureAsPdf from '@frontend/svg/pdf.svg';
 
 import { getStatus } from '@frontend/components/collaboration/get-status';
 import { Button } from '@frontend/components/layout/Button';

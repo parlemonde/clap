@@ -1,9 +1,12 @@
-import { hash } from '@node-rs/argon2';
+/* eslint-disable camelcase */
 import { eq } from 'drizzle-orm';
 import { migrate } from 'drizzle-orm/node-postgres/migrator';
 import { Client } from 'pg';
 
+import { auth } from '@server/auth/auth';
+
 import { db } from './database';
+import { auth_sessions } from './schemas/auth-schemas';
 import { languages } from './schemas/languages';
 import { users } from './schemas/users';
 
@@ -28,27 +31,36 @@ async function createDatabase(): Promise<void> {
 }
 
 async function createAdminUser(): Promise<void> {
-    const adminName = process.env.ADMIN_NAME;
     const adminPassword = process.env.ADMIN_PASSWORD;
     const adminEmail = process.env.ADMIN_EMAIL;
 
-    if (!adminName || !adminPassword || !adminEmail) {
+    if (!adminPassword || !adminEmail) {
         return;
     }
 
     try {
-        const results = await db.select().from(users).where(eq(users.name, adminName)).limit(1);
+        const results = await db.select().from(users).where(eq(users.email, adminEmail)).limit(1);
         if (results.length > 0) {
             return;
         }
-        const user = {
-            name: adminName,
-            email: adminEmail,
-            passwordHash: await hash(adminPassword),
-            role: 'admin' as const,
-        };
-        await db.insert(users).values(user);
-    } catch {
+        const result = await auth.api.signUpEmail({
+            body: {
+                email: adminEmail,
+                password: adminPassword,
+                name: 'Admin',
+            },
+        });
+        await db
+            .update(users)
+            .set({
+                role: 'admin',
+            })
+            .where(eq(users.id, result.user.id));
+        if (result.token !== null) {
+            await db.delete(auth_sessions).where(eq(auth_sessions.token, result.token));
+        }
+    } catch (error) {
+        console.error(error);
         return;
     }
 }

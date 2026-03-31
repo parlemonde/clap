@@ -2,8 +2,8 @@
 
 import { Checkbox as RadixCheckbox } from 'radix-ui';
 import * as React from 'react';
-import CheckedIcon from 'src/svg/checkedIcon.svg';
-import UncheckedIcon from 'src/svg/uncheckedIcon.svg';
+import CheckedIcon from '@frontend/svg/checkedIcon.svg';
+import UncheckedIcon from '@frontend/svg/uncheckedIcon.svg';
 
 import { IconButton } from '@frontend/components/layout/Button/IconButton';
 import type { SVGIcon } from '@frontend/components/layout/Button/IconButton';

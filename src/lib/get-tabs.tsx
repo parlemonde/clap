@@ -2,9 +2,9 @@
 import * as React from 'react';
 import type { JSX } from 'react';
 import type { I18nKeys } from 'src/i18n/locales';
-import CreateLogo from 'src/svg/create.svg';
-import MoviesLogo from 'src/svg/movies.svg';
-import SettingsLogo from 'src/svg/settings.svg';
+import CreateLogo from '@frontend/svg/create.svg';
+import MoviesLogo from '@frontend/svg/movies.svg';
+import SettingsLogo from '@frontend/svg/settings.svg';
 
 import type { User } from '@server/database/schemas/users';
 

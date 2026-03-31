@@ -3,7 +3,7 @@
 import { VideoIcon } from '@radix-ui/react-icons';
 import * as React from 'react';
 import { getSounds } from 'src/lib/get-sounds';
-import VideoFile from 'src/svg/plan.svg';
+import VideoFile from '@frontend/svg/plan.svg';
 
 import { DiaporamaPlayer } from '@frontend/components/create/DiaporamaPlayer';
 import { Button } from '@frontend/components/layout/Button';

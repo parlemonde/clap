@@ -2,7 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 import * as React from 'react';
-import PelicoSVG from 'src/svg/pelico.svg';
+import PelicoSVG from '@frontend/svg/pelico.svg';
 
 import { Box } from '@frontend/components/layout/Box';
 import { Link as NextLink } from '@frontend/components/navigation/Link';
