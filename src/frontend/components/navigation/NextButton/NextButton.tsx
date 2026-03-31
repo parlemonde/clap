@@ -5,7 +5,6 @@ import * as React from 'react';
 import type { MarginProps } from '@frontend/components/layout';
 import { Box } from '@frontend/components/layout/Box';
 import { Button } from '@frontend/components/layout/Button';
-import { Link, startNProgress } from '@frontend/components/navigation/Link';
 import { useTranslation } from '@frontend/contexts/translationContext';
 
 import styles from './next-button.module.scss';
@@ -24,19 +23,15 @@ export const NextButton = ({ label, backHref, type, onNext, isDisabled, ...margi
     return (
         <Box as="div" className={styles.nextButton} {...marginProps}>
             {backHref && (
-                <Link href={backHref} passHref legacyBehavior>
-                    <Button
-                        className={styles.nextButton__back}
-                        label={t('common.actions.cancel')}
-                        as="a"
-                        variant="outlined"
-                        color="secondary"
-                        marginRight="md"
-                        onClick={(event) => {
-                            startNProgress(backHref, event);
-                        }}
-                    ></Button>
-                </Link>
+                <Button
+                    className={styles.nextButton__back}
+                    label={t('common.actions.cancel')}
+                    as="a"
+                    href={backHref}
+                    variant="outlined"
+                    color="secondary"
+                    marginRight="md"
+                ></Button>
             )}
             <Button
                 className={styles.nextButton__next}

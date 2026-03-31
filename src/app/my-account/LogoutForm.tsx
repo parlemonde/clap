@@ -1,11 +1,12 @@
 'use client';
 
 import React from 'react';
-// import { logout } from 'src/actions/authentication/logout';
 
 import { Button } from '@frontend/components/layout/Button';
 import { Loader } from '@frontend/components/ui/Loader';
 import { useTranslation } from '@frontend/contexts/translationContext';
+
+import { logout } from '@server-actions/authentication/logout';
 
 export const LogoutForm = () => {
     const { t } = useTranslation();
@@ -18,8 +19,7 @@ export const LogoutForm = () => {
                 ev.preventDefault();
                 setIsLoading(true);
                 try {
-                    // await logout();
-                    // TODO: Fix this
+                    await logout();
                 } catch (e) {
                     console.error(e);
                 }

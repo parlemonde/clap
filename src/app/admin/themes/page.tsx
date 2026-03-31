@@ -5,7 +5,6 @@ import { AdminTile } from '@frontend/components/admin/AdminTile';
 import { Button } from '@frontend/components/layout/Button';
 import { Container } from '@frontend/components/layout/Container';
 import { Title } from '@frontend/components/layout/Typography';
-import { Link } from '@frontend/components/navigation/Link';
 
 import { listThemes, listUserThemes } from '@server-actions/themes/list-themes';
 
@@ -33,15 +32,14 @@ export default async function AdminThemesPage() {
                 marginY="md"
                 title="Liste des thèmes"
                 actions={
-                    <Link href="/admin/themes/new" passHref legacyBehavior>
-                        <Button
-                            label="Ajouter un thème"
-                            as="a"
-                            variant="contained"
-                            color="light-grey"
-                            leftIcon={<PlusCircledIcon style={{ width: '20px', height: '20px', marginRight: '8px' }} />}
-                        ></Button>
-                    </Link>
+                    <Button
+                        label="Ajouter un thème"
+                        as="a"
+                        href="/admin/themes/new"
+                        variant="contained"
+                        color="light-grey"
+                        leftIcon={<PlusCircledIcon style={{ width: '20px', height: '20px', marginRight: '8px' }} />}
+                    ></Button>
                 }
             >
                 <React.Suspense fallback={<ThemesTablePlaceholder />}>

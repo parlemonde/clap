@@ -1,1 +1,1 @@
-export { Link, startNProgress } from './Link';
+export { Link } from './Link';

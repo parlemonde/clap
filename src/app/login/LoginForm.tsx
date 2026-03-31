@@ -2,9 +2,9 @@
 
 import { EyeNoneIcon, EyeOpenIcon } from '@radix-ui/react-icons';
 import * as React from 'react';
-// import { login } from 'src/actions/authentication/login';
 // import { loginWithSSO } from 'src/actions/authentication/login-with-sso';
 import type { I18nKeys } from 'src/i18n/locales';
+import { login } from 'src/server-actions/authentication/login';
 
 import { Button } from '@frontend/components/layout/Button';
 import { IconButton } from '@frontend/components/layout/Button/IconButton';
@@ -28,7 +28,7 @@ const clearSSOState = () => {
 };
 
 export const LoginForm = ({ ssoHost, clientId, stateQueryParam, codeQueryParam }: LoginFormProps) => {
-    // const [message, formAction] = React.useActionState(login, ''); // TODO: Fix this
+    const [message, formAction] = React.useActionState(login, '');
     const { t } = useTranslation();
 
     const [showPassword, setShowPassword] = React.useState(false);
@@ -75,8 +75,8 @@ export const LoginForm = ({ ssoHost, clientId, stateQueryParam, codeQueryParam }
     const ssoHostName = ssoHost.replace(/(^\w+:|^)\/\//, '');
 
     return (
-        <Form className="login-form" /* action={formAction} */>
-            {/* {message && <span style={{ color: 'rgb(211, 47, 47)', display: 'block' }}>{t(message as I18nKeys)}</span>} */}
+        <Form className="login-form" action={formAction}>
+            {message && <span style={{ color: 'rgb(211, 47, 47)', display: 'block' }}>{t(message as I18nKeys)}</span>}
             {ssoErrorMessage && <span style={{ color: 'rgb(211, 47, 47)', display: 'block' }}>{t(ssoErrorMessage)}</span>}
             {ssoHost && clientId ? (
                 <>
@@ -127,9 +127,15 @@ export const LoginForm = ({ ssoHost, clientId, stateQueryParam, codeQueryParam }
                 }
             ></Field>
             <Button label={t('login_page.connect_button.label')} variant="contained" color="secondary" type="submit" value="Submit"></Button>
-            <Link href="/join" passHref legacyBehavior>
-                <Button marginTop="lg" as="a" isFullWidth label={t('login_page.student_button.label')} variant="outlined" color="secondary"></Button>
-            </Link>
+            <Button
+                marginTop="lg"
+                as="a"
+                href="/join"
+                isFullWidth
+                label={t('login_page.student_button.label')}
+                variant="outlined"
+                color="secondary"
+            ></Button>
             <div className="text-center">
                 <Link href="/reset-password" className="color-primary">
                     {t('login_page.forgot_password_link.label')}

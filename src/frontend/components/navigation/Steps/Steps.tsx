@@ -121,16 +121,15 @@ export const Steps = ({ activeStep, backHref, themeId }: StepsProps) => {
             {/* -- Steps (mobile only) -- */}
             <div className={styles.mobileSteps}>
                 {backHref && (
-                    <Link href={backHref} passHref legacyBehavior>
-                        <Button
-                            as="a"
-                            leftIcon={<ChevronLeftIcon />}
-                            className={styles.mobileBackButton}
-                            label={t('common.actions.back')}
-                            color="primary"
-                            variant="borderless"
-                        />
-                    </Link>
+                    <Button
+                        as="a"
+                        href={backHref}
+                        leftIcon={<ChevronLeftIcon />}
+                        className={styles.mobileBackButton}
+                        label={t('common.actions.back')}
+                        color="primary"
+                        variant="borderless"
+                    />
                 )}
                 {STEPS.map((step, index) => (
                     <div key={step.name} className={classNames(styles.dot, { [styles['dot--active']]: index <= activeStep })}></div>

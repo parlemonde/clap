@@ -3,7 +3,6 @@ import React from 'react';
 import { serializeToQueryUrl } from 'src/lib/serialize-to-query-url';
 
 import { IconButton } from '@frontend/components/layout/Button/IconButton';
-import { Link } from '@frontend/components/navigation/Link';
 
 import styles from './question-card.module.scss';
 
@@ -50,9 +49,15 @@ export const QuestionCard = ({ projectId, question, index = 0, onDelete, onIndex
                 <p>{question}</p>
             </div>
             <div className={styles.questionActions}>
-                <Link href={`/create/2-questions/edit${serializeToQueryUrl({ question: index, projectId })}`} legacyBehavior passHref>
-                    <IconButton as="a" aria-label="edit" size="sm" color="secondary" marginRight="sm" icon={Pencil1Icon}></IconButton>
-                </Link>
+                <IconButton
+                    as="a"
+                    href={`/create/2-questions/edit${serializeToQueryUrl({ question: index, projectId })}`}
+                    aria-label="edit"
+                    size="sm"
+                    color="secondary"
+                    marginRight="sm"
+                    icon={Pencil1Icon}
+                ></IconButton>
                 {onDelete && <IconButton aria-label="delete" size="sm" color="secondary" onClick={onDelete} icon={TrashIcon}></IconButton>}
                 {onEditStatus && (
                     <IconButton aria-label="delete" size="sm" color="secondary" marginLeft="sm" onClick={onEditStatus} icon={GearIcon}></IconButton>

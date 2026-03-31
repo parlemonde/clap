@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation';
 import { NavigationMenu } from 'radix-ui';
 import * as React from 'react';
 
-import { Link as NextLink, startNProgress } from '@frontend/components/navigation/Link';
+import { Link as NextLink } from '@frontend/components/navigation/Link';
 
 import styles from './admin-drawer.module.scss';
 
@@ -45,17 +45,11 @@ export const AdminDrawer = () => {
                 <NavigationMenu.List>
                     {adminTabs.map((tab) => (
                         <NavigationMenu.Item key={tab.path}>
-                            <NextLink href={tab.path} legacyBehavior passHref>
-                                <NavigationMenu.Link
-                                    onClick={(event) => {
-                                        startNProgress(tab.path, event);
-                                    }}
-                                    active={currentPathName.startsWith(tab.path)}
-                                    className={styles.AdminDrawer__NavigationButton}
-                                >
+                            <NavigationMenu.Link asChild active={currentPathName.startsWith(tab.path)}>
+                                <NextLink href={tab.path} className={styles.AdminDrawer__NavigationButton}>
                                     {tab.label}
-                                </NavigationMenu.Link>
-                            </NextLink>
+                                </NextLink>
+                            </NavigationMenu.Link>
                         </NavigationMenu.Item>
                     ))}
                 </NavigationMenu.List>

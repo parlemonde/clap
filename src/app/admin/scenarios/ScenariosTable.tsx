@@ -123,15 +123,14 @@ export const ScenariosTable = ({ themes, scenarios }: ScenariosTableProps) => {
                                                 <th align="right" style={{ minWidth: '96px' }}>
                                                     <Tooltip content="Modifier">
                                                         <span>
-                                                            <Link href={`/admin/scenarios/edit/${s.id}`} passHref legacyBehavior>
-                                                                <IconButton
-                                                                    as="a"
-                                                                    margin="xs"
-                                                                    aria-label="edit"
-                                                                    variant="borderless"
-                                                                    icon={Pencil1Icon}
-                                                                ></IconButton>
-                                                            </Link>
+                                                            <IconButton
+                                                                as="a"
+                                                                href={`/admin/scenarios/edit/${s.id}`}
+                                                                margin="xs"
+                                                                aria-label="edit"
+                                                                variant="borderless"
+                                                                icon={Pencil1Icon}
+                                                            ></IconButton>
                                                         </span>
                                                     </Tooltip>
                                                     <Tooltip content="Supprimer">

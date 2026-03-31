@@ -6,7 +6,7 @@ import { NavigationMenu } from 'radix-ui';
 import * as React from 'react';
 import { getTabs } from 'src/lib/get-tabs';
 
-import { Link as NextLink, startNProgress } from '@frontend/components/navigation/Link';
+import { Link as NextLink } from '@frontend/components/navigation/Link';
 import { useTranslation } from '@frontend/contexts/translationContext';
 import { userContext } from '@frontend/contexts/userContext';
 
@@ -31,18 +31,15 @@ export const BottomNavBar = () => {
                 <NavigationMenu.List className={styles.navigationList}>
                     {tabs.map((tab) => (
                         <NavigationMenu.Item key={tab.path} className={styles.navigationItem}>
-                            <NextLink href={tab.path} passHref legacyBehavior>
-                                <NavigationMenu.Link
-                                    active={tab.path === currentPath || (tab.path === '/create/3-storyboard' && currentPath === '/')}
-                                    onClick={(event) => {
-                                        startNProgress(tab.path, event);
-                                    }}
-                                    className={styles.navigationButton}
-                                >
+                            <NavigationMenu.Link
+                                asChild
+                                active={tab.path === currentPath || (tab.path === '/create/3-storyboard' && currentPath === '/')}
+                            >
+                                <NextLink className={styles.navigationButton} href={tab.path}>
                                     <span style={{ marginBottom: '2px' }}>{tab.icon}</span>
                                     <span>{t(tab.label)}</span>
-                                </NavigationMenu.Link>
-                            </NextLink>
+                                </NextLink>
+                            </NavigationMenu.Link>
                         </NavigationMenu.Item>
                     ))}
                 </NavigationMenu.List>

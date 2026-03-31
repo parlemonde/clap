@@ -12,7 +12,6 @@ import { Input } from '@frontend/components/layout/Form';
 import { Select } from '@frontend/components/layout/Form/Select';
 import { Modal } from '@frontend/components/layout/Modal';
 import { Tooltip } from '@frontend/components/layout/Tooltip';
-import { Link } from '@frontend/components/navigation/Link';
 import { Loader } from '@frontend/components/ui/Loader';
 import { sendToast } from '@frontend/components/ui/Toasts';
 import { userContext } from '@frontend/contexts/userContext';
@@ -182,9 +181,14 @@ export const UsersTable = ({ users }: UsersTableWithDataProps) => {
                             <th align="right" style={{ minWidth: '96px', paddingRight: 8 }}>
                                 <Tooltip content="Modifier">
                                     <span>
-                                        <Link href={`/admin/users/edit/${u.id}`} passHref legacyBehavior>
-                                            <IconButton as="a" margin="xs" aria-label="edit" variant="borderless" icon={Pencil1Icon}></IconButton>
-                                        </Link>
+                                        <IconButton
+                                            as="a"
+                                            href={`/admin/users/edit/${u.id}`}
+                                            margin="xs"
+                                            aria-label="edit"
+                                            variant="borderless"
+                                            icon={Pencil1Icon}
+                                        ></IconButton>
                                     </span>
                                 </Tooltip>
                                 {user?.id !== u.id && (

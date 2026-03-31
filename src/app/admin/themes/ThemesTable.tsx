@@ -101,9 +101,14 @@ export const ThemesTable = ({ defaultThemes }: ThemesTableWithDataProps) => {
                                 <th align="right" style={{ minWidth: '96px' }}>
                                     <Tooltip content="Modifier">
                                         <span>
-                                            <Link href={`/admin/themes/edit/${t.id}`} passHref legacyBehavior>
-                                                <IconButton as="a" margin="xs" aria-label="edit" variant="borderless" icon={Pencil1Icon}></IconButton>
-                                            </Link>
+                                            <IconButton
+                                                as="a"
+                                                href={`/admin/themes/edit/${t.id}`}
+                                                margin="xs"
+                                                aria-label="edit"
+                                                variant="borderless"
+                                                icon={Pencil1Icon}
+                                            ></IconButton>
                                         </span>
                                     </Tooltip>
                                     <Tooltip content="Supprimer">

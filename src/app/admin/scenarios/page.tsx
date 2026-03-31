@@ -7,7 +7,6 @@ import { AdminTile } from '@frontend/components/admin/AdminTile';
 import { Button } from '@frontend/components/layout/Button';
 import { Container } from '@frontend/components/layout/Container';
 import { Title } from '@frontend/components/layout/Typography';
-import { Link } from '@frontend/components/navigation/Link';
 
 import { listScenarios, listUserScenarios } from '@server-actions/scenarios/list-scenarios';
 import { listThemes } from '@server-actions/themes/list-themes';
@@ -36,15 +35,14 @@ export default async function AdminScenariosPage() {
                 marginY="md"
                 title="Liste des scénarios par thème"
                 actions={
-                    <Link href="/admin/scenarios/new" passHref legacyBehavior>
-                        <Button
-                            label="Ajouter un scénario"
-                            as="a"
-                            variant="contained"
-                            color="light-grey"
-                            leftIcon={<PlusCircledIcon style={{ width: '20px', height: '20px', marginRight: '8px' }} />}
-                        ></Button>
-                    </Link>
+                    <Button
+                        as="a"
+                        label="Ajouter un scénario"
+                        href="/admin/scenarios/new"
+                        variant="contained"
+                        color="light-grey"
+                        leftIcon={<PlusCircledIcon style={{ width: '20px', height: '20px', marginRight: '8px' }} />}
+                    ></Button>
                 }
             >
                 <React.Suspense fallback={<ScenariosTablePlaceholder />}>

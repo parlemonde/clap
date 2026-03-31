@@ -5,7 +5,6 @@ import React from 'react';
 
 import { IconButton } from '@frontend/components/layout/Button/IconButton';
 import { Title } from '@frontend/components/layout/Typography';
-import { Link } from '@frontend/components/navigation/Link';
 import { useTranslation } from '@frontend/contexts/translationContext';
 import { useCurrentProject } from '@frontend/hooks/useCurrentProject';
 import { useLocalStorage } from '@frontend/hooks/useLocalStorage';
@@ -42,16 +41,15 @@ export const ProjectTitle = () => {
             >
                 {name}
             </Title>
-            <Link href={`/my-videos/${projectId}`} passHref legacyBehavior>
-                <IconButton
-                    as="a"
-                    aria-label="edit"
-                    size="sm"
-                    color="primary"
-                    icon={Pencil1Icon}
-                    style={{ marginLeft: '0.6rem', marginTop: '-0.3rem' }}
-                ></IconButton>
-            </Link>
+            <IconButton
+                as="a"
+                href={`/my-videos/${projectId}`}
+                aria-label="edit"
+                size="sm"
+                color="primary"
+                icon={Pencil1Icon}
+                style={{ marginLeft: '0.6rem', marginTop: '-0.3rem' }}
+            ></IconButton>
         </div>
     );
 };

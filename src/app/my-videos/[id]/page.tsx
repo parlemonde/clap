@@ -5,7 +5,6 @@ import { Button } from '@frontend/components/layout/Button';
 import { Container } from '@frontend/components/layout/Container';
 import { Flex } from '@frontend/components/layout/Flex';
 import { Text, Title } from '@frontend/components/layout/Typography';
-import { Link } from '@frontend/components/navigation/Link';
 
 import { getCurrentUser } from '@server/auth/get-current-user';
 
@@ -33,9 +32,14 @@ export default async function EditProjectPage(props: ServerPageProps) {
                     <Text variant="p" marginTop="xl">
                         {t('video_page.not_found.text')}
                     </Text>
-                    <Link href="/" passHref legacyBehavior>
-                        <Button as="a" label={t('video_page.not_found_button.label')} color="primary" variant="contained" marginTop="md"></Button>
-                    </Link>
+                    <Button
+                        as="a"
+                        href="/"
+                        label={t('video_page.not_found_button.label')}
+                        color="primary"
+                        variant="contained"
+                        marginTop="md"
+                    ></Button>
                 </Flex>
             </Container>
         );

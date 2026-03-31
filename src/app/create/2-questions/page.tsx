@@ -9,7 +9,6 @@ import { Flex } from '@frontend/components/layout/Flex';
 import { Field, Form, Input } from '@frontend/components/layout/Form';
 import { Modal } from '@frontend/components/layout/Modal';
 import { Title } from '@frontend/components/layout/Typography';
-import { Link } from '@frontend/components/navigation/Link';
 import { NextButton } from '@frontend/components/navigation/NextButton';
 import { Steps } from '@frontend/components/navigation/Steps';
 import { ThemeBreadcrumbs } from '@frontend/components/navigation/ThemeBreadcrumbs';
@@ -89,15 +88,14 @@ export default function QuestionPage() {
             <Title color="inherit" variant="h2" marginBottom="lg">
                 {t('2_questions_page.secondary.title')}
             </Title>
-            <Link href={`/create/2-questions/new`} passHref legacyBehavior>
-                <Button
-                    as="a"
-                    label={t('2_questions_page.add_question_button.label')}
-                    variant="outlined"
-                    color="secondary"
-                    isUpperCase={false}
-                ></Button>
-            </Link>
+            <Button
+                as="a"
+                href={`/create/2-questions/new`}
+                label={t('2_questions_page.add_question_button.label')}
+                variant="outlined"
+                color="secondary"
+                isUpperCase={false}
+            ></Button>
             <QuestionsList project={projectData} setProject={setProjectData} />
             <NextButton
                 onNext={() => {

@@ -5,7 +5,7 @@ import { NavigationMenu as RadixNavigationMenu } from 'radix-ui';
 import * as React from 'react';
 import { getTabs } from 'src/lib/get-tabs';
 
-import { Link as NextLink, startNProgress } from '@frontend/components/navigation/Link';
+import { Link as NextLink } from '@frontend/components/navigation/Link';
 import { useTranslation } from '@frontend/contexts/translationContext';
 import { userContext } from '@frontend/contexts/userContext';
 
@@ -25,18 +25,15 @@ export const NavigationMenu = () => {
             <RadixNavigationMenu.List>
                 {tabs.map((tab) => (
                     <RadixNavigationMenu.Item key={tab.path}>
-                        <NextLink href={tab.path} passHref legacyBehavior>
-                            <RadixNavigationMenu.Link
-                                active={tab.path === currentPath || (tab.path === '/create/3-storyboard' && currentPath === '/')}
-                                onClick={(event) => {
-                                    startNProgress(tab.path, event);
-                                }}
-                                className={styles.navigationButton}
-                            >
+                        <RadixNavigationMenu.Link
+                            asChild
+                            active={tab.path === currentPath || (tab.path === '/create/3-storyboard' && currentPath === '/')}
+                        >
+                            <NextLink href={tab.path} className={styles.navigationButton}>
                                 <span>{t(tab.label)}</span>
                                 {tab.icon}
-                            </RadixNavigationMenu.Link>
-                        </NextLink>
+                            </NextLink>
+                        </RadixNavigationMenu.Link>
                     </RadixNavigationMenu.Item>
                 ))}
             </RadixNavigationMenu.List>
