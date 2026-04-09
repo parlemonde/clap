@@ -96,7 +96,11 @@
       "@aws-sdk/client-dynamodb": "^3.848.0"
     },
     "onlyBuiltDependencies": [
-      "sharp"
+      "@parcel/watcher",
+      "aws-sdk",
+      "esbuild",
+      "sharp",
+      "unrs-resolver"
     ]
   }
 }

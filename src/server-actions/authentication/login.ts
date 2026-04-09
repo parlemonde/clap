@@ -25,7 +25,7 @@ export async function login(_previousState: string, formData: FormData): Promise
         .leftJoin(users, eq(users.id, auth_accounts.userId))
         .where(and(eq(users.email, email)));
     if (result.some((r) => r.providers === ssoProvider) && result.every((r) => r.providers !== 'credential')) {
-        return 'Veuillez utiliser la connection par classe pour accéder à votre compte.';
+        return 'common.errors.sso_connection_required';
     }
 
     try {
@@ -36,7 +36,7 @@ export async function login(_previousState: string, formData: FormData): Promise
             },
         });
     } catch {
-        return 'Identifiants invalides.';
+        return 'common.errors.invalid_credentials';
     }
     redirect('/', RedirectType.push);
 }
