@@ -25,7 +25,7 @@ type UsersTableWithDataProps = {
 };
 
 export const UsersTable = ({ users }: UsersTableWithDataProps) => {
-    const { user } = React.useContext(userContext);
+    const user = React.useContext(userContext);
     const [deleteIndex, setDeleteIndex] = React.useState<number | null>(null);
     const [isDeleting, setIsDeleting] = React.useState(false);
     const [search, setSearch] = React.useState('');

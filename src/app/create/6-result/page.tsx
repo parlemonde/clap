@@ -68,7 +68,7 @@ const Or = () => {
 
 export default function ResultPage() {
     const { t } = useTranslation();
-    const { user } = React.useContext(userContext);
+    const user = React.useContext(userContext);
     const [projectId] = useLocalStorage('projectId');
     const { projectData, name } = useCurrentProject();
     useCollaboration(); // Listen to collaboration updates

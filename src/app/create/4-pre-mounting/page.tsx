@@ -27,7 +27,7 @@ export default function PreMountingPage() {
     const { t } = useTranslation();
     const { projectData, setProjectData } = useCurrentProject();
     const { collaborationButton, isCollaborationEnabled, sendCollaborationValidationMsg } = useCollaboration();
-    const { user } = React.useContext(userContext);
+    const user = React.useContext(userContext);
     const isStudent = user?.role === 'student';
 
     if (!projectData) {

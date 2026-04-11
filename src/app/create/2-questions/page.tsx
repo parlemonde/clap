@@ -28,7 +28,7 @@ import { QuestionsList } from './QuestionsList';
 export default function QuestionPage() {
     const router = useRouter();
     const { t, currentLocale } = useTranslation();
-    const { user } = React.useContext(userContext);
+    const user = React.useContext(userContext);
     const [projectId, setProjectId] = useLocalStorage('projectId');
     const { projectData, setProjectData } = useCurrentProject();
     const { collaborationButton } = useCollaboration();

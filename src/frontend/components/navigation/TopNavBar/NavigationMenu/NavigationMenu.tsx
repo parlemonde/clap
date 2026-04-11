@@ -13,7 +13,7 @@ import styles from './navigation-menu.module.scss';
 
 export const NavigationMenu = () => {
     const { t } = useTranslation();
-    const { user } = React.useContext(userContext);
+    const user = React.useContext(userContext);
 
     const currentPathName = usePathname().split('/')[1];
     const currentPath = currentPathName && currentPathName !== 'create' ? `/${currentPathName}` : '/';

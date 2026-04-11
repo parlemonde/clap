@@ -1,8 +1,8 @@
 'use client';
 
 import { InfoCircledIcon } from '@radix-ui/react-icons';
+import { useRouter } from 'next/navigation';
 import React from 'react';
-import { userContext } from 'src/frontend/contexts/userContext';
 import { authClient } from 'src/frontend/lib/auth-client';
 
 import { Flex } from '@frontend/components/layout/Flex';
@@ -20,7 +20,7 @@ interface UpdateEmailFormProps {
 
 export const UpdateEmailForm = ({ user }: UpdateEmailFormProps) => {
     const { t } = useTranslation();
-    const { setUser } = React.useContext(userContext);
+    const router = useRouter();
     const [isUpdateModalOpen, setIsUpdateModalOpen] = React.useState(false);
     const [updateErrorMessage, setUpdateErrorMessage] = React.useState<string | null>(null);
     const [isLoading, setIsLoading] = React.useState(false);
@@ -42,8 +42,8 @@ export const UpdateEmailForm = ({ user }: UpdateEmailFormProps) => {
         if (error || !data.status) {
             setUpdateErrorMessage("Echec de la mise à jour de l'email");
         } else {
-            setUser({ ...user, email });
             setIsUpdateModalOpen(false);
+            router.refresh();
         }
     };
 

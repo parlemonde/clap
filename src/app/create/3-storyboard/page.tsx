@@ -31,7 +31,7 @@ export default function StoryboardPage() {
     const { t } = useTranslation();
     const { projectData, setProjectData } = useCurrentProject();
     const { collaborationButton, isCollaborationEnabled, sendCollaborationValidationMsg } = useCollaboration();
-    const { user } = React.useContext(userContext);
+    const user = React.useContext(userContext);
     const isStudent = user?.role === 'student';
     const [isGeneratingPDF, setIsGeneratingPDF] = React.useState(false);
 

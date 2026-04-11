@@ -4,20 +4,11 @@ import React from 'react';
 
 import type { User } from '@server/database/schemas/users';
 
-type UserContext = {
-    user?: User;
-    setUser: React.Dispatch<React.SetStateAction<User | undefined>>;
-};
-
-export const userContext = React.createContext<UserContext>({
-    user: undefined,
-    setUser: () => {},
-});
+export const userContext = React.createContext<User | undefined>(undefined);
 
 type UserContextProviderProps = {
-    initialUser?: User;
+    user?: User;
 };
-export const UserContextProvider = ({ initialUser, children }: React.PropsWithChildren<UserContextProviderProps>) => {
-    const userContextValue = React.useMemo(() => ({ user: initialUser, setUser: () => {} }), [initialUser]);
-    return <userContext.Provider value={userContextValue}>{children}</userContext.Provider>;
+export const UserContextProvider = ({ user, children }: React.PropsWithChildren<UserContextProviderProps>) => {
+    return <userContext.Provider value={user}>{children}</userContext.Provider>;
 };

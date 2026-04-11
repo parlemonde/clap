@@ -29,7 +29,6 @@ export const users = pgTable('users', {
 
 type FullUser = typeof users.$inferSelect;
 export type User = Pick<FullUser, 'id' | 'name' | 'email' | 'role'> & {
-    useSSO?: boolean;
     teacherId?: number;
     projectId?: number;
     questionId?: number;

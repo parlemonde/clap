@@ -26,7 +26,7 @@ type NewScenarioFormProps = {
 };
 export const NewScenarioForm = ({ backUrl, themeId }: NewScenarioFormProps) => {
     const router = useRouter();
-    const { user } = React.useContext(userContext);
+    const user = React.useContext(userContext);
     const { t, currentLocale } = useTranslation();
 
     const { setProjectData } = useCurrentProject();

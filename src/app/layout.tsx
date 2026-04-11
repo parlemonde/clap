@@ -77,7 +77,7 @@ export default async function RootLayout({ children }: React.PropsWithChildren) 
                 <noscript>You need to enable JavaScript to run this app.</noscript>
                 <Tooltip.Provider delayDuration={0}>
                     <TranslationContextProvider language={currentLocale} locales={locales}>
-                        <UserContextProvider initialUser={user}>
+                        <UserContextProvider user={user}>
                             <TopNavBar />
                             {children}
                             <BottomNavBar />

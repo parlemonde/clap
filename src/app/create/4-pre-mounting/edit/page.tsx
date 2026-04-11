@@ -22,7 +22,7 @@ import { MontageForm } from './MontageForm';
 
 export default function MontagePage(props: ServerPageProps) {
     const router = useRouter();
-    const { user } = React.useContext(userContext);
+    const user = React.useContext(userContext);
     const isStudent = user?.role === 'student';
     const { t } = useTranslation();
     const { projectData, setProjectData } = useCurrentProject();

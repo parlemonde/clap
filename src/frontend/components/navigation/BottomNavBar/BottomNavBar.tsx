@@ -14,7 +14,7 @@ import styles from './bottom-nav-bar.module.scss';
 
 export const BottomNavBar = () => {
     const { t } = useTranslation();
-    const { user } = React.useContext(userContext);
+    const user = React.useContext(userContext);
 
     const currentPathName = usePathname().split('/')[1];
     const currentPath = currentPathName && currentPathName !== 'create' ? `/${currentPathName}` : '/';

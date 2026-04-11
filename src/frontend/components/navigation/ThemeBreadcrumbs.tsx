@@ -18,7 +18,7 @@ type ThemeBreadcrumbsProps = {
 
 export const ThemeBreadcrumbs = ({ themeId }: ThemeBreadcrumbsProps) => {
     const { t, currentLocale } = useTranslation();
-    const { user } = React.useContext(userContext);
+    const user = React.useContext(userContext);
     const { data: themes, isLoading } = useSWR<Theme[]>('/api/themes', jsonFetcher);
     const [localThemes, _setLocalThemes, isLoadingLocalThemes] = useLocalStorage('themes', []);
 

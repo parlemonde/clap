@@ -37,7 +37,6 @@ export const ssoPlugin = registerService('parlemonde-sso-plugin', () =>
               config: [
                   {
                       providerId: PARLEMONDE_SSO_PROVIDER_ID,
-                      redirectURI: `${process.env.HOST_URL || ''}/login`,
                       responseType: 'code',
                       clientId: CLIENT_ID,
                       clientSecret: CLIENT_SECRET,

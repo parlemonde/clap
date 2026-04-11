@@ -18,7 +18,7 @@ import { createTheme } from '@server-actions/themes/create-theme';
 export const NewThemeForm = () => {
     const router = useRouter();
     const { t } = useTranslation();
-    const { user } = React.useContext(userContext);
+    const user = React.useContext(userContext);
     const [themeName, setThemeName] = React.useState('');
     const [isLoading, setIsLoading] = React.useState(false);
     const [localThemes, setLocalThemes] = useLocalStorage('themes', []);

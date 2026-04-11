@@ -19,7 +19,7 @@ type EditUserFormProps = {
 
 export const EditUserForm = ({ user }: EditUserFormProps) => {
     const router = useRouter();
-    const { user: currentUser } = React.useContext(userContext);
+    const currentUser = React.useContext(userContext);
 
     const [name, setName] = React.useState(user.name);
     const [email, setEmail] = React.useState(user.email);

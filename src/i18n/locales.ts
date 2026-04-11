@@ -193,7 +193,7 @@ export const locales = {
     'login_page.connect_button.label': 'Se connecter',
     'login_page.forgot_password_link.label': 'Mot de passe oublié ?',
     'login_page.student_button.label': 'Je suis un·e élève',
-    'login_page.sso_button.label': 'Se connecter avec {{ssoHostName}}',
+    'login_page.sso_button.label': 'Se connecter avec prof.parlemonde.org',
     'login_page.no_account.text': 'Nouveau sur Par Le Monde ?',
     'login_page.no_account.link': "S'inscrire",
 

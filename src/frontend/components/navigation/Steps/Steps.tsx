@@ -56,7 +56,7 @@ type StepsProps = {
 export const Steps = ({ activeStep, backHref, themeId }: StepsProps) => {
     const { t } = useTranslation();
     const { projectData } = useCurrentProject();
-    const { user } = React.useContext(userContext);
+    const user = React.useContext(userContext);
 
     const isStudent = user?.role === 'student';
 

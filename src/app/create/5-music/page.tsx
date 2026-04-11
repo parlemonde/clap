@@ -28,7 +28,7 @@ export default function MusicPage() {
     const { t } = useTranslation();
     const { projectData, setProjectData } = useCurrentProject();
     useCollaboration(); // Listen to collaboration updates
-    const { user } = React.useContext(userContext);
+    const user = React.useContext(userContext);
     const [isUploading, setIsUploading] = React.useState(false);
 
     const sounds = useDeepMemo(getSounds(projectData?.questions || []));
