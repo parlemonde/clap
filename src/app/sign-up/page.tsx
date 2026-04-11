@@ -2,15 +2,13 @@
 
 import { redirect } from 'next/navigation';
 import * as React from 'react';
-import type { ServerPageProps } from 'src/lib/page-props.types';
 
 import { Container } from '@frontend/components/layout/Container';
 import { Title } from '@frontend/components/layout/Typography';
-
+import type { ServerPageProps } from '@lib/page-props.types';
 import { getCurrentUser } from '@server/auth/get-current-user';
-
+import { isInviteTokenValid } from '@server/auth/invite-token';
 import { getTranslation } from '@server-actions/get-translation';
-import { isVerifyCodeValid } from '@server-actions/users/create-user';
 
 import { InviteTokenForm } from './InviteTokenForm';
 import { SignUpForm } from './SignUpForm';
@@ -25,7 +23,7 @@ export default async function SignUpPage(props: ServerPageProps) {
         redirect('/');
     }
 
-    const isCodeValid = tokenQueryParam && (await isVerifyCodeValid(tokenQueryParam));
+    const isCodeValid = tokenQueryParam && (await isInviteTokenValid(tokenQueryParam));
 
     return (
         <Container className="text-center">

@@ -9,7 +9,6 @@ import { Input } from '@frontend/components/layout/Form';
 import { Modal } from '@frontend/components/layout/Modal';
 import { Trans } from '@frontend/components/ui/Trans';
 import { useTranslation } from '@frontend/contexts/translationContext';
-
 import { deleteUser } from '@server-actions/users/delete-user';
 
 export const DeleteAccountButton = () => {

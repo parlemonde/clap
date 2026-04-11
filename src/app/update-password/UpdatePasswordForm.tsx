@@ -3,6 +3,7 @@
 import { EyeOpenIcon, EyeNoneIcon } from '@radix-ui/react-icons';
 import { useRouter } from 'next/navigation';
 import React from 'react';
+import { authClient } from 'src/frontend/lib/auth-client';
 
 import { Button } from '@frontend/components/layout/Button';
 import { IconButton } from '@frontend/components/layout/Button/IconButton';
@@ -11,15 +12,12 @@ import { Loader } from '@frontend/components/ui/Loader';
 import { sendToast } from '@frontend/components/ui/Toasts';
 import { useTranslation } from '@frontend/contexts/translationContext';
 
-import { updateUserPassword } from '@server-actions/users/update-password';
-
 const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/;
 
 interface UpdatePasswordFormProps {
-    email: string;
     verifyToken: string;
 }
-export const UpdatePasswordForm = ({ email, verifyToken }: UpdatePasswordFormProps) => {
+export const UpdatePasswordForm = ({ verifyToken }: UpdatePasswordFormProps) => {
     const { t } = useTranslation();
     const router = useRouter();
 
@@ -36,18 +34,21 @@ export const UpdatePasswordForm = ({ email, verifyToken }: UpdatePasswordFormPro
             return;
         }
         setIsLoading(true);
-        const success = await updateUserPassword(email, verifyToken, password);
+        const { error } = await authClient.resetPassword({
+            newPassword: password,
+            token: verifyToken,
+        });
         setIsLoading(false);
-        if (success) {
+        if (error) {
+            sendToast({
+                message: t('common.errors.unknown'),
+                type: 'error',
+            });
+        } else {
             router.push('/login');
             sendToast({
                 message: t('update_password_page.toast_message.update_success'),
                 type: 'success',
-            });
-        } else {
-            sendToast({
-                message: t('common.errors.unknown'),
-                type: 'error',
             });
         }
     };

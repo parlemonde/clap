@@ -3,7 +3,6 @@
 import { EyeOpenIcon, EyeNoneIcon } from '@radix-ui/react-icons';
 import { useRouter } from 'next/navigation';
 import React from 'react';
-import type { I18nKeys } from 'src/i18n/locales';
 
 import { Button } from '@frontend/components/layout/Button';
 import { IconButton } from '@frontend/components/layout/Button/IconButton';
@@ -12,8 +11,6 @@ import { Link } from '@frontend/components/navigation/Link';
 import { Loader } from '@frontend/components/ui/Loader';
 import { sendToast } from '@frontend/components/ui/Toasts';
 import { useTranslation } from '@frontend/contexts/translationContext';
-
-import { createUser } from '@server-actions/users/create-user';
 
 const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/;
 const EMAIL_REGEX = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
@@ -36,17 +33,29 @@ export const SignUpForm = ({ inviteCode }: SignUpFormProps) => {
 
     const onSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!email || !isEmailValid || !name || !password || !isPasswordValid || password !== passwordConfirm) {
+        const formElement = e.currentTarget instanceof HTMLFormElement ? e.currentTarget : null;
+        if (!email || !isEmailValid || !name || !password || !isPasswordValid || password !== passwordConfirm || formElement === null) {
             return;
         }
-        const error = await createUser({ name, email, password, inviteCode });
-        if (error) {
+        try {
+            const response = await fetch(`/api/auth/sign-up/email?inviteToken=${inviteCode}`, {
+                method: 'POST',
+                body: new FormData(formElement),
+            });
+            if (!response.ok) {
+                sendToast({
+                    message: t('common.errors.unknown'),
+                    type: 'error',
+                });
+            } else {
+                router.push('/');
+                router.refresh(); // refresh the layout
+            }
+        } catch {
             sendToast({
-                message: t(error as I18nKeys),
+                message: t('common.errors.unknown'),
                 type: 'error',
             });
-        } else {
-            router.push('/');
         }
     };
 
@@ -58,8 +67,8 @@ export const SignUpForm = ({ inviteCode }: SignUpFormProps) => {
                     label={t('signup_page.name_field.label')}
                     input={
                         <Input
-                            id="username"
-                            name="username"
+                            id="name"
+                            name="name"
                             type="text"
                             color="secondary"
                             required

@@ -18,12 +18,6 @@ type UserContextProviderProps = {
     initialUser?: User;
 };
 export const UserContextProvider = ({ initialUser, children }: React.PropsWithChildren<UserContextProviderProps>) => {
-    const [user, setUser] = React.useState<User | undefined>(initialUser);
-
-    if (user?.id !== initialUser?.id) {
-        setUser(initialUser);
-    }
-
-    const userContextValue = React.useMemo(() => ({ user, setUser }), [user]);
+    const userContextValue = React.useMemo(() => ({ user: initialUser, setUser: () => {} }), [initialUser]);
     return <userContext.Provider value={userContextValue}>{children}</userContext.Provider>;
 };

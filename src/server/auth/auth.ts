@@ -4,6 +4,7 @@ import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { nextCookies } from 'better-auth/next-js';
 import { admin } from 'better-auth/plugins';
 import { adminAc, userAc } from 'better-auth/plugins/admin/access';
+import { sendMail } from 'src/emails/index';
 
 import { db } from '@server/database';
 
@@ -29,9 +30,18 @@ export const auth = registerService('auth', () =>
         plugins: ssoPlugin ? [ssoPlugin, adminPlugin, cookiesPlugin] : [adminPlugin, cookiesPlugin], // make sure `nextCookies()` is the last plugin in the array
         emailAndPassword: {
             enabled: true,
+            disableSignUp: true,
             password: {
                 hash,
                 verify: ({ hash, password }) => verify(hash, password),
+            },
+            sendResetPassword: async ({ user, token }) => {
+                void sendMail(user.email, {
+                    kind: 'reset-password',
+                    data: {
+                        resetCode: token,
+                    },
+                });
             },
         },
         advanced: {

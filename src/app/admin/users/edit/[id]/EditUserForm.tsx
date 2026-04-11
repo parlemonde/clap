@@ -10,10 +10,8 @@ import { Title } from '@frontend/components/layout/Typography';
 import { Loader } from '@frontend/components/ui/Loader';
 import { sendToast } from '@frontend/components/ui/Toasts';
 import { userContext } from '@frontend/contexts/userContext';
-
 import type { User } from '@server/database/schemas/users';
-
-import { updateUserById } from '@server-actions/users/update-user';
+import { updateUser } from '@server-actions/users/update-user';
 
 type EditUserFormProps = {
     user: User;
@@ -42,7 +40,7 @@ export const EditUserForm = ({ user }: EditUserFormProps) => {
 
         try {
             setIsLoading(true);
-            await updateUserById(user.id, {
+            await updateUser(user.id, {
                 email,
                 name,
                 role,

@@ -9,13 +9,5 @@ export async function getUsers(): Promise<User[]> {
     if (!user || user.role !== 'admin') {
         return [];
     }
-    return db
-        .select({
-            id: users.id,
-            name: users.name,
-            email: users.email,
-            role: users.role,
-        })
-        .from(users)
-        .orderBy(users.name);
+    return db.select().from(users).orderBy(users.name);
 }

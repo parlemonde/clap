@@ -1,15 +1,13 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import React from 'react';
 
 import { Field, Input } from '@frontend/components/layout/Form';
 import { Modal } from '@frontend/components/layout/Modal';
 import { useTranslation } from '@frontend/contexts/translationContext';
-
+import { userContext } from '@frontend/contexts/userContext';
+import { authClient } from '@frontend/lib/auth-client';
 import type { User } from '@server/database/schemas/users';
-
-import { updateUser } from '@server-actions/users/update-user';
 
 interface UpdateNameFormProps {
     user: User;
@@ -17,8 +15,9 @@ interface UpdateNameFormProps {
 
 export const UpdateNameForm = ({ user }: UpdateNameFormProps) => {
     const { t } = useTranslation();
-    const router = useRouter();
+    const { setUser } = React.useContext(userContext);
     const [isUpdateModalOpen, setIsUpdateModalOpen] = React.useState(false);
+    const [updateErrorMessage, setUpdateErrorMessage] = React.useState<string | null>(null);
     const [isLoading, setIsLoading] = React.useState(false);
 
     const [name, setName] = React.useState(user.name);
@@ -31,12 +30,16 @@ export const UpdateNameForm = ({ user }: UpdateNameFormProps) => {
         }
 
         setIsLoading(true);
-        await updateUser({
+        const { data, error } = await authClient.updateUser({
             name,
         });
         setIsLoading(false);
-        setIsUpdateModalOpen(false);
-        router.refresh();
+        if (error || !data.status) {
+            setUpdateErrorMessage('Echec de la mise à jour du nom');
+        } else {
+            setUser({ ...user, name });
+            setIsUpdateModalOpen(false);
+        }
     };
 
     return (
@@ -85,10 +88,10 @@ export const UpdateNameForm = ({ user }: UpdateNameFormProps) => {
                                     setName(event.target.value);
                                 }}
                                 color="secondary"
-                                hasError={!isValidName}
+                                hasError={!!updateErrorMessage || !isValidName}
                             />
                         }
-                        helperText={isValidName ? '' : t('my_account_page.name_field.error')}
+                        helperText={updateErrorMessage || (isValidName ? '' : t('my_account_page.name_field.error'))}
                         helperTextStyle={{ textAlign: 'left', color: 'rgb(211, 47, 47)' }}
                     ></Field>
                 </div>

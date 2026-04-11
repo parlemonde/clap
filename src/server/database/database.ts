@@ -6,7 +6,6 @@ import { registerService } from 'src/lib/register-service';
 import { auth_sessions } from './schemas/auth-schemas';
 import { auth_accounts } from './schemas/auth-schemas';
 import { auth_verifications } from './schemas/auth-schemas';
-import { inviteTokens } from './schemas/invite-tokens';
 import { languages } from './schemas/languages';
 import { projects } from './schemas/projects';
 import { questions } from './schemas/questions';
@@ -21,6 +20,6 @@ export const db = registerService('db', () =>
     drizzle({
         client: queryClient,
         logger: process.env.NODE_ENV !== 'production',
-        schema: { users, themes, scenarios, questions, inviteTokens, languages, projects, auth_sessions, auth_accounts, auth_verifications },
+        schema: { users, themes, scenarios, questions, languages, projects, auth_sessions, auth_accounts, auth_verifications },
     }),
 );

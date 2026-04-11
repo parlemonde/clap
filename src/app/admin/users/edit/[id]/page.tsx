@@ -5,7 +5,6 @@ import { AdminTile } from '@frontend/components/admin/AdminTile';
 import { Breadcrumbs } from '@frontend/components/layout/Breadcrumbs';
 import { Container } from '@frontend/components/layout/Container';
 import { Title } from '@frontend/components/layout/Typography';
-
 import { getUser } from '@server-actions/users/get-user';
 
 import { EditUserForm } from './EditUserForm';

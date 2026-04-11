@@ -60,7 +60,7 @@ export async function sendMail(to: string, kind: EmailKind): Promise<void> {
     switch (kind.kind) {
         case 'reset-password': {
             // subject = 'email.reset_password_subject';
-            emailData.resetUrl = `${HOST_URL}/update-password?email=${encodeURI(to)}&verify-token=${encodeURI(kind.data.resetCode)}`;
+            emailData.resetUrl = `${HOST_URL}/update-password?verify-token=${encodeURI(kind.data.resetCode)}`;
             break;
         }
     }

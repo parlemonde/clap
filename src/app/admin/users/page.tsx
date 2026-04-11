@@ -2,7 +2,6 @@ import * as React from 'react';
 
 import { Container } from '@frontend/components/layout/Container';
 import { Title } from '@frontend/components/layout/Typography';
-
 import { getUsers } from '@server-actions/users/get-users';
 
 import { UsersTable } from './UsersTable';

@@ -95,6 +95,7 @@ const eslintConfig = defineConfig([
                 'error',
                 {
                     properties: 'always',
+                    ignoreImports: true,
                 },
             ],
             'import/newline-after-import': [
@@ -113,22 +114,7 @@ const eslintConfig = defineConfig([
                     ],
                     pathGroups: [
                         {
-                            pattern: '@frontend/**',
-                            group: 'parent',
-                            position: 'before',
-                        },
-                        {
-                            pattern: '@server/**',
-                            group: 'parent',
-                            position: 'before',
-                        },
-                        {
-                            pattern: '@server-actions/**',
-                            group: 'parent',
-                            position: 'before',
-                        },
-                        {
-                            pattern: '@lib/**',
+                            pattern: '{@frontend,@server,@server-actions,@lib}/**',
                             group: 'parent',
                             position: 'before',
                         },

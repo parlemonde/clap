@@ -12,7 +12,6 @@ export async function getUser(userId: string): Promise<User | undefined> {
         return undefined;
     }
     return db.query.users.findFirst({
-        columns: { id: true, name: true, email: true, role: true },
         where: eq(users.id, userId),
     });
 }

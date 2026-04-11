@@ -12,7 +12,6 @@ import { UpdatePasswordForm } from './UpdatePasswordForm';
 
 export default async function UpdatePasswordPage(props: ServerPageProps) {
     const searchParams = await props.searchParams;
-    const email = typeof searchParams.email === 'string' ? searchParams.email : '';
     const verifyToken = typeof searchParams['verify-token'] === 'string' ? searchParams['verify-token'] : '';
 
     const { t } = await getTranslation();
@@ -22,7 +21,7 @@ export default async function UpdatePasswordPage(props: ServerPageProps) {
             <Title color="primary" variant="h1" marginTop={48} marginBottom="lg">
                 {t('update_password_page.header.title')}
             </Title>
-            <UpdatePasswordForm email={email} verifyToken={verifyToken} />
+            <UpdatePasswordForm verifyToken={verifyToken} />
         </Container>
     );
 }

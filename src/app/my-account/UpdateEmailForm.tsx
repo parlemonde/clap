@@ -1,17 +1,15 @@
 'use client';
 
 import { InfoCircledIcon } from '@radix-ui/react-icons';
-import { useRouter } from 'next/navigation';
 import React from 'react';
+import { userContext } from 'src/frontend/contexts/userContext';
+import { authClient } from 'src/frontend/lib/auth-client';
 
 import { Flex } from '@frontend/components/layout/Flex';
 import { Field, Input } from '@frontend/components/layout/Form';
 import { Modal } from '@frontend/components/layout/Modal';
 import { useTranslation } from '@frontend/contexts/translationContext';
-
 import type { User } from '@server/database/schemas/users';
-
-import { updateUser } from '@server-actions/users/update-user';
 
 const EMAIL_REGEX =
     /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/i;
@@ -22,8 +20,9 @@ interface UpdateEmailFormProps {
 
 export const UpdateEmailForm = ({ user }: UpdateEmailFormProps) => {
     const { t } = useTranslation();
-    const router = useRouter();
+    const { setUser } = React.useContext(userContext);
     const [isUpdateModalOpen, setIsUpdateModalOpen] = React.useState(false);
+    const [updateErrorMessage, setUpdateErrorMessage] = React.useState<string | null>(null);
     const [isLoading, setIsLoading] = React.useState(false);
 
     const [email, setEmail] = React.useState(user.email);
@@ -36,12 +35,16 @@ export const UpdateEmailForm = ({ user }: UpdateEmailFormProps) => {
         }
 
         setIsLoading(true);
-        await updateUser({
-            email,
+        const { data, error } = await authClient.changeEmail({
+            newEmail: email,
         });
         setIsLoading(false);
-        setIsUpdateModalOpen(false);
-        router.refresh();
+        if (error || !data.status) {
+            setUpdateErrorMessage("Echec de la mise à jour de l'email");
+        } else {
+            setUser({ ...user, email });
+            setIsUpdateModalOpen(false);
+        }
     };
 
     return (
@@ -108,10 +111,10 @@ export const UpdateEmailForm = ({ user }: UpdateEmailFormProps) => {
                                 }}
                                 required
                                 color="secondary"
-                                hasError={!isValidEmail}
+                                hasError={!!updateErrorMessage || !isValidEmail}
                             />
                         }
-                        helperText={!isValidEmail ? t('my_account_page.email_field.error') : ''}
+                        helperText={updateErrorMessage || (!isValidEmail ? t('my_account_page.email_field.error') : '')}
                         helperTextStyle={{ textAlign: 'left', color: 'rgb(211, 47, 47)' }}
                     ></Field>
                 </div>

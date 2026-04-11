@@ -11,9 +11,7 @@ import { Toasts } from '@frontend/components/ui/Toasts';
 import { TranslationContextProvider } from '@frontend/contexts/translationContext';
 import { UserContextProvider } from '@frontend/contexts/userContext';
 import { openSansFont, alegreyaSansFont, littleDaysFont } from '@frontend/fonts';
-
 import { getCurrentUser } from '@server/auth/get-current-user';
-
 import { getLocales } from '@server-actions/get-locales';
 
 import styles from './app.module.scss';

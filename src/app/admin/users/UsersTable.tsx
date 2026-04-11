@@ -2,7 +2,6 @@
 
 import { Pencil1Icon, TrashIcon, ChevronLeftIcon, ChevronRightIcon, ArrowUpIcon, ArrowDownIcon, PlusCircledIcon } from '@radix-ui/react-icons';
 import * as React from 'react';
-// import { inviteUser } from 'src/actions/authentication/invite-user';
 
 import { AdminTile } from '@frontend/components/admin/AdminTile';
 import { Table } from '@frontend/components/admin/Table';
@@ -15,9 +14,8 @@ import { Tooltip } from '@frontend/components/layout/Tooltip';
 import { Loader } from '@frontend/components/ui/Loader';
 import { sendToast } from '@frontend/components/ui/Toasts';
 import { userContext } from '@frontend/contexts/userContext';
-
 import type { User } from '@server/database/schemas/users';
-
+import { inviteUser } from '@server-actions/authentication/invite-user';
 import { deleteUserById } from '@server-actions/users/delete-user';
 
 import { SharedLink } from './SharedLink';
@@ -59,7 +57,7 @@ export const UsersTable = ({ users }: UsersTableWithDataProps) => {
 
     const onInviteUser = async () => {
         setIsGeneratingInvite(true);
-        const token = null; // await inviteUser(); // TODO: Fix this
+        const token = await inviteUser();
         setInviteToken(token);
         setIsGeneratingInvite(false);
         if (token === 'null') {

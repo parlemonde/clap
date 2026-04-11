@@ -3,9 +3,7 @@ import * as React from 'react';
 import { Container } from '@frontend/components/layout/Container';
 import { Divider } from '@frontend/components/layout/Divider';
 import { Title } from '@frontend/components/layout/Typography';
-
 import { getCurrentUser } from '@server/auth/get-current-user';
-
 import { getTranslation } from '@server-actions/get-translation';
 
 import { DeleteAccountButton } from './DeleteAccountButton';
