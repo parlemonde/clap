@@ -16,9 +16,7 @@ import { Cropper } from '@frontend/components/ui/Cropper';
 import { Loader } from '@frontend/components/ui/Loader';
 import { sendToast } from '@frontend/components/ui/Toasts';
 import { useLanguages } from '@frontend/hooks/useLanguages';
-
 import type { Theme } from '@server/database/schemas/themes';
-
 import { createDefaultTheme } from '@server-actions/themes/create-theme';
 
 type Language = {

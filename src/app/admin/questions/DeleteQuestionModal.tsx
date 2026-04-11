@@ -3,9 +3,7 @@
 import React from 'react';
 
 import { Modal } from '@frontend/components/layout/Modal';
-
 import type { Question } from '@server/database/schemas/questions';
-
 import { deleteQuestion } from '@server-actions/questions/delete-question';
 
 interface DeleteQuestionModalProps {

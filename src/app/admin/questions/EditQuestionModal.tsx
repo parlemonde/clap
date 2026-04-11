@@ -4,9 +4,7 @@ import React from 'react';
 
 import { Field, Input } from '@frontend/components/layout/Form';
 import { Modal } from '@frontend/components/layout/Modal';
-
 import type { Question } from '@server/database/schemas/questions';
-
 import { editQuestion } from '@server-actions/questions/edit-question';
 
 interface EditQuestionModalProps {

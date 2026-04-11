@@ -2,8 +2,6 @@
 
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
-import { COLORS } from 'src/lib/colors';
-import PictureAsPdf from '@frontend/svg/pdf.svg';
 
 import { getStatus } from '@frontend/components/collaboration/get-status';
 import { Button } from '@frontend/components/layout/Button';
@@ -21,9 +19,9 @@ import { useTranslation } from '@frontend/contexts/translationContext';
 import { userContext } from '@frontend/contexts/userContext';
 import { useCollaboration } from '@frontend/hooks/useCollaboration';
 import { useCurrentProject } from '@frontend/hooks/useCurrentProject';
-
+import { COLORS } from '@frontend/lib/colors';
+import PictureAsPdf from '@frontend/svg/pdf.svg';
 import type { Sequence } from '@server/database/schemas/projects';
-
 import { generatePdf } from '@server-actions/projects/generate-pdf';
 
 import { Scenario } from './Scenario';

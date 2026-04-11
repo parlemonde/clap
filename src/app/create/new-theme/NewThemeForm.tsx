@@ -13,7 +13,6 @@ import { useTranslation } from '@frontend/contexts/translationContext';
 import { userContext } from '@frontend/contexts/userContext';
 import { useLocalStorage } from '@frontend/hooks/useLocalStorage';
 import type { LocalTheme } from '@frontend/hooks/useLocalStorage/local-storage';
-
 import { createTheme } from '@server-actions/themes/create-theme';
 
 export const NewThemeForm = () => {

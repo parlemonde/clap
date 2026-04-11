@@ -2,7 +2,6 @@
 
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
-import { COLORS } from 'src/lib/colors';
 
 import { FeedbackModal } from '@frontend/components/collaboration/FeedbackModal';
 import { GroupColorPill } from '@frontend/components/collaboration/GroupColorPill';
@@ -20,7 +19,7 @@ import { useTranslation } from '@frontend/contexts/translationContext';
 import { userContext } from '@frontend/contexts/userContext';
 import { useCollaboration } from '@frontend/hooks/useCollaboration';
 import { useCurrentProject } from '@frontend/hooks/useCurrentProject';
-
+import { COLORS } from '@frontend/lib/colors';
 import type { Sequence } from '@server/database/schemas/projects';
 
 export default function PreMountingPage() {

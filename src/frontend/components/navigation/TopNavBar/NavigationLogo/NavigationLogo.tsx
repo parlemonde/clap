@@ -2,10 +2,10 @@
 
 import { usePathname } from 'next/navigation';
 import * as React from 'react';
-import PelicoSVG from '@frontend/svg/pelico.svg';
 
 import { Box } from '@frontend/components/layout/Box';
 import { Link as NextLink } from '@frontend/components/navigation/Link';
+import PelicoSVG from '@frontend/svg/pelico.svg';
 
 import styles from './navigation-logo.module.scss';
 

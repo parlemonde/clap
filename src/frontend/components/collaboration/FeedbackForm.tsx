@@ -5,7 +5,6 @@ import React from 'react';
 import { Button } from '@frontend/components/layout/Button';
 import { Field, TextArea } from '@frontend/components/layout/Form';
 import { sendToast } from '@frontend/components/ui/Toasts';
-
 import type { Sequence } from '@server/database/schemas/projects';
 
 interface FeedbackFormProps {

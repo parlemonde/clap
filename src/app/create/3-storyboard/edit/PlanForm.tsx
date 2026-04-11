@@ -17,7 +17,6 @@ import { Cropper } from '@frontend/components/ui/Cropper';
 import { Loader } from '@frontend/components/ui/Loader';
 import { sendToast } from '@frontend/components/ui/Toasts';
 import { useTranslation } from '@frontend/contexts/translationContext';
-
 import type { Plan } from '@server/database/schemas/projects';
 
 const RATIO = 16 / 9;

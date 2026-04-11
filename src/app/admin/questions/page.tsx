@@ -6,7 +6,6 @@ import type { ServerPageProps } from 'src/lib/page-props.types';
 import { AdminTile } from '@frontend/components/admin/AdminTile';
 import { Container } from '@frontend/components/layout/Container';
 import { Title } from '@frontend/components/layout/Typography';
-
 import { listQuestions } from '@server-actions/questions/list-questions';
 import { listScenarios } from '@server-actions/scenarios/list-scenarios';
 

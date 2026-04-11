@@ -7,8 +7,7 @@ import { adminAc, userAc } from 'better-auth/plugins/admin/access';
 import { sendMail } from 'src/emails/index';
 
 import { db } from '@server/database';
-
-import { registerService } from '@lib/register-service';
+import { registerService } from '@server/register-service';
 
 import { ssoPlugin } from './parlemonde-sso-plugin';
 

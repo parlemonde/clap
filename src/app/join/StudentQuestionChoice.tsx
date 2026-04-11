@@ -1,11 +1,10 @@
 'use client';
 
 import * as React from 'react';
-import { COLORS } from 'src/lib/colors';
 
 import { Text, Title } from '@frontend/components/layout/Typography';
 import { useTranslation } from '@frontend/contexts/translationContext';
-
+import { COLORS } from '@frontend/lib/colors';
 import type { ProjectData } from '@server/database/schemas/projects';
 
 interface StudentQuestionChoiceProps {

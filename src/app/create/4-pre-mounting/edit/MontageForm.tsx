@@ -13,7 +13,6 @@ import { NextButton } from '@frontend/components/navigation/NextButton';
 import { Loader } from '@frontend/components/ui/Loader';
 import { sendToast } from '@frontend/components/ui/Toasts';
 import { useTranslation } from '@frontend/contexts/translationContext';
-
 import type { Sequence } from '@server/database/schemas/projects';
 
 interface MontageFormProps {

@@ -1,5 +1,4 @@
 import { AdminDrawer } from '@frontend/components/navigation/AdminDrawer';
-
 import { getCurrentUser } from '@server/auth/get-current-user';
 
 export default async function AdminLayout({ children }: React.PropsWithChildren) {

@@ -6,7 +6,6 @@ import { getCurrentUser } from '@server/auth/get-current-user';
 import { setDynamoDBItem } from '@server/aws/dynamoDb';
 import { db } from '@server/database';
 import { languages } from '@server/database/schemas/languages';
-
 import { getLocalesForLanguage } from '@server-actions/get-locales';
 
 import { jsonToPo } from './json-to-po';

@@ -9,9 +9,7 @@ import { Button } from '@frontend/components/layout/Button';
 import { Flex } from '@frontend/components/layout/Flex';
 import { Text } from '@frontend/components/layout/Typography';
 import { sendToast } from '@frontend/components/ui/Toasts';
-
 import type { Project } from '@server/database/schemas/projects';
-
 import { endCollaboration } from '@server-actions/projects/end-collaboration';
 import { startCollaboration } from '@server-actions/projects/start-collaboration';
 

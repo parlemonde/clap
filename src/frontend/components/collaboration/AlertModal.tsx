@@ -2,11 +2,10 @@
 
 import { useRouter } from 'next/navigation';
 import React from 'react';
-import { COLORS } from 'src/lib/colors';
 
 import { Modal } from '@frontend/components/layout/Modal';
 import { useCurrentProject } from '@frontend/hooks/useCurrentProject';
-
+import { COLORS } from '@frontend/lib/colors';
 import type { Sequence } from '@server/database/schemas/projects';
 
 const COLLABORATION_ALERT_EVENT = 'app::collaboration-alert';

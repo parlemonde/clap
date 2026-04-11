@@ -4,13 +4,12 @@
 import { eq, and } from 'drizzle-orm';
 import { redirect, RedirectType } from 'next/navigation';
 
+import { getStringValue } from '@lib/get-string-value';
 import { auth } from '@server/auth/auth';
 import { PARLEMONDE_SSO_PROVIDER_ID } from '@server/auth/parlemonde-sso-plugin';
 import { db } from '@server/database';
 import { auth_accounts } from '@server/database/schemas/auth-schemas';
 import { users } from '@server/database/schemas/users';
-
-import { getStringValue } from '@lib/get-string-value';
 
 export async function login(_previousState: string, formData: FormData): Promise<string> {
     const email = getStringValue(formData.get('email'));

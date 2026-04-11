@@ -5,7 +5,6 @@ import React from 'react';
 import { Field, Form } from '@frontend/components/layout/Form';
 import { Select } from '@frontend/components/layout/Form/Select';
 import { useTranslation } from '@frontend/contexts/translationContext';
-
 import type { Language } from '@server/database/schemas/languages';
 
 interface LanguageSelectProps {

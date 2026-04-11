@@ -6,7 +6,6 @@ import React from 'react';
 import { useTranslation } from '@frontend/contexts/translationContext';
 import { useLocalStorage } from '@frontend/hooks/useLocalStorage';
 import { deleteFromLocalStorage } from '@frontend/hooks/useLocalStorage/local-storage';
-
 import type { Project } from '@server/database/schemas/projects';
 
 import { ProjectCard } from './ProjectCard';

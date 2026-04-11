@@ -3,7 +3,6 @@ import React from 'react';
 
 import { KeepRatio } from '@frontend/components/layout/KeepRatio';
 import { useTranslation } from '@frontend/contexts/translationContext';
-
 import type { Title } from '@server/database/schemas/projects';
 
 import styles from './title-form.module.scss';

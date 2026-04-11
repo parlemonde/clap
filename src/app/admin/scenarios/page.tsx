@@ -7,7 +7,6 @@ import { AdminTile } from '@frontend/components/admin/AdminTile';
 import { Button } from '@frontend/components/layout/Button';
 import { Container } from '@frontend/components/layout/Container';
 import { Title } from '@frontend/components/layout/Typography';
-
 import { listScenarios, listUserScenarios } from '@server-actions/scenarios/list-scenarios';
 import { listThemes } from '@server-actions/themes/list-themes';
 

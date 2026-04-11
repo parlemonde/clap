@@ -14,9 +14,7 @@ import { Trans } from '@frontend/components/ui/Trans';
 import { useTranslation } from '@frontend/contexts/translationContext';
 import { useLocalStorage } from '@frontend/hooks/useLocalStorage';
 import { deleteFromLocalStorage } from '@frontend/hooks/useLocalStorage/local-storage';
-
 import type { Project } from '@server/database/schemas/projects';
-
 import { deleteProject } from '@server-actions/projects/delete-project';
 import { updateProject } from '@server-actions/projects/update-project';
 

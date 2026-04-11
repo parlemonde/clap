@@ -4,7 +4,6 @@ import React from 'react';
 
 import { Field, Input } from '@frontend/components/layout/Form';
 import { Modal } from '@frontend/components/layout/Modal';
-
 import { createQuestion } from '@server-actions/questions/create-question';
 
 interface CreateQuestionModalProps {

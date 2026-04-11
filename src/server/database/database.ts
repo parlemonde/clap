@@ -1,7 +1,8 @@
 /* eslint-disable camelcase */
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
-import { registerService } from 'src/lib/register-service';
+
+import { registerService } from '@server/register-service';
 
 import { auth_sessions } from './schemas/auth-schemas';
 import { auth_accounts } from './schemas/auth-schemas';

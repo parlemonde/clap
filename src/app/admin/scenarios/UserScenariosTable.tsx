@@ -4,7 +4,6 @@ import * as React from 'react';
 
 import { AdminTile } from '@frontend/components/admin/AdminTile';
 import { Table } from '@frontend/components/admin/Table';
-
 import type { Scenario } from '@server/database/schemas/scenarios';
 import type { Theme } from '@server/database/schemas/themes';
 

@@ -10,9 +10,7 @@ import { Steps } from '@frontend/components/navigation/Steps';
 import { ThemeBreadcrumbs } from '@frontend/components/navigation/ThemeBreadcrumbs';
 import { Inverted } from '@frontend/components/ui/Inverted';
 import { Trans } from '@frontend/components/ui/Trans';
-
 import { getCurrentUser } from '@server/auth/get-current-user';
-
 import { getTranslation } from '@server-actions/get-translation';
 import { listScenarios } from '@server-actions/scenarios/list-scenarios';
 

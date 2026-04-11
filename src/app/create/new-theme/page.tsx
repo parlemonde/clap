@@ -6,7 +6,6 @@ import { Title } from '@frontend/components/layout/Typography';
 import { BackButton } from '@frontend/components/navigation/BackButton';
 import { Inverted } from '@frontend/components/ui/Inverted';
 import { Trans } from '@frontend/components/ui/Trans';
-
 import { getTranslation } from '@server-actions/get-translation';
 
 import { NewThemeForm } from './NewThemeForm';

@@ -16,7 +16,6 @@ import { useTranslation } from '@frontend/contexts/translationContext';
 import { userContext } from '@frontend/contexts/userContext';
 import { useCollaboration } from '@frontend/hooks/useCollaboration';
 import { useCurrentProject } from '@frontend/hooks/useCurrentProject';
-
 import type { Sequence } from '@server/database/schemas/projects';
 
 import { MontageForm } from './MontageForm';

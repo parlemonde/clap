@@ -10,7 +10,6 @@ import { useTranslation } from '@frontend/contexts/translationContext';
 import { userContext } from '@frontend/contexts/userContext';
 import { useLocalStorage } from '@frontend/hooks/useLocalStorage';
 import { isLocalTheme } from '@frontend/hooks/useLocalStorage/local-storage';
-
 import type { Theme } from '@server/database/schemas/themes';
 
 type ThemeBreadcrumbsProps = {

@@ -5,7 +5,6 @@ import { AdminTile } from '@frontend/components/admin/AdminTile';
 import { Breadcrumbs } from '@frontend/components/layout/Breadcrumbs';
 import { Container } from '@frontend/components/layout/Container';
 import { Title } from '@frontend/components/layout/Typography';
-
 import { listThemes } from '@server-actions/themes/list-themes';
 
 import { NewScenarioForm } from './NewScenarioForm';

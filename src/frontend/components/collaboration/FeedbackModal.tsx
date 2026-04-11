@@ -2,7 +2,6 @@ import React from 'react';
 
 import { Button } from '@frontend/components/layout/Button';
 import { Modal } from '@frontend/components/layout/Modal';
-
 import type { Sequence } from '@server/database/schemas/projects';
 
 interface FeedbackModalProps {

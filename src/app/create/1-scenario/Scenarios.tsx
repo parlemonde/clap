@@ -10,7 +10,6 @@ import { ScenarioCard } from '@frontend/components/create/ScenarioCard';
 import { useTranslation } from '@frontend/contexts/translationContext';
 import { useLocalStorage } from '@frontend/hooks/useLocalStorage';
 import { deleteFromLocalStorage, isLocalScenario, isLocalTheme, setToLocalStorage } from '@frontend/hooks/useLocalStorage/local-storage';
-
 import type { Question } from '@server/database/schemas/questions';
 import type { Scenario } from '@server/database/schemas/scenarios';
 import type { Theme } from '@server/database/schemas/themes';

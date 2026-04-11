@@ -13,10 +13,8 @@ import { Title } from '@frontend/components/layout/Typography';
 import { Sortable } from '@frontend/components/ui/Sortable';
 import { sendToast } from '@frontend/components/ui/Toasts';
 import { useLanguages } from '@frontend/hooks/useLanguages';
-
 import type { Question } from '@server/database/schemas/questions';
 import type { Scenario } from '@server/database/schemas/scenarios';
-
 import { reOrderQuestions } from '@server-actions/questions/re-order-questions';
 
 import { CreateQuestionModal } from './CreateQuestionModal';

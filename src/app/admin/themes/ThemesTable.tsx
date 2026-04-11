@@ -13,9 +13,7 @@ import { Link } from '@frontend/components/navigation/Link';
 import { Sortable } from '@frontend/components/ui/Sortable';
 import { sendToast } from '@frontend/components/ui/Toasts';
 import { useLanguages } from '@frontend/hooks/useLanguages';
-
 import type { Theme } from '@server/database/schemas/themes';
-
 import { deleteTheme } from '@server-actions/themes/delete-theme';
 import { updateThemesOrder } from '@server-actions/themes/update-themes-order';
 

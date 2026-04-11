@@ -3,11 +3,10 @@ import classNames from 'clsx';
 import React from 'react';
 import { getSequenceDuration } from 'src/lib/get-sequence-duration';
 import { serializeToQueryUrl } from 'src/lib/serialize-to-query-url';
-import TimerIcon from '@frontend/svg/timer.svg';
 
 import { Link } from '@frontend/components/navigation/Link';
 import { useTranslation } from '@frontend/contexts/translationContext';
-
+import TimerIcon from '@frontend/svg/timer.svg';
 import type { Sequence } from '@server/database/schemas/projects';
 
 import styles from './diaporama-card.module.scss';

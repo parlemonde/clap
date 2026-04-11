@@ -6,14 +6,13 @@ import { getFormatedTime } from 'src/lib/get-formatted-time';
 import { getProjectDuration } from 'src/lib/get-project-duration';
 import { isSequenceAvailable } from 'src/lib/get-sequence-duration';
 import type { Sound } from 'src/lib/get-sounds';
-import CodeIcon from '@frontend/svg/code.svg';
 
 import { IconButton } from '@frontend/components/layout/Button/IconButton';
 import { Input } from '@frontend/components/layout/Form';
 import { KeepRatio } from '@frontend/components/layout/KeepRatio';
 import { Slider } from '@frontend/components/layout/Slider';
 import { sendToast } from '@frontend/components/ui/Toasts';
-
+import CodeIcon from '@frontend/svg/code.svg';
 import type { Sequence, Title } from '@server/database/schemas/projects';
 
 import { Frame } from './Frame';

@@ -14,10 +14,8 @@ import { Title } from '@frontend/components/layout/Typography';
 import { Loader } from '@frontend/components/ui/Loader';
 import { sendToast } from '@frontend/components/ui/Toasts';
 import { useLanguages } from '@frontend/hooks/useLanguages';
-
 import type { Scenario } from '@server/database/schemas/scenarios';
 import type { Theme } from '@server/database/schemas/themes';
-
 import { createAdminScenario } from '@server-actions/scenarios/create-scenario';
 
 type Language = {

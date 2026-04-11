@@ -21,7 +21,6 @@ import { useCollaboration } from '@frontend/hooks/useCollaboration';
 import { useCurrentProject } from '@frontend/hooks/useCurrentProject';
 import { useLocalStorage } from '@frontend/hooks/useLocalStorage';
 import { deleteFromLocalStorage } from '@frontend/hooks/useLocalStorage/local-storage';
-
 import { createProject } from '@server-actions/projects/create-project';
 
 import { QuestionsList } from './QuestionsList';

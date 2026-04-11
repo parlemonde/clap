@@ -8,7 +8,6 @@ import { Table } from '@frontend/components/admin/Table';
 import { Button } from '@frontend/components/layout/Button';
 import { IconButton } from '@frontend/components/layout/Button/IconButton';
 import { Tooltip } from '@frontend/components/layout/Tooltip';
-
 import type { Language } from '@server/database/schemas/languages';
 
 import { AddLanguageModal } from './AddLanguageModal';

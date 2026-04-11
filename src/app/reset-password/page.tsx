@@ -11,7 +11,6 @@ import { Link } from '@frontend/components/navigation/Link';
 import { Loader } from '@frontend/components/ui/Loader';
 import { sendToast } from '@frontend/components/ui/Toasts';
 import { useTranslation } from '@frontend/contexts/translationContext';
-
 import { requestPasswordReset } from '@server-actions/authentication/request-password-reset';
 
 export default function ResetPasswordPage() {

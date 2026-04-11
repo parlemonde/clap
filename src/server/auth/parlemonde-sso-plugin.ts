@@ -1,12 +1,11 @@
 import { genericOAuth } from 'better-auth/plugins';
 import { eq } from 'drizzle-orm';
 
+import { jsonFetcher } from '@lib/json-fetcher';
 import { db } from '@server/database';
 import { users } from '@server/database/schemas/users';
 import type { UserRole } from '@server/database/schemas/users';
-
-import { jsonFetcher } from '@lib/json-fetcher';
-import { registerService } from '@lib/register-service';
+import { registerService } from '@server/register-service';
 
 interface PLMUser {
     id: string;

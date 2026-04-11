@@ -3,11 +3,11 @@
 import { usePathname } from 'next/navigation';
 import { NavigationMenu as RadixNavigationMenu } from 'radix-ui';
 import * as React from 'react';
-import { getTabs } from 'src/lib/get-tabs';
 
 import { Link as NextLink } from '@frontend/components/navigation/Link';
 import { useTranslation } from '@frontend/contexts/translationContext';
 import { userContext } from '@frontend/contexts/userContext';
+import { getTabs } from '@frontend/lib/get-tabs';
 
 import styles from './navigation-menu.module.scss';
 

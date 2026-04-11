@@ -6,7 +6,6 @@ import { Field } from '@frontend/components/layout/Form';
 import { Select } from '@frontend/components/layout/Form/Select';
 import { Modal } from '@frontend/components/layout/Modal';
 import { sendToast } from '@frontend/components/ui/Toasts';
-
 import { createLanguage } from '@server-actions/languages/create-language';
 
 import allLanguages from './iso_languages.json';

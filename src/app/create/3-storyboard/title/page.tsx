@@ -13,7 +13,6 @@ import { Inverted } from '@frontend/components/ui/Inverted';
 import { useTranslation } from '@frontend/contexts/translationContext';
 import { useCollaboration } from '@frontend/hooks/useCollaboration';
 import { useCurrentProject } from '@frontend/hooks/useCurrentProject';
-
 import type { Title as SequenceTitle } from '@server/database/schemas/projects';
 
 import { TitleForm } from './TitleForm';

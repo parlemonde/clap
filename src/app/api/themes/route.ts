@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 
 import { getCurrentUser } from '@server/auth/get-current-user';
-
 import { listThemes } from '@server-actions/themes/list-themes';
 
 export const dynamic = 'force-dynamic';

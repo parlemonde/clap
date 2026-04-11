@@ -10,10 +10,8 @@ import { Modal } from '@frontend/components/layout/Modal';
 import { Tooltip } from '@frontend/components/layout/Tooltip';
 import { Link } from '@frontend/components/navigation/Link';
 import { useLanguages } from '@frontend/hooks/useLanguages';
-
 import type { Scenario } from '@server/database/schemas/scenarios';
 import type { Theme } from '@server/database/schemas/themes';
-
 import { deleteScenario } from '@server-actions/scenarios/delete-scenario';
 
 type ScenarioData = {

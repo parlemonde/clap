@@ -12,9 +12,7 @@ import { Link } from '@frontend/components/navigation/Link';
 import { Loader } from '@frontend/components/ui/Loader';
 import { useTranslation } from '@frontend/contexts/translationContext';
 // import { setToLocalStorage } from '@frontend/hooks/useLocalStorage/local-storage';
-
 import type { ProjectData } from '@server/database/schemas/projects';
-
 import { getProjectByCode } from '@server-actions/projects/get-project';
 
 import { StudentQuestionChoice } from './StudentQuestionChoice';

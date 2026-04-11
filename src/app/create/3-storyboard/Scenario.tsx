@@ -13,7 +13,6 @@ import { Modal } from '@frontend/components/layout/Modal';
 import { Tooltip } from '@frontend/components/layout/Tooltip';
 import { Title } from '@frontend/components/layout/Typography';
 import { useTranslation } from '@frontend/contexts/translationContext';
-
 import type { Plan, Sequence } from '@server/database/schemas/projects';
 
 interface Scenario {

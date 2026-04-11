@@ -12,7 +12,6 @@ import { Inverted } from '@frontend/components/ui/Inverted';
 import { useTranslation } from '@frontend/contexts/translationContext';
 import { useCollaboration } from '@frontend/hooks/useCollaboration';
 import { useCurrentProject } from '@frontend/hooks/useCurrentProject';
-
 import type { Plan } from '@server/database/schemas/projects';
 
 import { PlanForm } from './PlanForm';
