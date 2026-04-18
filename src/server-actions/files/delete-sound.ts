@@ -1,8 +1,7 @@
 'use server';
 
-import { deleteFile } from 'src/actions/files/file-upload';
-
 import { getCurrentUser } from '@server/auth/get-current-user';
+import { deleteFile } from '@server/file-upload/file-upload';
 
 export async function deleteSound(soundUrl: string): Promise<void> {
     if (!soundUrl.startsWith('/media/audios/')) {

@@ -1,12 +1,12 @@
 'use server';
 
 import pug from 'pug';
-import { getSignedImageUrl } from 'src/actions/files/get-signed-image-url';
 import { v4 } from 'uuid';
 
 import { getCurrentUser } from '@server/auth/get-current-user';
 import { invokeLambda } from '@server/aws/lambda';
 import type { ProjectData } from '@server/database/schemas/projects';
+import { getSignedImageUrl } from '@server/file-upload/get-signed-image-url';
 import { registerService } from '@server/register-service';
 import { getTranslation } from '@server-actions/get-translation';
 import { getScenario } from '@server-actions/scenarios/get-scenario';

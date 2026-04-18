@@ -1,3 +1,5 @@
+'use client';
+
 export async function uploadImage(file: File | Blob, isAdminImage?: boolean): Promise<string> {
     const formData = new FormData();
     formData.append('image', file);

@@ -3,11 +3,11 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import sanitize from 'sanitize-filename';
 import sharp from 'sharp';
-import { getFile, getFileData } from 'src/actions/files/file-upload';
-import { isSignedImageUrlValid } from 'src/actions/files/get-signed-image-url';
 import { Readable } from 'stream';
 
 import { getCurrentUser } from '@server/auth/get-current-user';
+import { getFile, getFileData } from '@server/file-upload/file-upload';
+import { isSignedImageUrlValid } from '@server/file-upload/get-signed-image-url';
 
 const notFoundResponse = () => {
     return new NextResponse('Error 404, not found.', {

@@ -1,6 +1,7 @@
 import type { ReadableStream } from 'node:stream/web';
-import type { FileData } from 'src/actions/files/file-data.types';
 import { Readable } from 'stream';
+
+import type { FileData } from '@server/file-upload/file-data.types';
 
 import { getAwsClient } from './awsClient';
 

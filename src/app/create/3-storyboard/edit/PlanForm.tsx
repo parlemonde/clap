@@ -2,8 +2,6 @@ import { CameraIcon, ImageIcon, LightningBoltIcon, Pencil2Icon, UploadIcon } fro
 import Image from 'next/legacy/image';
 import React from 'react';
 import Camera from 'react-html5-camera-photo';
-import { deleteImage } from 'src/actions/files/delete-image';
-import { uploadImage } from 'src/actions/files/upload-image';
 
 import { Canvas } from '@frontend/components/create/Canvas';
 import { Button } from '@frontend/components/layout/Button';
@@ -17,7 +15,9 @@ import { Cropper } from '@frontend/components/ui/Cropper';
 import { Loader } from '@frontend/components/ui/Loader';
 import { sendToast } from '@frontend/components/ui/Toasts';
 import { useTranslation } from '@frontend/contexts/translationContext';
+import { uploadImage } from '@frontend/lib/upload-image';
 import type { Plan } from '@server/database/schemas/projects';
+import { deleteImage } from '@server-actions/files/delete-image';
 
 const RATIO = 16 / 9;
 

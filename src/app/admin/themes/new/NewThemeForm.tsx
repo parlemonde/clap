@@ -4,7 +4,6 @@ import { UploadIcon } from '@radix-ui/react-icons';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
-import { uploadImage } from 'src/actions/files/upload-image';
 
 import { NameInput } from '@frontend/components/admin/NameInput';
 import { Button } from '@frontend/components/layout/Button';
@@ -16,6 +15,7 @@ import { Cropper } from '@frontend/components/ui/Cropper';
 import { Loader } from '@frontend/components/ui/Loader';
 import { sendToast } from '@frontend/components/ui/Toasts';
 import { useLanguages } from '@frontend/hooks/useLanguages';
+import { uploadImage } from '@frontend/lib/upload-image';
 import type { Theme } from '@server/database/schemas/themes';
 import { createDefaultTheme } from '@server-actions/themes/create-theme';
 

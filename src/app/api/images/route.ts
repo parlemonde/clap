@@ -1,10 +1,10 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import sharp from 'sharp';
-import { uploadFile } from 'src/actions/files/file-upload';
 import { v4 } from 'uuid';
 
 import { getCurrentUser } from '@server/auth/get-current-user';
+import { uploadFile } from '@server/file-upload/file-upload';
 
 export async function POST(request: NextRequest) {
     try {

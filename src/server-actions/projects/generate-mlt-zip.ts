@@ -5,10 +5,10 @@ import fs from 'fs-extra';
 import http from 'node:http';
 import path from 'node:path';
 import type internal from 'node:stream';
-import { getFile, uploadFile } from 'src/actions/files/file-upload';
 import { v4 } from 'uuid';
 
 import type { ProjectData } from '@server/database/schemas/projects';
+import { getFile, uploadFile } from '@server/file-upload/file-upload';
 
 import type { File } from './project-to-mlt';
 import { projectToMlt } from './project-to-mlt';

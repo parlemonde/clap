@@ -1,8 +1,5 @@
 import { FileTextIcon, SpeakerLoudIcon, TimerIcon, UploadIcon } from '@radix-ui/react-icons';
 import * as React from 'react';
-import { deleteSound } from 'src/actions/files/delete-sound';
-import { uploadSound } from 'src/actions/files/upload-sound';
-import type { Sound } from 'src/lib/get-sounds';
 
 import { DiaporamaPlayer } from '@frontend/components/create/DiaporamaPlayer';
 import { Button } from '@frontend/components/layout/Button';
@@ -13,7 +10,10 @@ import { NextButton } from '@frontend/components/navigation/NextButton';
 import { Loader } from '@frontend/components/ui/Loader';
 import { sendToast } from '@frontend/components/ui/Toasts';
 import { useTranslation } from '@frontend/contexts/translationContext';
+import { uploadSound } from '@frontend/lib/upload-sound';
+import type { Sound } from '@lib/get-sounds';
 import type { Sequence } from '@server/database/schemas/projects';
+import { deleteSound } from '@server-actions/files/delete-sound';
 
 interface MontageFormProps {
     sequence: Sequence;

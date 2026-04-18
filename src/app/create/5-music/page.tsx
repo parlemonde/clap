@@ -3,9 +3,6 @@
 import { UploadIcon } from '@radix-ui/react-icons';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
-import { deleteSound } from 'src/actions/files/delete-sound';
-import { uploadSound } from 'src/actions/files/upload-sound';
-import { getSounds } from 'src/lib/get-sounds';
 
 import { DiaporamaPlayer } from '@frontend/components/create/DiaporamaPlayer';
 import { Button } from '@frontend/components/layout/Button';
@@ -22,6 +19,9 @@ import { userContext } from '@frontend/contexts/userContext';
 import { useCollaboration } from '@frontend/hooks/useCollaboration';
 import { useCurrentProject } from '@frontend/hooks/useCurrentProject';
 import { useDeepMemo } from '@frontend/hooks/useDeepMemo';
+import { uploadSound } from '@frontend/lib/upload-sound';
+import { getSounds } from '@lib/get-sounds';
+import { deleteSound } from '@server-actions/files/delete-sound';
 
 export default function MusicPage() {
     const router = useRouter();
