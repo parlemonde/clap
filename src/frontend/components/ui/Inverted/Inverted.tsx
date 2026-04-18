@@ -1,7 +1,7 @@
 import classNames from 'clsx';
 import * as React from 'react';
 
-import styles from './inverted.module.scss';
+import styles from './inverted.module.css';
 
 type InvertedProps = {
     isRound?: boolean;

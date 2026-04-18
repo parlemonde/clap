@@ -1,0 +1,58 @@
+.bottomNavBar {
+    display: block;
+    height: 57px;
+}
+
+@media (min-width: 900px) {
+    .bottomNavBar {
+        display: none;
+        height: 0;
+    }
+}
+.navigationMenu {
+    position: fixed;
+    z-index: 100;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 56px;
+    background-color: #fafafa;
+    border-top: 1px solid rgba(128, 128, 128, 0.7);
+}
+
+.navigationList {
+    display: flex;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.navigationItem {
+    flex: 1 1 0;
+    max-width: 160px;
+}
+
+.navigationButton {
+    text-decoration: none;
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    fill: #808080;
+    color: #808080;
+    font-size: 14px;
+    font-weight: 400;
+    height: 40px;
+    padding: 8px;
+}
+.navigationButton:hover {
+    background-color: rgba(170, 161, 161, 0.1333333333);
+}
+.navigationButton[data-active] {
+    color: var(--secondary-color);
+}

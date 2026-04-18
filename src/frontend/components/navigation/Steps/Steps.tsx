@@ -14,7 +14,7 @@ import { userContext } from '@frontend/contexts/userContext';
 import { useCurrentProject } from '@frontend/hooks/useCurrentProject';
 
 import { ProjectTitle } from './ProjectTitle';
-import styles from './steps.module.scss';
+import styles from './steps.module.css';
 
 type StepData = {
     name: I18nKeys;

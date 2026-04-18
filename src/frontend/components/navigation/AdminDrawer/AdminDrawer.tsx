@@ -6,7 +6,7 @@ import * as React from 'react';
 
 import { Link as NextLink } from '@frontend/components/navigation/Link';
 
-import styles from './admin-drawer.module.scss';
+import styles from './admin-drawer.module.css';
 
 interface Tab {
     label: string;

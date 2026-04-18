@@ -1,0 +1,10 @@
+.backButton {
+    margin-top: 16px;
+    padding-left: 8px;
+}
+
+@media (min-width: 900px) {
+    a.backButton {
+        display: none;
+    }
+}

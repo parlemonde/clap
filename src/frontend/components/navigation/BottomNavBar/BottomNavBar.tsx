@@ -10,7 +10,7 @@ import { useTranslation } from '@frontend/contexts/translationContext';
 import { userContext } from '@frontend/contexts/userContext';
 import { getTabs } from '@frontend/lib/get-tabs';
 
-import styles from './bottom-nav-bar.module.scss';
+import styles from './bottom-nav-bar.module.css';
 
 export const BottomNavBar = () => {
     const { t } = useTranslation();

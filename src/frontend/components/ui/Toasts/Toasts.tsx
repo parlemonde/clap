@@ -8,7 +8,7 @@ import * as React from 'react';
 import { Button } from '@frontend/components/layout/Button';
 
 import { TOAST_EVENT } from './toast-events';
-import styles from './toasts.module.scss';
+import styles from './toasts.module.css';
 import type { ToastMessage } from './toasts.type';
 
 type Toast = ToastMessage & {

@@ -5,7 +5,7 @@ import { Flex } from '@frontend/components/layout/Flex';
 
 import { NavigationLogo } from './NavigationLogo';
 import { NavigationMenu } from './NavigationMenu';
-import styles from './top-nav-bar.module.scss';
+import styles from './top-nav-bar.module.css';
 
 export const TopNavBar = () => {
     return (

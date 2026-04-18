@@ -9,7 +9,7 @@ import { useTranslation } from '@frontend/contexts/translationContext';
 import { userContext } from '@frontend/contexts/userContext';
 import { getTabs } from '@frontend/lib/get-tabs';
 
-import styles from './navigation-menu.module.scss';
+import styles from './navigation-menu.module.css';
 
 export const NavigationMenu = () => {
     const { t } = useTranslation();
