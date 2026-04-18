@@ -4,7 +4,7 @@ import * as React from 'react';
 
 import type { ButtonProps } from './Button';
 import { Button } from './Button';
-import styles from './icon-button.module.scss';
+import styles from './icon-button.module.css';
 
 export type SVGIcon = React.ForwardRefExoticComponent<IconProps & React.RefAttributes<SVGSVGElement>>;
 

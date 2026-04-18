@@ -8,7 +8,7 @@ import type { MarginProps } from '@frontend/components/layout/css-styles';
 import { getMarginAndPaddingProps, getMarginAndPaddingStyle } from '@frontend/components/layout/css-styles';
 import { Link } from '@frontend/components/navigation/Link';
 
-import styles from './button.module.scss';
+import styles from './button.module.css';
 
 export type ButtonProps = {
     as?: 'button' | 'a' | 'label';

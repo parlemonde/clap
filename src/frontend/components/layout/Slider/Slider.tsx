@@ -7,7 +7,7 @@ import React from 'react';
 import type { MarginProps } from '@frontend/components/layout/css-styles';
 import { getMarginAndPaddingStyle } from '@frontend/components/layout/css-styles';
 
-import styles from './slider.module.scss';
+import styles from './slider.module.css';
 
 type SliderProps = {
     value: number;

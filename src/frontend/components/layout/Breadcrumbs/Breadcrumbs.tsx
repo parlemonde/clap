@@ -6,7 +6,7 @@ import type { MarginProps } from '@frontend/components/layout/css-styles';
 import { getMarginAndPaddingStyle } from '@frontend/components/layout/css-styles';
 import { Link } from '@frontend/components/navigation/Link';
 
-import styles from './breadcrumbs.module.scss';
+import styles from './breadcrumbs.module.css';
 
 type BreadcrumbLink = {
     href: string;

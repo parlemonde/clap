@@ -8,7 +8,7 @@ import type { SVGIcon } from '@frontend/components/layout/Button/IconButton';
 import CheckedIcon from '@frontend/svg/checkedIcon.svg';
 import UncheckedIcon from '@frontend/svg/uncheckedIcon.svg';
 
-import styles from './checkbox.module.scss';
+import styles from './checkbox.module.css';
 
 type CheckboxProps = {
     name: string;

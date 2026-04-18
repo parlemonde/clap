@@ -4,7 +4,7 @@ import * as React from 'react';
 import type { MarginProps } from '@frontend/components/layout/css-styles';
 import { getMarginAndPaddingStyle } from '@frontend/components/layout/css-styles';
 
-import styles from './divider.module.scss';
+import styles from './divider.module.css';
 
 type DividerProps = {
     style?: React.CSSProperties;

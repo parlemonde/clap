@@ -1,7 +1,7 @@
 import classNames from 'clsx';
 import * as React from 'react';
 
-import styles from './linear-progress.module.scss';
+import styles from './linear-progress.module.css';
 
 type LinearProgressProps = {
     value?: number;

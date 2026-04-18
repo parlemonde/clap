@@ -4,7 +4,7 @@ import classNames from 'clsx';
 import { Progress } from 'radix-ui';
 import * as React from 'react';
 
-import styles from './circular-progress.module.scss';
+import styles from './circular-progress.module.css';
 
 type CircularProgressProps = {
     color?: 'primary' | 'secondary' | 'grey';

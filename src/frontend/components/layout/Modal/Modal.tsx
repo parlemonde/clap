@@ -8,7 +8,7 @@ import { IconButton } from '@frontend/components/layout/Button/IconButton';
 import { CircularProgress } from '@frontend/components/layout/CircularProgress';
 import { useTranslation } from '@frontend/contexts/translationContext';
 
-import styles from './modal.module.scss';
+import styles from './modal.module.css';
 
 type ModalProps = {
     // --

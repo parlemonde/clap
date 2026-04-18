@@ -1,0 +1,7 @@
+.Checkbox {
+  display: flex;
+  align-items: center;
+}
+.Checkbox__Label {
+  cursor: pointer;
+}

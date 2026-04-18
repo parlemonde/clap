@@ -4,7 +4,7 @@ import classNames from 'clsx';
 import { Tooltip as RadixTooltip } from 'radix-ui';
 import React from 'react';
 
-import styles from './tooltip.module.scss';
+import styles from './tooltip.module.css';
 
 type TooltipProps = {
     position?: 'top' | 'bottom' | 'left' | 'right';

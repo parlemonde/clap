@@ -1,5 +1,3 @@
-@use 'variables' as *;
-
 .progressRoot {
     display: inline-block;
     padding: 0;
@@ -21,11 +19,13 @@
 }
 
 .progressIndicator--primary > svg {
-    stroke: $primaryColor;
+    stroke: var(--primary-color);
 }
+
 .progressIndicator--secondary > svg {
-    stroke: $secondaryColor;
+    stroke: var(--secondary-color);
 }
+
 .progressIndicator--grey > svg {
     stroke: rgba(0, 0, 0, 0.26);
 }
@@ -44,12 +44,10 @@
         stroke-dashoffset: -115px;
     }
 }
-
 @keyframes rotate360 {
     0% {
         transform: rotate(0deg);
     }
-
     100% {
         transform: rotate(360deg);
     }

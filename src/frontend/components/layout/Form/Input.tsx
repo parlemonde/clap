@@ -6,7 +6,7 @@ import type { JSX } from 'react';
 import type { MarginProps } from '@frontend/components/layout/css-styles';
 import { getMarginAndPaddingProps, getMarginAndPaddingStyle } from '@frontend/components/layout/css-styles';
 
-import styles from './input.module.scss';
+import styles from './input.module.css';
 
 type InputProps = {
     color?: 'primary' | 'secondary';

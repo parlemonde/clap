@@ -5,7 +5,7 @@ import type { JSX } from 'react';
 import type { Size } from '@frontend/components/layout/css-styles';
 import { getSize } from '@frontend/components/layout/css-styles';
 
-import styles from './container.module.scss';
+import styles from './container.module.css';
 
 type ContainerProps = Omit<JSX.IntrinsicElements['main'], 'ref'> & {
     paddingBottom?: Size | number | 'none' | 'auto';
