@@ -9,7 +9,7 @@ import { Link } from '@frontend/components/navigation/Link';
 import { useTranslation } from '@frontend/contexts/translationContext';
 import type { Plan } from '@server/database/schemas/projects';
 
-import styles from './plan-card.module.scss';
+import styles from './plan-card.module.css';
 
 type PlanCardProps = {
     plan: Plan;

@@ -6,7 +6,7 @@ import { getMarginAndPaddingStyle } from '@frontend/components/layout';
 import { Flex, FlexItem } from '@frontend/components/layout/Flex';
 import { Title } from '@frontend/components/layout/Typography';
 
-import styles from './admin-tile.module.scss';
+import styles from './admin-tile.module.css';
 
 type AdminTileProps = {
     title: React.ReactNode;

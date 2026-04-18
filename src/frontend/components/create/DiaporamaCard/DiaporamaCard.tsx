@@ -9,7 +9,7 @@ import { useTranslation } from '@frontend/contexts/translationContext';
 import TimerIcon from '@frontend/svg/timer.svg';
 import type { Sequence } from '@server/database/schemas/projects';
 
-import styles from './diaporama-card.module.scss';
+import styles from './diaporama-card.module.css';
 
 type DiaporamaCardProps = {
     questionIndex: number;

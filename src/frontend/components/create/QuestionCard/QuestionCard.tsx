@@ -4,7 +4,7 @@ import { serializeToQueryUrl } from 'src/lib/serialize-to-query-url';
 
 import { IconButton } from '@frontend/components/layout/Button/IconButton';
 
-import styles from './question-card.module.scss';
+import styles from './question-card.module.css';
 
 type QuestionCardProps = {
     projectId: number | null;

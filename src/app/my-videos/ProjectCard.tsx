@@ -8,7 +8,7 @@ import { IconButton } from '@frontend/components/layout/Button/IconButton';
 import { Title } from '@frontend/components/layout/Typography';
 import { useTranslation } from '@frontend/contexts/translationContext';
 
-import styles from './project-card.module.scss';
+import styles from './project-card.module.css';
 
 type ProjectCardProps = {
     title?: string;

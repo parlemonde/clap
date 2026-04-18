@@ -14,7 +14,7 @@ import { openSansFont, alegreyaSansFont, littleDaysFont } from '@frontend/fonts'
 import { getCurrentUser } from '@server/auth/get-current-user';
 import { getLocales } from '@server-actions/get-locales';
 
-import styles from './app.module.scss';
+import styles from './app.module.css';
 
 import 'normalize.css/normalize.css';
 import 'nprogress/nprogress.css';

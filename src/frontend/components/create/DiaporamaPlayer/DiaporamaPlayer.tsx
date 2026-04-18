@@ -17,7 +17,7 @@ import type { Sequence, Title } from '@server/database/schemas/projects';
 
 import { Frame } from './Frame';
 import { WaveForm } from './WaveForm';
-import styles from './diaporama-player.module.scss';
+import styles from './diaporama-player.module.css';
 import { useAudio } from './useAudio';
 
 const PLAYER_ID = 'diaporama-player';

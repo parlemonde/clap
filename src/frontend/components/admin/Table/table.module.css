@@ -1,0 +1,41 @@
+.Table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0px;
+}
+.Table thead {
+    background-color: var(--secondary-color);
+    color: white;
+    font-weight: 700;
+    border-bottom: 1px solid rgb(224, 224, 224);
+}
+.Table thead th {
+    color: white;
+    font-weight: bold;
+    padding: 16px;
+    font-size: 14px;
+    line-height: 24px;
+}
+.Table tr {
+    vertical-align: middle;
+    outline: 0px;
+}
+.Table tbody {
+    text-align: left;
+}
+.Table tbody tr {
+    background-color: white;
+}
+.Table tbody tr:nth-of-type(even) {
+    background-color: rgb(224, 239, 232);
+}
+.Table tbody tr.sortable-ghost {
+    opacity: 0;
+}
+.Table tbody th {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    border-bottom: 1px solid rgb(224, 224, 224);
+    padding: 0px;
+}

@@ -7,7 +7,7 @@ import { Link } from '@frontend/components/navigation/Link';
 import { useTranslation } from '@frontend/contexts/translationContext';
 import type { Sequence } from '@server/database/schemas/projects';
 
-import styles from './title-card.module.scss';
+import styles from './title-card.module.css';
 
 type TitleCardProps = {
     title?: Sequence['title'];

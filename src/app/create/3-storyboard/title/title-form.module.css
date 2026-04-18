@@ -1,0 +1,45 @@
+.textAreaContainer {
+    display: grid;
+}
+.textAreaContainer::after {
+    content: attr(data-replicated-value) ' ';
+    visibility: hidden;
+    grid-area: 1/1/2/2;
+    width: 100%;
+    padding: 1px;
+    margin: 0;
+    box-sizing: content-box;
+    text-align: inherit;
+    font-size: inherit;
+    line-height: 1;
+    font-family: inherit;
+    font-weight: inherit;
+    border: 1px dashed;
+    border-radius: 8px;
+    border-top-left-radius: 0;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+.textAreaContainer textarea {
+    grid-area: 1/1/2/2;
+    width: 100%;
+    resize: none;
+    white-space: pre-wrap;
+    word-break: break-word;
+    outline: none;
+    padding: 0;
+    margin: 0;
+    box-sizing: content-box;
+    text-align: inherit;
+    font-size: inherit;
+    line-height: 1;
+    font-family: inherit;
+    font-weight: inherit;
+    border: 1px dashed #6065fc;
+    border-radius: 8px;
+    border-top-left-radius: 0;
+    background-color: inherit;
+    color: inherit;
+    max-height: 100%;
+    overflow: hidden;
+}

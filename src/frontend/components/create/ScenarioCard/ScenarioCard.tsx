@@ -5,7 +5,7 @@ import { Placeholder } from '@frontend/components/layout/Placeholder';
 import { Title } from '@frontend/components/layout/Typography';
 import { Link } from '@frontend/components/navigation/Link';
 
-import styles from './scenario-card.module.scss';
+import styles from './scenario-card.module.css';
 
 type ScenarioCardProps = {
     isNew?: boolean;
