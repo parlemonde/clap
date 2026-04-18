@@ -14,8 +14,6 @@ import { UserContextProvider } from '@frontend/contexts/userContext';
 import { openSansFont, alegreyaSansFont, littleDaysFont } from '@frontend/fonts';
 import { getCurrentUser } from '@server/auth/get-current-user';
 
-import styles from './app.module.css';
-
 import 'normalize.css/normalize.css';
 import 'nprogress/nprogress.css';
 import './globals.css';
@@ -71,9 +69,7 @@ export default async function RootLayout({ children }: React.PropsWithChildren) 
 
     return (
         <html lang={currentLocale}>
-            <body
-                className={classNames(openSansFont.className, styles.body, openSansFont.variable, alegreyaSansFont.variable, littleDaysFont.variable)}
-            >
+            <body className={classNames(openSansFont.className, openSansFont.variable, alegreyaSansFont.variable, littleDaysFont.variable)}>
                 <noscript>You need to enable JavaScript to run this app.</noscript>
                 <Tooltip.Provider delayDuration={0}>
                     <NextIntlClientProvider>
