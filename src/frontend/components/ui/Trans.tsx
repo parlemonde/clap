@@ -3,7 +3,8 @@
 import type { RichTranslationValues } from 'next-intl';
 import { useTranslations } from 'next-intl';
 import * as React from 'react';
-import type { TranslateOptions } from 'src/server/i18n/types';
+
+import type { TranslateOptions } from '@server/i18n/types';
 
 export interface TransProps {
     i18nKey: string;

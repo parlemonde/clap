@@ -1,8 +1,8 @@
 'use client';
 
-import { jsonFetcher } from 'src/lib/json-fetcher';
 import useSWR from 'swr';
 
+import { jsonFetcher } from '@lib/json-fetcher';
 import type { Language } from '@server/database/schemas/languages';
 
 export function useLanguages(): Language[] {

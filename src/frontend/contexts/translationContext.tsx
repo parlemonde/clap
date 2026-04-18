@@ -2,7 +2,8 @@
 
 import { useLocale, useTranslations } from 'next-intl';
 import * as React from 'react';
-import type { tFunction } from 'src/server/i18n/types';
+
+import type { tFunction } from '@server/i18n/types';
 
 export const useTranslation = () => {
     const currentLocale = useLocale();

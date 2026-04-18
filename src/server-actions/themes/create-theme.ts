@@ -2,12 +2,12 @@
 
 import { and, desc, eq, isNull } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
-import { getRequestLocale } from 'src/server/i18n/server';
 
 import { getCurrentUser } from '@server/auth/get-current-user';
 import { db } from '@server/database';
 import type { Theme } from '@server/database/schemas/themes';
 import { themes } from '@server/database/schemas/themes';
+import { getRequestLocale } from '@server/i18n/server';
 
 // User action to create a new theme
 export async function createTheme(themeName: string): Promise<Theme | undefined> {

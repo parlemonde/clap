@@ -1,4 +1,4 @@
-import type { tFunction } from 'src/server/i18n/types';
+import type { tFunction } from '@server/i18n/types';
 
 const optionsRegex = /{{(.+?)}}/gm;
 

@@ -1,12 +1,12 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { getRequestLocale } from 'src/server/i18n/server';
 
 import { getCurrentUser } from '@server/auth/get-current-user';
 import { db } from '@server/database';
 import type { Scenario } from '@server/database/schemas/scenarios';
 import { scenarios } from '@server/database/schemas/scenarios';
+import { getRequestLocale } from '@server/i18n/server';
 
 // User action to create a new scenario
 type NewUserScenario = {

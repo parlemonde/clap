@@ -1,6 +1,5 @@
 import React from 'react';
 // import { logout } from 'src/actions/authentication/logout';
-import { jsonFetcher } from 'src/lib/json-fetcher';
 import useSWR from 'swr';
 
 import type { VerifyAlertData } from '@frontend/components/collaboration/AlertModal';
@@ -9,6 +8,7 @@ import { Button } from '@frontend/components/layout/Button';
 import { Flex } from '@frontend/components/layout/Flex';
 import { Text } from '@frontend/components/layout/Typography';
 import { sendToast } from '@frontend/components/ui/Toasts';
+import { jsonFetcher } from '@lib/json-fetcher';
 import type { Project } from '@server/database/schemas/projects';
 import { endCollaboration } from '@server-actions/projects/end-collaboration';
 import { startCollaboration } from '@server-actions/projects/start-collaboration';

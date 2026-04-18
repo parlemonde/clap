@@ -3,7 +3,6 @@
 import { ChevronLeftIcon } from '@radix-ui/react-icons';
 import classNames from 'clsx';
 import * as React from 'react';
-import { serializeToQueryUrl } from 'src/lib/serialize-to-query-url';
 
 import { Button } from '@frontend/components/layout/Button';
 import { Text } from '@frontend/components/layout/Typography';
@@ -11,6 +10,7 @@ import { Link } from '@frontend/components/navigation/Link';
 import { useTranslation } from '@frontend/contexts/translationContext';
 import { userContext } from '@frontend/contexts/userContext';
 import { useCurrentProject } from '@frontend/hooks/useCurrentProject';
+import { serializeToQueryUrl } from '@lib/serialize-to-query-url';
 
 import { ProjectTitle } from './ProjectTitle';
 import styles from './steps.module.css';

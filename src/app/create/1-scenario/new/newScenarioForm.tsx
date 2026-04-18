@@ -2,7 +2,6 @@
 
 import { useRouter } from 'next/navigation';
 import React from 'react';
-import { jsonFetcher } from 'src/lib/json-fetcher';
 import useSWR from 'swr';
 
 import { Form, Field, Input, TextArea } from '@frontend/components/layout/Form';
@@ -16,6 +15,7 @@ import { userContext } from '@frontend/contexts/userContext';
 import { useCurrentProject } from '@frontend/hooks/useCurrentProject';
 import { useLocalStorage } from '@frontend/hooks/useLocalStorage';
 import { isLocalScenario, isLocalTheme, type LocalScenario } from '@frontend/hooks/useLocalStorage/local-storage';
+import { jsonFetcher } from '@lib/json-fetcher';
 import type { Scenario } from '@server/database/schemas/scenarios';
 import type { Theme } from '@server/database/schemas/themes';
 import { createScenario } from '@server-actions/scenarios/create-scenario';

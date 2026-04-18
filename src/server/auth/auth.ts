@@ -4,12 +4,12 @@ import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { nextCookies } from 'better-auth/next-js';
 import { admin } from 'better-auth/plugins';
 import { adminAc, userAc } from 'better-auth/plugins/admin/access';
-import { sendMail } from 'src/emails/index';
 
 import { db } from '@server/database';
 import { registerService } from '@server/register-service';
 
 import { ssoPlugin } from './parlemonde-sso-plugin';
+import { sendMail } from '../../emails/index';
 
 const adminPlugin = admin({
     defaultRole: 'teacher',

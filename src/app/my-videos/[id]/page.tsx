@@ -1,10 +1,10 @@
 import * as React from 'react';
-import type { ServerPageProps } from 'src/lib/page-props.types';
 
 import { Button } from '@frontend/components/layout/Button';
 import { Container } from '@frontend/components/layout/Container';
 import { Flex } from '@frontend/components/layout/Flex';
 import { Text, Title } from '@frontend/components/layout/Typography';
+import type { ServerPageProps } from '@lib/page-props.types';
 import { getCurrentUser } from '@server/auth/get-current-user';
 import { getTranslation } from '@server-actions/get-translation';
 import { getProject } from '@server-actions/projects/get-project';

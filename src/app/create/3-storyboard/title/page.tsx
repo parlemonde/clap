@@ -2,7 +2,6 @@
 
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
-import type { ServerPageProps } from 'src/lib/page-props.types';
 
 import { Container } from '@frontend/components/layout/Container';
 import { Title } from '@frontend/components/layout/Typography';
@@ -13,6 +12,7 @@ import { Inverted } from '@frontend/components/ui/Inverted';
 import { useTranslation } from '@frontend/contexts/translationContext';
 import { useCollaboration } from '@frontend/hooks/useCollaboration';
 import { useCurrentProject } from '@frontend/hooks/useCurrentProject';
+import type { ServerPageProps } from '@lib/page-props.types';
 import type { Title as SequenceTitle } from '@server/database/schemas/projects';
 
 import { TitleForm } from './TitleForm';

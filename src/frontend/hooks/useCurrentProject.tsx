@@ -1,10 +1,10 @@
 'use client';
 
 import React from 'react';
-import { jsonFetcher } from 'src/lib/json-fetcher';
 import useSWR from 'swr';
 
 import { userContext } from '@frontend/contexts/userContext';
+import { jsonFetcher } from '@lib/json-fetcher';
 import type { Project, ProjectData } from '@server/database/schemas/projects';
 import { updateProject } from '@server-actions/projects/update-project';
 

@@ -2,7 +2,6 @@
 
 import { VideoIcon } from '@radix-ui/react-icons';
 import * as React from 'react';
-import { getSounds } from 'src/lib/get-sounds';
 
 import { DiaporamaPlayer } from '@frontend/components/create/DiaporamaPlayer';
 import { Button } from '@frontend/components/layout/Button';
@@ -24,6 +23,7 @@ import { useCurrentProject } from '@frontend/hooks/useCurrentProject';
 import { useDeepMemo } from '@frontend/hooks/useDeepMemo';
 import { useLocalStorage } from '@frontend/hooks/useLocalStorage';
 import VideoFile from '@frontend/svg/plan.svg';
+import { getSounds } from '@lib/get-sounds';
 import { getMltZip } from '@server-actions/projects/generate-mlt-zip';
 import { generateVideo, getVideoProgress } from '@server-actions/projects/generate-video';
 

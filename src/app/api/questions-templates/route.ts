@@ -1,7 +1,7 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { getRequestLocale } from 'src/server/i18n/server';
 
+import { getRequestLocale } from '@server/i18n/server';
 import { listQuestions } from '@server-actions/questions/list-questions';
 
 export const dynamic = 'force-dynamic';

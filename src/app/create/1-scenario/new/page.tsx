@@ -1,7 +1,4 @@
 import * as React from 'react';
-import type { ServerPageProps } from 'src/lib/page-props.types';
-import { getThemeId } from 'src/lib/search-params/get-theme-id';
-import { serializeToQueryUrl } from 'src/lib/serialize-to-query-url';
 
 import { Container } from '@frontend/components/layout/Container';
 import { Title } from '@frontend/components/layout/Typography';
@@ -9,6 +6,9 @@ import { Steps } from '@frontend/components/navigation/Steps';
 import { ThemeBreadcrumbs } from '@frontend/components/navigation/ThemeBreadcrumbs';
 import { Inverted } from '@frontend/components/ui/Inverted';
 import { Trans } from '@frontend/components/ui/Trans';
+import type { ServerPageProps } from '@lib/page-props.types';
+import { getThemeId } from '@lib/search-params/get-theme-id';
+import { serializeToQueryUrl } from '@lib/serialize-to-query-url';
 
 import { NewScenarioForm } from './newScenarioForm';
 

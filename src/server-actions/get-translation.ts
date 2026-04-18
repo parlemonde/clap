@@ -1,7 +1,8 @@
 'use server';
 
 import { getLocale, getTranslations } from 'next-intl/server';
-import type { tFunction } from 'src/server/i18n/types';
+
+import type { tFunction } from '@server/i18n/types';
 
 export async function getTranslation() {
     const [translator, currentLocale] = await Promise.all([getTranslations(), getLocale()]);

@@ -1,8 +1,8 @@
 'use server';
 
 import { headers } from 'next/headers';
-import { auth } from 'src/server/auth/auth';
 
+import { auth } from '@server/auth/auth';
 import { getCurrentUser } from '@server/auth/get-current-user';
 import type { User } from '@server/database/schemas/users';
 

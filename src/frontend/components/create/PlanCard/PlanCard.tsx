@@ -2,11 +2,11 @@ import { TrashIcon, LightningBoltIcon } from '@radix-ui/react-icons';
 import classNames from 'clsx';
 import * as React from 'react';
 import { createPortal } from 'react-dom';
-import { serializeToQueryUrl } from 'src/lib/serialize-to-query-url';
 
 import { IconButton } from '@frontend/components/layout/Button/IconButton';
 import { Link } from '@frontend/components/navigation/Link';
 import { useTranslation } from '@frontend/contexts/translationContext';
+import { serializeToQueryUrl } from '@lib/serialize-to-query-url';
 import type { Plan } from '@server/database/schemas/projects';
 
 import styles from './plan-card.module.css';

@@ -2,14 +2,14 @@
 
 import { useRouter } from 'next/navigation';
 import React from 'react';
-import { jsonFetcher } from 'src/lib/json-fetcher';
-import { serializeToQueryUrl } from 'src/lib/serialize-to-query-url';
 import useSWR from 'swr';
 
 import { ScenarioCard } from '@frontend/components/create/ScenarioCard';
 import { useTranslation } from '@frontend/contexts/translationContext';
 import { useLocalStorage } from '@frontend/hooks/useLocalStorage';
 import { deleteFromLocalStorage, isLocalScenario, isLocalTheme, setToLocalStorage } from '@frontend/hooks/useLocalStorage/local-storage';
+import { jsonFetcher } from '@lib/json-fetcher';
+import { serializeToQueryUrl } from '@lib/serialize-to-query-url';
 import type { Question } from '@server/database/schemas/questions';
 import type { Scenario } from '@server/database/schemas/scenarios';
 import type { Theme } from '@server/database/schemas/themes';

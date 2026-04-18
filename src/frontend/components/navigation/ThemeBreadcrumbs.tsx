@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { jsonFetcher } from 'src/lib/json-fetcher';
 import useSWR from 'swr';
 
 import { Breadcrumbs } from '@frontend/components/layout/Breadcrumbs';
@@ -10,6 +9,7 @@ import { useTranslation } from '@frontend/contexts/translationContext';
 import { userContext } from '@frontend/contexts/userContext';
 import { useLocalStorage } from '@frontend/hooks/useLocalStorage';
 import { isLocalTheme } from '@frontend/hooks/useLocalStorage/local-storage';
+import { jsonFetcher } from '@lib/json-fetcher';
 import type { Theme } from '@server/database/schemas/themes';
 
 type ThemeBreadcrumbsProps = {

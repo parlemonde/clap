@@ -1,5 +1,6 @@
 import React from 'react';
-import type { Sound } from 'src/lib/get-sounds';
+
+import type { Sound } from '@lib/get-sounds';
 
 export const useAudio = (soundUrl: string, initialVolume: number, sounds: Sound[]) => {
     const audioContextRef = React.useRef<AudioContext | null>(null);

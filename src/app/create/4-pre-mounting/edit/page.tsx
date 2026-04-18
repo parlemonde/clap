@@ -2,7 +2,6 @@
 
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
-import type { ServerPageProps } from 'src/lib/page-props.types';
 
 import { FeedbackForm } from '@frontend/components/collaboration/FeedbackForm';
 import { FeedbackModal } from '@frontend/components/collaboration/FeedbackModal';
@@ -16,6 +15,7 @@ import { useTranslation } from '@frontend/contexts/translationContext';
 import { userContext } from '@frontend/contexts/userContext';
 import { useCollaboration } from '@frontend/hooks/useCollaboration';
 import { useCurrentProject } from '@frontend/hooks/useCurrentProject';
+import type { ServerPageProps } from '@lib/page-props.types';
 import type { Sequence } from '@server/database/schemas/projects';
 
 import { MontageForm } from './MontageForm';

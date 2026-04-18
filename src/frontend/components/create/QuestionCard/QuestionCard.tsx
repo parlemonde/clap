@@ -1,8 +1,8 @@
 import { DragHandleDots2Icon, Pencil1Icon, TrashIcon, ArrowUpIcon, ArrowDownIcon, GearIcon } from '@radix-ui/react-icons';
 import React from 'react';
-import { serializeToQueryUrl } from 'src/lib/serialize-to-query-url';
 
 import { IconButton } from '@frontend/components/layout/Button/IconButton';
+import { serializeToQueryUrl } from '@lib/serialize-to-query-url';
 
 import styles from './question-card.module.css';
 
