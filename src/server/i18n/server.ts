@@ -1,8 +1,10 @@
+import { eq } from 'drizzle-orm';
+import { unstable_cacheLife as cacheLife, revalidateTag, unstable_cacheTag as cacheTag } from 'next/cache';
 import { cookies } from 'next/headers';
 import type { AbstractIntlMessages } from 'next-intl';
-import { cache } from 'react';
 
-import { getDynamoDBItem, setDynamoDBItem } from '@server/aws/dynamoDb';
+import { db } from '@server/database';
+import { languages } from '@server/database/schemas/languages';
 
 import { APP_LANGUAGE_COOKIE_NAME, DEFAULT_LOCALE } from './constants';
 import { defaultLocales } from './default-locales';
@@ -29,22 +31,38 @@ function mergeMessages(baseMessages: AbstractIntlMessages, overrideMessages: Abs
     return mergedMessages;
 }
 
-export const getLocalesForLanguage = cache(async (languageCode: string) => {
+export function getLocalesCacheTag(languageCode: string): string {
+    return `locales:${languageCode}`;
+}
+
+export function revalidateLocalesCacheTag(languageCode: string): void {
+    revalidateTag(getLocalesCacheTag(languageCode));
+}
+
+export async function getLocalesForLanguage(languageCode: string) {
+    'use cache';
+
+    cacheLife('hours');
+    cacheTag(getLocalesCacheTag(languageCode));
+
     let locales: AbstractIntlMessages = defaultLocales;
 
     try {
-        const dynamoDbLocales = await getDynamoDBItem<AbstractIntlMessages>(`locales:${languageCode}`);
-        if (dynamoDbLocales) {
-            locales = mergeMessages(locales, dynamoDbLocales);
-        } else {
-            await setDynamoDBItem(`locales:${languageCode}`, locales);
+        const language = await db.query.languages.findFirst({
+            columns: {
+                locales: true,
+            },
+            where: eq(languages.value, languageCode),
+        });
+        if (language?.locales) {
+            locales = mergeMessages(locales, language.locales);
         }
     } catch (err) {
         console.error(err);
     }
 
     return locales;
-});
+}
 
 export async function getRequestLocale(): Promise<string> {
     const cookieStore = await cookies();

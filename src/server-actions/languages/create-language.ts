@@ -4,10 +4,10 @@ import { revalidatePath } from 'next/cache';
 
 import { getCurrentUser } from '@server/auth/get-current-user';
 import { db } from '@server/database';
-import type { Language } from '@server/database/schemas/languages';
 import { languages } from '@server/database/schemas/languages';
+import type { NewLanguage } from '@server/database/schemas/languages';
 
-export async function createLanguage(newLanguage: Language): Promise<void> {
+export async function createLanguage(newLanguage: NewLanguage): Promise<void> {
     const user = await getCurrentUser();
     if (!user || user.role !== 'admin') {
         return;

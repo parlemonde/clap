@@ -4,10 +4,10 @@ import React from 'react';
 import { Button } from '@frontend/components/layout/Button';
 import { Modal } from '@frontend/components/layout/Modal';
 import { sendToast } from '@frontend/components/ui/Toasts';
-import type { Language } from '@server/database/schemas/languages';
+import type { LanguageOption } from '@server/database/schemas/languages';
 
 interface UploadLanguageModalProps {
-    language?: Language | null;
+    language?: LanguageOption | null;
     onClose?(): void;
 }
 

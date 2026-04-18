@@ -5,6 +5,9 @@ import path from 'path';
 const withNextIntl = createNextIntlPlugin('./src/server/i18n/request.ts');
 
 const nextConfig: NextConfig = {
+    experimental: {
+        useCache: true,
+    },
     poweredByHeader: false,
     webpack: (config) => {
         config.module.rules.push({

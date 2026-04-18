@@ -3,10 +3,9 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
 import { getCurrentUser } from '@server/auth/get-current-user';
-import { setDynamoDBItem } from '@server/aws/dynamoDb';
 import { db } from '@server/database';
 import { languages } from '@server/database/schemas/languages';
-import { getLocalesForLanguage } from '@server/i18n/server';
+import { getLocalesForLanguage, revalidateLocalesCacheTag } from '@server/i18n/server';
 
 const LOCALE_REGEX = /^\w\w(\.json)?$/;
 
@@ -83,7 +82,13 @@ export async function PUT(request: NextRequest, props: { params: Promise<{ langu
         }
 
         const newTranslations = JSON.parse(await file.text());
-        await setDynamoDBItem(`locales:${language.value}`, newTranslations);
+        await db
+            .update(languages)
+            .set({
+                locales: newTranslations,
+            })
+            .where(eq(languages.value, language.value));
+        revalidateLocalesCacheTag(language.value);
 
         return new Response(null, {
             status: 204,
