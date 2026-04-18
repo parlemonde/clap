@@ -18,7 +18,7 @@ import styles from './app.module.css';
 
 import 'normalize.css/normalize.css';
 import 'nprogress/nprogress.css';
-import 'src/styles/globals.scss';
+import './globals.css';
 import 'react-html5-camera-photo/build/css/index.css';
 
 const APP_URL = process.env.HOST_URL || '';

@@ -38,8 +38,8 @@
     border-color: rgb(80, 84, 212);
 }
 .button--variant-outlined.button--color-secondary {
-    border: 1px solid var(secondary-color);
-    color: var(secondary-color);
+    border: 1px solid var(--secondary-color);
+    color: var(--secondary-color);
 }
 .button--variant-outlined.button--color-secondary:hover,
 .button--variant-outlined.button--color-secondary:focus-visible {
@@ -73,7 +73,7 @@
     background-color: rgba(80, 84, 212, 0.04);
 }
 .button--variant-borderless.button--color-secondary {
-    color: var(secondary-color);
+    color: var(--secondary-color);
 }
 .button--variant-borderless.button--color-secondary:hover,
 .button--variant-borderless.button--color-secondary:focus-visible {
@@ -130,8 +130,8 @@
     border-color: rgb(80, 84, 212);
 }
 .button--variant-contained.button--color-secondary {
-    border: 1px solid var(secondary-color);
-    background-color: var(secondary-color);
+    border: 1px solid var(--secondary-color);
+    background-color: var(--secondary-color);
     color: white;
 }
 .button--variant-contained.button--color-secondary:hover,
