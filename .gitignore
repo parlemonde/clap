@@ -59,3 +59,4 @@ server-preview-proxy/cargo.lock
 dump_*
 
 next-env.d.ts
+migrate-db.ts
