@@ -58,7 +58,7 @@ Ignore:
 - Database: PostgreSQL via Drizzle ORM
 - Auth: `better-auth`
 - Storage: local files in development or S3 in deployed environments
-- Auxiliary infra used by app code: DynamoDB, Lambda, WebSocket collaboration server
+- Auxiliary infra used by app code: Lambda, WebSocket collaboration server
 
 Useful commands:
 
@@ -341,8 +341,7 @@ Even if the backing workers live elsewhere, the app-side orchestration is in sco
 
 Translation-related code is spread across:
 
-- `src/i18n/*`
-- `src/server-actions/get-locales.ts`
+- `src/server/i18n/*`
 - `src/frontend/contexts/translationContext.tsx`
 - `src/frontend/components/ui/Trans.tsx`
 - locale API routes under `src/app/api/locales/[languageCode]/`
@@ -350,8 +349,7 @@ Translation-related code is spread across:
 Patterns:
 
 - default locale is French unless a cookie overrides it
-- translations are resolved through the app translation helpers, not a heavy external i18n runtime
-- locale payloads can be cached/fetched through DynamoDB
+- locale payloads are stored in the `languages` table and cached through the Next.js app
 
 When editing user-visible text, check whether the string should be translated rather than hard-coded.
 

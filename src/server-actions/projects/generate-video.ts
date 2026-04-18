@@ -12,7 +12,7 @@ import { projectToMlt } from './project-to-mlt';
 export async function generateVideo(
     project: ProjectData,
     name: string,
-    projectId?: number,
+    _projectId?: number,
 ): Promise<{
     percentage: number;
     url: string;
@@ -24,29 +24,7 @@ export async function generateVideo(
 
     try {
         const { mltStr, files } = await projectToMlt(project, name, 'local');
-        const videoKey = projectId ? `projects/${projectId}` : `projects/tmp-for-${user.id}`;
         const currentProgress = 0;
-        // const currentProgress = await getDynamoDBItem<VideoProgress>(videoKey);
-        // const currentDate = new Date().getTime();
-        // if (
-        //     currentProgress &&
-        //     currentProgress.mlt === mltStr &&
-        //     (!currentProgress.expiresAt || currentProgress.expiresAt > currentDate) &&
-        //     currentProgress.status !== 'failed'
-        // ) {
-        //     return {
-        //         percentage: currentProgress.percentage,
-        //         url: currentProgress.percentage === 100 ? `/${currentProgress.s3Key}` : '',
-        //     };
-        // }
-        // await setDynamoDBItem(videoKey, undefined); // delete old progress
-        // if (currentProgress && currentProgress.s3Key) {
-        //     try {
-        //         await deleteS3File(currentProgress.s3Key); // delete old video
-        //     } catch (e) {
-        //         console.error(e);
-        //     }
-        // }
         const jobId = v4();
         const s3Key = `media/videos/${jobId}/video.mp4`;
         const s3Files = files
@@ -70,8 +48,6 @@ export async function generateVideo(
                     httpFiles,
                     s3BucketName: process.env.S3_BUCKET_NAME || '',
                     s3Key,
-                    dynamoDbTable: process.env.DYNAMODB_TABLE_NAME || '',
-                    videoId: videoKey,
                 },
             },
             true, // Async
@@ -97,20 +73,6 @@ export async function getVideoProgress(_projectId?: number): Promise<{
 
     try {
         const currentProgress = 0;
-        // const videoKey = projectId ? `projects/${projectId}` : `projects/tmp-for-${user.id}`;
-        // const currentProgress = await getDynamoDBItem<VideoProgress>(videoKey);
-        // if (currentProgress) {
-        //     return {
-        //         percentage: currentProgress.percentage,
-        //         url: currentProgress.percentage === 100 ? `/${currentProgress.s3Key}` : '',
-        //     };
-        // } else {
-        //     // Video might be in queue to be processed. So we return 0% progress.
-        //     return {
-        //         percentage: 0,
-        //         url: '',
-        //     };
-        // }
         return {
             percentage: currentProgress,
             url: '',

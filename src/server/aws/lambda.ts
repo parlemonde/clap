@@ -18,8 +18,6 @@ interface InvokeVideoLambda {
         httpFiles: { name: string; path: string }[];
         s3BucketName: string;
         s3Key: string;
-        dynamoDbTable: string;
-        videoId: string;
     };
 }
 

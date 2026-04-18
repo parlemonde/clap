@@ -49,7 +49,6 @@ Clap is an innovative web application that simplifies video creation in educatio
 
 ### **Infrastructure**
 - **AWS S3** - Media file storage and delivery
-- **AWS DynamoDB** - Key/Value store
 - **AWS Lambda** - Serverless video generation and PDF generation
 - **WebSockets (Rust)** - Real-time collaboration server
 
@@ -89,8 +88,6 @@ ADMIN_EMAIL=admin@example.com
 DATABASE_URL=postgresql://postgres:example@localhost:5432/clap # docker-compose url
 
 # AWS Configuration
-DYNAMODB_TABLE_NAME=clap
-DYNAMODB_ENDPOINT=http://localhost:8000 # docker-compose url
 AWS_REGION=local # Will store files locally instead of using AWS S3
 
 # Email (Visit https://ethereal.email/ and create an temporary fake account)
@@ -126,7 +123,6 @@ The application will be available at `http://localhost:3000`
 
 - **WebSocket Server**: `http://localhost:9000` (for real-time collaboration)
 - **PostgreSQL**: `localhost:5432`
-- **DynamoDB Local**: `localhost:8000`
 - **Database Studio**: `pnpm db:studio` (Drizzle Studio)
 
 ## 📁 Project Structure
