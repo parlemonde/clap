@@ -1,5 +1,7 @@
 import classNames from 'clsx';
 import type { Metadata, Viewport } from 'next';
+import { NextIntlClientProvider } from 'next-intl';
+import { getLocale } from 'next-intl/server';
 import { Tooltip } from 'radix-ui';
 import * as React from 'react';
 
@@ -8,11 +10,9 @@ import { BottomNavBar } from '@frontend/components/navigation/BottomNavBar';
 import { NProgressDone } from '@frontend/components/navigation/NProgress';
 import { TopNavBar } from '@frontend/components/navigation/TopNavBar';
 import { Toasts } from '@frontend/components/ui/Toasts';
-import { TranslationContextProvider } from '@frontend/contexts/translationContext';
 import { UserContextProvider } from '@frontend/contexts/userContext';
 import { openSansFont, alegreyaSansFont, littleDaysFont } from '@frontend/fonts';
 import { getCurrentUser } from '@server/auth/get-current-user';
-import { getLocales } from '@server-actions/get-locales';
 
 import styles from './app.module.css';
 
@@ -67,7 +67,7 @@ export const viewport: Viewport = {
 };
 
 export default async function RootLayout({ children }: React.PropsWithChildren) {
-    const [{ currentLocale, locales }, user] = await Promise.all([getLocales(), getCurrentUser()]);
+    const [currentLocale, user] = await Promise.all([getLocale(), getCurrentUser()]);
 
     return (
         <html lang={currentLocale}>
@@ -76,14 +76,14 @@ export default async function RootLayout({ children }: React.PropsWithChildren) 
             >
                 <noscript>You need to enable JavaScript to run this app.</noscript>
                 <Tooltip.Provider delayDuration={0}>
-                    <TranslationContextProvider language={currentLocale} locales={locales}>
+                    <NextIntlClientProvider>
                         <UserContextProvider user={user}>
                             <TopNavBar />
                             {children}
                             <BottomNavBar />
                             <AlertModal />
                         </UserContextProvider>
-                    </TranslationContextProvider>
+                    </NextIntlClientProvider>
                 </Tooltip.Provider>
                 <Toasts />
                 <NProgressDone />

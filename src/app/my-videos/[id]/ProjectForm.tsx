@@ -188,7 +188,7 @@ export const ProjectForm = ({ project }: ProjectFormProps) => {
                         }}
                     >
                         <InfoCircledIcon style={{ width: 20, height: 20, marginRight: 8, paddingTop: 1 }} />
-                        <Trans i18nKey="video_page.delete_modal.desc1" i18nParams={{ projectTitle: project.name }}>
+                        <Trans i18nKey="video_page.delete_modal.desc1" i18nParams={{ projetName: project.name }}>
                             Attention! Êtes-vous sur de vouloir supprimer le projet <strong>{project.name}</strong> ? Cette action est{' '}
                             <strong>irréversible</strong> et supprimera toutes les données du projet incluant questions, plans et images.
                         </Trans>

@@ -3,7 +3,6 @@
 // import { useRouter } from 'next/navigation';
 import * as React from 'react';
 // import { loginForStudent } from 'src/actions/authentication/login-for-student';
-// import type { I18nKeys } from 'src/i18n/locales';
 
 import { Button } from '@frontend/components/layout/Button';
 import { Field, Form, Input } from '@frontend/components/layout/Form';
@@ -44,7 +43,7 @@ export const LoginStudentForm = () => {
         // setIsLoading(true);
         // const result = await loginForStudent(projectCode, questionId);
         // if ('errorMessage' in result) {
-        //     setMessage(t(result.errorMessage as I18nKeys));
+        //     setMessage(t(result.errorMessage));
         // } else {
         //     setToLocalStorage('projectId', result.projectId);
         //     router.push('/create/3-storyboard');

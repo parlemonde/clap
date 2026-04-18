@@ -1,6 +1,6 @@
-import { cookies } from 'next/headers';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
+import { getRequestLocale } from 'src/server/i18n/server';
 
 import { listQuestions } from '@server-actions/questions/list-questions';
 
@@ -14,8 +14,7 @@ export async function GET(request: NextRequest) {
         return NextResponse.json([]);
     }
 
-    const cookieStore = await cookies();
-    const currentLocale = cookieStore.get('app-language')?.value || 'fr';
+    const currentLocale = await getRequestLocale();
     const questions = await listQuestions(scenarioId, currentLocale);
     return NextResponse.json(questions);
 }

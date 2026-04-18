@@ -3,7 +3,6 @@
 import { ChevronLeftIcon } from '@radix-ui/react-icons';
 import classNames from 'clsx';
 import * as React from 'react';
-import type { I18nKeys } from 'src/i18n/locales';
 
 import { Button } from '@frontend/components/layout/Button';
 import { useTranslation } from '@frontend/contexts/translationContext';
@@ -12,7 +11,7 @@ import styles from './back-button.module.css';
 
 type BackButtonProps = {
     href: string;
-    label?: I18nKeys;
+    label?: string;
     onClick?: () => void;
     className?: string;
     style?: React.CSSProperties;

@@ -9,9 +9,10 @@ import type { Language } from '@server/database/schemas/languages';
 
 interface LanguageSelectProps {
     languages: Language[];
+    cookieName: string;
 }
 
-export const LanguageSelect = ({ languages }: LanguageSelectProps) => {
+export const LanguageSelect = ({ languages, cookieName }: LanguageSelectProps) => {
     const { t, currentLocale } = useTranslation();
 
     return (
@@ -27,7 +28,7 @@ export const LanguageSelect = ({ languages }: LanguageSelectProps) => {
                         isFullWidth
                         value={currentLocale}
                         onChange={(event) => {
-                            const appLanguageCookie = `${encodeURIComponent('app-language')}=${encodeURIComponent(event.target.value)}; Path=/; Secure; SameSite=Strict; Max-Age=${24 * 60 * 60}`;
+                            const appLanguageCookie = `${encodeURIComponent(cookieName)}=${encodeURIComponent(event.target.value)}; Path=/; Secure; SameSite=Strict; Max-Age=${24 * 60 * 60}`;
                             document.cookie = appLanguageCookie;
                             window.location.reload();
                         }}

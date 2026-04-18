@@ -1,7 +1,6 @@
 'use client';
 import * as React from 'react';
 import type { JSX } from 'react';
-import type { I18nKeys } from 'src/i18n/locales';
 
 import CreateLogo from '@frontend/svg/create.svg';
 import MoviesLogo from '@frontend/svg/movies.svg';
@@ -21,7 +20,7 @@ const UserIcon = (
 
 type Tab = {
     icon: JSX.Element | null;
-    label: I18nKeys;
+    label: string;
     path: string;
 };
 

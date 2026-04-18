@@ -4,7 +4,7 @@ import { AdminTile } from '@frontend/components/admin/AdminTile';
 import { Breadcrumbs } from '@frontend/components/layout/Breadcrumbs';
 import { Container } from '@frontend/components/layout/Container';
 import { Title } from '@frontend/components/layout/Typography';
-import { getLocales } from '@server-actions/get-locales';
+import { getRequestLocale } from '@server/i18n/server';
 import { getScenario } from '@server-actions/scenarios/get-scenario';
 import { listThemes } from '@server-actions/themes/list-themes';
 
@@ -12,7 +12,7 @@ import { EditScenarioForm } from './EditScenarioForm';
 
 export default async function AdminEditThemePage(props: { params: Promise<{ scenarioId: string }> }) {
     const params = await props.params;
-    const [{ currentLocale }, scenario, themes] = await Promise.all([getLocales(), getScenario(Number(params.scenarioId) || 0), listThemes()]);
+    const [currentLocale, scenario, themes] = await Promise.all([getRequestLocale(), getScenario(Number(params.scenarioId) || 0), listThemes()]);
 
     if (!scenario) {
         return null;

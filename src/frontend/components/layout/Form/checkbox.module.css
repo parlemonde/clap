@@ -1,7 +1,7 @@
 .Checkbox {
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
 }
 .Checkbox__Label {
-  cursor: pointer;
+    cursor: pointer;
 }

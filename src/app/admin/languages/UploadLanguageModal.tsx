@@ -23,7 +23,7 @@ export const UploadLanguageModal = ({ language = null, onClose = () => {} }: Upl
         try {
             const formData = new FormData();
             formData.append('language', file);
-            await fetch(`/api/locales/${language.value}.${file.name.endsWith('.po') ? 'po' : 'json'}`, {
+            await fetch(`/api/locales/${language.value}.json`, {
                 method: 'PUT',
                 body: formData,
             });
@@ -59,11 +59,7 @@ export const UploadLanguageModal = ({ language = null, onClose = () => {} }: Upl
             title="Mettre à jour la langue"
             isFullWidth
         >
-            <div>
-                {
-                    "Veuillez choisir le fichier .po de la langue pour la mettre à jour. Attention ! Ne vous trompez pas de langue, l'API actuelle ne vérifie pas si la langue dans le fichier .po envoyée correspond bien."
-                }
-            </div>
+            <div>{'Veuillez choisir le fichier .json des traductions au format next-intl pour mettre à jour cette langue.'}</div>
             <div style={{ width: '100%', textAlign: 'center', margin: '1rem 0' }}>
                 <Button
                     label={
@@ -84,13 +80,13 @@ export const UploadLanguageModal = ({ language = null, onClose = () => {} }: Upl
                     tabIndex={0}
                     onKeyPress={(event) => {
                         if (event.key === 'Enter' || event.key === ' ') {
-                            document.getElementById('new-language-po')?.click();
+                            document.getElementById('new-language-json')?.click();
                         }
                     }}
-                    htmlFor="new-language-po"
+                    htmlFor="new-language-json"
                     leftIcon={<UploadIcon style={{ width: '16px', height: '16px', marginRight: '8px' }} />}
                 />
-                <input style={{ display: 'none' }} type="file" accept=".po,.json" id="new-language-po" onChange={onFileChange}></input>
+                <input style={{ display: 'none' }} type="file" accept=".json" id="new-language-json" onChange={onFileChange}></input>
             </div>
         </Modal>
     );

@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import type { I18nKeys } from 'src/i18n/locales';
 
 import { Button } from '@frontend/components/layout/Button';
 import { Container } from '@frontend/components/layout/Container';
@@ -30,7 +29,7 @@ export default function ResetPasswordPage() {
             const errorMsg = await requestPasswordReset(email);
             if (errorMsg) {
                 sendToast({
-                    message: t(errorMsg as I18nKeys),
+                    message: t(errorMsg),
                     type: 'error',
                 });
             } else {

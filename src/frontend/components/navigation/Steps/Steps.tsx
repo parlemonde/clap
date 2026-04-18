@@ -3,7 +3,6 @@
 import { ChevronLeftIcon } from '@radix-ui/react-icons';
 import classNames from 'clsx';
 import * as React from 'react';
-import type { I18nKeys } from 'src/i18n/locales';
 import { serializeToQueryUrl } from 'src/lib/serialize-to-query-url';
 
 import { Button } from '@frontend/components/layout/Button';
@@ -17,7 +16,7 @@ import { ProjectTitle } from './ProjectTitle';
 import styles from './steps.module.css';
 
 type StepData = {
-    name: I18nKeys;
+    name: string;
     href: string | ((themeId?: number | string | null) => string);
 };
 

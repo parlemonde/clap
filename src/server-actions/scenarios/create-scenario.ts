@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { cookies } from 'next/headers';
+import { getRequestLocale } from 'src/server/i18n/server';
 
 import { getCurrentUser } from '@server/auth/get-current-user';
 import { db } from '@server/database';
@@ -15,8 +15,7 @@ type NewUserScenario = {
     themeId: number;
 };
 export async function createScenario(newUserScenario: NewUserScenario): Promise<Scenario | undefined> {
-    const cookieStore = await cookies();
-    const currentLocale = cookieStore.get('app-language')?.value || 'fr';
+    const currentLocale = await getRequestLocale();
     const user = await getCurrentUser();
     if (!user) {
         return;

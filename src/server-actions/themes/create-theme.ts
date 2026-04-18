@@ -2,7 +2,7 @@
 
 import { and, desc, eq, isNull } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
-import { cookies } from 'next/headers';
+import { getRequestLocale } from 'src/server/i18n/server';
 
 import { getCurrentUser } from '@server/auth/get-current-user';
 import { db } from '@server/database';
@@ -11,8 +11,7 @@ import { themes } from '@server/database/schemas/themes';
 
 // User action to create a new theme
 export async function createTheme(themeName: string): Promise<Theme | undefined> {
-    const cookieStore = await cookies();
-    const currentLocale = cookieStore.get('app-language')?.value || 'fr';
+    const currentLocale = await getRequestLocale();
     const user = await getCurrentUser();
     if (!user) {
         return;

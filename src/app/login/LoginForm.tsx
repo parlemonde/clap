@@ -2,7 +2,6 @@
 
 import { EyeNoneIcon, EyeOpenIcon } from '@radix-ui/react-icons';
 import * as React from 'react';
-import type { I18nKeys } from 'src/i18n/locales';
 
 import { Button } from '@frontend/components/layout/Button';
 import { IconButton } from '@frontend/components/layout/Button/IconButton';
@@ -25,7 +24,7 @@ export const LoginForm = ({ provider }: LoginFormProps) => {
 
     return (
         <Form className="login-form" action={formAction}>
-            {message && <span style={{ color: 'rgb(211, 47, 47)', display: 'block' }}>{t(message as I18nKeys)}</span>}
+            {message && <span style={{ color: 'rgb(211, 47, 47)', display: 'block' }}>{t(message)}</span>}
             {provider ? (
                 <>
                     <Button

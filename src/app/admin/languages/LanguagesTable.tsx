@@ -57,10 +57,10 @@ export function LanguagesTable({ languages }: LanguagesTableProps) {
                                     </th>
                                     <th style={{ padding: '0 16px' }}>{l.label}</th>
                                     <th align="right" style={{ minWidth: '96px' }}>
-                                        <Tooltip content="Télécharger le fichier des traductions (.po)">
+                                        <Tooltip content="Télécharger le fichier des traductions (.json)">
                                             <IconButton
                                                 as={'a'}
-                                                href={`/api/locales/${l.value}.po`}
+                                                href={`/api/locales/${l.value}.json`}
                                                 download
                                                 margin="xs"
                                                 aria-label="edit"

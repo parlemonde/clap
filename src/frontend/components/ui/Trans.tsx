@@ -1,38 +1,42 @@
 'use client';
 
+import type { RichTranslationValues } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import * as React from 'react';
-import type { I18nKeys } from 'src/i18n/locales';
-
-import { useTranslation } from '@frontend/contexts/translationContext';
+import type { TranslateOptions } from 'src/server/i18n/types';
 
 export interface TransProps {
-    i18nKey: I18nKeys;
-    i18nParams?: { [key: string]: string | number };
+    i18nKey: string;
+    i18nParams?: TranslateOptions;
 }
 
-function getTranslatedChild(child: React.ReactNode, childIndex: number, str: string | null): React.ReactNode {
-    if (typeof child === 'string') {
-        return str;
+function cloneRichChild(child: React.ReactNode, childIndex: number, chunks: React.ReactNode): React.ReactNode {
+    if (!React.isValidElement(child)) {
+        return chunks;
     }
-    if (React.isValidElement(child)) {
-        const childChildren = (child.props as React.PropsWithChildren).children;
-        return React.cloneElement(
-            child,
-            { ...(child.props as React.PropsWithChildren), key: childIndex },
-            getTranslatedChild(childChildren, childIndex, str),
-        );
-    }
-    return null;
+
+    return React.cloneElement(child, { ...(child.props as React.PropsWithChildren), key: childIndex }, chunks);
 }
 
 export const Trans = ({ i18nKey, i18nParams = {}, children }: React.PropsWithChildren<TransProps>) => {
-    const { t } = useTranslation();
-    const translatedStrings = React.useMemo(() => {
-        return t(i18nKey, i18nParams).split(/<\/?\w*?>/gm);
-    }, [t, i18nKey, i18nParams]);
+    const translator = useTranslations();
+    const richValues = React.useMemo<RichTranslationValues>(() => {
+        const values: RichTranslationValues = { ...i18nParams };
 
-    const newChildren = (Array.isArray(children) ? (children as React.ReactNode[]) : [children])
-        .slice(0, translatedStrings.length)
-        .map((child, childIndex) => getTranslatedChild(child, childIndex, translatedStrings[childIndex]));
-    return <>{newChildren}</>;
+        React.Children.toArray(children).forEach((child, childIndex) => {
+            if (!React.isValidElement(child)) {
+                return;
+            }
+
+            values[`child${childIndex}`] = (chunks) => cloneRichChild(child, childIndex, chunks);
+
+            if (typeof child.type === 'string' && values[child.type] === undefined) {
+                values[child.type] = (chunks) => cloneRichChild(child, childIndex, chunks);
+            }
+        });
+
+        return values;
+    }, [children, i18nParams]);
+
+    return <>{(translator.rich as (key: string, values?: RichTranslationValues) => React.ReactNode)(i18nKey, richValues)}</>;
 };

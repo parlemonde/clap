@@ -1,53 +1,54 @@
 .DiaporamaPlayer {
-  width: 100%;
-  height: 100%;
-  background-color: black;
-  position: relative;
-  overflow: hidden;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    position: relative;
+    overflow: hidden;
 }
 .DiaporamaPlayer__container {
-  width: 100%;
-  max-width: 740px;
-  margin: auto;
-  background-color: rgba(0, 0, 0, 0.7);
-  padding: 15px 15px 0px 15px;
+    width: 100%;
+    max-width: 740px;
+    margin: auto;
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 15px 15px 0px 15px;
 }
 .DiaporamaPlayer__frame {
-  position: absolute;
-  font-weight: bold;
-  text-align: center;
+    position: absolute;
+    font-weight: bold;
+    text-align: center;
 }
 .DiaporamaPlayer__playButton {
-  height: 100%;
-  width: 100%;
-  position: absolute;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  top: 0;
-  left: 0;
-  z-index: 1;
-  cursor: pointer;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    cursor: pointer;
 }
 .DiaporamaPlayer__playButton:hover .DiaporamaPlayer__squareButton {
-  background-color: rgba(96, 101, 252, 0.8);
+    background-color: rgba(96, 101, 252, 0.8);
 }
 .DiaporamaPlayer__playButton--playing .DiaporamaPlayer__squareButton {
-  display: none;
+    display: none;
 }
 .DiaporamaPlayer__playButton--playing:hover .DiaporamaPlayer__squareButton {
-  display: flex;
+    display: flex;
 }
 .DiaporamaPlayer__squareButton {
-  background: rgba(0, 0, 0, 0.7);
-  border-radius: 4px;
-  width: 110px;
-  height: 70px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #fff;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 4px;
+    width: 110px;
+    height: 70px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
 }
 .DiaporamaPlayer__timer {
-  color: #fff;
-  text-align: center;
+    color: #fff;
+    text-align: center;
+}
