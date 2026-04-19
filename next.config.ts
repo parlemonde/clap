@@ -48,6 +48,7 @@ const nextConfig: NextConfig = {
     outputFileTracingExcludes: {
         '/*': ['./tmp/**/*'],
     },
+    serverExternalPackages: ['@electric-sql/pglite'],
     images: {
         loader: 'custom',
         loaderFile: './src/image-loader.js',

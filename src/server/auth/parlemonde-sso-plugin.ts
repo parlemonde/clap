@@ -47,7 +47,7 @@ export const ssoPlugin = registerService('parlemonde-sso-plugin', () =>
                               method: 'GET',
                           });
                           // 1. create user in database if not exists
-                          let user: { id: string; role: UserRole } | undefined = await db.query.users.findFirst({
+                          const user: { id: string; role: UserRole } | undefined = await db.query.users.findFirst({
                               columns: {
                                   id: true,
                                   role: true,
@@ -65,20 +65,12 @@ export const ssoPlugin = registerService('parlemonde-sso-plugin', () =>
                                       role = 'admin';
                                   }
                               }
-                              user = (
-                                  await db
-                                      .insert(users)
-                                      .values({
-                                          email: plmUser.email,
-                                          emailVerified: true,
-                                          name: plmUser.pseudo,
-                                          role,
-                                      })
-                                      .returning({
-                                          id: users.id,
-                                          role: users.role,
-                                      })
-                              )[0];
+                              await db.insert(users).values({
+                                  email: plmUser.email,
+                                  emailVerified: true,
+                                  name: plmUser.pseudo,
+                                  role,
+                              });
                           }
                           // 3. return user info
                           return {

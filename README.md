@@ -57,7 +57,7 @@ Clap is an innovative web application that simplifies video creation in educatio
 ### Prerequisites
 
 - **Node.js** 20+ and **pnpm**
-- **Docker** and **Docker Compose**
+- **Docker** and **Docker Compose** only if you want to run the optional local WebSocket service
 
 ### Local Development Setup
 
@@ -84,9 +84,6 @@ ADMIN_NAME=Admin
 ADMIN_PASSWORD=my-s3cret-adm1n-pwd
 ADMIN_EMAIL=admin@example.com
 
-# Database
-DATABASE_URL=postgresql://postgres:example@localhost:5432/clap # docker-compose url
-
 # AWS Configuration
 AWS_REGION=local # Will store files locally instead of using AWS S3
 
@@ -97,33 +94,34 @@ NODEMAILER_USER=<temporary_email_address>
 NODEMAILER_PASS=<temporary_password>
 
 # Collaboration server
-COLLABORATION_SERVER_URL=ws://localhost:9000 # docker-compose url
+COLLABORATION_SERVER_URL=ws://localhost:9000 # optional local websocket server
 ```
 
-4. **Start services**
+4. **Optional: start the websocket service**
 ```bash
-docker-compose up
+docker compose up websockets
 ```
 
-5. **Open a new terminal**
+5. **Run database migrations**
 
-6. **Run database migrations**
 ```bash
 pnpm db:migrate
 ```
 
-7. **Start the development server**
+6. **Start the development server**
 ```bash
 pnpm dev
 ```
 
 The application will be available at `http://localhost:3000`
 
+When `DATABASE_URL` is not set, the app uses a local file-backed PGlite database stored under `tmp/pglite/`.
+Delete `tmp/pglite/` if you want to reset your local database from scratch.
+
 ### Additional Services
 
 - **WebSocket Server**: `http://localhost:9000` (for real-time collaboration)
-- **PostgreSQL**: `localhost:5432`
-- **Database Studio**: `pnpm db:studio` (Drizzle Studio)
+- **Database Studio**: `pnpm db:studio` (Drizzle Studio, only when `DATABASE_URL` points to a real PostgreSQL instance)
 
 ## 📁 Project Structure
 
@@ -161,7 +159,7 @@ pnpm typecheck       # TypeScript type checking
 # Database
 pnpm db:migrate      # Run database migrations
 pnpm db:generate     # Generate new migrations
-pnpm db:studio       # Open Drizzle Studio
+pnpm db:studio       # Open Drizzle Studio against a real PostgreSQL DATABASE_URL
 ```
 
 ## 🚀 Deployment
