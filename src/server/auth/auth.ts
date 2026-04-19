@@ -6,10 +6,10 @@ import { admin } from 'better-auth/plugins';
 import { adminAc, userAc } from 'better-auth/plugins/admin/access';
 
 import { db } from '@server/database';
+import { sendEmail } from '@server/emails/send-email';
 import { registerService } from '@server/register-service';
 
 import { ssoPlugin } from './parlemonde-sso-plugin';
-import { sendMail } from '../../emails/index';
 
 const adminPlugin = admin({
     defaultRole: 'teacher',
@@ -35,11 +35,8 @@ export const auth = registerService('auth', () =>
                 verify: ({ hash, password }) => verify(hash, password),
             },
             sendResetPassword: async ({ user, token }) => {
-                void sendMail(user.email, {
-                    kind: 'reset-password',
-                    data: {
-                        resetCode: token,
-                    },
+                void sendEmail(user.email, 'reset-password', {
+                    token,
                 });
             },
         },

@@ -12,6 +12,7 @@
   },
   "scripts": {
     "dev": "next dev --turbopack",
+    "dev:email": "email dev --port 3001 --dir ./src/server/emails/templates",
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
@@ -45,6 +46,7 @@
     "radix-ui": "^1.4.2",
     "react": "19.1.0",
     "react-dom": "19.1.0",
+    "react-email": "^6.0.0",
     "react-html5-camera-photo": "^1.5.11",
     "sanitize-filename": "^1.6.3",
     "sharp": "0.34.3",
@@ -59,6 +61,7 @@
     "@eslint/js": "9.39.4",
     "@eslint/json": "^1.2.0",
     "@next/eslint-plugin-next": "16.2.1",
+    "@react-email/ui": "^6.0.0",
     "@svgr/webpack": "8.1.0",
     "@types/archiver": "6.0.3",
     "@types/aws-lambda": "8.10.152",
