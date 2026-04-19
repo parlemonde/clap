@@ -44,6 +44,7 @@
     "nuqs": "^2.8.9",
     "pg": "^8.20.0",
     "pug": "^3.0.3",
+    "puppeteer": "^24.41.0",
     "radix-ui": "^1.4.2",
     "react": "19.1.0",
     "react-dom": "19.1.0",
@@ -101,6 +102,7 @@
       "@swc/core",
       "aws-sdk",
       "esbuild",
+      "puppeteer",
       "sharp",
       "unrs-resolver"
     ]
