@@ -10,7 +10,7 @@ import { databaseSchema, type DatabaseSchema } from './schema';
 export type DatabaseBackend = 'pg' | 'pglite';
 export type AppDatabase = NodePgDatabase<DatabaseSchema> | PgliteDatabase<DatabaseSchema>;
 
-export const PGLITE_DATA_DIR = path.resolve(process.cwd(), 'tmp/pglite');
+export const PGLITE_DATA_DIR = path.resolve(process.cwd(), '.pglite');
 export const DRIZZLE_MIGRATIONS_FOLDER = path.resolve(process.cwd(), 'drizzle');
 
 const getDatabaseBackend = (): DatabaseBackend => {
