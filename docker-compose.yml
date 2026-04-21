@@ -1,10 +1,11 @@
 version: '3.7'
 services:
-    websockets:
-        build:
-            context: ./server-websockets
-            dockerfile: Dockerfile
-        command: server-websockets
-        init: true
+    postgres:
+        image: postgres:18-alpine
+        environment:
+            POSTGRES_DB: clap
+            POSTGRES_PASSWORD: example
         ports:
-            - '9000:9000'
+            - '5432:5432'
+        volumes:
+            - ./.postgres-data:/var/lib/postgresql
