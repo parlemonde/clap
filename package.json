@@ -11,8 +11,11 @@
     "url": "https://github.com/parlemonde/clap"
   },
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev:next": "next dev",
+    "dev:websockets": "node server-websockets/app.js",
+    "dev:services": "docker compose up",
     "dev:email": "email dev --port 3001 --dir ./src/server/emails/templates",
+    "dev": "concurrently --names nextjs,websockets,docker -c green,yellow,blue --kill-others-on-fail \"pnpm run dev:next\" \"pnpm run dev:websockets\" \"pnpm run dev:services\"",
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
@@ -78,6 +81,7 @@
     "@types/react-html5-camera-photo": "1.5.5",
     "@types/sortablejs": "1.15.9",
     "aws-lambda": "1.0.7",
+    "concurrently": "^9.2.1",
     "drizzle-kit": "0.31.10",
     "eslint": "9.39.4",
     "eslint-config-next": "16.2.4",
