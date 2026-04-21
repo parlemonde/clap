@@ -1,5 +1,5 @@
 import { eq } from 'drizzle-orm';
-import { unstable_cacheLife as cacheLife, revalidateTag, unstable_cacheTag as cacheTag } from 'next/cache';
+import { cacheLife, revalidateTag, cacheTag } from 'next/cache';
 import { cookies } from 'next/headers';
 import type { AbstractIntlMessages } from 'next-intl';
 
@@ -36,7 +36,7 @@ export function getLocalesCacheTag(languageCode: string): string {
 }
 
 export function revalidateLocalesCacheTag(languageCode: string): void {
-    revalidateTag(getLocalesCacheTag(languageCode));
+    revalidateTag(getLocalesCacheTag(languageCode), 'max');
 }
 
 export async function getLocalesForLanguage(languageCode: string) {
