@@ -28,12 +28,9 @@ export default function ScenarioPage(props: ServerPageProps) {
     const [question, setQuestion] = React.useState(questionIndex ? projectData?.questions[questionIndex]?.question || '' : '');
 
     // Update the question when the project or question index changes
-    React.useEffect(() => {
-        if (questionIndex === undefined) {
-            return;
-        }
+    if (questionIndex !== undefined && question !== (projectData?.questions[questionIndex]?.question || '')) {
         setQuestion(projectData?.questions[questionIndex]?.question || '');
-    }, [questionIndex, projectData]);
+    }
 
     if (!projectData || questionIndex === undefined) {
         return null;

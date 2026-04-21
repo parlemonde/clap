@@ -16,12 +16,12 @@ export const EditQuestionModal = ({ question = null, onClose = () => {} }: EditQ
     const [hasError, setHasError] = React.useState<boolean>(false);
     const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
-    React.useEffect(() => {
-        if (question !== null) {
-            setHasError(false);
-            setQ(question.question);
-        }
-    }, [question]);
+    if (question !== null && hasError) {
+        setHasError(false);
+    }
+    if (question !== null && q !== question.question) {
+        setQ(question.question);
+    }
 
     const onQuestionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setQ(event.target.value.slice(0, 280));

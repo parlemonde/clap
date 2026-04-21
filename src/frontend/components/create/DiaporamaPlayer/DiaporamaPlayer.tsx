@@ -81,10 +81,8 @@ export const DiaporamaPlayer = ({
     );
 
     // Edit global time
-    const [globalTime, setGlobalTime] = React.useState(getFormatedTime(duration));
-    React.useEffect(() => {
-        setGlobalTime(getFormatedTime(duration));
-    }, [duration]);
+    const globalTime = getFormatedTime(duration);
+    const [inputGlobalTime, setInputGlobalTime] = React.useState('');
 
     const beginTimeRef = React.useRef(soundBeginTime);
     React.useEffect(() => {
@@ -360,22 +358,25 @@ export const DiaporamaPlayer = ({
                                 size="sm"
                                 disabled={duration <= lastPlanStartTime + 1000}
                                 onClick={onRemoveTime}
+                                className={styles.DiaporamaPlayer__timeEditButton}
                             ></IconButton>
                         )}
                         {canEditPlans ? (
                             <Input
-                                value={globalTime}
+                                value={inputGlobalTime || globalTime}
+                                className={styles.DiaporamaPlayer__timeEditInput}
                                 size="sm"
                                 marginY="none"
                                 marginX="xs"
                                 style={{
-                                    width: '74px',
+                                    flex: '1 1 0',
+                                    width: 'calc(100% - 8px)',
                                     color: 'white',
                                     backgroundColor: 'transparent',
                                 }}
                                 onChange={(event) => {
                                     if (/^[\d|:]*$/.test(event.target.value)) {
-                                        setGlobalTime(event.target.value);
+                                        setInputGlobalTime(event.target.value);
                                     }
                                 }}
                                 onKeyDown={(event) => {
@@ -387,6 +388,7 @@ export const DiaporamaPlayer = ({
                                     }
                                 }}
                                 onBlur={(event) => {
+                                    setInputGlobalTime('');
                                     const question = questions[0];
                                     const times = event.target.value.split(':');
                                     const newDuration =
@@ -395,7 +397,6 @@ export const DiaporamaPlayer = ({
                                         10 * Math.min(99, Number(times[2]) || 0);
                                     const count = (question.title ? 1 : 0) + (question.plans || []).length;
                                     if (!question || newDuration === duration || newDuration < count * 1000) {
-                                        setGlobalTime(getFormatedTime(duration));
                                         if (question && newDuration !== duration && newDuration < count * 1000) {
                                             sendToast({ message: `Time can't be below: ${getFormatedTime(count * 1000)}`, type: 'error' });
                                         }
@@ -424,7 +425,9 @@ export const DiaporamaPlayer = ({
                                 }}
                             />
                         ) : (
-                            <p style={{ margin: '0 5px' }}>{getFormatedTime(duration)}</p>
+                            <p style={{ margin: '0 5px' }} className={styles.DiaporamaPlayer__timeEditTime}>
+                                {getFormatedTime(duration)}
+                            </p>
                         )}
                         {canEditPlans && (
                             <IconButton
@@ -434,6 +437,7 @@ export const DiaporamaPlayer = ({
                                 size="sm"
                                 onClick={onAddTime}
                                 icon={PlusIcon}
+                                className={styles.DiaporamaPlayer__timeEditButton}
                             ></IconButton>
                         )}
                     </div>

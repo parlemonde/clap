@@ -90,6 +90,7 @@ export const useWebsockets = ({ url, protocols, isEnabled = false, onSocketError
 
     React.useEffect(() => {
         if (!isEnabled || !sanitizedUrl) {
+            // eslint-disable-next-line
             setSocket(null);
             return () => {};
         }
