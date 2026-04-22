@@ -29,7 +29,7 @@ export const users = pgTable('users', {
 
 type FullUser = typeof users.$inferSelect;
 export type User = Pick<FullUser, 'id' | 'name' | 'email' | 'role'> & {
-    teacherId?: number;
+    teacherId?: string;
     projectId?: number;
     questionId?: number;
 };

@@ -9,6 +9,7 @@ import { Steps } from '@frontend/components/navigation/Steps';
 import { ThemeBreadcrumbs } from '@frontend/components/navigation/ThemeBreadcrumbs';
 import { Inverted } from '@frontend/components/ui/Inverted';
 import { useTranslation } from '@frontend/contexts/translationContext';
+import { userContext } from '@frontend/contexts/userContext';
 import { useCollaboration } from '@frontend/hooks/useCollaboration';
 import { useCurrentProject } from '@frontend/hooks/useCurrentProject';
 import type { ServerPageProps } from '@lib/page-props.types';
@@ -18,6 +19,7 @@ import { PlanForm } from './PlanForm';
 
 export default function StoryboardPlanPage(props: ServerPageProps) {
     const router = useRouter();
+    const user = React.useContext(userContext);
     const { t } = useTranslation();
     const { projectData, setProjectData } = useCurrentProject();
     useCollaboration(); // Listen to collaboration updates
@@ -38,6 +40,10 @@ export default function StoryboardPlanPage(props: ServerPageProps) {
     }
 
     const sequence = projectData.questions[questionIndex];
+    if (user?.role === 'student' && sequence.id !== user.questionId) {
+        return null;
+    }
+
     const plan = sequence.plans[planIndex];
     const planStartIndex = projectData.questions.slice(0, questionIndex).reduce<number>((acc, question) => acc + (question.plans || []).length, 1);
 

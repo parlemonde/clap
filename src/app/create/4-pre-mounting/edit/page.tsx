@@ -37,6 +37,9 @@ export default function MontagePage(props: ServerPageProps) {
     }
 
     const sequence = projectData.questions[questionIndex];
+    if (isStudent && sequence.id !== user.questionId) {
+        return null;
+    }
 
     return (
         <Container paddingBottom="xl">

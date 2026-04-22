@@ -10,6 +10,7 @@ import { sendEmail } from '@server/emails/send-email';
 import { registerService } from '@server/register-service';
 
 import { ssoPlugin } from './parlemonde-sso-plugin';
+import { studentCollaborationPlugin } from './student-collaboration-plugin';
 
 const adminPlugin = admin({
     defaultRole: 'teacher',
@@ -26,7 +27,9 @@ export const auth = registerService('auth', () =>
         database: drizzleAdapter(db, {
             provider: 'pg',
         }),
-        plugins: ssoPlugin ? [ssoPlugin, adminPlugin, cookiesPlugin] : [adminPlugin, cookiesPlugin], // make sure `nextCookies()` is the last plugin in the array
+        plugins: ssoPlugin
+            ? [studentCollaborationPlugin, ssoPlugin, adminPlugin, cookiesPlugin]
+            : [studentCollaborationPlugin, adminPlugin, cookiesPlugin], // make sure `nextCookies()` is the last plugin in the array
         emailAndPassword: {
             enabled: true,
             disableSignUp: true,

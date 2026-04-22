@@ -1,5 +1,4 @@
 import React from 'react';
-// import { logout } from 'src/actions/authentication/logout';
 import useSWR from 'swr';
 
 import type { VerifyAlertData } from '@frontend/components/collaboration/AlertModal';
@@ -8,12 +7,15 @@ import { Button } from '@frontend/components/layout/Button';
 import { Flex } from '@frontend/components/layout/Flex';
 import { Text } from '@frontend/components/layout/Typography';
 import { sendToast } from '@frontend/components/ui/Toasts';
+import { userContext } from '@frontend/contexts/userContext';
+import { authClient } from '@frontend/lib/auth-client';
 import { jsonFetcher } from '@lib/json-fetcher';
 import type { Project } from '@server/database/schemas/projects';
 import { endCollaboration } from '@server-actions/projects/end-collaboration';
 import { startCollaboration } from '@server-actions/projects/start-collaboration';
 
 import { useLocalStorage } from './useLocalStorage';
+import { deleteFromLocalStorage } from './useLocalStorage/local-storage';
 import { useWebsockets } from './useWebsockets';
 
 export const onSendCurrentProjectUpdateMsg = () => {
@@ -21,7 +23,9 @@ export const onSendCurrentProjectUpdateMsg = () => {
 };
 
 export const useCollaboration = () => {
-    const [projectId] = useLocalStorage('projectId');
+    const user = React.useContext(userContext);
+    const [localProjectId] = useLocalStorage('projectId');
+    const projectId = user?.role === 'student' ? user.projectId : localProjectId;
     const { data, mutate } = useSWR<Project>(projectId !== undefined ? `/api/projects/${projectId}` : null, jsonFetcher);
     const { data: collaborationUrlData } = useSWR<{ url: string; protocols: string[] }>(
         projectId !== undefined ? `/api/projects/${projectId}/get-collaboration-url` : null,
@@ -61,7 +65,16 @@ export const useCollaboration = () => {
                 mutate().catch(console.error);
             }
             if (msg === 'end_collaboration') {
-                // logout('/login').catch(console.error); // TODO: Fix this
+                if (user?.role === 'student') {
+                    deleteFromLocalStorage('project');
+                    deleteFromLocalStorage('projectId');
+                    authClient
+                        .signOut()
+                        .catch(console.error)
+                        .finally(() => {
+                            window.location.assign('/join');
+                        });
+                }
             }
             if (msg.startsWith('validate_question:')) {
                 const data = JSON.parse(msg.slice('validate_question:'.length)) as VerifyAlertData;

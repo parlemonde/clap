@@ -20,7 +20,7 @@ interface UseCurrentProjectData {
 export const useCurrentProject = (): UseCurrentProjectData => {
     const user = React.useContext(userContext);
     const [localProjectId] = useLocalStorage('projectId');
-    const projectId = user !== undefined ? localProjectId : undefined; // If user is not logged in, do not try to fetch last current project
+    const projectId = user?.role === 'student' ? user.projectId : user !== undefined ? localProjectId : undefined; // If user is not logged in, do not try to fetch last current project
     const [localProjectData, setLocalProjectData] = useLocalStorage('project');
 
     // Fetch project from backend
