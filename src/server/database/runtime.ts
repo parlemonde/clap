@@ -5,14 +5,9 @@ import { databaseSchema, type DatabaseSchema } from './schema';
 
 export type AppDatabase = NodePgDatabase<DatabaseSchema>;
 
-const isLocalPostgresUrl = (databaseUrl: string): boolean => {
-    return databaseUrl.includes('localhost');
-};
-
 export const createDatabaseConnection = () => {
     const databaseUrl = process.env.DATABASE_URL || '';
-    const ssl = !isLocalPostgresUrl(databaseUrl);
-    const queryClient = new Pool({ connectionString: databaseUrl, ssl, max: 10 });
+    const queryClient = new Pool({ connectionString: databaseUrl, max: 10 });
     return {
         db: drizzle({
             client: queryClient,

@@ -50,7 +50,7 @@ jobs:
             - name: Add Github Actions IP to security-group for Database
               run: aws ec2 authorize-security-group-ingress --group-name ${{ secrets.AWS_SECURITY_GROUP_NAME }} --protocol tcp --port 5432 --cidr ${{ steps.get-ip.outputs.ip }}/32
             - name: Migrate database
-              run: DATABASE_URL=${{ secrets.DATABASE_URL }} pnpm tsx src/database/migrate.ts
+              run: DATABASE_URL=${{ secrets.DATABASE_URL }} pnpm tsx src/server/database/migrate.ts
             - name: Add Github Actions IP to security-group for SSH
               run: aws ec2 authorize-security-group-ingress --group-name ${{ secrets.AWS_SECURITY_GROUP_NAME }} --protocol tcp --port 22 --cidr ${{ steps.get-ip.outputs.ip }}/32
             - run: mkdir -p ~/.ssh/ && echo "${{secrets.SSH_KNOWN_HOSTS}}" > ~/.ssh/known_hosts
