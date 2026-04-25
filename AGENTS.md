@@ -15,7 +15,7 @@ Those folders exist today, but they are out of scope here and are expected to be
 
 ## What This Repo Is
 
-Clap is a Next.js 15 + React 19 application for guided, collaborative video creation in education.
+Clap is a Next.js 16 + React 19 application for guided, collaborative video creation in education.
 
 The app supports:
 
@@ -39,7 +39,7 @@ When starting a task, prioritize these files and folders:
 - `src/server/`
 - `src/server-actions/`
 - `src/lib/`
-- `src/i18n/`
+- `src/server/i18n/`
 
 Ignore:
 
@@ -83,8 +83,8 @@ The live app is split into a few clear layers:
 - `src/server/`: database, auth, AWS/storage, and server-only helpers/services
 - `src/server-actions/`: server actions and server-side use cases invoked by pages/components
 - `src/lib/`: cross-cutting utilities and helpers shared across layers, but kept dependency-light
-- `src/i18n/`: translation helpers and locale primitives
-- `src/emails/`: email sending and templates
+- `src/server/i18n/`: translation helpers and locale primitives
+- `src/server/emails/`: email sending and templates
 
 The architectural center of gravity is:
 
@@ -132,6 +132,8 @@ Important route groups in `src/app/`:
   authentication and invitation/join flows
 - `/my-account`:
   self-service account management
+- `/settings`:
+  language and app preferences
 - `/my-videos` and `/my-videos/[id]`:
   project listing and project management
 - `/create/*`:
@@ -243,7 +245,7 @@ Current domains include:
 - scenarios
 - themes
 - users
-- translations/locales
+- get-translation (single root-level file)
 
 Typical pattern:
 
@@ -268,8 +270,13 @@ Keep route handlers in `src/app/api/` for cases where the browser needs HTTP sem
 Examples:
 
 - `/api/images` converts uploads to WebP with `sharp`
+- `/api/audios` handles audio file uploads
 - `/api/projects/[id]` is used by client-side SWR project refreshes
 - `/api/projects/[id]/get-collaboration-url` supports collaboration setup
+- `/api/themes` and `/api/languages` serve JSON data to SWR
+- `/api/questions-templates` serves question templates
+- `/api/locales/[languageCode]` serves locale payloads
+- `/api/auth/[...all]` is the better-auth catch-all handler
 
 If a feature is purely invoked from React code inside this app, prefer a server action unless you specifically need `Request`/`Response`, file upload, or streaming.
 
@@ -448,7 +455,7 @@ Use this when deciding where new code should go:
 - The `README.md` project-structure section is outdated relative to the current `src/frontend`, `src/server`, and `src/server-actions` layout
 - Some files still import from `src/...` directly instead of aliases; do not expand that pattern
 - `.DS_Store` files exist in a few places; they are not meaningful application code
-- The root ESLint config already ignores the `server-*` directories
+- The root ESLint config already ignores the `server-*` and `server-preview-proxy/` directories
 
 ## Suggested First Read For Most Tasks
 
