@@ -10,10 +10,7 @@ const isLocalPostgresUrl = (databaseUrl: string): boolean => {
 };
 
 export const createDatabaseConnection = () => {
-    const databaseUrl = process.env.DATABASE_URL;
-    if (!databaseUrl) {
-        throw new Error('DATABASE_URL must be set when using PostgreSQL.');
-    }
+    const databaseUrl = process.env.DATABASE_URL || '';
     const ssl = !isLocalPostgresUrl(databaseUrl);
     const queryClient = new Pool({ connectionString: databaseUrl, ssl, max: 10 });
     return {
