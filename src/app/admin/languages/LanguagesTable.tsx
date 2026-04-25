@@ -3,18 +3,19 @@
 import { DownloadIcon, Pencil1Icon, PlusCircledIcon, TrashIcon } from '@radix-ui/react-icons';
 import * as React from 'react';
 
+import { AdminTile } from '@frontend/components/admin/AdminTile';
+import { Table } from '@frontend/components/admin/Table';
+import { Button } from '@frontend/components/layout/Button';
+import { IconButton } from '@frontend/components/layout/Button/IconButton';
+import { Tooltip } from '@frontend/components/layout/Tooltip';
+import type { LanguageOption } from '@server/database/schemas/languages';
+
 import { AddLanguageModal } from './AddLanguageModal';
 import { DeleteLanguageModal } from './DeleteLanguageModal';
 import { UploadLanguageModal } from './UploadLanguageModal';
-import { AdminTile } from 'src/components/admin/AdminTile';
-import { Table } from 'src/components/admin/Table';
-import { Button } from 'src/components/layout/Button';
-import { IconButton } from 'src/components/layout/Button/IconButton';
-import { Tooltip } from 'src/components/layout/Tooltip';
-import type { Language } from 'src/database/schemas/languages';
 
 interface LanguagesTableProps {
-    languages: Language[];
+    languages: LanguageOption[];
 }
 
 export function LanguagesTable({ languages }: LanguagesTableProps) {
@@ -56,10 +57,10 @@ export function LanguagesTable({ languages }: LanguagesTableProps) {
                                     </th>
                                     <th style={{ padding: '0 16px' }}>{l.label}</th>
                                     <th align="right" style={{ minWidth: '96px' }}>
-                                        <Tooltip content="Télécharger le fichier des traductions (.po)">
+                                        <Tooltip content="Télécharger le fichier des traductions (.json)">
                                             <IconButton
                                                 as={'a'}
-                                                href={`/api/locales/${l.value}.po`}
+                                                href={`/api/locales/${l.value}.json`}
                                                 download
                                                 margin="xs"
                                                 aria-label="edit"

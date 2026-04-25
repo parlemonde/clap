@@ -3,20 +3,23 @@
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 
+import { Container } from '@frontend/components/layout/Container';
+import { Title } from '@frontend/components/layout/Typography';
+import { Steps } from '@frontend/components/navigation/Steps';
+import { ThemeBreadcrumbs } from '@frontend/components/navigation/ThemeBreadcrumbs';
+import { Inverted } from '@frontend/components/ui/Inverted';
+import { useTranslation } from '@frontend/contexts/translationContext';
+import { userContext } from '@frontend/contexts/userContext';
+import { useCollaboration } from '@frontend/hooks/useCollaboration';
+import { useCurrentProject } from '@frontend/hooks/useCurrentProject';
+import type { ServerPageProps } from '@lib/page-props.types';
+import type { Plan } from '@server/database/schemas/projects';
+
 import { PlanForm } from './PlanForm';
-import { Container } from 'src/components/layout/Container';
-import { Title } from 'src/components/layout/Typography';
-import { Steps } from 'src/components/navigation/Steps';
-import { ThemeBreadcrumbs } from 'src/components/navigation/ThemeBreadcrumbs';
-import { Inverted } from 'src/components/ui/Inverted';
-import { useTranslation } from 'src/contexts/translationContext';
-import type { Plan } from 'src/database/schemas/projects';
-import { useCollaboration } from 'src/hooks/useCollaboration';
-import { useCurrentProject } from 'src/hooks/useCurrentProject';
-import type { ServerPageProps } from 'src/lib/page-props.types';
 
 export default function StoryboardPlanPage(props: ServerPageProps) {
     const router = useRouter();
+    const user = React.useContext(userContext);
     const { t } = useTranslation();
     const { projectData, setProjectData } = useCurrentProject();
     useCollaboration(); // Listen to collaboration updates
@@ -37,6 +40,10 @@ export default function StoryboardPlanPage(props: ServerPageProps) {
     }
 
     const sequence = projectData.questions[questionIndex];
+    if (user?.role === 'student' && sequence.id !== user.questionId) {
+        return null;
+    }
+
     const plan = sequence.plans[planIndex];
     const planStartIndex = projectData.questions.slice(0, questionIndex).reduce<number>((acc, question) => acc + (question.plans || []).length, 1);
 

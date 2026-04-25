@@ -1,15 +1,17 @@
 import * as React from 'react';
 
+import { Container } from '@frontend/components/layout/Container';
+import { Divider } from '@frontend/components/layout/Divider';
+import { Title } from '@frontend/components/layout/Typography';
+import { getCurrentUser } from '@server/auth/get-current-user';
+import { isSSOUser } from '@server/auth/is-sso-user';
+import { getTranslation } from '@server-actions/get-translation';
+
 import { DeleteAccountButton } from './DeleteAccountButton';
 import { LogoutForm } from './LogoutForm';
 import { UpdateEmailForm } from './UpdateEmailForm';
 import { UpdateNameForm } from './UpdateNameForm';
 import { UpdatePasswordButton } from './UpdatePasswordButton';
-import { getCurrentUser } from 'src/actions/get-current-user';
-import { getTranslation } from 'src/actions/get-translation';
-import { Container } from 'src/components/layout/Container';
-import { Divider } from 'src/components/layout/Divider';
-import { Title } from 'src/components/layout/Typography';
 
 export default async function AccountPage() {
     const { t } = await getTranslation();
@@ -18,6 +20,8 @@ export default async function AccountPage() {
     if (!user || user.role === 'student') {
         return null;
     }
+
+    const isSso = await isSSOUser(user.id);
 
     return (
         <Container>
@@ -39,9 +43,15 @@ export default async function AccountPage() {
                 <label>
                     <strong>{t('my_account_page.email_field.label')} : </strong>
                 </label>
-                {user.email} - <UpdateEmailForm user={user} />
+                {user.email}
+                {!isSso && (
+                    <>
+                        {' - '}
+                        <UpdateEmailForm user={user} />
+                    </>
+                )}
             </div>
-            {!user.useSSO && <UpdatePasswordButton />}
+            {!isSso && <UpdatePasswordButton />}
             <Divider marginY="lg" />
             <Title color="inherit" variant="h2">
                 {t('my_account_page.logout_button.title')}

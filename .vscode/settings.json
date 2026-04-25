@@ -1,12 +1,13 @@
 {
   "editor.formatOnSave": false,
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit"
+    "source.fixAll.eslint": "explicit",
   },
   "search.exclude": {
     "**/.next": true,
     "**/.minio-data": true,
     "**/.postgres-data": true,
+    "**/.pglite": true,
     "**/.dynamodb": true,
     "**/.redis-data": true,
     "**/node_modules": true,
@@ -16,8 +17,9 @@
   "files.exclude": {
     "**/.minio-data": true,
     "**/.postgres-data": true,
+    "**/.pglite": true,
     "**/.dynamodb": true,
     "**/.redis-data": true,
     "**/tmp": true,
-  }
+  },
 }

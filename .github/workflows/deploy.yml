@@ -1,62 +1,67 @@
 name: Deploy
 on:
-  workflow_run:
-    workflows: [Build]
-    types: [completed]
+    workflow_run:
+        workflows: [Build]
+        types: [completed]
 concurrency: production
 jobs:
-  get-build-data:
-    runs-on: ubuntu-latest
-    outputs:
-      is-paused: ${{ steps.is-deployment-paused.outputs.paused }}
-    steps:
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
-      - name: Get build data
-        run: aws dynamodb get-item --table-name clap --key '{"key":{"S":"deploy-data"}}' > build.json
-      - name: Check if build is paused
-        id: is-deployment-paused
-        run: echo "paused=$(cat build.json | jq -r '.Item.value.M.isDeploymentPaused.BOOL')" >> "$GITHUB_OUTPUT"
-  deploy:
-    runs-on: ubuntu-latest
-    needs: get-build-data
-    if: needs.get-build-data.outputs.is-paused == 'false'
-    steps:
-      - run: echo "Deploying sha ${{ github.sha }}"
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.sha }}
-      - uses: pnpm/action-setup@v4
-        with:
-          run_install: false
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: 'pnpm'
-      - run: pnpm install
-      - name: Migrate database
-        run: DATABASE_URL=${{ secrets.DATABASE_URL }} pnpm tsx src/database/migrate.ts
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
-      - name: Get IP address
-        id: get-ip
-        run: echo "ip=$(curl https://api.ipify.org)" >> "$GITHUB_OUTPUT"
-      - name: Add Github Actions IP to security-group
-        run: aws ec2 authorize-security-group-ingress --group-name ${{ secrets.AWS_SECURITY_GROUP_NAME }} --protocol tcp --port 22 --cidr ${{ steps.get-ip.outputs.ip }}/32
-      - run: mkdir -p ~/.ssh/ && echo "${{secrets.SSH_KNOWN_HOSTS}}" > ~/.ssh/known_hosts
-      - run: echo "${{ secrets.SSH_PRIVATE_KEY }}" > server-key.pem && chmod 600 server-key.pem
-      - name: Deploy
-        run: ssh -i server-key.pem ${{ secrets.SERVER_URL}} "exec sh ./deploy.sh ${{ github.sha }}"
-      - name: Update build data
-        run: "aws dynamodb update-item --table-name clap --key '{\"key\":{\"S\":\"deploy-data\"}}' --update-expression \"SET #v.liveCommitId = :sha\" --expression-attribute-values '{\":sha\":{\"S\":\"${{ github.sha }}\"}}' --expression-attribute-names '{\"#v\":\"value\"}'"
-      - name: Revoke Github Actions IP from security-group
-        if: always()
-        run: aws ec2 revoke-security-group-ingress --group-name ${{ secrets.AWS_SECURITY_GROUP_NAME }} --protocol tcp --port 22 --cidr ${{ steps.get-ip.outputs.ip }}/32
+    get-build-data:
+        runs-on: ubuntu-latest
+        outputs:
+            is-paused: ${{ steps.is-deployment-paused.outputs.paused }}
+        steps:
+            - name: Configure AWS credentials
+              uses: aws-actions/configure-aws-credentials@v4
+              with:
+                  aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                  aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+                  aws-region: ${{ secrets.AWS_REGION }}
+            - name: Get build data
+              run: aws dynamodb get-item --table-name clap --key '{"key":{"S":"deploy-data"}}' > build.json
+            - name: Check if build is paused
+              id: is-deployment-paused
+              run: echo "paused=$(cat build.json | jq -r '.Item.value.M.isDeploymentPaused.BOOL')" >> "$GITHUB_OUTPUT"
+    deploy:
+        runs-on: ubuntu-latest
+        needs: get-build-data
+        if: needs.get-build-data.outputs.is-paused == 'false'
+        steps:
+            - run: echo "Deploying sha ${{ github.sha }}"
+            - uses: actions/checkout@v4
+              with:
+                  ref: ${{ github.sha }}
+            - uses: pnpm/action-setup@v4
+              with:
+                  run_install: false
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 22
+                  cache: 'pnpm'
+            - run: pnpm install
+            - name: Configure AWS credentials
+              uses: aws-actions/configure-aws-credentials@v4
+              with:
+                  aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                  aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+                  aws-region: ${{ secrets.AWS_REGION }}
+            - name: Get IP address
+              id: get-ip
+              run: echo "ip=$(curl https://api.ipify.org)" >> "$GITHUB_OUTPUT"
+            - name: Add Github Actions IP to security-group for Database
+              run: aws ec2 authorize-security-group-ingress --group-name ${{ secrets.AWS_SECURITY_GROUP_NAME }} --protocol tcp --port 5432 --cidr ${{ steps.get-ip.outputs.ip }}/32
+            - name: Migrate database
+              run: DATABASE_URL=${{ secrets.DATABASE_URL }} pnpm tsx src/database/migrate.ts
+            - name: Add Github Actions IP to security-group for SSH
+              run: aws ec2 authorize-security-group-ingress --group-name ${{ secrets.AWS_SECURITY_GROUP_NAME }} --protocol tcp --port 22 --cidr ${{ steps.get-ip.outputs.ip }}/32
+            - run: mkdir -p ~/.ssh/ && echo "${{secrets.SSH_KNOWN_HOSTS}}" > ~/.ssh/known_hosts
+            - run: echo "${{ secrets.SSH_PRIVATE_KEY }}" > server-key.pem && chmod 600 server-key.pem
+            - name: Deploy
+              run: ssh -i server-key.pem ${{ secrets.SERVER_URL}} "exec sh ./deploy.sh ${{ github.sha }}"
+            - name: Update build data
+              run: 'aws dynamodb update-item --table-name clap --key ''{"key":{"S":"deploy-data"}}'' --update-expression "SET #v.liveCommitId = :sha" --expression-attribute-values ''{":sha":{"S":"${{ github.sha }}"}}'' --expression-attribute-names ''{"#v":"value"}'''
+            - name: Revoke Github Actions IP from security-group for Database
+              if: always()
+              run: aws ec2 revoke-security-group-ingress --group-name ${{ secrets.AWS_SECURITY_GROUP_NAME }} --protocol tcp --port 5432 --cidr ${{ steps.get-ip.outputs.ip }}/32
+            - name: Revoke Github Actions IP from security-group for SSH
+              if: always()
+              run: aws ec2 revoke-security-group-ingress --group-name ${{ secrets.AWS_SECURITY_GROUP_NAME }} --protocol tcp --port 22 --cidr ${{ steps.get-ip.outputs.ip }}/32

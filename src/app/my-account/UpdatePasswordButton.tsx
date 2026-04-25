@@ -1,24 +1,23 @@
 'use client';
 
 import { EyeNoneIcon, EyeOpenIcon } from '@radix-ui/react-icons';
-import { useRouter } from 'next/navigation';
 import React from 'react';
 
-import { updateUser } from 'src/actions/users/update-user';
-import { Button } from 'src/components/layout/Button';
-import { IconButton } from 'src/components/layout/Button/IconButton';
-import { Divider } from 'src/components/layout/Divider';
-import { Field, Input } from 'src/components/layout/Form';
-import { Modal } from 'src/components/layout/Modal';
-import { useTranslation } from 'src/contexts/translationContext';
+import { Button } from '@frontend/components/layout/Button';
+import { IconButton } from '@frontend/components/layout/Button/IconButton';
+import { Divider } from '@frontend/components/layout/Divider';
+import { Field, Input } from '@frontend/components/layout/Form';
+import { Modal } from '@frontend/components/layout/Modal';
+import { useTranslation } from '@frontend/contexts/translationContext';
+import { authClient } from '@frontend/lib/auth-client';
 
 const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/;
 
 export const UpdatePasswordButton = () => {
     const { t } = useTranslation();
-    const router = useRouter();
     const [isUpdateModalOpen, setIsUpdateModalOpen] = React.useState(false);
     const [isLoading, setIsLoading] = React.useState(false);
+    const [updateErrorMessage, setUpdateErrorMessage] = React.useState<string | null>(null);
 
     const [oldPassword, setOldPassword] = React.useState('');
     const [password, setPassword] = React.useState('');
@@ -35,16 +34,20 @@ export const UpdatePasswordButton = () => {
         }
 
         setIsLoading(true);
-        await updateUser({
-            oldPassword,
-            password,
+        const { error } = await authClient.changePassword({
+            currentPassword: oldPassword,
+            newPassword: password,
+            revokeOtherSessions: true,
         });
         setIsLoading(false);
-        setIsUpdateModalOpen(false);
-        setOldPassword('');
-        setPassword('');
-        setPasswordConfirm('');
-        router.refresh();
+        if (error) {
+            setUpdateErrorMessage('Echec de la mise à jour du mot de passe');
+        } else {
+            setOldPassword('');
+            setPassword('');
+            setPasswordConfirm('');
+            setIsUpdateModalOpen(false);
+        }
     };
 
     return (
@@ -78,6 +81,7 @@ export const UpdatePasswordButton = () => {
                 isFullWidth
             >
                 <div id="mdp-dialog-description">
+                    {updateErrorMessage && <p style={{ color: 'var(--error-color)', marginBottom: 4, textAlign: 'center' }}>{updateErrorMessage}</p>}
                     <Field
                         name="old_password"
                         label={t('my_account_page.current_password_field.label')}

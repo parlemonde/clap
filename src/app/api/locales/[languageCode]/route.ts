@@ -2,23 +2,20 @@ import { eq } from 'drizzle-orm';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
-import { jsonToPo } from './json-to-po';
-import { poToJson } from './po-to-json';
-import { getCurrentUser } from 'src/actions/get-current-user';
-import { getLocalesForLanguage } from 'src/actions/get-locales';
-import { setDynamoDBItem } from 'src/aws/dynamoDb';
-import { db } from 'src/database';
-import { languages } from 'src/database/schemas/languages';
+import { getCurrentUser } from '@server/auth/get-current-user';
+import { db } from '@server/database';
+import { languages } from '@server/database/schemas/languages';
+import { getLocalesForLanguage, revalidateLocalesCacheTag } from '@server/i18n/server';
 
-const LOCALE_REGEX = /^\w\w(\.(po|json))?$/;
+const LOCALE_REGEX = /^\w\w(\.json)?$/;
 
 export async function GET(_request: NextRequest, props: { params: Promise<{ languageCode: string }> }) {
     const params = await props.params;
-    const user = await getCurrentUser();
+    await getCurrentUser();
     const value = params.languageCode;
 
     // Only allow language codes that match the regex
-    if (!LOCALE_REGEX.test(value) || (value.endsWith('.po') && user?.role !== 'admin')) {
+    if (!LOCALE_REGEX.test(value)) {
         return new NextResponse('Error 404, not found.', {
             status: 404,
         });
@@ -35,17 +32,6 @@ export async function GET(_request: NextRequest, props: { params: Promise<{ lang
         });
     }
 
-    const extension = values.length > 1 ? values[1] : 'json';
-    if (extension === 'po') {
-        const poFile = await jsonToPo(language.value, await getLocalesForLanguage(language.value));
-        return new Response(poFile, {
-            headers: {
-                'Content-Type': 'text/x-gettext-translation',
-                'Content-Length': poFile.length.toString(),
-                'Content-Disposition': `attachment; filename="${language.value}.po"`,
-            },
-        });
-    }
     const locales = await getLocalesForLanguage(language.value);
     return NextResponse.json(locales);
 }
@@ -82,7 +68,7 @@ export async function PUT(request: NextRequest, props: { params: Promise<{ langu
         const formData = await request.formData();
         const file: FormDataEntryValue | undefined = formData.getAll('language')[0];
 
-        if (!file || !(file instanceof File) || (!file.name.endsWith('.po') && !file.name.endsWith('.json'))) {
+        if (!file || !(file instanceof File) || !file.name.endsWith('.json')) {
             return new NextResponse('Error 400, no file found in request', {
                 status: 400,
             });
@@ -95,8 +81,14 @@ export async function PUT(request: NextRequest, props: { params: Promise<{ langu
             });
         }
 
-        const newTranslations = file.name.endsWith('.po') ? await poToJson(Buffer.from(await file.arrayBuffer())) : JSON.parse(await file.text());
-        await setDynamoDBItem(`locales:${language.value}`, newTranslations);
+        const newTranslations = JSON.parse(await file.text());
+        await db
+            .update(languages)
+            .set({
+                locales: newTranslations,
+            })
+            .where(eq(languages.value, language.value));
+        revalidateLocalesCacheTag(language.value);
 
         return new Response(null, {
             status: 204,

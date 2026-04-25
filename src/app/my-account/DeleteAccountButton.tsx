@@ -3,13 +3,13 @@
 import { InfoCircledIcon } from '@radix-ui/react-icons';
 import React from 'react';
 
-import { deleteUser } from 'src/actions/users/delete-user';
-import { Button } from 'src/components/layout/Button';
-import { Flex } from 'src/components/layout/Flex';
-import { Input } from 'src/components/layout/Form';
-import { Modal } from 'src/components/layout/Modal';
-import { Trans } from 'src/components/ui/Trans';
-import { useTranslation } from 'src/contexts/translationContext';
+import { Button } from '@frontend/components/layout/Button';
+import { Flex } from '@frontend/components/layout/Flex';
+import { Input } from '@frontend/components/layout/Form';
+import { Modal } from '@frontend/components/layout/Modal';
+import { Trans } from '@frontend/components/ui/Trans';
+import { useTranslation } from '@frontend/contexts/translationContext';
+import { deleteUser } from '@server-actions/users/delete-user';
 
 export const DeleteAccountButton = () => {
     const { t } = useTranslation();

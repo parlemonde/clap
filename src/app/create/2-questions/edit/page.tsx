@@ -3,18 +3,18 @@
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 
-import { Container } from 'src/components/layout/Container';
-import { Field, Form, Input } from 'src/components/layout/Form';
-import { Title } from 'src/components/layout/Typography';
-import { NextButton } from 'src/components/navigation/NextButton';
-import { Steps } from 'src/components/navigation/Steps';
-import { ThemeBreadcrumbs } from 'src/components/navigation/ThemeBreadcrumbs';
-import { Inverted } from 'src/components/ui/Inverted';
-import { Trans } from 'src/components/ui/Trans';
-import { useTranslation } from 'src/contexts/translationContext';
-import { useCollaboration } from 'src/hooks/useCollaboration';
-import { useCurrentProject } from 'src/hooks/useCurrentProject';
-import type { ServerPageProps } from 'src/lib/page-props.types';
+import { Container } from '@frontend/components/layout/Container';
+import { Field, Form, Input } from '@frontend/components/layout/Form';
+import { Title } from '@frontend/components/layout/Typography';
+import { NextButton } from '@frontend/components/navigation/NextButton';
+import { Steps } from '@frontend/components/navigation/Steps';
+import { ThemeBreadcrumbs } from '@frontend/components/navigation/ThemeBreadcrumbs';
+import { Inverted } from '@frontend/components/ui/Inverted';
+import { Trans } from '@frontend/components/ui/Trans';
+import { useTranslation } from '@frontend/contexts/translationContext';
+import { useCollaboration } from '@frontend/hooks/useCollaboration';
+import { useCurrentProject } from '@frontend/hooks/useCurrentProject';
+import type { ServerPageProps } from '@lib/page-props.types';
 
 export default function ScenarioPage(props: ServerPageProps) {
     const router = useRouter();
@@ -28,12 +28,9 @@ export default function ScenarioPage(props: ServerPageProps) {
     const [question, setQuestion] = React.useState(questionIndex ? projectData?.questions[questionIndex]?.question || '' : '');
 
     // Update the question when the project or question index changes
-    React.useEffect(() => {
-        if (questionIndex === undefined) {
-            return;
-        }
+    if (questionIndex !== undefined && question !== (projectData?.questions[questionIndex]?.question || '')) {
         setQuestion(projectData?.questions[questionIndex]?.question || '');
-    }, [questionIndex, projectData]);
+    }
 
     if (!projectData || questionIndex === undefined) {
         return null;

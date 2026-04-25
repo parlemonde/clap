@@ -1,0 +1,21 @@
+'use server';
+
+import { eq, and } from 'drizzle-orm';
+
+import { getCurrentUser } from '@server/auth/get-current-user';
+import { deleteStudentCollaborationSessionsForProject } from '@server/auth/student-collaboration-session';
+import { db } from '@server/database/database';
+import { projects } from '@server/database/schemas/projects';
+
+export async function endCollaboration(projectId: number) {
+    const user = await getCurrentUser();
+    if (!user) {
+        return;
+    }
+
+    await db
+        .update(projects)
+        .set({ collaborationCode: null, collaborationCodeExpiresAt: null })
+        .where(and(eq(projects.id, projectId), eq(projects.userId, user.id)));
+    await deleteStudentCollaborationSessionsForProject(projectId);
+}

@@ -1,8 +1,8 @@
 import * as React from 'react';
 
-import { getTranslation } from 'src/actions/get-translation';
-import { Title } from 'src/components/layout/Typography';
-import { Loader } from 'src/components/ui/Loader';
+import { Title } from '@frontend/components/layout/Typography';
+import { Loader } from '@frontend/components/ui/Loader';
+import { getTranslation } from '@server-actions/get-translation';
 
 export default async function Page() {
     const { t } = await getTranslation();

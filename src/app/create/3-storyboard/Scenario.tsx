@@ -1,19 +1,19 @@
 import { PlusIcon } from '@radix-ui/react-icons';
 import React from 'react';
 
-import { FeedbackForm } from 'src/components/collaboration/FeedbackForm';
-import { FeedbackModal } from 'src/components/collaboration/FeedbackModal';
-import type { GroupColorPillProps } from 'src/components/collaboration/GroupColorPill';
-import { GroupColorPill } from 'src/components/collaboration/GroupColorPill';
-import { PlanCard } from 'src/components/create/PlanCard';
-import { TitleCard } from 'src/components/create/TitleCard';
-import { IconButton } from 'src/components/layout/Button/IconButton';
-import { Flex } from 'src/components/layout/Flex';
-import { Modal } from 'src/components/layout/Modal';
-import { Tooltip } from 'src/components/layout/Tooltip';
-import { Title } from 'src/components/layout/Typography';
-import { useTranslation } from 'src/contexts/translationContext';
-import type { Plan, Sequence } from 'src/database/schemas/projects';
+import { FeedbackForm } from '@frontend/components/collaboration/FeedbackForm';
+import { FeedbackModal } from '@frontend/components/collaboration/FeedbackModal';
+import type { GroupColorPillProps } from '@frontend/components/collaboration/GroupColorPill';
+import { GroupColorPill } from '@frontend/components/collaboration/GroupColorPill';
+import { PlanCard } from '@frontend/components/create/PlanCard';
+import { TitleCard } from '@frontend/components/create/TitleCard';
+import { IconButton } from '@frontend/components/layout/Button/IconButton';
+import { Flex } from '@frontend/components/layout/Flex';
+import { Modal } from '@frontend/components/layout/Modal';
+import { Tooltip } from '@frontend/components/layout/Tooltip';
+import { Title } from '@frontend/components/layout/Typography';
+import { useTranslation } from '@frontend/contexts/translationContext';
+import type { Plan, Sequence } from '@server/database/schemas/projects';
 
 interface Scenario {
     sequence: Sequence;

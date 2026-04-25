@@ -9,7 +9,7 @@ charset = utf-8
 indent_style = space
 indent_size = 2
 
-[*.{js,jsx,ts,tsx}]
+[*.{js,mjs,jsx,mjsx,ts,mts,tsx,mtsx}]
 charset = utf-8
 indent_style = space
 indent_size = 4

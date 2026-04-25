@@ -4,19 +4,19 @@ import { Cross1Icon } from '@radix-ui/react-icons';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 
-import { createAdminScenario } from 'src/actions/scenarios/create-scenario';
-import { Button } from 'src/components/layout/Button';
-import { IconButton } from 'src/components/layout/Button/IconButton';
-import { Flex, FlexItem } from 'src/components/layout/Flex';
-import { Field, Form, Input, TextArea } from 'src/components/layout/Form';
-import { Select } from 'src/components/layout/Form/Select';
-import { Modal } from 'src/components/layout/Modal';
-import { Title } from 'src/components/layout/Typography';
-import { Loader } from 'src/components/ui/Loader';
-import { sendToast } from 'src/components/ui/Toasts';
-import type { Scenario } from 'src/database/schemas/scenarios';
-import type { Theme } from 'src/database/schemas/themes';
-import { useLanguages } from 'src/hooks/useLanguages';
+import { Button } from '@frontend/components/layout/Button';
+import { IconButton } from '@frontend/components/layout/Button/IconButton';
+import { Flex, FlexItem } from '@frontend/components/layout/Flex';
+import { Field, Form, Input, TextArea } from '@frontend/components/layout/Form';
+import { Select } from '@frontend/components/layout/Form/Select';
+import { Modal } from '@frontend/components/layout/Modal';
+import { Title } from '@frontend/components/layout/Typography';
+import { Loader } from '@frontend/components/ui/Loader';
+import { sendToast } from '@frontend/components/ui/Toasts';
+import { useLanguages } from '@frontend/hooks/useLanguages';
+import type { Scenario } from '@server/database/schemas/scenarios';
+import type { Theme } from '@server/database/schemas/themes';
+import { createAdminScenario } from '@server-actions/scenarios/create-scenario';
 
 type Language = {
     label: string;
@@ -93,22 +93,24 @@ export const NewScenarioForm = ({ themes, defaultThemeId = -1 }: NewScenarioForm
 
         setIsLoading(true);
 
+        const newScenarioNames = { ...scenarioNames };
+
+        // Clear blank spaces
+        for (const [key, value] of Object.entries(newScenarioNames)) {
+            newScenarioNames[key] = value.trim();
+        }
+
         // Check if name are not empty with blank space
-        const scenarioNamesValue = Object.values(scenarioNames);
+        const scenarioNamesValue = Object.values(newScenarioNames);
         const clearedScenarioNames = scenarioNamesValue.filter((lang) => lang.trim().length > 0);
         if (scenarioNamesValue.length === 0 || clearedScenarioNames.length !== scenarioNamesValue.length) {
             sendToast({ message: 'Veuillez remplir correctement le nom pour chaque langue sélectionnée', type: 'error' });
         }
 
-        // Clear blank spaces
-        for (const [key, value] of Object.entries(scenarioNames)) {
-            scenarioNames[key] = value.trim();
-        }
-
         try {
             await createAdminScenario({
                 themeId,
-                names: scenarioNames,
+                names: newScenarioNames,
                 descriptions: scenarioDescriptions,
             });
             sendToast({ message: 'Scénario créé avec succès!', type: 'success' });

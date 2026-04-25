@@ -3,11 +3,12 @@
 import { useRouter } from 'next/navigation';
 import React from 'react';
 
+import { useTranslation } from '@frontend/contexts/translationContext';
+import { useLocalStorage } from '@frontend/hooks/useLocalStorage';
+import { deleteFromLocalStorage } from '@frontend/hooks/useLocalStorage/local-storage';
+import type { Project } from '@server/database/schemas/projects';
+
 import { ProjectCard } from './ProjectCard';
-import { useTranslation } from 'src/contexts/translationContext';
-import type { Project } from 'src/database/schemas/projects';
-import { useLocalStorage } from 'src/hooks/useLocalStorage';
-import { deleteFromLocalStorage } from 'src/hooks/useLocalStorage/local-storage';
 
 interface VideoListProps {
     projects: Project[];

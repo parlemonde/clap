@@ -1,10 +1,7 @@
 {
   "compilerOptions": {
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "target": "ES2020",
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -14,34 +11,32 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "incremental": true,
-    "target": "ES2015",
     "plugins": [
       {
         "name": "next"
       }
     ],
     "paths": {
-      "src/*": [
-        "./src/*"
-      ]
+      "@app/*": ["./src/app/*"],
+      "@frontend/*": ["./src/frontend/*"],
+      "@lib/*": ["./src/lib/*"],
+      "@server/*": ["./src/server/*"],
+      "@server-actions/*": ["./src/server-actions/*"]
     }
   },
   "include": [
-    "open-next/**/*.ts",
     "drizzle.config.ts",
     "next-env.d.ts",
     "next.config.ts",
-    "open-next.config.ts",
     "src/**/*.html",
     "src/**/*.ts",
     "src/**/*.tsx",
     "src/**/*.txt",
     "src/image-loader.js",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts"
   ],
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules", ".next"]
 }

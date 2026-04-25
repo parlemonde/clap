@@ -4,10 +4,10 @@ import { usePathname, useRouter } from 'next/navigation';
 import type { FormEvent } from 'react';
 import React from 'react';
 
-import { Button } from 'src/components/layout/Button';
-import { Field, Form, Input } from 'src/components/layout/Form';
-import { Link } from 'src/components/navigation/Link';
-import { useTranslation } from 'src/contexts/translationContext';
+import { Button } from '@frontend/components/layout/Button';
+import { Field, Form, Input } from '@frontend/components/layout/Form';
+import { Link } from '@frontend/components/navigation/Link';
+import { useTranslation } from '@frontend/contexts/translationContext';
 
 interface InviteTokenFormProps {
     initialCode?: string;

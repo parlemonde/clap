@@ -3,29 +3,29 @@
 import { Pencil1Icon, TrashIcon, ChevronLeftIcon, ChevronRightIcon, ArrowUpIcon, ArrowDownIcon, PlusCircledIcon } from '@radix-ui/react-icons';
 import * as React from 'react';
 
+import { AdminTile } from '@frontend/components/admin/AdminTile';
+import { Table } from '@frontend/components/admin/Table';
+import { Button } from '@frontend/components/layout/Button';
+import { IconButton } from '@frontend/components/layout/Button/IconButton';
+import { Input } from '@frontend/components/layout/Form';
+import { Select } from '@frontend/components/layout/Form/Select';
+import { Modal } from '@frontend/components/layout/Modal';
+import { Tooltip } from '@frontend/components/layout/Tooltip';
+import { Loader } from '@frontend/components/ui/Loader';
+import { sendToast } from '@frontend/components/ui/Toasts';
+import { userContext } from '@frontend/contexts/userContext';
+import type { User } from '@server/database/schemas/users';
+import { inviteUser } from '@server-actions/authentication/invite-user';
+import { deleteUserById } from '@server-actions/users/delete-user';
+
 import { SharedLink } from './SharedLink';
-import { inviteUser } from 'src/actions/authentication/invite-user';
-import { deleteUserById } from 'src/actions/users/delete-user';
-import { AdminTile } from 'src/components/admin/AdminTile';
-import { Table } from 'src/components/admin/Table';
-import { Button } from 'src/components/layout/Button';
-import { IconButton } from 'src/components/layout/Button/IconButton';
-import { Input } from 'src/components/layout/Form';
-import { Select } from 'src/components/layout/Form/Select';
-import { Modal } from 'src/components/layout/Modal';
-import { Tooltip } from 'src/components/layout/Tooltip';
-import { Link } from 'src/components/navigation/Link';
-import { Loader } from 'src/components/ui/Loader';
-import { sendToast } from 'src/components/ui/Toasts';
-import { userContext } from 'src/contexts/userContext';
-import type { User } from 'src/database/schemas/users';
 
 type UsersTableWithDataProps = {
     users: User[];
 };
 
 export const UsersTable = ({ users }: UsersTableWithDataProps) => {
-    const { user } = React.useContext(userContext);
+    const user = React.useContext(userContext);
     const [deleteIndex, setDeleteIndex] = React.useState<number | null>(null);
     const [isDeleting, setIsDeleting] = React.useState(false);
     const [search, setSearch] = React.useState('');
@@ -179,9 +179,14 @@ export const UsersTable = ({ users }: UsersTableWithDataProps) => {
                             <th align="right" style={{ minWidth: '96px', paddingRight: 8 }}>
                                 <Tooltip content="Modifier">
                                     <span>
-                                        <Link href={`/admin/users/edit/${u.id}`} passHref legacyBehavior>
-                                            <IconButton as="a" margin="xs" aria-label="edit" variant="borderless" icon={Pencil1Icon}></IconButton>
-                                        </Link>
+                                        <IconButton
+                                            as="a"
+                                            href={`/admin/users/edit/${u.id}`}
+                                            margin="xs"
+                                            aria-label="edit"
+                                            variant="borderless"
+                                            icon={Pencil1Icon}
+                                        ></IconButton>
                                     </span>
                                 </Tooltip>
                                 {user?.id !== u.id && (

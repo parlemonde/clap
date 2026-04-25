@@ -3,88 +3,35 @@
 import { EyeNoneIcon, EyeOpenIcon } from '@radix-ui/react-icons';
 import * as React from 'react';
 
-import { login } from 'src/actions/authentication/login';
-import { loginWithSSO } from 'src/actions/authentication/login-with-sso';
-import { Button } from 'src/components/layout/Button';
-import { IconButton } from 'src/components/layout/Button/IconButton';
-import { Field, Form, Input } from 'src/components/layout/Form';
-import { Link } from 'src/components/navigation/Link';
-import { FormLoader, Loader } from 'src/components/ui/Loader';
-import { useTranslation } from 'src/contexts/translationContext';
-import type { I18nKeys } from 'src/i18n/locales';
+import { Button } from '@frontend/components/layout/Button';
+import { IconButton } from '@frontend/components/layout/Button/IconButton';
+import { Field, Form, Input } from '@frontend/components/layout/Form';
+import { Link } from '@frontend/components/navigation/Link';
+import { FormLoader } from '@frontend/components/ui/Loader';
+import { useTranslation } from '@frontend/contexts/translationContext';
+import { authClient } from '@frontend/lib/auth-client';
+import { login } from '@server-actions/authentication/login';
 
 interface LoginFormProps {
-    ssoHost: string;
-    clientId: string;
-    stateQueryParam?: string;
-    codeQueryParam?: string;
+    provider: string;
 }
 
-const clearSSOState = () => {
-    const url = new URL(window.document.URL);
-    url.searchParams.delete('state');
-    url.searchParams.delete('code');
-    window.history.replaceState({}, '', url.toString());
-};
-
-export const LoginForm = ({ ssoHost, clientId, stateQueryParam, codeQueryParam }: LoginFormProps) => {
+export const LoginForm = ({ provider }: LoginFormProps) => {
     const [message, formAction] = React.useActionState(login, '');
     const { t } = useTranslation();
 
     const [showPassword, setShowPassword] = React.useState(false);
-    const [ssoErrorMessage, setSsoErrorMessage] = React.useState<I18nKeys | ''>('');
-    const [isConnectingWithSso, setIsConnectingWithSso] = React.useState(stateQueryParam !== undefined && codeQueryParam !== undefined);
-
-    const onLoginWithSSO = () => {
-        setIsConnectingWithSso(true);
-        const state = generateTemporaryToken();
-        window.sessionStorage.setItem('oauth-state', state);
-        const url = `${ssoHost}/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${
-            window.location.href.split('?')[0]
-        }&state=${state}`;
-        window.location.replace(url);
-    };
-
-    React.useEffect(() => {
-        if (!stateQueryParam || !codeQueryParam) {
-            // If 1 of the query params is present, but not both, clear the state
-            if (stateQueryParam || codeQueryParam) {
-                clearSSOState();
-                setIsConnectingWithSso(false);
-            }
-            return;
-        }
-        const state = window.sessionStorage.getItem('oauth-state') || '';
-        if (state !== decodeURI(stateQueryParam || '')) {
-            setSsoErrorMessage('common.errors.sso_connection_failed');
-            clearSSOState();
-            setIsConnectingWithSso(false);
-            return;
-        }
-        loginWithSSO(codeQueryParam)
-            .then((errorMsg) => {
-                if (errorMsg) {
-                    setSsoErrorMessage(errorMsg as I18nKeys);
-                }
-                clearSSOState();
-                setIsConnectingWithSso(false);
-            })
-            .catch(console.error);
-    }, [stateQueryParam, codeQueryParam]);
-
-    const ssoHostName = ssoHost.replace(/(^\w+:|^)\/\//, '');
 
     return (
         <Form className="login-form" action={formAction}>
-            {message && <span style={{ color: 'rgb(211, 47, 47)', display: 'block' }}>{t(message as I18nKeys)}</span>}
-            {ssoErrorMessage && <span style={{ color: 'rgb(211, 47, 47)', display: 'block' }}>{t(ssoErrorMessage)}</span>}
-            {ssoHost && clientId ? (
+            {message && <span style={{ color: 'rgb(211, 47, 47)', display: 'block' }}>{t(message)}</span>}
+            {provider ? (
                 <>
                     <Button
-                        label={t('login_page.sso_button.label', { ssoHostName })}
+                        label={t('login_page.sso_button.label')}
                         variant="contained"
                         color="secondary"
-                        onClick={onLoginWithSSO}
+                        onClick={() => authClient.signIn.social({ provider })}
                         marginY="lg"
                     ></Button>
                     <div className="login__divider">
@@ -97,7 +44,7 @@ export const LoginForm = ({ ssoHost, clientId, stateQueryParam, codeQueryParam }
             <Field
                 name="email"
                 label={<span style={{ display: 'inline-block', marginBottom: 4 }}>{t('login_page.email_field.label')}</span>}
-                input={<Input id="email" name="email" type="text" color="secondary" isFullWidth required disabled={isConnectingWithSso} />}
+                input={<Input id="email" name="email" type="text" color="secondary" isFullWidth required />}
             ></Field>
             <Field
                 name="password"
@@ -108,7 +55,6 @@ export const LoginForm = ({ ssoHost, clientId, stateQueryParam, codeQueryParam }
                         id="password"
                         name="password"
                         color="secondary"
-                        disabled={isConnectingWithSso}
                         isFullWidth
                         required
                         iconAdornment={
@@ -127,9 +73,15 @@ export const LoginForm = ({ ssoHost, clientId, stateQueryParam, codeQueryParam }
                 }
             ></Field>
             <Button label={t('login_page.connect_button.label')} variant="contained" color="secondary" type="submit" value="Submit"></Button>
-            <Link href="/join" passHref legacyBehavior>
-                <Button marginTop="lg" as="a" isFullWidth label={t('login_page.student_button.label')} variant="outlined" color="secondary"></Button>
-            </Link>
+            <Button
+                marginTop="lg"
+                as="a"
+                href="/join"
+                isFullWidth
+                label={t('login_page.student_button.label')}
+                variant="outlined"
+                color="secondary"
+            ></Button>
             <div className="text-center">
                 <Link href="/reset-password" className="color-primary">
                     {t('login_page.forgot_password_link.label')}
@@ -141,31 +93,6 @@ export const LoginForm = ({ ssoHost, clientId, stateQueryParam, codeQueryParam }
             <div className="loader-wrapper">
                 <FormLoader />
             </div>
-            <Loader isLoading={isConnectingWithSso} />
         </Form>
     );
 };
-
-/**
- * Returns a random token. Browser only!
- * @param length length of the returned token.
- */
-function generateTemporaryToken(length: number = 20): string {
-    const validChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    const cryptoObj = !process.browser
-        ? null
-        : window.crypto || 'msCrypto' in window
-          ? (window as Window & typeof globalThis & { msCrypto: Crypto }).msCrypto
-          : null; // for IE 11
-    if (!cryptoObj) {
-        return Array<string>(length)
-            .fill(validChars)
-            .map((x) => x[Math.floor(Math.random() * x.length)])
-            .join('');
-    }
-    let array = new Uint8Array(length);
-    cryptoObj.getRandomValues(array);
-    array = array.map((x) => validChars.charCodeAt(x % validChars.length));
-    const randomState = String.fromCharCode.apply(null, [...array]);
-    return randomState;
-}

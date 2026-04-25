@@ -3,34 +3,35 @@
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 
+import { getStatus } from '@frontend/components/collaboration/get-status';
+import { Button } from '@frontend/components/layout/Button';
+import { Container } from '@frontend/components/layout/Container';
+import { Flex } from '@frontend/components/layout/Flex';
+import { Title } from '@frontend/components/layout/Typography';
+import { NextButton } from '@frontend/components/navigation/NextButton';
+import { Steps } from '@frontend/components/navigation/Steps';
+import { ThemeBreadcrumbs } from '@frontend/components/navigation/ThemeBreadcrumbs';
+import { Inverted } from '@frontend/components/ui/Inverted';
+import { Loader } from '@frontend/components/ui/Loader';
+import { sendToast } from '@frontend/components/ui/Toasts';
+import { Trans } from '@frontend/components/ui/Trans';
+import { useTranslation } from '@frontend/contexts/translationContext';
+import { userContext } from '@frontend/contexts/userContext';
+import { useCollaboration } from '@frontend/hooks/useCollaboration';
+import { useCurrentProject } from '@frontend/hooks/useCurrentProject';
+import { COLORS } from '@frontend/lib/colors';
+import PictureAsPdf from '@frontend/svg/pdf.svg';
+import type { Sequence } from '@server/database/schemas/projects';
+import { generatePdf } from '@server-actions/projects/generate-pdf';
+
 import { Scenario } from './Scenario';
-import { generatePdf } from 'src/actions/projects/generate-pdf';
-import { getStatus } from 'src/components/collaboration/get-status';
-import { Button } from 'src/components/layout/Button';
-import { Container } from 'src/components/layout/Container';
-import { Flex } from 'src/components/layout/Flex';
-import { Title } from 'src/components/layout/Typography';
-import { NextButton } from 'src/components/navigation/NextButton';
-import { Steps } from 'src/components/navigation/Steps';
-import { ThemeBreadcrumbs } from 'src/components/navigation/ThemeBreadcrumbs';
-import { Inverted } from 'src/components/ui/Inverted';
-import { Loader } from 'src/components/ui/Loader';
-import { sendToast } from 'src/components/ui/Toasts';
-import { Trans } from 'src/components/ui/Trans';
-import { useTranslation } from 'src/contexts/translationContext';
-import { userContext } from 'src/contexts/userContext';
-import type { Sequence } from 'src/database/schemas/projects';
-import { useCollaboration } from 'src/hooks/useCollaboration';
-import { useCurrentProject } from 'src/hooks/useCurrentProject';
-import { COLORS } from 'src/lib/colors';
-import PictureAsPdf from 'src/svg/pdf.svg';
 
 export default function StoryboardPage() {
     const router = useRouter();
     const { t } = useTranslation();
     const { projectData, setProjectData } = useCurrentProject();
     const { collaborationButton, isCollaborationEnabled, sendCollaborationValidationMsg } = useCollaboration();
-    const { user } = React.useContext(userContext);
+    const user = React.useContext(userContext);
     const isStudent = user?.role === 'student';
     const [isGeneratingPDF, setIsGeneratingPDF] = React.useState(false);
 

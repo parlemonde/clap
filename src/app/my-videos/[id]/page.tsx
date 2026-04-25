@@ -1,15 +1,15 @@
 import * as React from 'react';
 
+import { Button } from '@frontend/components/layout/Button';
+import { Container } from '@frontend/components/layout/Container';
+import { Flex } from '@frontend/components/layout/Flex';
+import { Text, Title } from '@frontend/components/layout/Typography';
+import type { ServerPageProps } from '@lib/page-props.types';
+import { getCurrentUser } from '@server/auth/get-current-user';
+import { getTranslation } from '@server-actions/get-translation';
+import { getProject } from '@server-actions/projects/get-project';
+
 import { ProjectForm } from './ProjectForm';
-import { getCurrentUser } from 'src/actions/get-current-user';
-import { getTranslation } from 'src/actions/get-translation';
-import { getProject } from 'src/actions/projects/get-project';
-import { Button } from 'src/components/layout/Button';
-import { Container } from 'src/components/layout/Container';
-import { Flex } from 'src/components/layout/Flex';
-import { Text, Title } from 'src/components/layout/Typography';
-import { Link } from 'src/components/navigation/Link';
-import type { ServerPageProps } from 'src/lib/page-props.types';
 
 export default async function EditProjectPage(props: ServerPageProps) {
     const params = await props.params;
@@ -30,9 +30,14 @@ export default async function EditProjectPage(props: ServerPageProps) {
                     <Text variant="p" marginTop="xl">
                         {t('video_page.not_found.text')}
                     </Text>
-                    <Link href="/" passHref legacyBehavior>
-                        <Button as="a" label={t('video_page.not_found_button.label')} color="primary" variant="contained" marginTop="md"></Button>
-                    </Link>
+                    <Button
+                        as="a"
+                        href="/"
+                        label={t('video_page.not_found_button.label')}
+                        color="primary"
+                        variant="contained"
+                        marginTop="md"
+                    ></Button>
                 </Flex>
             </Container>
         );

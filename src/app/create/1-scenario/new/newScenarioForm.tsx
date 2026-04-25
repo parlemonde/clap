@@ -4,21 +4,21 @@ import { useRouter } from 'next/navigation';
 import React from 'react';
 import useSWR from 'swr';
 
-import { createScenario } from 'src/actions/scenarios/create-scenario';
-import { Form, Field, Input, TextArea } from 'src/components/layout/Form';
-import { Title } from 'src/components/layout/Typography';
-import { NextButton } from 'src/components/navigation/NextButton';
-import { Loader } from 'src/components/ui/Loader';
-import { sendToast } from 'src/components/ui/Toasts';
-import { Trans } from 'src/components/ui/Trans';
-import { useTranslation } from 'src/contexts/translationContext';
-import { userContext } from 'src/contexts/userContext';
-import type { Scenario } from 'src/database/schemas/scenarios';
-import type { Theme } from 'src/database/schemas/themes';
-import { useCurrentProject } from 'src/hooks/useCurrentProject';
-import { useLocalStorage } from 'src/hooks/useLocalStorage';
-import { isLocalScenario, isLocalTheme, type LocalScenario } from 'src/hooks/useLocalStorage/local-storage';
-import { jsonFetcher } from 'src/lib/json-fetcher';
+import { Form, Field, Input, TextArea } from '@frontend/components/layout/Form';
+import { Title } from '@frontend/components/layout/Typography';
+import { NextButton } from '@frontend/components/navigation/NextButton';
+import { Loader } from '@frontend/components/ui/Loader';
+import { sendToast } from '@frontend/components/ui/Toasts';
+import { Trans } from '@frontend/components/ui/Trans';
+import { useTranslation } from '@frontend/contexts/translationContext';
+import { userContext } from '@frontend/contexts/userContext';
+import { useCurrentProject } from '@frontend/hooks/useCurrentProject';
+import { useLocalStorage } from '@frontend/hooks/useLocalStorage';
+import { isLocalScenario, isLocalTheme, type LocalScenario } from '@frontend/hooks/useLocalStorage/local-storage';
+import { jsonFetcher } from '@lib/json-fetcher';
+import type { Scenario } from '@server/database/schemas/scenarios';
+import type { Theme } from '@server/database/schemas/themes';
+import { createScenario } from '@server-actions/scenarios/create-scenario';
 
 type NewScenarioFormProps = {
     backUrl: string;
@@ -26,7 +26,7 @@ type NewScenarioFormProps = {
 };
 export const NewScenarioForm = ({ backUrl, themeId }: NewScenarioFormProps) => {
     const router = useRouter();
-    const { user } = React.useContext(userContext);
+    const user = React.useContext(userContext);
     const { t, currentLocale } = useTranslation();
 
     const { setProjectData } = useCurrentProject();

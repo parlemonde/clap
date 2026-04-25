@@ -1,9 +1,9 @@
 import { CopyIcon } from '@radix-ui/react-icons';
 import React from 'react';
 
-import { IconButton } from 'src/components/layout/Button/IconButton';
-import { Tooltip } from 'src/components/layout/Tooltip';
-import { sendToast } from 'src/components/ui/Toasts';
+import { IconButton } from '@frontend/components/layout/Button/IconButton';
+import { Tooltip } from '@frontend/components/layout/Tooltip';
+import { sendToast } from '@frontend/components/ui/Toasts';
 
 interface SharedLinkProps {
     link?: string;

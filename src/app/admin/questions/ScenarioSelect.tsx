@@ -2,7 +2,7 @@
 import { useRouter } from 'next/navigation';
 import React from 'react';
 
-import { Select } from 'src/components/layout/Form/Select';
+import { Select } from '@frontend/components/layout/Form/Select';
 
 interface ScenarioSelect {
     selectedScenarioId: number | undefined;

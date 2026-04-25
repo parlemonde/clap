@@ -2,8 +2,9 @@
 
 import * as React from 'react';
 
+import { Container } from '@frontend/components/layout/Container';
+
 import { LoginStudentForm } from './LoginStudentForm';
-import { Container } from 'src/components/layout/Container';
 
 export default async function LoginPage() {
     return (

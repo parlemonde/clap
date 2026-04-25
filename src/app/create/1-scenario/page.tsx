@@ -1,21 +1,22 @@
 import * as React from 'react';
 
-import { Scenarios } from './Scenarios';
-import { getCurrentUser } from 'src/actions/get-current-user';
-import { getTranslation } from 'src/actions/get-translation';
-import { listScenarios } from 'src/actions/scenarios/list-scenarios';
-import { ScenarioCard } from 'src/components/create/ScenarioCard';
-import { Container } from 'src/components/layout/Container';
-import { Title } from 'src/components/layout/Typography';
-import { Steps } from 'src/components/navigation/Steps';
-import { ThemeBreadcrumbs } from 'src/components/navigation/ThemeBreadcrumbs';
-import { Inverted } from 'src/components/ui/Inverted';
-import { Trans } from 'src/components/ui/Trans';
-import type { ServerPageProps } from 'src/lib/page-props.types';
-import { getThemeId } from 'src/lib/search-params/get-theme-id';
-import { serializeToQueryUrl } from 'src/lib/serialize-to-query-url';
+import { ScenarioCard } from '@frontend/components/create/ScenarioCard';
+import { Container } from '@frontend/components/layout/Container';
+import { Title } from '@frontend/components/layout/Typography';
+import { Steps } from '@frontend/components/navigation/Steps';
+import { ThemeBreadcrumbs } from '@frontend/components/navigation/ThemeBreadcrumbs';
+import { Inverted } from '@frontend/components/ui/Inverted';
+import { Trans } from '@frontend/components/ui/Trans';
+import type { ServerPageProps } from '@lib/page-props.types';
+import { getThemeId } from '@lib/search-params/get-theme-id';
+import { serializeToQueryUrl } from '@lib/serialize-to-query-url';
+import { getCurrentUser } from '@server/auth/get-current-user';
+import { getTranslation } from '@server-actions/get-translation';
+import { listScenarios } from '@server-actions/scenarios/list-scenarios';
 
-const getScenarios = async (themeId: number, userId: number | undefined, questionLanguageCode: string) => {
+import { Scenarios } from './Scenarios';
+
+const getScenarios = async (themeId: number, userId: string | undefined, questionLanguageCode: string) => {
     if (themeId === -1 || Number.isNaN(themeId) || !Number.isFinite(themeId)) {
         return [];
     }

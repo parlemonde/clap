@@ -4,31 +4,31 @@ import { UploadIcon } from '@radix-ui/react-icons';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 
-import { deleteSound } from 'src/actions/files/delete-sound';
-import { uploadSound } from 'src/actions/files/upload-sound';
-import { DiaporamaPlayer } from 'src/components/create/DiaporamaPlayer';
-import { Button } from 'src/components/layout/Button';
-import { Container } from 'src/components/layout/Container';
-import { Title } from 'src/components/layout/Typography';
-import { NextButton } from 'src/components/navigation/NextButton';
-import { Steps } from 'src/components/navigation/Steps';
-import { ThemeBreadcrumbs } from 'src/components/navigation/ThemeBreadcrumbs';
-import { Inverted } from 'src/components/ui/Inverted';
-import { Loader } from 'src/components/ui/Loader';
-import { sendToast } from 'src/components/ui/Toasts';
-import { useTranslation } from 'src/contexts/translationContext';
-import { userContext } from 'src/contexts/userContext';
-import { useCollaboration } from 'src/hooks/useCollaboration';
-import { useCurrentProject } from 'src/hooks/useCurrentProject';
-import { useDeepMemo } from 'src/hooks/useDeepMemo';
-import { getSounds } from 'src/lib/get-sounds';
+import { DiaporamaPlayer } from '@frontend/components/create/DiaporamaPlayer';
+import { Button } from '@frontend/components/layout/Button';
+import { Container } from '@frontend/components/layout/Container';
+import { Title } from '@frontend/components/layout/Typography';
+import { NextButton } from '@frontend/components/navigation/NextButton';
+import { Steps } from '@frontend/components/navigation/Steps';
+import { ThemeBreadcrumbs } from '@frontend/components/navigation/ThemeBreadcrumbs';
+import { Inverted } from '@frontend/components/ui/Inverted';
+import { Loader } from '@frontend/components/ui/Loader';
+import { sendToast } from '@frontend/components/ui/Toasts';
+import { useTranslation } from '@frontend/contexts/translationContext';
+import { userContext } from '@frontend/contexts/userContext';
+import { useCollaboration } from '@frontend/hooks/useCollaboration';
+import { useCurrentProject } from '@frontend/hooks/useCurrentProject';
+import { useDeepMemo } from '@frontend/hooks/useDeepMemo';
+import { uploadSound } from '@frontend/lib/upload-sound';
+import { getSounds } from '@lib/get-sounds';
+import { deleteSound } from '@server-actions/files/delete-sound';
 
 export default function MusicPage() {
     const router = useRouter();
     const { t } = useTranslation();
     const { projectData, setProjectData } = useCurrentProject();
     useCollaboration(); // Listen to collaboration updates
-    const { user } = React.useContext(userContext);
+    const user = React.useContext(userContext);
     const [isUploading, setIsUploading] = React.useState(false);
 
     const sounds = useDeepMemo(getSounds(projectData?.questions || []));

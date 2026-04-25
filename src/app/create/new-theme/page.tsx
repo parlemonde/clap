@@ -1,13 +1,14 @@
 import * as React from 'react';
 
+import { Breadcrumbs } from '@frontend/components/layout/Breadcrumbs';
+import { Container } from '@frontend/components/layout/Container';
+import { Title } from '@frontend/components/layout/Typography';
+import { BackButton } from '@frontend/components/navigation/BackButton';
+import { Inverted } from '@frontend/components/ui/Inverted';
+import { Trans } from '@frontend/components/ui/Trans';
+import { getTranslation } from '@server-actions/get-translation';
+
 import { NewThemeForm } from './NewThemeForm';
-import { getTranslation } from 'src/actions/get-translation';
-import { Breadcrumbs } from 'src/components/layout/Breadcrumbs';
-import { Container } from 'src/components/layout/Container';
-import { Title } from 'src/components/layout/Typography';
-import { BackButton } from 'src/components/navigation/BackButton';
-import { Inverted } from 'src/components/ui/Inverted';
-import { Trans } from 'src/components/ui/Trans';
 
 export default async function NewThemePage() {
     const { t } = await getTranslation();

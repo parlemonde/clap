@@ -1,24 +1,23 @@
 import classNames from 'clsx';
 import type { Metadata, Viewport } from 'next';
-import { cookies } from 'next/headers';
+import { NextIntlClientProvider } from 'next-intl';
+import { getLocale } from 'next-intl/server';
 import { Tooltip } from 'radix-ui';
 import * as React from 'react';
+
+import { AlertModal } from '@frontend/components/collaboration/AlertModal';
+import { BottomNavBar } from '@frontend/components/navigation/BottomNavBar';
+import { NProgressDone } from '@frontend/components/navigation/NProgress';
+import { TopNavBar } from '@frontend/components/navigation/TopNavBar';
+import { Toasts } from '@frontend/components/ui/Toasts';
+import { UserContextProvider } from '@frontend/contexts/userContext';
+import { openSansFont, alegreyaSansFont, littleDaysFont } from '@frontend/fonts';
+import { getCurrentUser } from '@server/auth/get-current-user';
+
 import 'normalize.css/normalize.css';
 import 'nprogress/nprogress.css';
-import 'src/styles/globals.scss';
+import './globals.css';
 import 'react-html5-camera-photo/build/css/index.css';
-
-import styles from './app.module.scss';
-import { getCurrentUser } from 'src/actions/get-current-user';
-import { getLocales } from 'src/actions/get-locales';
-import { AlertModal } from 'src/components/collaboration/AlertModal';
-import { BottomNavBar } from 'src/components/navigation/BottomNavBar';
-import { NProgressDone } from 'src/components/navigation/NProgress';
-import { TopNavBar } from 'src/components/navigation/TopNavBar';
-import { Toasts } from 'src/components/ui/Toasts';
-import { TranslationContextProvider } from 'src/contexts/translationContext';
-import { UserContextProvider } from 'src/contexts/userContext';
-import { openSansFont, alegreyaSansFont, littleDaysFont } from 'src/fonts';
 
 const APP_URL = process.env.HOST_URL || '';
 const APP_NAME = 'Clap!';
@@ -66,26 +65,21 @@ export const viewport: Viewport = {
 };
 
 export default async function RootLayout({ children }: React.PropsWithChildren) {
-    const [{ currentLocale, locales }, user] = await Promise.all([getLocales(), getCurrentUser()]);
-    const cookieStore = await cookies();
-    const accessTokenCookie = cookieStore.get('access-token');
-    const isSessionExpired = accessTokenCookie !== undefined && user === undefined;
+    const [currentLocale, user] = await Promise.all([getLocale(), getCurrentUser()]);
 
     return (
         <html lang={currentLocale}>
-            <body
-                className={classNames(openSansFont.className, styles.body, openSansFont.variable, alegreyaSansFont.variable, littleDaysFont.variable)}
-            >
+            <body className={classNames(openSansFont.className, openSansFont.variable, alegreyaSansFont.variable, littleDaysFont.variable)}>
                 <noscript>You need to enable JavaScript to run this app.</noscript>
                 <Tooltip.Provider delayDuration={0}>
-                    <TranslationContextProvider language={currentLocale} locales={locales}>
-                        <UserContextProvider initialUser={user} isSessionExpired={isSessionExpired}>
+                    <NextIntlClientProvider>
+                        <UserContextProvider user={user}>
                             <TopNavBar />
                             {children}
                             <BottomNavBar />
                             <AlertModal />
                         </UserContextProvider>
-                    </TranslationContextProvider>
+                    </NextIntlClientProvider>
                 </Tooltip.Provider>
                 <Toasts />
                 <NProgressDone />

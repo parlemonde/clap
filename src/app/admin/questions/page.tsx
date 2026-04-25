@@ -2,14 +2,15 @@
 
 import * as React from 'react';
 
+import { AdminTile } from '@frontend/components/admin/AdminTile';
+import { Container } from '@frontend/components/layout/Container';
+import { Title } from '@frontend/components/layout/Typography';
+import type { ServerPageProps } from '@lib/page-props.types';
+import { listQuestions } from '@server-actions/questions/list-questions';
+import { listScenarios } from '@server-actions/scenarios/list-scenarios';
+
 import { QuestionsTile } from './QuestionsTile';
 import { ScenarioSelect } from './ScenarioSelect';
-import { listQuestions } from 'src/actions/questions/list-questions';
-import { listScenarios } from 'src/actions/scenarios/list-scenarios';
-import { AdminTile } from 'src/components/admin/AdminTile';
-import { Container } from 'src/components/layout/Container';
-import { Title } from 'src/components/layout/Typography';
-import type { ServerPageProps } from 'src/lib/page-props.types';
 
 export default async function AdminQuestionsPage(props: ServerPageProps) {
     const searchParams = await props.searchParams;

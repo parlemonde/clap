@@ -1,0 +1,46 @@
+'use client';
+
+import Image from 'next/image';
+import * as React from 'react';
+
+import { KeepRatio } from '@frontend/components/layout/KeepRatio';
+import { Text } from '@frontend/components/layout/Typography';
+import { Link } from '@frontend/components/navigation/Link';
+
+import styles from './theme-card.module.css';
+
+const COLORS = ['rgb(96, 105, 243)', 'rgb(213, 89, 84)', 'rgb(250, 225, 108)', 'rgb(62, 65, 87)', 'rgb(215, 213, 209)', 'rgb(162, 220, 174)'];
+
+type ThemeCardProps = {
+    index?: number;
+    imageUrl?: string | null;
+    name: string;
+    href: string;
+};
+export const ThemeCard = ({ index = 0, imageUrl, name, href }: ThemeCardProps) => {
+    const [showBackgroundColor, setShowBackgroundColor] = React.useState(true);
+
+    return (
+        <Link href={href} prefetch={false} className={styles.themeCard}>
+            <KeepRatio ratio={0.7}>
+                <div style={{ backgroundColor: showBackgroundColor ? COLORS[index % COLORS.length] : 'unset' }} className={styles.themeCardImage}>
+                    {imageUrl && (
+                        <Image
+                            onLoad={() => {
+                                setShowBackgroundColor(false);
+                            }}
+                            fill
+                            sizes="(max-width: 900px) 50vw, 33vw"
+                            src={imageUrl}
+                            alt="theme image"
+                            loading="eager" // no preloading, the image is not visible on the page load
+                        />
+                    )}
+                </div>
+            </KeepRatio>
+            <Text variant="p" marginTop="xs">
+                {name}
+            </Text>
+        </Link>
+    );
+};

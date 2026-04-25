@@ -3,8 +3,8 @@ import { NextResponse } from 'next/server';
 import sharp from 'sharp';
 import { v4 } from 'uuid';
 
-import { uploadFile } from 'src/actions/files/file-upload';
-import { getCurrentUser } from 'src/actions/get-current-user';
+import { getCurrentUser } from '@server/auth/get-current-user';
+import { uploadFile } from '@server/file-upload/file-upload';
 
 export async function POST(request: NextRequest) {
     try {

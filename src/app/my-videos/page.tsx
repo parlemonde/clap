@@ -1,12 +1,13 @@
 import * as React from 'react';
 
+import { Container } from '@frontend/components/layout/Container';
+import { Title } from '@frontend/components/layout/Typography';
+import { Inverted } from '@frontend/components/ui/Inverted';
+import { Trans } from '@frontend/components/ui/Trans';
+import { getCurrentUser } from '@server/auth/get-current-user';
+import { getProjects } from '@server-actions/projects/get-projects';
+
 import { VideoList } from './VideosList';
-import { getCurrentUser } from 'src/actions/get-current-user';
-import { getProjects } from 'src/actions/projects/get-projects';
-import { Container } from 'src/components/layout/Container';
-import { Title } from 'src/components/layout/Typography';
-import { Inverted } from 'src/components/ui/Inverted';
-import { Trans } from 'src/components/ui/Trans';
 
 export default async function SettingsPage() {
     const projects = await getProjects();

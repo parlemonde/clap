@@ -2,13 +2,13 @@
 
 import React from 'react';
 
-import { deleteLanguage } from 'src/actions/languages/delete-language';
-import { Modal } from 'src/components/layout/Modal';
-import { sendToast } from 'src/components/ui/Toasts';
-import type { Language } from 'src/database/schemas/languages';
+import { Modal } from '@frontend/components/layout/Modal';
+import { sendToast } from '@frontend/components/ui/Toasts';
+import type { LanguageOption } from '@server/database/schemas/languages';
+import { deleteLanguage } from '@server-actions/languages/delete-language';
 
 interface DeleteLanguageModalProps {
-    language?: Language | null;
+    language?: LanguageOption | null;
     onClose?(): void;
 }
 

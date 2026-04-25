@@ -1,0 +1,21 @@
+.nextButton {
+    width: 100%;
+    margin-top: 16px;
+    text-align: right;
+}
+.nextButton__next {
+    width: 100%;
+}
+
+a.nextButton__back {
+    display: none;
+}
+
+@media (min-width: 900px) {
+    a.nextButton__back {
+        display: inline-flex;
+    }
+    .nextButton__next {
+        width: unset;
+    }
+}

@@ -1,0 +1,21 @@
+.LinearProgress {
+    width: 100%;
+    height: 4px;
+}
+.LinearProgress__Bar {
+    display: block;
+    height: 100%;
+    transition: width 0.4s linear;
+}
+.LinearProgress--primary {
+    background-color: rgba(156, 159, 240, 0.8);
+}
+.LinearProgress--primary .LinearProgress__Bar {
+    background-color: var(--primary-color);
+}
+.LinearProgress--secondary {
+    background-color: rgba(175, 231, 208, 0.8);
+}
+.LinearProgress--secondary .LinearProgress__Bar {
+    background-color: var(--secondary-color);
+}

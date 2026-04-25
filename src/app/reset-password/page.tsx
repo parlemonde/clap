@@ -2,15 +2,15 @@
 
 import React from 'react';
 
-import { resetPassword } from 'src/actions/authentication/reset-password';
-import { Button } from 'src/components/layout/Button';
-import { Container } from 'src/components/layout/Container';
-import { Field, Form, Input } from 'src/components/layout/Form';
-import { Title } from 'src/components/layout/Typography';
-import { Link } from 'src/components/navigation/Link';
-import { Loader } from 'src/components/ui/Loader';
-import { sendToast } from 'src/components/ui/Toasts';
-import { useTranslation } from 'src/contexts/translationContext';
+import { Button } from '@frontend/components/layout/Button';
+import { Container } from '@frontend/components/layout/Container';
+import { Field, Form, Input } from '@frontend/components/layout/Form';
+import { Title } from '@frontend/components/layout/Typography';
+import { Link } from '@frontend/components/navigation/Link';
+import { Loader } from '@frontend/components/ui/Loader';
+import { sendToast } from '@frontend/components/ui/Toasts';
+import { useTranslation } from '@frontend/contexts/translationContext';
+import { requestPasswordReset } from '@server-actions/authentication/request-password-reset';
 
 export default function ResetPasswordPage() {
     const { t } = useTranslation();
@@ -18,14 +18,34 @@ export default function ResetPasswordPage() {
     const [isLoading, setIsLoading] = React.useState(false);
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        const currentTarget = e.currentTarget;
+        const formData = new FormData(currentTarget);
+        const email = formData.get('email');
+        if (typeof email !== 'string' || !email) {
+            return;
+        }
         setIsLoading(true);
-        const formData = new FormData(e.currentTarget);
-        await resetPassword(formData);
+        try {
+            const errorMsg = await requestPasswordReset(email);
+            if (errorMsg) {
+                sendToast({
+                    message: t(errorMsg),
+                    type: 'error',
+                });
+            } else {
+                sendToast({
+                    message: t('reset_password_page.toast_message.reset_success'),
+                    type: 'success',
+                });
+                currentTarget.reset();
+            }
+        } catch {
+            sendToast({
+                message: t('common.errors.unknown'),
+                type: 'error',
+            });
+        }
         setIsLoading(false);
-        sendToast({
-            message: t('reset_password_page.toast_message.reset_success'),
-            type: 'success',
-        });
     };
 
     return (

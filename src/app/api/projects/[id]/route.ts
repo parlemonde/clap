@@ -1,9 +1,9 @@
 import { and, eq } from 'drizzle-orm';
 import { NextResponse, type NextRequest } from 'next/server';
 
-import { getCurrentUser } from 'src/actions/get-current-user';
-import { db } from 'src/database';
-import { projects } from 'src/database/schemas/projects';
+import { getCurrentUser } from '@server/auth/get-current-user';
+import { db } from '@server/database';
+import { projects } from '@server/database/schemas/projects';
 
 export async function GET(_request: NextRequest, props: { params: Promise<{ id: string }> }) {
     const params = await props.params;

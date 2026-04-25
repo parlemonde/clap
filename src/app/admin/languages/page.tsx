@@ -1,17 +1,19 @@
 import * as React from 'react';
 
+import { Container } from '@frontend/components/layout/Container';
+import { Title } from '@frontend/components/layout/Typography';
+import { db } from '@server/database';
+import { languages } from '@server/database/schemas/languages';
+
 import { LanguagesTable } from './LanguagesTable';
-import { Container } from 'src/components/layout/Container';
-import { Title } from 'src/components/layout/Typography';
-import { db } from 'src/database';
 
 export default async function AdminLanguagesPage() {
-    const languages = await db.query.languages.findMany();
+    const availableLanguages = await db.select({ value: languages.value, label: languages.label }).from(languages);
 
     return (
         <Container>
             <Title marginTop="md">Langues</Title>
-            <LanguagesTable languages={languages} />
+            <LanguagesTable languages={availableLanguages} />
         </Container>
     );
 }

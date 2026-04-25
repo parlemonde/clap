@@ -1,0 +1,19 @@
+.inverted {
+    padding: 0 2px;
+    color: white;
+}
+.inverted.inverted__round {
+    border-radius: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 32px;
+    width: 32px;
+    padding: 0;
+}
+.inverted.inverted__primary {
+    background-color: var(--primary-color);
+}
+.inverted.inverted__secondary {
+    background-color: var(--secondary-color);
+}

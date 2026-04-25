@@ -2,16 +2,17 @@
 
 import React from 'react';
 
-import { Field, Form } from 'src/components/layout/Form';
-import { Select } from 'src/components/layout/Form/Select';
-import { useTranslation } from 'src/contexts/translationContext';
-import type { Language } from 'src/database/schemas/languages';
+import { Field, Form } from '@frontend/components/layout/Form';
+import { Select } from '@frontend/components/layout/Form/Select';
+import { useTranslation } from '@frontend/contexts/translationContext';
+import type { LanguageOption } from '@server/database/schemas/languages';
 
 interface LanguageSelectProps {
-    languages: Language[];
+    languages: LanguageOption[];
+    cookieName: string;
 }
 
-export const LanguageSelect = ({ languages }: LanguageSelectProps) => {
+export const LanguageSelect = ({ languages, cookieName }: LanguageSelectProps) => {
     const { t, currentLocale } = useTranslation();
 
     return (
@@ -27,7 +28,7 @@ export const LanguageSelect = ({ languages }: LanguageSelectProps) => {
                         isFullWidth
                         value={currentLocale}
                         onChange={(event) => {
-                            const appLanguageCookie = `${encodeURIComponent('app-language')}=${encodeURIComponent(event.target.value)}; Path=/; Secure; SameSite=Strict; Max-Age=${24 * 60 * 60}`;
+                            const appLanguageCookie = `${encodeURIComponent(cookieName)}=${encodeURIComponent(event.target.value)}; Path=/; Secure; SameSite=Strict; Max-Age=${24 * 60 * 60}`;
                             document.cookie = appLanguageCookie;
                             window.location.reload();
                         }}

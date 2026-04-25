@@ -1,10 +1,10 @@
 import React from 'react';
 
-import { QuestionCard } from 'src/components/create/QuestionCard';
-import { Modal } from 'src/components/layout/Modal';
-import { Sortable } from 'src/components/ui/Sortable';
-import { useTranslation } from 'src/contexts/translationContext';
-import type { ProjectData, Sequence } from 'src/database/schemas/projects';
+import { QuestionCard } from '@frontend/components/create/QuestionCard';
+import { Modal } from '@frontend/components/layout/Modal';
+import { Sortable } from '@frontend/components/ui/Sortable';
+import { useTranslation } from '@frontend/contexts/translationContext';
+import type { ProjectData, Sequence } from '@server/database/schemas/projects';
 
 interface QuestionsListProps {
     project: ProjectData;

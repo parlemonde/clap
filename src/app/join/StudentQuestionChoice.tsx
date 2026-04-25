@@ -2,10 +2,10 @@
 
 import * as React from 'react';
 
-import { Text, Title } from 'src/components/layout/Typography';
-import { useTranslation } from 'src/contexts/translationContext';
-import type { ProjectData } from 'src/database/schemas/projects';
-import { COLORS } from 'src/lib/colors';
+import { Text, Title } from '@frontend/components/layout/Typography';
+import { useTranslation } from '@frontend/contexts/translationContext';
+import { COLORS } from '@frontend/lib/colors';
+import type { ProjectData } from '@server/database/schemas/projects';
 
 interface StudentQuestionChoiceProps {
     project: ProjectData;

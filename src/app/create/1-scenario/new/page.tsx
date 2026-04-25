@@ -1,15 +1,16 @@
 import * as React from 'react';
 
+import { Container } from '@frontend/components/layout/Container';
+import { Title } from '@frontend/components/layout/Typography';
+import { Steps } from '@frontend/components/navigation/Steps';
+import { ThemeBreadcrumbs } from '@frontend/components/navigation/ThemeBreadcrumbs';
+import { Inverted } from '@frontend/components/ui/Inverted';
+import { Trans } from '@frontend/components/ui/Trans';
+import type { ServerPageProps } from '@lib/page-props.types';
+import { getThemeId } from '@lib/search-params/get-theme-id';
+import { serializeToQueryUrl } from '@lib/serialize-to-query-url';
+
 import { NewScenarioForm } from './newScenarioForm';
-import { Container } from 'src/components/layout/Container';
-import { Title } from 'src/components/layout/Typography';
-import { Steps } from 'src/components/navigation/Steps';
-import { ThemeBreadcrumbs } from 'src/components/navigation/ThemeBreadcrumbs';
-import { Inverted } from 'src/components/ui/Inverted';
-import { Trans } from 'src/components/ui/Trans';
-import type { ServerPageProps } from 'src/lib/page-props.types';
-import { getThemeId } from 'src/lib/search-params/get-theme-id';
-import { serializeToQueryUrl } from 'src/lib/serialize-to-query-url';
 
 export default async function ScenarioPage(props: ServerPageProps) {
     const searchParams = await props.searchParams;

@@ -12,7 +12,6 @@
     "typescript": "5.7.2"
   },
   "dependencies": {
-    "@aws-sdk/util-dynamodb": "^3.808.0",
     "aws4fetch": "^1.0.20",
     "fs-extra": "^11.2.0",
     "mlt-xml": "^2.0.2",
