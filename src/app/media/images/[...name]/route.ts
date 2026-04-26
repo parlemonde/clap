@@ -7,24 +7,51 @@ import { Readable } from 'stream';
 
 import { getCurrentUser } from '@server/auth/get-current-user';
 import { getFile, getFileData } from '@server/file-upload/file-upload';
+import {
+    getSignedMediaCacheControl,
+    NO_STORE_MEDIA_CACHE_CONTROL,
+    PRIVATE_USER_MEDIA_CACHE_CONTROL,
+    PUBLIC_IMMUTABLE_MEDIA_CACHE_CONTROL,
+} from '@server/file-upload/get-cache-control';
 import { isSignedImageUrlValid } from '@server/file-upload/get-signed-image-url';
 
 const notFoundResponse = () => {
     return new NextResponse('Error 404, not found.', {
+        headers: {
+            'Cache-Control': NO_STORE_MEDIA_CACHE_CONTROL,
+        },
         status: 404,
     });
 };
 const getContentTypeFromFileName = (filename: string): string | null => mime.lookup(filename) || null;
 
-export async function GET(request: NextRequest, props: { params: Promise<{ name: string[] }> }) {
-    const currentUser = await getCurrentUser();
+async function getImageCacheControl(request: NextRequest, name: string[]): Promise<string | null> {
+    const isUserImage = name.length >= 2 && name[0] === 'users';
+    if (!isUserImage) {
+        return PUBLIC_IMMUTABLE_MEDIA_CACHE_CONTROL;
+    }
 
-    const params = await props.params;
-    const isUserImage = params.name.length >= 2 && params.name[0] === 'users';
+    const isSignedUrl = await isSignedImageUrlValid(request.url);
+    if (isSignedUrl) {
+        return getSignedMediaCacheControl(request.nextUrl.searchParams.get('expires'));
+    }
+
+    const currentUser = await getCurrentUser();
     const userImageId = currentUser?.role === 'student' ? currentUser.teacherId : currentUser?.id;
-    if (isUserImage && params.name[1] !== `${userImageId}` && !(await isSignedImageUrlValid(request.url))) {
+    if (name[1] !== `${userImageId}`) {
+        return null;
+    }
+
+    return PRIVATE_USER_MEDIA_CACHE_CONTROL;
+}
+
+export async function GET(request: NextRequest, props: { params: Promise<{ name: string[] }> }) {
+    const params = await props.params;
+    const cacheControl = await getImageCacheControl(request, params.name);
+    if (!cacheControl) {
         return notFoundResponse();
     }
+
     const fileName = `media/images/${params.name.map((path) => sanitize(path)).join('/')}`;
     const data = await getFileData(fileName);
 
@@ -50,7 +77,7 @@ export async function GET(request: NextRequest, props: { params: Promise<{ name:
     const headers = new Headers({
         'Last-Modified': data.LastModified.toISOString(),
         'Content-Type': contentType,
-        'Cache-Control': 'public, s-maxage=604800, max-age=2678400, immutable',
+        'Cache-Control': cacheControl,
     });
 
     /** Check for Range header */
@@ -111,7 +138,12 @@ export async function GET(request: NextRequest, props: { params: Promise<{ name:
 
 export async function HEAD(request: NextRequest, props: { params: Promise<{ name: string[] }> }) {
     const params = await props.params;
-    const fileName = `images/${params.name.map((path) => sanitize(path)).join('/')}`;
+    const cacheControl = await getImageCacheControl(request, params.name);
+    if (!cacheControl) {
+        return notFoundResponse();
+    }
+
+    const fileName = `media/images/${params.name.map((path) => sanitize(path)).join('/')}`;
     const data = await getFileData(fileName);
     if (!data || data.ContentLength === 0) {
         return notFoundResponse();
@@ -143,6 +175,7 @@ export async function HEAD(request: NextRequest, props: { params: Promise<{ name
     }
     response.headers.set('Last-Modified', data.LastModified.toISOString());
     response.headers.set('Content-Type', contentType);
+    response.headers.set('Cache-Control', cacheControl);
     return response;
 }
 
