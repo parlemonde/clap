@@ -16,12 +16,16 @@ interface InvokeVideoLambda {
 }
 
 type InvokeLambda = InvokeVideoLambda; // Add other options here
-const lambdaFunctions: Record<InvokeLambda['kind'], string | undefined> = {
-    video: getEnvVariable('AWS_LAMBDA_VIDEO_FUNCTION_NAME') || undefined,
+
+const getLambdaFunctionName = (kind: InvokeLambda['kind']): string | undefined => {
+    if (kind === 'video') {
+        return getEnvVariable('AWS_LAMBDA_VIDEO_FUNCTION_NAME');
+    }
+    return undefined;
 };
 
 export async function invokeLambda(lambda: InvokeLambda, isAsync = false): Promise<unknown> {
-    const lambdaFunction = lambdaFunctions[lambda.kind];
+    const lambdaFunction = getLambdaFunctionName(lambda.kind);
     if (!lambdaFunction) {
         throw new Error(`Lambda function ${lambda.kind} not found`);
     }

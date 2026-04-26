@@ -6,11 +6,11 @@ import { v4 } from 'uuid';
 
 import { getCurrentUser } from '@server/auth/get-current-user';
 import { hmac, buf2hex } from '@server/aws/utils';
-import { USE_S3 } from '@server/file-upload/file-upload';
+import { isUsingS3 } from '@server/file-upload/file-upload';
 import { getEnvVariable } from '@server/get-env-variable';
 
 export async function getS3UploadParameters(fileName: string): Promise<{ formParameters: Record<string, string>; s3Url: string } | false> {
-    if (!USE_S3) {
+    if (!isUsingS3()) {
         return false;
     }
 

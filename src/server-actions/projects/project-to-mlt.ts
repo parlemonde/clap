@@ -21,10 +21,9 @@ const FRAMERATE = 25; // img/s
 const getFramesCount = (duration: number) => Math.round((duration * FRAMERATE) / 1000);
 const clamp = (min: number, max: number, value: number) => Math.max(min, Math.min(max, value));
 
-const HOST_URL = getEnvVariable('HOST_URL');
 const toFullUrl = (url: string) => {
     if (url.startsWith('/media/')) {
-        return `${HOST_URL}${url}`;
+        return `${getEnvVariable('HOST_URL')}${url}`;
     } else {
         return url;
     }
