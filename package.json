@@ -20,7 +20,7 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "next typegen && tsc --noEmit -p .",
-    "db:migrate": "dotenvx run -- tsx src/server/database/migrate.ts",
+    "db:migrate": "tsx src/server/database/migrate.ts",
     "db:generate": "drizzle-kit generate",
     "db:studio": "drizzle-kit studio"
   },
@@ -70,7 +70,6 @@
     "waveform-data": "^4.5.2"
   },
   "devDependencies": {
-    "@dotenvx/dotenvx": "1.61.1",
     "@eslint/css": "^1.0.0",
     "@eslint/js": "9.39.4",
     "@eslint/json": "^1.2.0",

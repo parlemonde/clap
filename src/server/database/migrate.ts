@@ -3,6 +3,7 @@ import { eq } from 'drizzle-orm';
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { migrate } from 'drizzle-orm/node-postgres/migrator';
 import path from 'node:path';
+import { loadEnvFile } from 'node:process';
 
 import { getEnvVariable } from '@server/get-env-variable';
 import { logger } from '@server/logger';
@@ -77,6 +78,7 @@ async function seedDefaultLanguage(db: AppDatabase): Promise<void> {
 }
 
 const start = async () => {
+    loadEnvFile();
     const { db, onClose } = createDatabaseConnection();
     await migrate(db as NodePgDatabase<DatabaseSchema>, { migrationsFolder: DRIZZLE_MIGRATIONS_FOLDER });
     await seedAdminUser(db);
