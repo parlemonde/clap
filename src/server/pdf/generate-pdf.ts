@@ -13,6 +13,7 @@ import { scenarios } from '@server/database/schemas/scenarios';
 import { uploadFile } from '@server/file-upload/file-upload';
 import { getSignedImageUrl } from '@server/file-upload/get-signed-image-url';
 import type { tFunction } from '@server/i18n/types';
+import { logger } from '@server/logger';
 
 import fontBase64 from './assets/font_base64.txt';
 import userLogoBase64 from './assets/userLogo_base64.txt';
@@ -132,7 +133,7 @@ export async function generatePdf(projectData: ProjectData): Promise<string | fa
 
         return `/${fileKey}`;
     } catch (error) {
-        console.error(error);
+        logger.error(error);
         return false;
     }
 }

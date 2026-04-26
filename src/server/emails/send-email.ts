@@ -3,6 +3,7 @@ import { render, toPlainText } from 'react-email';
 
 import { getTransporter } from '@server/emails/transporter';
 import type { tFunction } from '@server/i18n/types';
+import { logger } from '@server/logger';
 
 import ResetPasswordTemplate from './templates/ResetPasswordEmail';
 import type { BaseTemplateProps } from './templates/templates.types';
@@ -58,6 +59,6 @@ export const sendEmail = async <Kind extends templatesKind>(
             text,
         });
     } catch (e) {
-        console.error(e);
+        logger.error(e);
     }
 };

@@ -3,6 +3,7 @@ import { Readable } from 'stream';
 
 import type { FileData } from '@server/file-upload/file-data.types';
 import { formatByteRange, type ByteRange } from '@server/file-upload/range-request';
+import { logger } from '@server/logger';
 
 import { getAwsClient } from './awsClient';
 
@@ -114,7 +115,7 @@ export async function getS3File(key: string, range?: ByteRange): Promise<Readabl
         }
         return null;
     } catch (e) {
-        console.error(e);
+        logger.error(e);
         return null;
     }
 }
@@ -135,7 +136,7 @@ export async function getS3FileData(key: string): Promise<FileData | null> {
         }
         return null;
     } catch (e) {
-        console.error(e);
+        logger.error(e);
         return null;
     }
 }
@@ -152,7 +153,7 @@ export async function uploadS3File(key: string, filedata: Buffer, contentType?: 
             },
         });
     } catch (e) {
-        console.error(e);
+        logger.error(e);
     }
 }
 
@@ -163,6 +164,6 @@ export async function deleteS3File(key: string): Promise<void> {
             method: 'DELETE',
         });
     } catch (e) {
-        console.error(e);
+        logger.error(e);
     }
 }

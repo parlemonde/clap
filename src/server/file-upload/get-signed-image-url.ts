@@ -1,4 +1,5 @@
 import { buf2hex, hmac } from '@server/aws/utils';
+import { logger } from '@server/logger';
 
 const SECRET = process.env.APP_SECRET;
 
@@ -23,7 +24,8 @@ export async function getSignedImageUrl(url: string, userId: string): Promise<st
 
         const prefix = imageUrl.split('?')[0];
         return `${prefix}?${searchParams.toString()}`;
-    } catch {
+    } catch (e) {
+        logger.error(e);
         return url;
     }
 }
@@ -52,7 +54,8 @@ export async function isSignedImageUrlValid(url: string): Promise<boolean> {
         const kSignature = await hmac(kSecret, searchParams.toString());
         const computedSignature = buf2hex(kSignature);
         return computedSignature === signature;
-    } catch {
+    } catch (e) {
+        logger.error(e);
         return false;
     }
 }

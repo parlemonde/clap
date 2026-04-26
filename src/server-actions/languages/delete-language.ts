@@ -6,6 +6,7 @@ import { revalidatePath } from 'next/cache';
 import { getCurrentUser } from '@server/auth/get-current-user';
 import { db } from '@server/database';
 import { languages } from '@server/database/schemas/languages';
+import { logger } from '@server/logger';
 
 export async function deleteLanguage(languageCode: string): Promise<void> {
     const user = await getCurrentUser();
@@ -18,7 +19,7 @@ export async function deleteLanguage(languageCode: string): Promise<void> {
         revalidatePath('/');
         revalidatePath('/admin/languages');
         revalidatePath('/api/languages');
-    } catch {
-        // Ignore error
+    } catch (e) {
+        logger.error(e);
     }
 }

@@ -9,6 +9,7 @@ import { v4 } from 'uuid';
 
 import type { ProjectData } from '@server/database/schemas/projects';
 import { getFile, uploadFile } from '@server/file-upload/file-upload';
+import { logger } from '@server/logger';
 
 import type { File } from './project-to-mlt';
 import { projectToMlt } from './project-to-mlt';
@@ -41,7 +42,7 @@ export async function getMltZip(project: ProjectData, name: string) {
 
         // Resolve on error.
         archive.on('error', (err) => {
-            console.error(err);
+            logger.error(err);
             resolve();
         });
 
@@ -57,10 +58,10 @@ export async function getMltZip(project: ProjectData, name: string) {
                 }
             })
             .catch((err) => {
-                console.error(err);
+                logger.error(err);
             })
             .finally(() => {
-                archive.finalize().catch(console.error);
+                archive.finalize().catch(logger.error);
             });
     });
 

@@ -5,6 +5,7 @@ import type { AbstractIntlMessages } from 'next-intl';
 
 import { db } from '@server/database';
 import { languages } from '@server/database/schemas/languages';
+import { logger } from '@server/logger';
 
 import { APP_LANGUAGE_COOKIE_NAME, DEFAULT_LOCALE } from './constants';
 import { defaultLocales } from './default-locales';
@@ -58,7 +59,7 @@ export async function getLocalesForLanguage(languageCode: string) {
             locales = mergeMessages(locales, language.locales);
         }
     } catch (err) {
-        console.error(err);
+        logger.error(err);
     }
 
     return locales;

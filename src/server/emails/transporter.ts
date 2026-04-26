@@ -1,6 +1,7 @@
 import type { Transporter } from 'nodemailer';
 import nodemailer from 'nodemailer';
 
+import { logger } from '@server/logger';
 import { registerService } from '@server/register-service';
 
 const transporter = registerService('email-transport', async (): Promise<Transporter> => {
@@ -11,8 +12,7 @@ const transporter = registerService('email-transport', async (): Promise<Transpo
 
     if (!user || !password) {
         const testAccount = await nodemailer.createTestAccount();
-        // eslint-disable-next-line
-        console.info(`Created test account:
+        logger.info(`Created test account:
             User: ${testAccount.user},
             Pass: ${testAccount.pass}`);
 

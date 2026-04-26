@@ -2,6 +2,7 @@
 
 import { getCurrentUser } from '@server/auth/get-current-user';
 import { deleteFile } from '@server/file-upload/file-upload';
+import { logger } from '@server/logger';
 
 export async function deleteImage(imageUrl: string, isAdmin: boolean = false): Promise<void> {
     if (!imageUrl.startsWith('/media/images/')) {
@@ -17,8 +18,8 @@ export async function deleteImage(imageUrl: string, isAdmin: boolean = false): P
     ) {
         try {
             await deleteFile(imageUrl.slice(1)); // remove the leading slash
-        } catch {
-            // do nothing
+        } catch (e) {
+            logger.error(e);
         }
     }
 }

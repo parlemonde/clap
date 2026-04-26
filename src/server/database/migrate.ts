@@ -4,6 +4,8 @@ import type { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { migrate } from 'drizzle-orm/node-postgres/migrator';
 import path from 'node:path';
 
+import { logger } from '@server/logger';
+
 import type { AppDatabase } from './runtime';
 import { createDatabaseConnection } from './runtime';
 import type { DatabaseSchema } from './schema';
@@ -51,7 +53,7 @@ async function seedAdminUser(db: AppDatabase): Promise<void> {
             updatedAt: now,
         });
     } catch (error) {
-        console.error(error);
+        logger.error(error);
     }
 }
 
@@ -69,7 +71,7 @@ async function seedDefaultLanguage(db: AppDatabase): Promise<void> {
             label: 'Francais',
         });
     } catch (error) {
-        console.error(error);
+        logger.error(error);
     }
 }
 
@@ -82,6 +84,6 @@ const start = async () => {
 };
 
 start().catch((error) => {
-    console.error(error);
+    logger.error(error);
     process.exitCode = 1;
 });

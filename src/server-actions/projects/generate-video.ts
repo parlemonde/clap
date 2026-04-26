@@ -6,6 +6,7 @@ import { getCurrentUser } from '@server/auth/get-current-user';
 import { invokeLambda } from '@server/aws/lambda';
 import { getS3FileUrl } from '@server/aws/s3';
 import type { ProjectData } from '@server/database/schemas/projects';
+import { logger } from '@server/logger';
 
 import { projectToMlt } from './project-to-mlt';
 
@@ -57,7 +58,7 @@ export async function generateVideo(
             url: '',
         };
     } catch (e) {
-        console.error(e);
+        logger.error(e);
         return null;
     }
 }
@@ -77,8 +78,9 @@ export async function getVideoProgress(_projectId?: number): Promise<{
             percentage: currentProgress,
             url: '',
         };
-    } catch {
-        // Ignore
+    } catch (e) {
+        logger.error(e);
+        return null;
     }
     return null;
 }

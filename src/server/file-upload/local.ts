@@ -3,6 +3,8 @@ import mime from 'mime-types';
 import path from 'node:path';
 import type { Readable } from 'node:stream';
 
+import { logger } from '@server/logger';
+
 import type { FileData } from './file-data.types';
 import type { ByteRange } from './range-request';
 
@@ -19,7 +21,7 @@ export async function getLocalFileData(key: string): Promise<FileData | null> {
             LastModified: stats.mtime,
         };
     } catch {
-        console.error(`File ${key} not found !`);
+        logger.error(`File ${key} not found !`);
         return null;
     }
 }
@@ -28,7 +30,7 @@ export async function getLocalFile(key: string, range?: ByteRange): Promise<Read
     try {
         return fs.createReadStream(getFilePath(key), range);
     } catch {
-        console.error(`File ${key} not found !`);
+        logger.error(`File ${key} not found !`);
         return null;
     }
 }
@@ -40,7 +42,7 @@ export async function uploadLocalFile(key: string, filedata: Buffer): Promise<vo
         await fs.mkdirs(directory);
         await fs.writeFile(getFilePath(key), filedata);
     } catch (e) {
-        console.error(e);
+        logger.error(e);
     }
 }
 
@@ -48,6 +50,6 @@ export async function deleteLocalFile(key: string): Promise<void> {
     try {
         await fs.remove(getFilePath(key));
     } catch (e) {
-        console.error(e);
+        logger.error(e);
     }
 }
