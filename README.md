@@ -1,186 +1,45 @@
-# Clap! 🎬
+# Clap!
 
-A collaborative video creation platform designed for educational environments, allowing teachers and students to create videos through a structured, step-by-step workflow.
+A collaborative video creation platform for education. Teachers create themes and scenarios; students build storyboards and generate videos through a guided workflow.
 
-## 🎯 Overview
+## Tech Stack
 
-Clap is an innovative web application that simplifies video creation in educational settings. Teachers can create themes and scenarios, while students can collaborate in real-time to build storyboards and generate videos using a guided workflow.
+- **Next.js 16** + **React 19**
+- **TypeScript**
+- **Drizzle ORM** + **PostgreSQL**
+- **better-auth**
+- **AWS S3 / Lambda**
 
-## ✨ Key Features
+## Getting Started
 
-### 🎨 **Structured Video Creation Workflow**
-- **Step 1**: Choose or create scenarios based on themes
-- **Step 2**: Define sequences/questions to structure the story
-- **Step 3**: Create collaborative storyboards with images and plans
-- **Step 4**: Pre-mounting and content organization
-- **Step 5**: Add background music and audio elements
-- **Step 6**: Generate and download final videos
+Prerequisites: Node.js 22+ with pnpm and docker.
 
-### 🤝 **Real-Time Collaboration**
-- Live collaborative editing via WebSockets
-- Collaboration codes for students to join projects
-- Feedback system for iterative improvements
-- Session management and progress tracking
-
-### 🎬 **Media Generation**
-- Automatic video generation using MLT (MLT Multimedia Framework)
-- PDF storyboard exports for planning
-- Image and audio file management
-
-### 🌍 **Internationalization**
-- Multi-language support with French as primary language
-- Localized content and interface elements
-- Cultural adaptation for educational contexts
-
-## 🛠 Tech Stack
-
-### **Frontend**
-- **Next.js 15 with React 19** - React-based full-stack framework
-- **TypeScript** - Type-safe development
-- **Radix UI** - Accessible component primitives
-
-### **Backend**
-- **Next.js API Routes** - Serverless backend functions
-- **Drizzle ORM** - Type-safe database interactions
-- **PostgreSQL** - Primary database for user data and projects
-
-### **Media Processing**
-- **MLT Framework** - Video editing and generation
-
-### **Infrastructure**
-- **AWS S3** - Media file storage and delivery
-- **AWS Lambda** - Serverless video generation and PDF generation
-- **WebSockets (Rust)** - Real-time collaboration server
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-- **Node.js** 20+ and **pnpm**
-- **Docker** and **Docker Compose** only if you want to run the optional local WebSocket service
-
-### Local Development Setup
-
-1. **Clone the repository**
-```bash
-git clone <repository-url>
-cd clap
-```
-
-2. **Install dependencies**
 ```bash
 pnpm install
-```
-
-3. **Environment Configuration**
-Create a `.env` file with required environment variables:
-```bash
-# Application
-APP_SECRET=1234
-HOST_URL=http://localhost:3000
-
-# Default Admin User
-ADMIN_NAME=Admin
-ADMIN_PASSWORD=my-s3cret-adm1n-pwd
-ADMIN_EMAIL=admin@example.com
-
-# AWS Configuration
-AWS_REGION=local # Will store files locally instead of using AWS S3
-
-# Email (Visit https://ethereal.email/ and create an temporary fake account)
-NODEMAILER_HOST=smtp.ethereal.email
-NODEMAILER_PORT=587
-NODEMAILER_USER=<temporary_email_address>
-NODEMAILER_PASS=<temporary_password>
-
-# Collaboration server
-COLLABORATION_SERVER_URL=ws://localhost:9000 # optional local websocket server
-```
-
-4. **Optional: start the websocket service**
-```bash
-docker compose up websockets
-```
-
-5. **Run database migrations**
-
-```bash
+pnpm dev
 pnpm db:migrate
 ```
 
-6. **Start the development server**
+The app runs at `http://localhost:3000`.
+
+Other useful commands:
+
 ```bash
-pnpm dev
+pnpm lint        # ESLint
+pnpm typecheck   # TypeScript
+pnpm db:studio   # Drizzle Studio
 ```
 
-The application will be available at `http://localhost:3000`
-
-When `DATABASE_URL` is not set, the app uses a local file-backed PGlite database stored under `tmp/pglite/`.
-Delete `tmp/pglite/` if you want to reset your local database from scratch.
-
-### Additional Services
-
-- **WebSocket Server**: `http://localhost:9000` (for real-time collaboration)
-- **Database Studio**: `pnpm db:studio` (Drizzle Studio, only when `DATABASE_URL` points to a real PostgreSQL instance)
-
-## 📁 Project Structure
+## Project Structure
 
 ```
 src/
-├── actions/           # Server actions for data fetching and mutations
-├── app/              # Next.js app router pages and layouts
-├── components/       # Reusable React components
-├── contexts/         # React context providers
-├── database/         # Database schemas and configuration
-├── hooks/           # Custom React hooks
-├── i18n/            # Internationalization and translations
-├── lib/             # Utility functions and helpers
-└── styles/          # Global styles and CSS variables
-
-server-*/            # Microservices for specialized tasks
-├── server-video-generation/    # Video generation Lambda function
-├── server-websockets/          # Websockets server
-└── server-pdf-generation/      # PDF generation Lambda function
+├── app/            # Next.js App Router pages and route handlers
+├── frontend/       # Client components, hooks, contexts, and UI
+├── server/         # Database, auth, AWS, emails, i18n
+├── server-actions/ # Server actions invoked by the UI
+└── lib/            # Shared utilities
 ```
-
-## 🔧 Development Commands
-
-```bash
-# Development
-pnpm dev              # Start development server with Turbopack
-pnpm build           # Build for production
-pnpm start           # Start production server
-
-# Code Quality
-pnpm lint            # Run ESLint
-pnpm lint:fix        # Fix ESLint issues
-pnpm typecheck       # TypeScript type checking
-
-# Database
-pnpm db:migrate      # Run database migrations
-pnpm db:generate     # Generate new migrations
-pnpm db:studio       # Open Drizzle Studio against a real PostgreSQL DATABASE_URL
-```
-
-## 🚀 Deployment
-
-### Production
-
-This app is automatically deployed on every new commit on the main branch.
-
-### Preview Environments
-
-Automatic preview deployments are configured for feature branches using GitHub Actions and AWS.
-
-## 🤝 Contributing
-
-1. Pull the repository
-2. Create a feature branch (`git checkout -b <my-name>/<my-feature>`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin <my-name>/<my-feature>`)
-5. Open a Pull Request
-6. Test your feature on the preview URL
-7. Merge to `main` branch
 
 ## License
 
