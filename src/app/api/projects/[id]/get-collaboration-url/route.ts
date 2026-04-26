@@ -2,17 +2,18 @@ import { createHmac } from 'crypto';
 import { NextResponse, type NextRequest } from 'next/server';
 
 import { getCurrentUser } from '@server/auth/get-current-user';
+import { getEnvVariable } from '@server/get-env-variable';
 
 async function getCollaborationWebsocketUrlAndParams(room: string): Promise<{
     url: string;
     protocols: string[];
 }> {
     const date = new Date().toISOString();
-    const secretKey = `secret:${process.env.COLLABORATION_SERVER_SECRET}`;
+    const secretKey = `secret:${getEnvVariable('COLLABORATION_SERVER_SECRET')}`;
     const dateKey = createHmac('sha256', secretKey).update(date).digest();
     const signature = createHmac('sha256', dateKey).update(room).digest('hex');
     return {
-        url: `${process.env.COLLABORATION_SERVER_URL}?room=${encodeURIComponent(room)}&date=${encodeURIComponent(date)}`,
+        url: `${getEnvVariable('COLLABORATION_SERVER_URL')}?room=${encodeURIComponent(room)}&date=${encodeURIComponent(date)}`,
         protocols: ['json', `auth.${signature}`],
     };
 }
@@ -24,7 +25,7 @@ export async function GET(_request: NextRequest, props: { params: Promise<{ id: 
     const projectId = Number(params.id) || 0;
     const user = await getCurrentUser();
 
-    if (!process.env.COLLABORATION_SERVER_SECRET || !process.env.COLLABORATION_SERVER_URL) {
+    if (!getEnvVariable('COLLABORATION_SERVER_SECRET') || !getEnvVariable('COLLABORATION_SERVER_URL')) {
         return new NextResponse(null, { status: 500 });
     }
 

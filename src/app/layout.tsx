@@ -13,13 +13,14 @@ import { Toasts } from '@frontend/components/ui/Toasts';
 import { UserContextProvider } from '@frontend/contexts/userContext';
 import { openSansFont, alegreyaSansFont, littleDaysFont } from '@frontend/fonts';
 import { getCurrentUser } from '@server/auth/get-current-user';
+import { getEnvVariable } from '@server/get-env-variable';
 
 import 'normalize.css/normalize.css';
 import 'nprogress/nprogress.css';
 import './globals.css';
 import 'react-html5-camera-photo/build/css/index.css';
 
-const APP_URL = process.env.HOST_URL || '';
+const APP_URL = getEnvVariable('HOST_URL');
 const APP_NAME = 'Clap!';
 const APP_DESCRIPTION = 'Clap! Une application pour créer de super vidéos.';
 

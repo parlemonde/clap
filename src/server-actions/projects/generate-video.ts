@@ -6,6 +6,7 @@ import { getCurrentUser } from '@server/auth/get-current-user';
 import { invokeLambda } from '@server/aws/lambda';
 import { getS3FileUrl } from '@server/aws/s3';
 import type { ProjectData } from '@server/database/schemas/projects';
+import { getEnvVariable } from '@server/get-env-variable';
 import { logger } from '@server/logger';
 
 import { projectToMlt } from './project-to-mlt';
@@ -47,7 +48,7 @@ export async function generateVideo(
                     mlt: mltStr,
                     s3Files,
                     httpFiles,
-                    s3BucketName: process.env.S3_BUCKET_NAME || '',
+                    s3BucketName: getEnvVariable('S3_BUCKET_NAME'),
                     s3Key,
                 },
             },

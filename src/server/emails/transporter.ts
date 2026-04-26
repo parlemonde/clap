@@ -1,14 +1,15 @@
 import type { Transporter } from 'nodemailer';
 import nodemailer from 'nodemailer';
 
+import { getEnvVariable } from '@server/get-env-variable';
 import { logger } from '@server/logger';
 import { registerService } from '@server/register-service';
 
 const transporter = registerService('email-transport', async (): Promise<Transporter> => {
-    const host = process.env.NODEMAILER_HOST;
-    const port = process.env.NODEMAILER_PORT;
-    const user = process.env.NODEMAILER_USER;
-    const password = process.env.NODEMAILER_PASS;
+    const host = getEnvVariable('NODEMAILER_HOST');
+    const port = getEnvVariable('NODEMAILER_PORT');
+    const user = getEnvVariable('NODEMAILER_USER');
+    const password = getEnvVariable('NODEMAILER_PASS');
 
     if (!user || !password) {
         const testAccount = await nodemailer.createTestAccount();

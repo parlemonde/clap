@@ -7,6 +7,7 @@ import { v4 } from 'uuid';
 import { getCurrentUser } from '@server/auth/get-current-user';
 import { hmac, buf2hex } from '@server/aws/utils';
 import { USE_S3 } from '@server/file-upload/file-upload';
+import { getEnvVariable } from '@server/get-env-variable';
 
 export async function getS3UploadParameters(fileName: string): Promise<{ formParameters: Record<string, string>; s3Url: string } | false> {
     if (!USE_S3) {
@@ -24,7 +25,13 @@ export async function getS3UploadParameters(fileName: string): Promise<{ formPar
         throw new Error('Invalid file');
     }
 
-    if (!process.env.AWS_ACCESS_KEY_ID || !process.env.S3_BUCKET_NAME || !process.env.AWS_SECRET_ACCESS_KEY || !process.env.AWS_REGION) {
+    const awsAccessKeyId = getEnvVariable('AWS_ACCESS_KEY_ID');
+    const awsSecretAccessKey = getEnvVariable('AWS_SECRET_ACCESS_KEY');
+    const awsRegion = getEnvVariable('AWS_REGION');
+    const s3BucketName = getEnvVariable('S3_BUCKET_NAME');
+    const awsSessionToken = getEnvVariable('AWS_SESSION_TOKEN');
+
+    if (!awsAccessKeyId || !s3BucketName || !awsSecretAccessKey || !awsRegion) {
         throw new Error('Unauthorized');
     }
 
@@ -32,13 +39,13 @@ export async function getS3UploadParameters(fileName: string): Promise<{ formPar
     const expirationDate = new Date(Date.now() + 1000 * 60 * 5); // 5 minutes
 
     const algorithm = 'AWS4-HMAC-SHA256';
-    const credential = `${process.env.AWS_ACCESS_KEY_ID}/${currentDate.split('T')[0]}/${process.env.AWS_REGION}/s3/aws4_request`;
+    const credential = `${awsAccessKeyId}/${currentDate.split('T')[0]}/${awsRegion}/s3/aws4_request`;
 
     const policy = {
         expiration: `${expirationDate.toISOString().slice(0, -5)}Z`,
         conditions: [
             {
-                bucket: process.env.S3_BUCKET_NAME,
+                bucket: s3BucketName,
             },
             {
                 key,
@@ -58,32 +65,32 @@ export async function getS3UploadParameters(fileName: string): Promise<{ formPar
             },
         ] as Array<(string | number)[] | Record<string, string>>,
     };
-    if (process.env.AWS_SESSION_TOKEN) {
+    if (awsSessionToken) {
         policy.conditions.push({
-            'X-Amz-Security-Token': process.env.AWS_SESSION_TOKEN,
+            'X-Amz-Security-Token': awsSessionToken,
         });
     }
     const base64Policy = Buffer.from(JSON.stringify(policy)).toString('base64');
 
     // Signature
-    const kDate = await hmac('AWS4' + process.env.AWS_SECRET_ACCESS_KEY, currentDate.split('T')[0]);
-    const kRegion = await hmac(kDate, process.env.AWS_REGION);
+    const kDate = await hmac('AWS4' + awsSecretAccessKey, currentDate.split('T')[0]);
+    const kRegion = await hmac(kDate, awsRegion);
     const kService = await hmac(kRegion, 's3');
     const kCredentials = await hmac(kService, 'aws4_request');
     const signature = await hmac(kCredentials, base64Policy);
 
     const formParameters: Record<string, string> = {
-        bucket: process.env.S3_BUCKET_NAME,
+        bucket: s3BucketName,
         key,
         'Content-Type': contentType,
         'X-Amz-Algorithm': algorithm,
         'X-Amz-Credential': credential,
         'X-Amz-Date': currentDate,
     };
-    if (process.env.AWS_SESSION_TOKEN) {
-        formParameters['X-Amz-Security-Token'] = process.env.AWS_SESSION_TOKEN;
+    if (awsSessionToken) {
+        formParameters['X-Amz-Security-Token'] = awsSessionToken;
     }
     formParameters.Policy = base64Policy;
     formParameters['X-Amz-Signature'] = buf2hex(signature);
-    return { formParameters, s3Url: `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/` };
+    return { formParameters, s3Url: `https://${s3BucketName}.s3.${awsRegion}.amazonaws.com/` };
 }

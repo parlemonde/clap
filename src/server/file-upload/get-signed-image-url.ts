@@ -1,7 +1,8 @@
 import { buf2hex, hmac } from '@server/aws/utils';
+import { getEnvVariable } from '@server/get-env-variable';
 import { logger } from '@server/logger';
 
-const SECRET = process.env.APP_SECRET;
+const SECRET = getEnvVariable('APP_SECRET');
 
 export async function getSignedImageUrl(url: string, userId: string): Promise<string> {
     try {

@@ -8,7 +8,7 @@ import { logger } from '@server/logger';
 import type { FileData } from './file-data.types';
 import type { ByteRange } from './range-request';
 
-const temporaryDirectory = process.env.AWS_LAMBDA_FUNCTION_NAME !== undefined ? '/tmp' : path.join(process.cwd(), 'tmp');
+const temporaryDirectory = path.join(process.cwd(), 'tmp');
 const getFilePath = (fileUrl: string) => path.join(temporaryDirectory, fileUrl);
 
 export async function getLocalFileData(key: string): Promise<FileData | null> {

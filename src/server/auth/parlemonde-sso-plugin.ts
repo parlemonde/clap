@@ -5,6 +5,7 @@ import { jsonFetcher } from '@lib/json-fetcher';
 import { db } from '@server/database';
 import { users } from '@server/database/schemas/users';
 import type { UserRole } from '@server/database/schemas/users';
+import { getEnvVariable } from '@server/get-env-variable';
 import { registerService } from '@server/register-service';
 
 interface PLMUser {
@@ -26,8 +27,8 @@ interface PLMUser {
 }
 
 export const PARLEMONDE_SSO_PROVIDER_ID = 'parlemonde-sso';
-const CLIENT_ID = process.env.CLIENT_ID || '';
-const CLIENT_SECRET = process.env.CLIENT_SECRET || '';
+const CLIENT_ID = getEnvVariable('CLIENT_ID');
+const CLIENT_SECRET = getEnvVariable('CLIENT_SECRET');
 
 export const isParlemondeSSOPluginEnabled = CLIENT_ID !== '' && CLIENT_SECRET !== '';
 

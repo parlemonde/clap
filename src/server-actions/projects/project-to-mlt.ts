@@ -6,6 +6,7 @@ import { mltToXml } from 'mlt-xml';
 import path from 'node:path';
 
 import type { ProjectData } from '@server/database/schemas/projects';
+import { getEnvVariable } from '@server/get-env-variable';
 
 export type File = {
     fileUrl: string;
@@ -20,7 +21,7 @@ const FRAMERATE = 25; // img/s
 const getFramesCount = (duration: number) => Math.round((duration * FRAMERATE) / 1000);
 const clamp = (min: number, max: number, value: number) => Math.max(min, Math.min(max, value));
 
-const HOST_URL = process.env.HOST_URL || '';
+const HOST_URL = getEnvVariable('HOST_URL');
 const toFullUrl = (url: string) => {
     if (url.startsWith('/media/')) {
         return `${HOST_URL}${url}`;

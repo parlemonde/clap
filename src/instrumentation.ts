@@ -11,6 +11,8 @@ import { ATTR_SERVICE_NAME } from '@opentelemetry/semantic-conventions';
 import { registerOTel } from '@vercel/otel';
 import { type Instrumentation } from 'next';
 
+import { getEnvVariable } from '@server/get-env-variable';
+
 /**
  * Custom OTLPTraceExporter that emits structured logs for request handler spans
  */
@@ -96,14 +98,14 @@ class LoggingOTLPTraceExporter extends OTLPTraceExporter {
 }
 
 export function register() {
-    if (process.env.NODE_ENV !== 'production' || !process.env.OTEL_EXPORTER_OTLP_ENDPOINT) {
+    if (getEnvVariable('NODE_ENV') !== 'production' || !getEnvVariable('OTEL_EXPORTER_OTLP_ENDPOINT')) {
         return;
     }
     registerOTel({
         serviceName: 'clap',
         traceExporter: new LoggingOTLPTraceExporter({
             // Default OTLP HTTP endpoint - configurable via OTEL_EXPORTER_OTLP_ENDPOINT env var
-            url: `${process.env.OTEL_EXPORTER_OTLP_ENDPOINT}/v1/traces`,
+            url: `${getEnvVariable('OTEL_EXPORTER_OTLP_ENDPOINT')}/v1/traces`,
         }),
         instrumentations: [new PgInstrumentation()],
     });
@@ -111,7 +113,7 @@ export function register() {
 }
 
 function registerLogs() {
-    if (process.env.NEXT_RUNTIME !== 'nodejs') {
+    if (getEnvVariable('NEXT_RUNTIME') !== 'nodejs') {
         return;
     }
     const resource = resourceFromAttributes({
@@ -122,7 +124,7 @@ function registerLogs() {
         processors: [
             new BatchLogRecordProcessor(
                 new OTLPLogExporter({
-                    url: `${process.env.OTEL_EXPORTER_OTLP_ENDPOINT}/v1/logs`,
+                    url: `${getEnvVariable('OTEL_EXPORTER_OTLP_ENDPOINT')}/v1/logs`,
                 }),
             ),
         ],
@@ -132,7 +134,7 @@ function registerLogs() {
 
 // Log errors from Next.js API routes, server components, and server actions
 export const onRequestError: Instrumentation.onRequestError = (error, request, context) => {
-    if (process.env.NODE_ENV !== 'production' || process.env.NEXT_RUNTIME !== 'nodejs') {
+    if (getEnvVariable('NODE_ENV') !== 'production' || getEnvVariable('NEXT_RUNTIME') !== 'nodejs') {
         return;
     }
     const logger = logs.getLogger('default');

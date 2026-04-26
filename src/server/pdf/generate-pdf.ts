@@ -12,6 +12,7 @@ import type { ProjectData } from '@server/database/schemas/projects';
 import { scenarios } from '@server/database/schemas/scenarios';
 import { uploadFile } from '@server/file-upload/file-upload';
 import { getSignedImageUrl } from '@server/file-upload/get-signed-image-url';
+import { getEnvVariable } from '@server/get-env-variable';
 import type { tFunction } from '@server/i18n/types';
 import { logger } from '@server/logger';
 
@@ -40,7 +41,7 @@ const getScenarioDescription = async (scenarioId: ProjectData['scenarioId'], loc
     return scenario.descriptions[locale] || scenario.descriptions.fr || null;
 };
 
-const getHostUrl = (): string => (process.env.HOST_URL || '').replace(/\/$/, '');
+const getHostUrl = (): string => getEnvVariable('HOST_URL').replace(/\/$/, '');
 
 const getPdfHtml = async (params: {
     currentLocale: string;

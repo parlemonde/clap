@@ -26,7 +26,7 @@ export async function getMltZip(project: ProjectData, name: string) {
     const { mltStr, files } = await projectToMlt(project, name, 'local');
 
     const id: string = v4();
-    const temporaryDirectory = process.env.AWS_LAMBDA_FUNCTION_NAME !== undefined ? '/tmp' : path.join(process.cwd(), 'tmp');
+    const temporaryDirectory = path.join(process.cwd(), 'tmp');
     const directory: string = path.join(temporaryDirectory, id);
     await fs.mkdirs(directory);
 

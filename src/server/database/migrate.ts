@@ -4,6 +4,7 @@ import type { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { migrate } from 'drizzle-orm/node-postgres/migrator';
 import path from 'node:path';
 
+import { getEnvVariable } from '@server/get-env-variable';
 import { logger } from '@server/logger';
 
 import type { AppDatabase } from './runtime';
@@ -16,8 +17,8 @@ import { users } from './schemas/users';
 const DRIZZLE_MIGRATIONS_FOLDER = path.resolve(process.cwd(), 'drizzle');
 
 async function seedAdminUser(db: AppDatabase): Promise<void> {
-    const adminPassword = process.env.ADMIN_PASSWORD;
-    const adminEmail = process.env.ADMIN_EMAIL?.toLowerCase();
+    const adminPassword = getEnvVariable('ADMIN_PASSWORD');
+    const adminEmail = getEnvVariable('ADMIN_EMAIL').toLowerCase();
 
     if (!adminPassword || !adminEmail) {
         return;
@@ -34,7 +35,7 @@ async function seedAdminUser(db: AppDatabase): Promise<void> {
             .values({
                 email: adminEmail,
                 emailVerified: false,
-                name: process.env.ADMIN_NAME || 'Admin',
+                name: getEnvVariable('ADMIN_NAME'),
                 role: 'admin',
             })
             .returning();

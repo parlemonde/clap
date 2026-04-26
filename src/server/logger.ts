@@ -1,6 +1,8 @@
 import type { AnyValue, AnyValueMap } from '@opentelemetry/api-logs';
 import { logs, SeverityNumber } from '@opentelemetry/api-logs';
 
+import { getEnvVariable } from '@server/get-env-variable';
+
 const isAnyValue = (value: unknown): value is AnyValue => {
     return typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean' || Array.isArray(value) || typeof value === 'object';
 };
@@ -9,7 +11,7 @@ const isAnyValueMap = (value?: Record<string, unknown>): value is AnyValueMap =>
 };
 
 function log(kind: 'info' | 'error' | 'warn' | 'debug', message: unknown, attributes?: Record<string, unknown>) {
-    if (typeof window === 'undefined' && process.env.NODE_ENV === 'production' && isAnyValue(message)) {
+    if (typeof window === 'undefined' && getEnvVariable('NODE_ENV') === 'production' && isAnyValue(message)) {
         const logger = logs.getLogger('default');
         logger.emit({
             severityNumber:

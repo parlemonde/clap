@@ -3,24 +3,27 @@ import { Readable } from 'stream';
 
 import type { FileData } from '@server/file-upload/file-data.types';
 import { formatByteRange, type ByteRange } from '@server/file-upload/range-request';
+import { getEnvVariable } from '@server/get-env-variable';
 import { logger } from '@server/logger';
 
 import { getAwsClient } from './awsClient';
 
 const getS3BucketName = (): string => {
-    if (!process.env.S3_BUCKET_NAME) {
+    const bucketName = getEnvVariable('S3_BUCKET_NAME');
+    if (!bucketName) {
         throw new Error('S3_BUCKET_NAME must be set to use S3 file storage.');
     }
 
-    return process.env.S3_BUCKET_NAME;
+    return bucketName;
 };
 
 const getS3BaseUrl = (): string => {
-    if (!process.env.AWS_REGION) {
+    const awsRegion = getEnvVariable('AWS_REGION');
+    if (!awsRegion) {
         throw new Error('AWS_REGION must be set to use S3 file storage.');
     }
 
-    return `https://${getS3BucketName()}.s3.${process.env.AWS_REGION}.amazonaws.com`;
+    return `https://${getS3BucketName()}.s3.${awsRegion}.amazonaws.com`;
 };
 
 export function getS3FileUrl(key: string): string {
