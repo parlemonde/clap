@@ -9,21 +9,21 @@ import { db } from '@server/database';
 import { sendEmail } from '@server/emails/send-email';
 import { registerService } from '@server/register-service';
 
-import { ssoPlugin } from './parlemonde-sso-plugin';
+import { getSsoPlugin } from './parlemonde-sso-plugin';
 import { studentCollaborationPlugin } from './student-collaboration-plugin';
 
-const adminPlugin = admin({
-    defaultRole: 'teacher',
-    roles: {
-        admin: adminAc,
-        teacher: userAc,
-        student: userAc,
-    },
-});
-const cookiesPlugin = nextCookies();
-
-export const auth = registerService('auth', () =>
-    betterAuth({
+const createAuth = () => {
+    const ssoPlugin = getSsoPlugin();
+    const cookiesPlugin = nextCookies();
+    const adminPlugin = admin({
+        defaultRole: 'teacher',
+        roles: {
+            admin: adminAc,
+            teacher: userAc,
+            student: userAc,
+        },
+    });
+    return betterAuth({
         database: drizzleAdapter(db, {
             provider: 'pg',
         }),
@@ -68,5 +68,14 @@ export const auth = registerService('auth', () =>
         verification: {
             modelName: 'auth_verifications',
         },
-    }),
-);
+    });
+};
+
+let auth: ReturnType<typeof createAuth> | undefined;
+
+export const getAuth = (): ReturnType<typeof createAuth> => {
+    if (!auth) {
+        auth = registerService('auth', createAuth);
+    }
+    return auth;
+};

@@ -24,6 +24,8 @@ const APP_URL = getEnvVariable('HOST_URL');
 const APP_NAME = 'Clap!';
 const APP_DESCRIPTION = 'Clap! Une application pour créer de super vidéos.';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
     metadataBase: APP_URL ? new URL(APP_URL) : undefined,
     title: APP_NAME,

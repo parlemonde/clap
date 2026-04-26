@@ -2,7 +2,7 @@ import { eq, and } from 'drizzle-orm';
 import { type NextRequest } from 'next/server';
 import { createLoader, parseAsString } from 'nuqs/server';
 
-import { auth } from '@server/auth/auth';
+import { getAuth } from '@server/auth/auth';
 import { isInviteTokenValid } from '@server/auth/invite-token';
 import { db } from '@server/database';
 import { auth_verifications as authVerifications } from '@server/database/schemas/auth-schemas';
@@ -29,7 +29,7 @@ export const POST = async (request: NextRequest) => {
     const name = getStringValue(formData.get('name'));
     const password = getStringValue(formData.get('password'));
 
-    const response = await auth.api.signUpEmail({
+    const response = await getAuth().api.signUpEmail({
         body: {
             name,
             email,

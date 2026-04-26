@@ -27,62 +27,70 @@ interface PLMUser {
 }
 
 export const PARLEMONDE_SSO_PROVIDER_ID = 'parlemonde-sso';
-const CLIENT_ID = getEnvVariable('CLIENT_ID');
-const CLIENT_SECRET = getEnvVariable('CLIENT_SECRET');
 
-export const isParlemondeSSOPluginEnabled = CLIENT_ID !== '' && CLIENT_SECRET !== '';
+let ssoPlugin: ReturnType<typeof genericOAuth> | undefined;
 
-export const ssoPlugin = registerService('parlemonde-sso-plugin', () =>
-    isParlemondeSSOPluginEnabled
-        ? genericOAuth({
-              config: [
-                  {
-                      providerId: PARLEMONDE_SSO_PROVIDER_ID,
-                      responseType: 'code',
-                      clientId: CLIENT_ID,
-                      clientSecret: CLIENT_SECRET,
-                      authorizationUrl: `https://prof.parlemonde.org/oauth/authorize`,
-                      tokenUrl: `https://prof.parlemonde.org/oauth/token`,
-                      getUserInfo: async (tokens) => {
-                          const plmUser = await jsonFetcher<PLMUser>(`https://prof.parlemonde.org/oauth/me?access_token=${tokens.accessToken}`, {
-                              method: 'GET',
-                          });
-                          // 1. create user in database if not exists
-                          const user: { id: string; role: UserRole } | undefined = await db.query.users.findFirst({
-                              columns: {
-                                  id: true,
-                                  role: true,
-                              },
-                              where: eq(users.email, plmUser.email),
-                          });
-                          if (!user) {
-                              let role: UserRole = 'teacher';
-                              const userGroups = plmUser.groups || [];
-                              if (userGroups.length > 1) {
-                                  if (
-                                      plmUser.groups?.some((g) => parseInt(g.is_mod, 10) === 1) ||
-                                      plmUser.groups?.some((g) => parseInt(g.is_admin, 10) === 1)
-                                  ) {
-                                      role = 'admin';
+export const getSsoPlugin = (): ReturnType<typeof genericOAuth> | undefined => {
+    if (!ssoPlugin) {
+        ssoPlugin = registerService('parlemonde-sso-plugin', () => {
+            const clientId = getEnvVariable('CLIENT_ID');
+            const clientSecret = getEnvVariable('CLIENT_SECRET');
+            return clientId !== '' && clientSecret !== ''
+                ? genericOAuth({
+                      config: [
+                          {
+                              providerId: PARLEMONDE_SSO_PROVIDER_ID,
+                              responseType: 'code',
+                              clientId,
+                              clientSecret,
+                              authorizationUrl: `https://prof.parlemonde.org/oauth/authorize`,
+                              tokenUrl: `https://prof.parlemonde.org/oauth/token`,
+                              getUserInfo: async (tokens) => {
+                                  const plmUser = await jsonFetcher<PLMUser>(
+                                      `https://prof.parlemonde.org/oauth/me?access_token=${tokens.accessToken}`,
+                                      {
+                                          method: 'GET',
+                                      },
+                                  );
+                                  // 1. create user in database if not exists
+                                  const user: { id: string; role: UserRole } | undefined = await db.query.users.findFirst({
+                                      columns: {
+                                          id: true,
+                                          role: true,
+                                      },
+                                      where: eq(users.email, plmUser.email),
+                                  });
+                                  if (!user) {
+                                      let role: UserRole = 'teacher';
+                                      const userGroups = plmUser.groups || [];
+                                      if (userGroups.length > 1) {
+                                          if (
+                                              plmUser.groups?.some((g) => parseInt(g.is_mod, 10) === 1) ||
+                                              plmUser.groups?.some((g) => parseInt(g.is_admin, 10) === 1)
+                                          ) {
+                                              role = 'admin';
+                                          }
+                                      }
+                                      await db.insert(users).values({
+                                          email: plmUser.email,
+                                          emailVerified: true,
+                                          name: plmUser.pseudo,
+                                          role,
+                                      });
                                   }
-                              }
-                              await db.insert(users).values({
-                                  email: plmUser.email,
-                                  emailVerified: true,
-                                  name: plmUser.pseudo,
-                                  role,
-                              });
-                          }
-                          // 3. return user info
-                          return {
-                              id: plmUser.id,
-                              email: plmUser.email,
-                              name: plmUser.pseudo,
-                              emailVerified: true,
-                          };
-                      },
-                  },
-              ],
-          })
-        : undefined,
-);
+                                  // 3. return user info
+                                  return {
+                                      id: plmUser.id,
+                                      email: plmUser.email,
+                                      name: plmUser.pseudo,
+                                      emailVerified: true,
+                                  };
+                              },
+                          },
+                      ],
+                  })
+                : undefined;
+        });
+    }
+    return ssoPlugin;
+};

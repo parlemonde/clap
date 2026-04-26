@@ -3,7 +3,7 @@ import { headers } from 'next/headers';
 
 import type { User, UserRole } from '@server/database/schemas/users';
 
-import { auth } from './auth';
+import { getAuth } from './auth';
 import { getActiveStudentCollaborationSessionData, STUDENT_COLLABORATION_USER_EMAIL } from './student-collaboration-session';
 
 const isValidUserRole = (role: string | null | undefined): role is UserRole => {
@@ -14,7 +14,7 @@ const tracer = trace.getTracer('auth');
 
 export const getCurrentUser = async (): Promise<User | undefined> => {
     return tracer.startActiveSpan('getCurrentUser', async (span): Promise<User | undefined> => {
-        const session = await auth.api.getSession({
+        const session = await getAuth().api.getSession({
             headers: await headers(),
         });
         if (!session) {

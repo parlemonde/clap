@@ -5,7 +5,7 @@ import { eq, and } from 'drizzle-orm';
 import { redirect, RedirectType } from 'next/navigation';
 
 import { getStringValue } from '@lib/get-string-value';
-import { auth } from '@server/auth/auth';
+import { getAuth } from '@server/auth/auth';
 import { PARLEMONDE_SSO_PROVIDER_ID } from '@server/auth/parlemonde-sso-plugin';
 import { db } from '@server/database';
 import { auth_accounts } from '@server/database/schemas/auth-schemas';
@@ -28,7 +28,7 @@ export async function login(_previousState: string, formData: FormData): Promise
     }
 
     try {
-        await auth.api.signInEmail({
+        await getAuth().api.signInEmail({
             body: {
                 email,
                 password,

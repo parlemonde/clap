@@ -3,7 +3,7 @@
 
 import { eq, and } from 'drizzle-orm';
 
-import { auth } from '@server/auth/auth';
+import { getAuth } from '@server/auth/auth';
 import { PARLEMONDE_SSO_PROVIDER_ID } from '@server/auth/parlemonde-sso-plugin';
 import { db } from '@server/database';
 import { auth_accounts } from '@server/database/schemas/auth-schemas';
@@ -23,7 +23,7 @@ export async function requestPasswordReset(email: string): Promise<string> {
     }
 
     try {
-        await auth.api.requestPasswordReset({
+        await getAuth().api.requestPasswordReset({
             body: {
                 email,
             },
