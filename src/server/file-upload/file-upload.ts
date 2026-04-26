@@ -4,6 +4,7 @@ import { deleteS3File, getS3File, getS3FileData, uploadS3File } from '@server/aw
 
 import type { FileData } from './file-data.types';
 import { deleteLocalFile, getLocalFile, getLocalFileData, uploadLocalFile } from './local';
+import type { ByteRange } from './range-request';
 
 export const USE_S3 = process.env.S3_BUCKET_NAME !== undefined;
 
@@ -29,7 +30,7 @@ export async function getFileData(fileName: string): Promise<FileData | null> {
     }
 }
 
-export async function getFile(fileName: string, range?: string): Promise<Readable | null> {
+export async function getFile(fileName: string, range?: ByteRange): Promise<Readable | null> {
     if (!fileName) {
         return null;
     }

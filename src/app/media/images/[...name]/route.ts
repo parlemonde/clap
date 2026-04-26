@@ -14,6 +14,7 @@ import {
     PUBLIC_IMMUTABLE_MEDIA_CACHE_CONTROL,
 } from '@server/file-upload/get-cache-control';
 import { isSignedImageUrlValid } from '@server/file-upload/get-signed-image-url';
+import { getByteRangeLength, parseRangeHeader, type ByteRange } from '@server/file-upload/range-request';
 
 const notFoundResponse = () => {
     return new NextResponse('Error 404, not found.', {
@@ -45,6 +46,42 @@ async function getImageCacheControl(request: NextRequest, name: string[]): Promi
     return PRIVATE_USER_MEDIA_CACHE_CONTROL;
 }
 
+const getSuccessHeaders = (contentLength: number, lastModified: Date, contentType: string, cacheControl: string, range?: ByteRange) => {
+    const headers = new Headers({
+        'Accept-Ranges': 'bytes',
+        'Cache-Control': cacheControl,
+        'Content-Length': `${range ? getByteRangeLength(range) : contentLength}`,
+        'Content-Type': contentType,
+        'Last-Modified': lastModified.toISOString(),
+    });
+
+    if (range) {
+        headers.set('Content-Range', `bytes ${range.start}-${range.end}/${contentLength}`);
+    }
+
+    return headers;
+};
+
+const rangeNotSatisfiableResponse = (contentLength: number, lastModified: Date, contentType: string, cacheControl: string) => {
+    const headers = getSuccessHeaders(contentLength, lastModified, contentType, cacheControl);
+    headers.set('Content-Length', '0');
+    headers.set('Content-Range', `bytes */${contentLength}`);
+
+    return new Response(null, {
+        headers,
+        status: 416,
+    });
+};
+
+const getBufferRangeResponse = (buffer: Buffer, lastModified: Date, contentType: string, cacheControl: string, byteRange?: ByteRange) => {
+    const body = byteRange ? buffer.subarray(byteRange.start, byteRange.end + 1) : buffer;
+
+    return new Response(body as unknown as BodyInit, {
+        headers: getSuccessHeaders(buffer.byteLength, lastModified, contentType, cacheControl, byteRange),
+        status: byteRange ? 206 : 200,
+    });
+};
+
 export async function GET(request: NextRequest, props: { params: Promise<{ name: string[] }> }) {
     const params = await props.params;
     const cacheControl = await getImageCacheControl(request, params.name);
@@ -68,72 +105,41 @@ export async function GET(request: NextRequest, props: { params: Promise<{ name:
     const width = Number(request.nextUrl.searchParams.get('w'));
     const quality = Number(request.nextUrl.searchParams.get('q'));
 
-    const readable = (await getFile(fileName, range || undefined))?.on('error', () => {
+    if (width) {
+        const readable = (await getFile(fileName))?.on('error', () => {
+            return notFoundResponse();
+        });
+        if (!readable) {
+            return notFoundResponse();
+        }
+
+        const resizedImage = await getResizedImageBuffer(readable, width, quality || 75, contentType.slice(6));
+        const rangeRequest = parseRangeHeader(range, resizedImage.byteLength);
+        if (rangeRequest?.status === 'unsatisfiable') {
+            return rangeNotSatisfiableResponse(resizedImage.byteLength, data.LastModified, contentType, cacheControl);
+        }
+
+        const byteRange = rangeRequest?.status === 'range' ? rangeRequest.range : undefined;
+        return getBufferRangeResponse(resizedImage, data.LastModified, contentType, cacheControl, byteRange);
+    }
+
+    const rangeRequest = parseRangeHeader(range, size);
+    if (rangeRequest?.status === 'unsatisfiable') {
+        return rangeNotSatisfiableResponse(size, data.LastModified, contentType, cacheControl);
+    }
+
+    const byteRange = rangeRequest?.status === 'range' ? rangeRequest.range : undefined;
+    const readable = (await getFile(fileName, byteRange))?.on('error', () => {
         return notFoundResponse();
     });
     if (!readable) {
         return notFoundResponse();
     }
-    const headers = new Headers({
-        'Last-Modified': data.LastModified.toISOString(),
-        'Content-Type': contentType,
-        'Cache-Control': cacheControl,
+
+    return new Response(Readable.toWeb(readable) as ReadableStream, {
+        headers: getSuccessHeaders(size, data.LastModified, contentType, cacheControl, byteRange),
+        status: byteRange ? 206 : 200,
     });
-
-    /** Check for Range header */
-    if (range) {
-        /** Extracting Start and End value from Range Header */
-        const [startStr, endStr] = range.replace(/bytes=/, '').split('-');
-        let start = parseInt(startStr, 10);
-        let end = endStr ? parseInt(endStr, 10) : size - 1;
-
-        if (!isNaN(start) && isNaN(end)) {
-            end = size - 1;
-        }
-        if (isNaN(start) && !isNaN(end)) {
-            start = size - end;
-            end = size - 1;
-        }
-
-        // Handle unavailable range request
-        if (start >= size || end >= size) {
-            // Return the 416 Range Not Satisfiable.
-            const response = new Response(null, {
-                status: 416,
-                headers,
-            });
-            response.headers.set('Content-Range', `bytes */${size}`);
-            return response;
-        }
-
-        /** Sending Partial Content With HTTP Code 206 */
-        const response = new Response(Readable.toWeb(readable) as ReadableStream, {
-            status: 206,
-            headers,
-        });
-        response.headers.set('Accept-Ranges', 'bytes');
-        response.headers.set('Content-Range', `bytes ${start}-${end}/${size}`);
-        response.headers.set('Content-Length', `${end - start + 1}`);
-        return response;
-    } else if (width) {
-        const resizedImage = await getResizedImageBuffer(readable, width, quality || 75, contentType.slice(6));
-        const response = new Response(
-            resizedImage as unknown as BodyInit, // TODO: Fix this
-            {
-                status: 200,
-                headers,
-            },
-        );
-        response.headers.set('Content-Length', `${resizedImage.byteLength}`);
-        return response;
-    } else {
-        const response = new Response(Readable.toWeb(readable) as ReadableStream, {
-            status: 200,
-            headers,
-        });
-        response.headers.set('Content-Length', `${data.ContentLength}`);
-        return response;
-    }
 }
 
 export async function HEAD(request: NextRequest, props: { params: Promise<{ name: string[] }> }) {
@@ -157,6 +163,12 @@ export async function HEAD(request: NextRequest, props: { params: Promise<{ name
     const quality = Number(request.nextUrl.searchParams.get('q'));
 
     const response = new NextResponse(null, {
+        headers: {
+            'Accept-Ranges': 'bytes',
+            'Cache-Control': cacheControl,
+            'Content-Type': contentType,
+            'Last-Modified': data.LastModified.toISOString(),
+        },
         status: 200,
     });
     if (width) {
@@ -167,15 +179,10 @@ export async function HEAD(request: NextRequest, props: { params: Promise<{ name
             return notFoundResponse();
         }
         const resizedImage = await getResizedImageBuffer(readable, width, quality || 75, contentType.slice(6));
-        // if width, response will be resized image, so no range support
         response.headers.set('Content-Length', `${resizedImage.byteLength}`);
     } else {
-        response.headers.set('Accept-Ranges', 'bytes');
         response.headers.set('Content-Length', `${data.ContentLength}`);
     }
-    response.headers.set('Last-Modified', data.LastModified.toISOString());
-    response.headers.set('Content-Type', contentType);
-    response.headers.set('Cache-Control', cacheControl);
     return response;
 }
 

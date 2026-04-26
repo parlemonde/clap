@@ -4,6 +4,7 @@ import path from 'node:path';
 import type { Readable } from 'node:stream';
 
 import type { FileData } from './file-data.types';
+import type { ByteRange } from './range-request';
 
 const temporaryDirectory = process.env.AWS_LAMBDA_FUNCTION_NAME !== undefined ? '/tmp' : path.join(process.cwd(), 'tmp');
 const getFilePath = (fileUrl: string) => path.join(temporaryDirectory, fileUrl);
@@ -12,7 +13,7 @@ export async function getLocalFileData(key: string): Promise<FileData | null> {
     try {
         const stats = fs.statSync(getFilePath(key));
         return {
-            AcceptRanges: 'none',
+            AcceptRanges: 'bytes',
             ContentLength: stats.size,
             ContentType: mime.lookup(key) || '',
             LastModified: stats.mtime,
@@ -23,9 +24,9 @@ export async function getLocalFileData(key: string): Promise<FileData | null> {
     }
 }
 
-export async function getLocalFile(key: string): Promise<Readable | null> {
+export async function getLocalFile(key: string, range?: ByteRange): Promise<Readable | null> {
     try {
-        return fs.createReadStream(getFilePath(key));
+        return fs.createReadStream(getFilePath(key), range);
     } catch {
         console.error(`File ${key} not found !`);
         return null;

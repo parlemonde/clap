@@ -11,6 +11,7 @@ import {
     PRIVATE_USER_MEDIA_CACHE_CONTROL,
     PUBLIC_IMMUTABLE_MEDIA_CACHE_CONTROL,
 } from '@server/file-upload/get-cache-control';
+import { getByteRangeLength, parseRangeHeader, type ByteRange } from '@server/file-upload/range-request';
 
 const notFoundResponse = () => {
     return new NextResponse(null, {
@@ -38,7 +39,34 @@ async function getMediaCacheControl(filePath: string[]): Promise<string | null> 
     return PRIVATE_USER_MEDIA_CACHE_CONTROL;
 }
 
-export async function GET(_request: NextRequest, props: { params: Promise<{ filepath: string[] }> }) {
+const getSuccessHeaders = (data: { ContentLength: number; LastModified: Date }, contentType: string, cacheControl: string, range?: ByteRange) => {
+    const headers = new Headers({
+        'Accept-Ranges': 'bytes',
+        'Cache-Control': cacheControl,
+        'Content-Length': `${range ? getByteRangeLength(range) : data.ContentLength}`,
+        'Content-Type': contentType,
+        'Last-Modified': data.LastModified.toISOString(),
+    });
+
+    if (range) {
+        headers.set('Content-Range', `bytes ${range.start}-${range.end}/${data.ContentLength}`);
+    }
+
+    return headers;
+};
+
+const rangeNotSatisfiableResponse = (data: { ContentLength: number; LastModified: Date }, contentType: string, cacheControl: string) => {
+    const headers = getSuccessHeaders(data, contentType, cacheControl);
+    headers.set('Content-Length', '0');
+    headers.set('Content-Range', `bytes */${data.ContentLength}`);
+
+    return new Response(null, {
+        headers,
+        status: 416,
+    });
+};
+
+export async function GET(request: NextRequest, props: { params: Promise<{ filepath: string[] }> }) {
     const filePath = (await props.params).filepath;
     const cacheControl = await getMediaCacheControl(filePath);
     if (!cacheControl) {
@@ -52,7 +80,13 @@ export async function GET(_request: NextRequest, props: { params: Promise<{ file
     }
 
     const contentType = data.ContentType || getContentTypeFromFileName(fileName) || 'application/octet-stream';
-    const readable = (await getFile(fileName))?.on('error', () => {
+    const rangeRequest = parseRangeHeader(request.headers.get('range'), data.ContentLength);
+    if (rangeRequest?.status === 'unsatisfiable') {
+        return rangeNotSatisfiableResponse(data, contentType, cacheControl);
+    }
+
+    const range = rangeRequest?.status === 'range' ? rangeRequest.range : undefined;
+    const readable = (await getFile(fileName, range))?.on('error', () => {
         return notFoundResponse();
     });
     if (!readable) {
@@ -60,14 +94,8 @@ export async function GET(_request: NextRequest, props: { params: Promise<{ file
     }
 
     return new Response(Readable.toWeb(readable) as ReadableStream, {
-        status: 200,
-        headers: {
-            'Last-Modified': data.LastModified.toISOString(),
-            'Content-Type': contentType,
-            'Content-Length': `${data.ContentLength}`,
-            'Cache-Control': cacheControl,
-            'Accept-Ranges': 'none',
-        },
+        headers: getSuccessHeaders(data, contentType, cacheControl, range),
+        status: range ? 206 : 200,
     });
 }
 
@@ -88,13 +116,7 @@ export async function HEAD(_request: NextRequest, props: { params: Promise<{ fil
     const contentType = data.ContentType || getContentTypeFromFileName(fileName) || 'application/octet-stream';
 
     return new Response(null, {
+        headers: getSuccessHeaders(data, contentType, cacheControl),
         status: 200,
-        headers: {
-            'Last-Modified': data.LastModified.toISOString(),
-            'Content-Type': contentType,
-            'Content-Length': `${data.ContentLength}`,
-            'Cache-Control': cacheControl,
-            'Accept-Ranges': 'none',
-        },
     });
 }

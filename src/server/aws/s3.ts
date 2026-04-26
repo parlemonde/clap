@@ -2,6 +2,7 @@ import type { ReadableStream } from 'node:stream/web';
 import { Readable } from 'stream';
 
 import type { FileData } from '@server/file-upload/file-data.types';
+import { formatByteRange, type ByteRange } from '@server/file-upload/range-request';
 
 import { getAwsClient } from './awsClient';
 
@@ -101,12 +102,12 @@ export async function deleteS3Files(keys: string[]): Promise<void> {
     }
 }
 
-export async function getS3File(key: string, range?: string): Promise<Readable | null> {
+export async function getS3File(key: string, range?: ByteRange): Promise<Readable | null> {
     try {
         const awsClient = getAwsClient();
         const response = await awsClient.fetch(getS3FileUrl(key), {
             method: 'GET',
-            headers: range ? { Range: range } : {},
+            headers: range ? { Range: formatByteRange(range) } : {},
         });
         if (response.ok) {
             return response.body === null ? null : Readable.fromWeb(response.body as ReadableStream);
