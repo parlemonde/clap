@@ -78,7 +78,11 @@ async function seedDefaultLanguage(db: AppDatabase): Promise<void> {
 }
 
 const start = async () => {
-    loadEnvFile();
+    try {
+        loadEnvFile();
+    } catch {
+        // Ignore. Env file might not exist.
+    }
     const { db, onClose } = createDatabaseConnection();
     await migrate(db as NodePgDatabase<DatabaseSchema>, { migrationsFolder: DRIZZLE_MIGRATIONS_FOLDER });
     await seedAdminUser(db);
