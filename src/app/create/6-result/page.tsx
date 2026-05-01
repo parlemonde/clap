@@ -432,52 +432,35 @@ export default function ResultPage() {
                 {t('6_result_page.downloads_buttons.title')}
             </Title>
             <Flex flexDirection="column" alignItems="center" marginX="auto" marginY="lg" style={{ maxWidth: '400px' }}>
-                {browserGeneration.status === 'ready' && browserGeneration.outputKind === 'file' ? (
-                    <Button
-                        label={t('6_result_page.download_browser_video_button.saved')}
-                        className="full-width"
-                        variant="contained"
-                        color="secondary"
-                        style={{ width: '100%' }}
-                        leftIcon={<VideoIcon style={{ marginRight: '10px', width: '24px', height: '24px' }} />}
-                        disabled
-                    />
-                ) : browserGeneration.status === 'ready' && browserGeneration.url ? (
-                    <Button
-                        label={t('6_result_page.download_browser_video_button.download')}
-                        as="a"
+                {browserGeneration.status === 'ready' && browserGeneration.url && (
+                    <a
                         href={browserGeneration.url}
                         ref={downloadBrowserVideoRef}
+                        download={`video.${browserGeneration.extension}`}
+                        style={{ display: 'none' }}
+                    />
+                )}
+                <Tooltip
+                    content={
+                        browserSupport === null
+                            ? t('6_result_page.download_browser_video_button.checking_support')
+                            : browserSupport.supported
+                              ? ''
+                              : t(`6_result_page.download_browser_video_button.${browserSupport.reason}`)
+                    }
+                    hasArrow
+                >
+                    <Button
+                        label={t('6_result_page.download_browser_video_button.generate')}
                         className="full-width"
                         variant="contained"
                         color="secondary"
+                        onClick={generateBrowserVideo}
+                        disabled={browserSupport?.supported !== true}
                         style={{ width: '100%' }}
                         leftIcon={<VideoIcon style={{ marginRight: '10px', width: '24px', height: '24px' }} />}
-                        download={`video.${browserGeneration.extension}`}
-                    />
-                ) : (
-                    <Tooltip
-                        content={
-                            browserSupport === null
-                                ? t('6_result_page.download_browser_video_button.checking_support')
-                                : browserSupport.supported
-                                  ? ''
-                                  : t(`6_result_page.download_browser_video_button.${browserSupport.reason}`)
-                        }
-                        hasArrow
-                    >
-                        <Button
-                            label={t('6_result_page.download_browser_video_button.generate')}
-                            className="full-width"
-                            variant="contained"
-                            color="secondary"
-                            onClick={generateBrowserVideo}
-                            disabled={browserSupport?.supported !== true}
-                            style={{ width: '100%' }}
-                            leftIcon={<VideoIcon style={{ marginRight: '10px', width: '24px', height: '24px' }} />}
-                        ></Button>
-                    </Tooltip>
-                )}
+                    ></Button>
+                </Tooltip>
                 <Or />
                 {videoProgress?.url ? (
                     <Button
