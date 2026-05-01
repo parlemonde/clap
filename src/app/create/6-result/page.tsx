@@ -445,13 +445,15 @@ export default function ResultPage() {
                 hasCloseButton={false}
                 hasCancelButton={false}
                 onOpenAutoFocus={false}
-                width="sm"
+                width="md"
             >
-                <Text className="color-secondary" style={{ fontSize: '0.9rem', marginBottom: '0.75rem' }}>
+                <Text className="color-secondary" style={{ fontSize: '0.9rem', marginBottom: '8px' }}>
                     {browserGenerationStageLabel}
                 </Text>
                 <LinearProgressWithLabel value={browserGeneration.percentage} />
-                <Text style={{ marginTop: '1rem' }}>{t('6_result_page.download_browser_video_button.keep_page_open')}</Text>
+                <Text marginTop="md" style={{ display: 'inline-block' }}>
+                    {t('6_result_page.download_browser_video_button.keep_page_open')}
+                </Text>
             </Modal>
             <Loader isLoading={isLoading} />
         </Container>
