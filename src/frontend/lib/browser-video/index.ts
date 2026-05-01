@@ -180,13 +180,13 @@ export function buildTimeline(project: ProjectData): BrowserVideoTimeline {
     }
 
     const durationMs = getProjectDuration(questions);
-    if (project.soundUrl) {
+    if (project.soundUrl && (project.soundVolume ?? 100) > 0) {
         audioClips.push({
             url: project.soundUrl,
             startMs: Math.max(0, project.soundBeginTime || 0),
             offsetMs: Math.max(0, -(project.soundBeginTime || 0)),
             durationMs: Math.max(0, durationMs - Math.max(0, project.soundBeginTime || 0)),
-            volume: (project.soundVolume || 100) / 100,
+            volume: (project.soundVolume ?? 100) / 100,
         });
     }
 
@@ -506,13 +506,18 @@ async function renderAudioMix(
         if (!buffer) {
             continue;
         }
+        const availableDurationMs = Math.max(0, buffer.duration * 1000 - clip.offsetMs);
+        const durationMs = Math.min(clip.durationMs, availableDurationMs);
+        if (durationMs <= 0) {
+            continue;
+        }
 
         const source = offlineContext.createBufferSource();
         const gain = offlineContext.createGain();
         source.buffer = buffer;
         gain.gain.value = clip.volume;
         source.connect(gain).connect(offlineContext.destination);
-        source.start(clip.startMs / 1000, clip.offsetMs / 1000, clip.durationMs / 1000);
+        source.start(clip.startMs / 1000, clip.offsetMs / 1000, durationMs / 1000);
     }
 
     throwIfCanceled(signal);
