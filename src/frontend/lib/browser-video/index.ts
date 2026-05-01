@@ -111,6 +111,20 @@ const getEstimatedOutputSize = (durationMs: number): number => {
     return ((VIDEO_BITRATE + AUDIO_BITRATE) * (durationMs / 1000)) / 8;
 };
 
+const getMaxBufferTargetDurationMs = (): number => {
+    return (MAX_BUFFER_TARGET_BYTES * 8 * 1000) / (VIDEO_BITRATE + AUDIO_BITRATE);
+};
+
+export class BrowserVideoDurationLimitError extends Error {
+    maxDurationMs: number;
+
+    constructor(maxDurationMs: number) {
+        super('Project is too long for browser memory export.');
+        this.name = 'BrowserVideoDurationLimitError';
+        this.maxDurationMs = maxDurationMs;
+    }
+}
+
 export function buildTimeline(project: ProjectData): BrowserVideoTimeline {
     const questions = project.questions.filter((question) => isSequenceAvailable(question));
     const visualSegments: VisualSegment[] = [];
@@ -233,24 +247,18 @@ export async function detectBrowserVideoSupport(): Promise<BrowserVideoSupport> 
         };
     }
 
-    const canEncodeWebMVideo =
-        (await canEncodeVideo('vp9', {
-            width: WIDTH,
-            height: HEIGHT,
-            bitrate: VIDEO_BITRATE,
-        })) ||
-        (await canEncodeVideo('vp8', {
-            width: WIDTH,
-            height: HEIGHT,
-            bitrate: VIDEO_BITRATE,
-        }));
-    const videoCodec = (await canEncodeVideo('vp9', {
+    const canEncodeVp9 = await canEncodeVideo('vp9', {
         width: WIDTH,
         height: HEIGHT,
         bitrate: VIDEO_BITRATE,
-    }))
-        ? 'vp9'
-        : 'vp8';
+    });
+    const canEncodeVp8 = await canEncodeVideo('vp8', {
+        width: WIDTH,
+        height: HEIGHT,
+        bitrate: VIDEO_BITRATE,
+    });
+    const canEncodeWebMVideo = canEncodeVp9 || canEncodeVp8;
+    const videoCodec = canEncodeVp9 ? 'vp9' : 'vp8';
     const canEncodeWebMAudio = await canEncodeAudio('opus', {
         numberOfChannels: CHANNEL_COUNT,
         sampleRate: SAMPLE_RATE,
@@ -302,7 +310,7 @@ export async function renderProjectVideo(
     }
 
     if (getEstimatedOutputSize(timeline.durationMs) > MAX_BUFFER_TARGET_BYTES) {
-        throw new Error('Project is too long for browser memory export.');
+        throw new BrowserVideoDurationLimitError(getMaxBufferTargetDurationMs());
     }
 
     emitProgress('checking-support', 100);
@@ -352,25 +360,32 @@ export async function renderProjectVideo(
     };
     options.signal?.addEventListener('abort', cancelOutput, { once: true });
 
+    let didFinalize = false;
     try {
         await output.start();
 
         if (audioSource && audioBuffer) {
             await audioSource.add(audioBuffer);
-            audioSource.close();
         }
 
         await renderVideoFrames(timeline, context, videoSource, imageAssets, options.signal, (percentage) => {
             emitProgress('rendering', percentage);
         });
-        videoSource.close();
 
         emitProgress('finalizing', 0);
         throwIfCanceled(options.signal);
         await output.finalize();
+        didFinalize = true;
         emitProgress('finalizing', 100);
+    } catch (error) {
+        if (!didFinalize && (output.state === 'pending' || output.state === 'started' || output.state === 'finalizing')) {
+            await output.cancel().catch(console.error);
+        }
+        throw error;
     } finally {
         options.signal?.removeEventListener('abort', cancelOutput);
+        videoSource.close();
+        audioSource?.close();
         for (const image of imageAssets.values()) {
             image.close();
         }
@@ -401,11 +416,22 @@ async function loadImageAssets(
         return assets;
     }
 
-    for (let index = 0; index < imageUrls.length; index++) {
-        throwIfCanceled(signal);
-        const url = imageUrls[index];
-        assets.set(url, await loadImageAsset(url, signal));
-        onProgress(((index + 1) / imageUrls.length) * 100);
+    let loadedCount = 0;
+    try {
+        await Promise.all(
+            imageUrls.map(async (url) => {
+                throwIfCanceled(signal);
+                const image = await loadImageAsset(url, signal);
+                assets.set(url, image);
+                loadedCount += 1;
+                onProgress((loadedCount / imageUrls.length) * 100);
+            }),
+        );
+    } catch (error) {
+        for (const image of assets.values()) {
+            image.close();
+        }
+        throw error;
     }
 
     return assets;
@@ -425,12 +451,16 @@ async function renderAudioMix(
     const decodedAudio = new Map<string, AudioBuffer>();
     const audioUrls = [...new Set(timeline.audioClips.map((clip) => clip.url))];
 
-    for (let index = 0; index < audioUrls.length; index++) {
-        throwIfCanceled(signal);
-        const url = audioUrls[index];
-        decodedAudio.set(url, await loadAudioAsset(url, offlineContext, signal));
-        onProgress(((index + 1) / audioUrls.length) * 80);
-    }
+    let decodedCount = 0;
+    await Promise.all(
+        audioUrls.map(async (url) => {
+            throwIfCanceled(signal);
+            const audio = await loadAudioAsset(url, offlineContext, signal);
+            decodedAudio.set(url, audio);
+            decodedCount += 1;
+            onProgress((decodedCount / audioUrls.length) * 80);
+        }),
+    );
 
     for (const clip of timeline.audioClips) {
         const buffer = decodedAudio.get(clip.url);
@@ -461,10 +491,18 @@ async function renderVideoFrames(
     onProgress: (percentage: number) => void,
 ) {
     const frameCount = Math.ceil((timeline.durationMs / 1000) * FRAMERATE);
+    let segmentIndex = 0;
     for (let frame = 0; frame < frameCount; frame++) {
         throwIfCanceled(signal);
         const timestamp = frame * FRAME_DURATION_SECONDS;
-        drawFrame(context, timeline, imageAssets, timestamp * 1000);
+        const timeMs = timestamp * 1000;
+        while (
+            segmentIndex + 1 < timeline.visualSegments.length &&
+            timeline.visualSegments[segmentIndex].startMs + timeline.visualSegments[segmentIndex].durationMs <= timeMs
+        ) {
+            segmentIndex += 1;
+        }
+        drawFrame(context, timeline.visualSegments[segmentIndex] || null, imageAssets);
         await videoSource.add(timestamp, FRAME_DURATION_SECONDS, {
             keyFrame: frame % (FRAMERATE * 2) === 0,
         });
@@ -472,8 +510,7 @@ async function renderVideoFrames(
     }
 }
 
-function drawFrame(context: CanvasRenderingContext2D, timeline: BrowserVideoTimeline, imageAssets: Map<string, ImageBitmap>, timeMs: number) {
-    const segment = getVisualSegmentAtTime(timeline.visualSegments, timeMs);
+function drawFrame(context: CanvasRenderingContext2D, segment: VisualSegment | null, imageAssets: Map<string, ImageBitmap>) {
     context.fillStyle = 'black';
     context.fillRect(0, 0, WIDTH, HEIGHT);
 
@@ -492,10 +529,6 @@ function drawFrame(context: CanvasRenderingContext2D, timeline: BrowserVideoTime
     drawTitle(context, segment.title);
 }
 
-function getVisualSegmentAtTime(segments: VisualSegment[], timeMs: number): VisualSegment | null {
-    return segments.find((segment) => segment.startMs <= timeMs && segment.startMs + segment.durationMs > timeMs) || null;
-}
-
 function drawContainedImage(context: CanvasRenderingContext2D, image: ImageBitmap) {
     const scale = Math.min(WIDTH / image.width, HEIGHT / image.height);
     const width = image.width * scale;
@@ -506,55 +539,77 @@ function drawContainedImage(context: CanvasRenderingContext2D, image: ImageBitma
 }
 
 function drawTitle(context: CanvasRenderingContext2D, title: Title) {
-    context.fillStyle = title.backgroundColor;
-    context.fillRect(0, 0, WIDTH, HEIGHT);
+    context.save();
+    try {
+        context.fillStyle = title.backgroundColor;
+        context.fillRect(0, 0, WIDTH, HEIGHT);
 
-    const x = (title.x * WIDTH) / 100;
-    const y = (title.y * HEIGHT) / 100;
-    const width = (title.width * WIDTH) / 100;
-    const fontSize = Math.max(10, Math.min(HEIGHT / 4, (HEIGHT * title.fontSize) / 100));
-    const lineHeight = fontSize * 1.1;
-    const lines = wrapText(context, title.text, width, fontSize, title.fontFamily);
-    const textAlign = title.textAlign === 'justify' ? 'left' : title.textAlign;
-    const textX = textAlign === 'center' ? x + width / 2 : textAlign === 'right' ? x + width : x;
+        const x = (title.x * WIDTH) / 100;
+        const y = (title.y * HEIGHT) / 100;
+        const width = (title.width * WIDTH) / 100;
+        const height = Math.max(0, HEIGHT - y);
+        const fontSize = Math.max(10, Math.min(HEIGHT / 4, (HEIGHT * title.fontSize) / 100));
+        const lineHeight = fontSize * 1.1;
+        const lines = wrapText(context, title.text, width, fontSize, title.fontFamily);
+        const textAlign = title.textAlign === 'justify' ? 'left' : title.textAlign;
+        const textX = textAlign === 'center' ? x + width / 2 : textAlign === 'right' ? x + width : x;
 
-    context.font = `400 ${fontSize}px ${title.fontFamily}`;
-    context.textBaseline = 'top';
-    context.textAlign = textAlign;
-    context.fillStyle = title.color;
+        context.beginPath();
+        context.rect(x, y, width, height);
+        context.clip();
+        context.font = `400 ${fontSize}px ${title.fontFamily}`;
+        context.textBaseline = 'top';
+        context.textAlign = textAlign;
+        context.fillStyle = title.color;
 
-    for (let index = 0; index < lines.length; index++) {
-        context.fillText(lines[index], textX, y + index * lineHeight, width);
+        for (let index = 0; index < lines.length; index++) {
+            const lineY = y + index * lineHeight;
+            if (lineY + lineHeight > HEIGHT) {
+                break;
+            }
+            context.fillText(lines[index], textX, lineY, width);
+        }
+    } finally {
+        context.restore();
     }
 }
 
 function wrapText(context: CanvasRenderingContext2D, text: string, maxWidth: number, fontSize: number, fontFamily: string): string[] {
-    context.font = `400 ${fontSize}px ${fontFamily}`;
-    const lines: string[] = [];
+    context.save();
+    try {
+        context.font = `400 ${fontSize}px ${fontFamily}`;
+        const lines: string[] = [];
 
-    for (const paragraph of text.split('\n')) {
-        const words = paragraph.split(/\s+/).filter(Boolean);
-        if (words.length === 0) {
-            lines.push('');
-            continue;
-        }
-
-        let line = '';
-        for (const word of words) {
-            const testLine = line ? `${line} ${word}` : word;
-            if (line && context.measureText(testLine).width > maxWidth) {
-                lines.push(line);
-                line = word;
-            } else {
-                line = testLine;
+        for (const paragraph of text.split('\n')) {
+            const words = paragraph.split(/\s+/).filter(Boolean);
+            if (words.length === 0) {
+                lines.push('');
+                continue;
             }
-        }
-        lines.push(line);
-    }
 
-    return lines;
+            let line = '';
+            for (const word of words) {
+                const testLine = line ? `${line} ${word}` : word;
+                if (line && context.measureText(testLine).width > maxWidth) {
+                    lines.push(line);
+                    line = word;
+                } else {
+                    line = testLine;
+                }
+            }
+            lines.push(line);
+        }
+
+        return lines;
+    } finally {
+        context.restore();
+    }
 }
 
 export function isBrowserVideoCanceledError(error: unknown): error is BrowserVideoCanceledError {
     return error instanceof BrowserVideoCanceledError || isCanceledError(error);
+}
+
+export function isBrowserVideoDurationLimitError(error: unknown): error is BrowserVideoDurationLimitError {
+    return error instanceof BrowserVideoDurationLimitError;
 }

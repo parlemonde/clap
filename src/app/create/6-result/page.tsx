@@ -26,11 +26,13 @@ import { useLocalStorage } from '@frontend/hooks/useLocalStorage';
 import {
     detectBrowserVideoSupport,
     isBrowserVideoCanceledError,
+    isBrowserVideoDurationLimitError,
     renderProjectVideo,
     type BrowserVideoProgressStage,
     type BrowserVideoSupport,
 } from '@frontend/lib/browser-video';
 import VideoFile from '@frontend/svg/plan.svg';
+import { getFormatedTime } from '@lib/get-formatted-time';
 import { getSounds } from '@lib/get-sounds';
 import { getMltZip } from '@server-actions/projects/generate-mlt-zip';
 import { generateVideo, getVideoProgress } from '@server-actions/projects/generate-video';
@@ -224,10 +226,7 @@ export default function ResultPage() {
             return;
         }
 
-        if (browserGeneration.url) {
-            URL.revokeObjectURL(browserGeneration.url);
-        }
-
+        browserGenerationAbortController.current?.abort();
         const abortController = new AbortController();
         browserGenerationAbortController.current = abortController;
         setBrowserGeneration({
@@ -247,6 +246,9 @@ export default function ResultPage() {
                 },
                 {
                     onProgress: ({ stage, percentage }) => {
+                        if (browserGenerationAbortController.current !== abortController) {
+                            return;
+                        }
                         setBrowserGeneration({
                             status: stage,
                             percentage,
@@ -257,6 +259,9 @@ export default function ResultPage() {
                     },
                 },
             );
+            if (browserGenerationAbortController.current !== abortController) {
+                return;
+            }
             const url = URL.createObjectURL(result.blob);
             setBrowserGeneration({
                 status: 'ready',
@@ -266,6 +271,9 @@ export default function ResultPage() {
                 extension: result.extension,
             });
         } catch (error) {
+            if (browserGenerationAbortController.current !== abortController) {
+                return;
+            }
             setBrowserGeneration({
                 status: isBrowserVideoCanceledError(error) ? 'canceled' : 'failed',
                 percentage: 0,
@@ -275,7 +283,11 @@ export default function ResultPage() {
             });
             if (!isBrowserVideoCanceledError(error)) {
                 sendToast({
-                    message: t('6_result_page.download_browser_video_button.failed'),
+                    message: isBrowserVideoDurationLimitError(error)
+                        ? t('6_result_page.download_browser_video_button.too_long', {
+                              maxDuration: getFormatedTime(error.maxDurationMs),
+                          })
+                        : t('6_result_page.download_browser_video_button.failed'),
                     type: 'error',
                 });
             }

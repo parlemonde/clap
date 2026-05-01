@@ -299,6 +299,7 @@ export const defaultLocales: AbstractIntlMessages = {
             rendering: 'Création des images de la vidéo...',
             finalizing: 'Finalisation de la vidéo...',
             failed: 'Impossible de générer la vidéo dans ce navigateur.',
+            too_long: 'Cette vidéo est trop longue pour une génération dans le navigateur. Durée maximale approximative : {maxDuration}.',
             'missing-webcodecs': 'Votre navigateur ne prend pas en charge la génération vidéo locale.',
             'missing-codecs': 'Votre navigateur ne prend pas en charge les codecs nécessaires à la génération vidéo locale.',
         },
