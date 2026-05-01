@@ -4,7 +4,10 @@ import {
     CanvasSource,
     Mp4OutputFormat,
     Output,
-    QUALITY_HIGH,
+    QUALITY_MEDIUM,
+    QUALITY_VERY_HIGH,
+    StreamTarget,
+    type StreamTargetChunk,
     WebMOutputFormat,
     canEncodeAudio,
     canEncodeVideo,
@@ -24,7 +27,7 @@ const SAMPLE_RATE = 48_000;
 const CHANNEL_COUNT = 2;
 const VIDEO_BITRATE = 3_000_000;
 const AUDIO_BITRATE = 128_000;
-const MAX_BUFFER_TARGET_BYTES = 100 * 1024 * 1024;
+const MAX_BUFFER_TARGET_BYTES = 250 * 1024 * 1024;
 const PROGRESS_RANGES: Record<BrowserVideoProgressStage, { start: number; end: number }> = {
     'checking-support': { start: 0, end: 2 },
     'loading-assets': { start: 2, end: 20 },
@@ -88,7 +91,17 @@ type RenderProjectVideoCallbacks = {
 type RenderProjectVideoOptions = {
     signal?: AbortSignal;
     support?: BrowserVideoSupport;
+    target?: RenderProjectVideoTarget;
 };
+
+type RenderProjectVideoTarget =
+    | {
+          kind: 'buffer';
+      }
+    | {
+          kind: 'stream';
+          writable: WritableStream<StreamTargetChunk>;
+      };
 
 export class BrowserVideoCanceledError extends Error {
     constructor() {
@@ -286,7 +299,19 @@ export async function renderProjectVideo(
     project: ProjectData,
     options: RenderProjectVideoOptions = {},
     callbacks: RenderProjectVideoCallbacks = {},
-): Promise<{ blob: Blob; mimeType: string; extension: 'mp4' | 'webm' }> {
+): Promise<
+    | {
+          kind: 'blob';
+          blob: Blob;
+          mimeType: string;
+          extension: 'mp4' | 'webm';
+      }
+    | {
+          kind: 'file';
+          mimeType: string;
+          extension: 'mp4' | 'webm';
+      }
+> {
     const emitProgress = (stage: BrowserVideoProgressStage, stagePercentage: number) => {
         const range = PROGRESS_RANGES[stage];
         const clampedStagePercentage = Math.max(0, Math.min(100, stagePercentage));
@@ -309,7 +334,8 @@ export async function renderProjectVideo(
         throw new Error('Cannot render an empty project.');
     }
 
-    if (getEstimatedOutputSize(timeline.durationMs) > MAX_BUFFER_TARGET_BYTES) {
+    const renderTarget = options.target || { kind: 'buffer' };
+    if (renderTarget.kind === 'buffer' && getEstimatedOutputSize(timeline.durationMs) > MAX_BUFFER_TARGET_BYTES) {
         throw new BrowserVideoDurationLimitError(getMaxBufferTargetDurationMs());
     }
 
@@ -331,14 +357,18 @@ export async function renderProjectVideo(
         throw new Error('Unable to create canvas context.');
     }
 
-    const target = new BufferTarget();
+    const bufferTarget = renderTarget.kind === 'buffer' ? new BufferTarget() : null;
+    const target = renderTarget.kind === 'stream' ? new StreamTarget(renderTarget.writable, { chunked: true }) : bufferTarget;
+    if (!target) {
+        throw new Error('Unable to create video output target.');
+    }
     const output = new Output({
         format: support.container === 'mp4' ? new Mp4OutputFormat() : new WebMOutputFormat(),
         target,
     });
     const videoSource = new CanvasSource(canvas, {
         codec: support.videoCodec,
-        bitrate: QUALITY_HIGH,
+        bitrate: renderTarget.kind === 'stream' ? QUALITY_VERY_HIGH : QUALITY_MEDIUM,
         keyFrameInterval: 2,
     });
     const audioSource = audioBuffer
@@ -391,13 +421,22 @@ export async function renderProjectVideo(
         }
     }
 
-    if (!target.buffer) {
+    const preciseMimeType = await output.getMimeType().catch(() => support.mimeType);
+    if (renderTarget.kind === 'stream') {
+        return {
+            kind: 'file',
+            mimeType: preciseMimeType,
+            extension: support.extension,
+        };
+    }
+
+    if (!bufferTarget?.buffer) {
         throw new Error('Video rendering did not produce an output buffer.');
     }
 
-    const preciseMimeType = await output.getMimeType().catch(() => support.mimeType);
     return {
-        blob: new Blob([target.buffer], { type: preciseMimeType }),
+        kind: 'blob',
+        blob: new Blob([bufferTarget.buffer], { type: preciseMimeType }),
         mimeType: preciseMimeType,
         extension: support.extension,
     };

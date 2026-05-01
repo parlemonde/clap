@@ -291,6 +291,7 @@ export const defaultLocales: AbstractIntlMessages = {
         download_browser_video_button: {
             generate: 'Générer dans le navigateur (bêta)',
             download: 'Télécharger la vidéo générée',
+            saved: 'La vidéo a été enregistrée.',
             modal_title: 'Création de votre vidéo',
             keep_page_open: 'Veuillez garder cette page ouverte jusqu’à la fin de la génération.',
             checking_support: 'Vérification de la compatibilité du navigateur...',
