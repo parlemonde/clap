@@ -14,7 +14,7 @@ const MAX_ROOM_NAME_LENGTH = 128;
 const AUTH_PROTOCOL_PREFIX = 'auth.';
 const DEFAULT_ROOM = 'none';
 const PORT = Number(process.env.PORT || 9000);
-const APP_SECRET = process.env.COLLABORATION_SERVER_SECRET || process.env.APP_SECRET;
+const APP_SECRET = process.env.COLLABORATION_SERVER_SECRET || process.env.APP_SECRET || '1234';
 
 const rooms = new Map();
 

@@ -8,6 +8,7 @@ import { Button } from '@frontend/components/layout/Button';
 import { Container } from '@frontend/components/layout/Container';
 import { Flex } from '@frontend/components/layout/Flex';
 import { LinearProgress } from '@frontend/components/layout/LinearProgress';
+import { Modal } from '@frontend/components/layout/Modal';
 import { Tooltip } from '@frontend/components/layout/Tooltip';
 import { Title, Text } from '@frontend/components/layout/Typography';
 import { Steps } from '@frontend/components/navigation/Steps';
@@ -22,10 +23,33 @@ import { useCollaboration } from '@frontend/hooks/useCollaboration';
 import { useCurrentProject } from '@frontend/hooks/useCurrentProject';
 import { useDeepMemo } from '@frontend/hooks/useDeepMemo';
 import { useLocalStorage } from '@frontend/hooks/useLocalStorage';
+import {
+    detectBrowserVideoSupport,
+    isBrowserVideoCanceledError,
+    isBrowserVideoDurationLimitError,
+    renderProjectVideo,
+    type BrowserVideoProgressStage,
+    type BrowserVideoSupport,
+} from '@frontend/lib/browser-video';
 import VideoFile from '@frontend/svg/plan.svg';
+import { getFormatedTime } from '@lib/get-formatted-time';
 import { getSounds } from '@lib/get-sounds';
 import { getMltZip } from '@server-actions/projects/generate-mlt-zip';
 import { generateVideo, getVideoProgress } from '@server-actions/projects/generate-video';
+
+type FilePickerAcceptType = {
+    description: string;
+    accept: Record<string, string[]>;
+};
+
+type FileSystemFileHandle = {
+    createWritable: () => Promise<WritableStream>;
+};
+
+type WindowWithFileSystemAccess = Window &
+    typeof globalThis & {
+        showSaveFilePicker?: (options?: { suggestedName?: string; types?: FilePickerAcceptType[] }) => Promise<FileSystemFileHandle>;
+    };
 
 const styles: Record<'verticalLine' | 'horizontalLine', React.CSSProperties> = {
     verticalLine: {
@@ -66,6 +90,57 @@ const Or = () => {
     );
 };
 
+type BrowserGenerationState =
+    | {
+          status: 'idle';
+          percentage: number;
+          stage: BrowserVideoProgressStage | null;
+          url: string;
+          extension: 'mp4' | 'webm' | null;
+      }
+    | {
+          status: 'checking-support' | 'loading-assets' | 'rendering' | 'finalizing';
+          percentage: number;
+          stage: BrowserVideoProgressStage;
+          url: string;
+          extension: 'mp4' | 'webm' | null;
+      }
+    | {
+          status: 'ready';
+          percentage: number;
+          stage: BrowserVideoProgressStage | null;
+          url: string | null;
+          extension: 'mp4' | 'webm';
+          outputKind: 'blob' | 'file';
+      }
+    | {
+          status: 'failed' | 'canceled';
+          percentage: number;
+          stage: BrowserVideoProgressStage | null;
+          url: string;
+          extension: 'mp4' | 'webm' | null;
+      };
+
+const initialBrowserGenerationState: BrowserGenerationState = {
+    status: 'idle',
+    percentage: 0,
+    stage: null,
+    url: '',
+    extension: null,
+};
+
+const getCanStreamVideoToFile = () => {
+    if (typeof window === 'undefined') {
+        return false;
+    }
+    const fileSystemWindow = window as WindowWithFileSystemAccess;
+    return window.isSecureContext && typeof fileSystemWindow.showSaveFilePicker === 'function';
+};
+
+const isFilePickerAbortError = (error: unknown) => {
+    return error instanceof DOMException && error.name === 'AbortError';
+};
+
 export default function ResultPage() {
     const { t } = useTranslation();
     const user = React.useContext(userContext);
@@ -79,6 +154,11 @@ export default function ResultPage() {
         percentage: number;
         url: string;
     } | null>(null);
+    const [browserSupport, setBrowserSupport] = React.useState<BrowserVideoSupport | null>(null);
+    const [browserGeneration, setBrowserGeneration] = React.useState<BrowserGenerationState>(initialBrowserGenerationState);
+    const browserGenerationAbortController = React.useRef<AbortController | null>(null);
+    const downloadBrowserVideoRef = React.useRef<HTMLAnchorElement | null>(null);
+    const canStreamVideoToFile = React.useMemo(() => getCanStreamVideoToFile(), []);
 
     // Automatically download the video when it's ready
     const willAutoDownload = React.useRef(false);
@@ -89,6 +169,34 @@ export default function ResultPage() {
             downloadVideoRef.current.click();
         }
     }, [videoProgress]);
+    React.useEffect(() => {
+        detectBrowserVideoSupport()
+            .then(setBrowserSupport)
+            .catch(() => {
+                setBrowserSupport({
+                    supported: false,
+                    reason: 'missing-codecs',
+                });
+            });
+    }, []);
+    React.useEffect(() => {
+        return () => {
+            browserGenerationAbortController.current?.abort();
+        };
+    }, []);
+    React.useEffect(() => {
+        const url = browserGeneration.url;
+        return () => {
+            if (url) {
+                URL.revokeObjectURL(url);
+            }
+        };
+    }, [browserGeneration.url]);
+    React.useEffect(() => {
+        if (browserGeneration.status === 'ready' && downloadBrowserVideoRef.current) {
+            downloadBrowserVideoRef.current.click();
+        }
+    }, [browserGeneration.status]);
 
     // Fetch video job status every second
     React.useEffect(() => {
@@ -141,6 +249,138 @@ export default function ResultPage() {
         }
     };
 
+    const generateBrowserVideo = async () => {
+        if (!projectData || browserSupport?.supported !== true) {
+            return;
+        }
+
+        browserGenerationAbortController.current?.abort();
+        let writable: WritableStream | null = null;
+        if (canStreamVideoToFile) {
+            try {
+                const fileSystemWindow = window as WindowWithFileSystemAccess;
+                const handle = await fileSystemWindow.showSaveFilePicker?.({
+                    suggestedName: `video.${browserSupport.extension}`,
+                    types: [
+                        {
+                            description: browserSupport.extension === 'mp4' ? 'MP4 video' : 'WebM video',
+                            accept: {
+                                [browserSupport.mimeType]: [`.${browserSupport.extension}`],
+                            },
+                        },
+                    ],
+                });
+                if (!handle) {
+                    return;
+                }
+                writable = await handle.createWritable();
+            } catch (error) {
+                if (isFilePickerAbortError(error)) {
+                    return;
+                }
+                sendToast({
+                    message: t('6_result_page.download_browser_video_button.failed'),
+                    type: 'error',
+                });
+                return;
+            }
+        }
+
+        const abortController = new AbortController();
+        browserGenerationAbortController.current = abortController;
+        setBrowserGeneration({
+            status: 'checking-support',
+            percentage: 0,
+            stage: 'checking-support',
+            url: '',
+            extension: null,
+        });
+
+        try {
+            const result = await renderProjectVideo(
+                projectData,
+                {
+                    signal: abortController.signal,
+                    support: browserSupport,
+                    target: writable
+                        ? {
+                              kind: 'stream',
+                              writable,
+                          }
+                        : {
+                              kind: 'buffer',
+                          },
+                },
+                {
+                    onProgress: ({ stage, percentage }) => {
+                        if (browserGenerationAbortController.current !== abortController) {
+                            return;
+                        }
+                        setBrowserGeneration({
+                            status: stage,
+                            percentage,
+                            stage,
+                            url: '',
+                            extension: null,
+                        });
+                    },
+                },
+            );
+            if (browserGenerationAbortController.current !== abortController) {
+                return;
+            }
+            if (result.kind === 'blob') {
+                const url = URL.createObjectURL(result.blob);
+                setBrowserGeneration({
+                    status: 'ready',
+                    percentage: 100,
+                    stage: null,
+                    url,
+                    extension: result.extension,
+                    outputKind: 'blob',
+                });
+            } else {
+                setBrowserGeneration({
+                    status: 'ready',
+                    percentage: 100,
+                    stage: null,
+                    url: null,
+                    extension: result.extension,
+                    outputKind: 'file',
+                });
+                sendToast({
+                    message: t('6_result_page.download_browser_video_button.saved'),
+                    type: 'success',
+                });
+            }
+        } catch (error) {
+            if (browserGenerationAbortController.current !== abortController) {
+                return;
+            }
+            setBrowserGeneration({
+                status: isBrowserVideoCanceledError(error) ? 'canceled' : 'failed',
+                percentage: 0,
+                stage: null,
+                url: '',
+                extension: null,
+            });
+            if (!isBrowserVideoCanceledError(error)) {
+                sendToast({
+                    message: isBrowserVideoDurationLimitError(error)
+                        ? t('6_result_page.download_browser_video_button.too_long', {
+                              maxDuration: getFormatedTime(error.maxDurationMs),
+                          })
+                        : t('6_result_page.download_browser_video_button.failed'),
+                    type: 'error',
+                });
+            }
+        } finally {
+            if (browserGenerationAbortController.current === abortController) {
+                browserGenerationAbortController.current = null;
+            }
+        }
+    };
+
     const generateMLT = async () => {
         if (!projectData) {
             return;
@@ -155,6 +395,13 @@ export default function ResultPage() {
             link.click();
         }
     };
+
+    const isBrowserGenerationModalOpen =
+        browserGeneration.status === 'checking-support' ||
+        browserGeneration.status === 'loading-assets' ||
+        browserGeneration.status === 'rendering' ||
+        browserGeneration.status === 'finalizing';
+    const browserGenerationStageLabel = browserGeneration.stage ? t(`6_result_page.download_browser_video_button.${browserGeneration.stage}`) : '';
 
     return (
         <Container paddingBottom="xl">
@@ -185,6 +432,36 @@ export default function ResultPage() {
                 {t('6_result_page.downloads_buttons.title')}
             </Title>
             <Flex flexDirection="column" alignItems="center" marginX="auto" marginY="lg" style={{ maxWidth: '400px' }}>
+                {browserGeneration.status === 'ready' && browserGeneration.url && (
+                    <a
+                        href={browserGeneration.url}
+                        ref={downloadBrowserVideoRef}
+                        download={`video.${browserGeneration.extension}`}
+                        style={{ display: 'none' }}
+                    />
+                )}
+                <Tooltip
+                    content={
+                        browserSupport === null
+                            ? t('6_result_page.download_browser_video_button.checking_support')
+                            : browserSupport.supported
+                              ? ''
+                              : t(`6_result_page.download_browser_video_button.${browserSupport.reason}`)
+                    }
+                    hasArrow
+                >
+                    <Button
+                        label={t('6_result_page.download_browser_video_button.generate')}
+                        className="full-width"
+                        variant="contained"
+                        color="secondary"
+                        onClick={generateBrowserVideo}
+                        disabled={browserSupport?.supported !== true}
+                        style={{ width: '100%' }}
+                        leftIcon={<VideoIcon style={{ marginRight: '10px', width: '24px', height: '24px' }} />}
+                    ></Button>
+                </Tooltip>
+                <Or />
                 {videoProgress?.url ? (
                     <Button
                         label={t('6_result_page.download_mp4_button.label')}
@@ -249,6 +526,23 @@ export default function ResultPage() {
                     style={{ width: '100%' }}
                 ></Button>
             </Flex>
+            <Modal
+                isOpen={isBrowserGenerationModalOpen}
+                onClose={() => {}}
+                title={t('6_result_page.download_browser_video_button.modal_title')}
+                hasCloseButton={false}
+                hasCancelButton={false}
+                onOpenAutoFocus={false}
+                width="md"
+            >
+                <Text className="color-secondary" style={{ fontSize: '0.9rem', marginBottom: '8px' }}>
+                    {browserGenerationStageLabel}
+                </Text>
+                <LinearProgressWithLabel value={browserGeneration.percentage} />
+                <Text marginTop="md" style={{ display: 'inline-block' }}>
+                    {t('6_result_page.download_browser_video_button.keep_page_open')}
+                </Text>
+            </Modal>
             <Loader isLoading={isLoading} />
         </Container>
     );
