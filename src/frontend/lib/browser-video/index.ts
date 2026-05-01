@@ -25,6 +25,12 @@ const CHANNEL_COUNT = 2;
 const VIDEO_BITRATE = 3_000_000;
 const AUDIO_BITRATE = 128_000;
 const MAX_BUFFER_TARGET_BYTES = 100 * 1024 * 1024;
+const PROGRESS_RANGES: Record<BrowserVideoProgressStage, { start: number; end: number }> = {
+    'checking-support': { start: 0, end: 2 },
+    'loading-assets': { start: 2, end: 20 },
+    rendering: { start: 20, end: 95 },
+    finalizing: { start: 95, end: 100 },
+};
 
 type VisualSegment =
     | {
@@ -273,7 +279,16 @@ export async function renderProjectVideo(
     options: RenderProjectVideoOptions = {},
     callbacks: RenderProjectVideoCallbacks = {},
 ): Promise<{ blob: Blob; mimeType: string; extension: 'mp4' | 'webm' }> {
-    callbacks.onProgress?.({ stage: 'checking-support', percentage: 0 });
+    const emitProgress = (stage: BrowserVideoProgressStage, stagePercentage: number) => {
+        const range = PROGRESS_RANGES[stage];
+        const clampedStagePercentage = Math.max(0, Math.min(100, stagePercentage));
+        callbacks.onProgress?.({
+            stage,
+            percentage: range.start + ((range.end - range.start) * clampedStagePercentage) / 100,
+        });
+    };
+
+    emitProgress('checking-support', 0);
     throwIfCanceled(options.signal);
 
     const support = options.support || (await detectBrowserVideoSupport());
@@ -290,12 +305,13 @@ export async function renderProjectVideo(
         throw new Error('Project is too long for browser memory export.');
     }
 
-    callbacks.onProgress?.({ stage: 'loading-assets', percentage: 0 });
+    emitProgress('checking-support', 100);
+    emitProgress('loading-assets', 0);
     const imageAssets = await loadImageAssets(timeline, options.signal, (percentage) => {
-        callbacks.onProgress?.({ stage: 'loading-assets', percentage: percentage * 0.5 });
+        emitProgress('loading-assets', percentage * 0.5);
     });
     const audioBuffer = await renderAudioMix(timeline, options.signal, (percentage) => {
-        callbacks.onProgress?.({ stage: 'loading-assets', percentage: 50 + percentage * 0.5 });
+        emitProgress('loading-assets', 50 + percentage * 0.5);
     });
     throwIfCanceled(options.signal);
 
@@ -345,14 +361,14 @@ export async function renderProjectVideo(
         }
 
         await renderVideoFrames(timeline, context, videoSource, imageAssets, options.signal, (percentage) => {
-            callbacks.onProgress?.({ stage: 'rendering', percentage });
+            emitProgress('rendering', percentage);
         });
         videoSource.close();
 
-        callbacks.onProgress?.({ stage: 'finalizing', percentage: 0 });
+        emitProgress('finalizing', 0);
         throwIfCanceled(options.signal);
         await output.finalize();
-        callbacks.onProgress?.({ stage: 'finalizing', percentage: 100 });
+        emitProgress('finalizing', 100);
     } finally {
         options.signal?.removeEventListener('abort', cancelOutput);
         for (const image of imageAssets.values()) {

@@ -301,6 +301,13 @@ export default function ResultPage() {
         }
     };
 
+    const isBrowserGenerationModalOpen =
+        browserGeneration.status === 'checking-support' ||
+        browserGeneration.status === 'loading-assets' ||
+        browserGeneration.status === 'rendering' ||
+        browserGeneration.status === 'finalizing';
+    const browserGenerationStageLabel = browserGeneration.stage ? t(`6_result_page.download_browser_video_button.${browserGeneration.stage}`) : '';
+
     return (
         <Container paddingBottom="xl">
             <ThemeBreadcrumbs themeId={projectData.themeId}></ThemeBreadcrumbs>
@@ -432,12 +439,7 @@ export default function ResultPage() {
                 ></Button>
             </Flex>
             <Modal
-                isOpen={
-                    browserGeneration.status === 'checking-support' ||
-                    browserGeneration.status === 'loading-assets' ||
-                    browserGeneration.status === 'rendering' ||
-                    browserGeneration.status === 'finalizing'
-                }
+                isOpen={isBrowserGenerationModalOpen}
                 onClose={() => {}}
                 title={t('6_result_page.download_browser_video_button.modal_title')}
                 hasCloseButton={false}
@@ -446,7 +448,7 @@ export default function ResultPage() {
                 width="sm"
             >
                 <Text className="color-secondary" style={{ fontSize: '0.9rem', marginBottom: '0.75rem' }}>
-                    {t(`6_result_page.download_browser_video_button.${browserGeneration.stage}`)}
+                    {browserGenerationStageLabel}
                 </Text>
                 <LinearProgressWithLabel value={browserGeneration.percentage} />
                 <Text style={{ marginTop: '1rem' }}>{t('6_result_page.download_browser_video_button.keep_page_open')}</Text>
