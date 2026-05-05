@@ -3,7 +3,6 @@ import { render, toPlainText } from 'react-email';
 
 import { getTransporter } from '@server/emails/transporter';
 import { getEnvVariable } from '@server/get-env-variable';
-import type { tFunction } from '@server/i18n/types';
 import { logger } from '@server/logger';
 
 import ResetPasswordTemplate from './templates/ResetPasswordEmail';
@@ -19,10 +18,6 @@ const subjects: Record<templatesKind, string> = {
     'reset-password': 'email.reset_password_subject',
 };
 
-const getTranslationFunction = (translator: Awaited<ReturnType<typeof getTranslations>>): tFunction => {
-    const translate = translator as (key: string, options?: Parameters<tFunction>[1]) => string;
-    return (key, options = {}) => translate(key, options);
-};
 const getAppUrl = () => getEnvVariable('HOST_URL').replace(/\/$/, '');
 const getContactEmail = (appUrl: string): string => {
     const domain = getEnvVariable('HOST_DOMAIN') || getEnvVariable('HOST_URL').split('://')[1] || appUrl.split('://')[1] || '';
@@ -42,8 +37,7 @@ export const sendEmail = async <Kind extends templatesKind>(
         const user = domain ? `ne-pas-repondre@${domain}` : getEnvVariable('NODEMAILER_USER');
         const transporter = await getTransporter();
         const appUrl = getAppUrl();
-        const translator = await getTranslations();
-        const t = getTranslationFunction(translator);
+        const t = await getTranslations();
         const baseProps: BaseTemplateProps = {
             appUrl,
             receiverEmail: to,
@@ -52,10 +46,11 @@ export const sendEmail = async <Kind extends templatesKind>(
         };
         const html = await render(templates[kind]({ ...baseProps, ...props }));
         const text = toPlainText(html);
+        const subjectKey: string = subjects[kind];
         await transporter.sendMail({
             from: `"Clap - Par Le Monde" <${user}>`,
             to,
-            subject: t(subjects[kind]),
+            subject: t(subjectKey),
             html,
             text,
         });

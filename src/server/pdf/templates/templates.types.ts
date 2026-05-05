@@ -1,5 +1,6 @@
+import type { getTranslations } from 'next-intl/server';
+
 import type { ProjectData } from '@server/database/schemas/projects';
-import type { tFunction } from '@server/i18n/types';
 
 export interface StoryboardPdfTemplateProps {
     hostUrl: string;
@@ -11,6 +12,6 @@ export interface StoryboardPdfTemplateProps {
     scenarioDescription: string | null;
     logoFont: string;
     userLogo: string;
-    t: tFunction;
+    t: Awaited<ReturnType<typeof getTranslations>>;
     qrCode?: string | null;
 }

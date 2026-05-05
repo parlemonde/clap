@@ -1,10 +1,12 @@
 'use client';
 
-import type { RichTranslationValues } from 'next-intl';
+import type { RichTranslationValues, TranslationValues } from 'next-intl';
 import { useTranslations } from 'next-intl';
 import * as React from 'react';
 
-import type { TranslateOptions } from '@server/i18n/types';
+type TranslateOptions = TranslationValues & {
+    count?: number;
+};
 
 export interface TransProps {
     i18nKey: string;

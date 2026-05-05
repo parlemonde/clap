@@ -1,8 +1,8 @@
-import type { tFunction } from '@server/i18n/types';
+import type { getTranslations } from 'next-intl/server';
 
 export interface BaseTemplateProps {
     appUrl: string;
     receiverEmail: string;
     contactEmail: string;
-    t: tFunction;
+    t: Awaited<ReturnType<typeof getTranslations>>;
 }

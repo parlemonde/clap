@@ -13,17 +13,11 @@ import { scenarios } from '@server/database/schemas/scenarios';
 import { uploadFile } from '@server/file-upload/file-upload';
 import { getSignedImageUrl } from '@server/file-upload/get-signed-image-url';
 import { getEnvVariable } from '@server/get-env-variable';
-import type { tFunction } from '@server/i18n/types';
 import { logger } from '@server/logger';
 
 import fontBase64 from './assets/font_base64.txt';
 import userLogoBase64 from './assets/userLogo_base64.txt';
 import StoryboardPdfTemplate from './templates/StoryboardPdf';
-
-const getTranslationFunction = (translator: Awaited<ReturnType<typeof getTranslations>>): tFunction => {
-    const translate = translator as (key: string, options?: Parameters<tFunction>[1]) => string;
-    return (key, options = {}) => translate(key, options);
-};
 
 const getScenarioDescription = async (scenarioId: ProjectData['scenarioId'], locale: string): Promise<string | null> => {
     if (typeof scenarioId !== 'number') {
@@ -50,7 +44,7 @@ const getPdfHtml = async (params: {
     project: ProjectData & { name?: string | null };
     pseudo: string | null;
     scenarioDescription: string | null;
-    t: tFunction;
+    t: Awaited<ReturnType<typeof getTranslations>>;
     userLogo: string;
 }): Promise<string> => {
     const { renderToStaticMarkup } = await import('react-dom/server');
@@ -110,8 +104,7 @@ const getSignedProjectImages = async (projectData: ProjectData, userId: string):
 
 export async function generatePdf(projectData: ProjectData): Promise<string | false> {
     const user = await getCurrentUser();
-    const [translator, currentLocale] = await Promise.all([getTranslations(), getLocale()]);
-    const t = getTranslationFunction(translator);
+    const [t, currentLocale] = await Promise.all([getTranslations(), getLocale()]);
     const hostUrl = getHostUrl();
 
     try {
