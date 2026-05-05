@@ -68,7 +68,6 @@ export const projects = pgTable('projects', {
     scenarioId: integer('scenarioId').references(() => scenarios.id, {
         onDelete: 'set null',
     }),
-    videoJobId: varchar('videoJobId', { length: 36 }),
     data: json<'data', ProjectData>('data').notNull(),
     collaborationCode: varchar('collaborationCode', { length: 6 }),
     collaborationCodeExpiresAt: timestamp('collaborationCodeExpiresAt', { withTimezone: true }),

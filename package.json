@@ -78,7 +78,6 @@
     "@react-email/ui": "^6.0.0",
     "@svgr/webpack": "8.1.0",
     "@types/archiver": "7.0.0",
-    "@types/aws-lambda": "8.10.161",
     "@types/fs-extra": "11.0.4",
     "@types/mime-types": "3.0.1",
     "@types/node": "25.6.0",
@@ -90,7 +89,6 @@
     "@types/react-dom": "19.2.3",
     "@types/react-html5-camera-photo": "1.5.5",
     "@types/sortablejs": "1.15.9",
-    "aws-lambda": "1.0.7",
     "concurrently": "^9.2.1",
     "drizzle-kit": "0.31.10",
     "eslint": "9.39.4",
@@ -112,7 +110,6 @@
     "onlyBuiltDependencies": [
       "@parcel/watcher",
       "@swc/core",
-      "aws-sdk",
       "esbuild",
       "protobufjs",
       "puppeteer",

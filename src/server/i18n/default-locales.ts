@@ -281,16 +281,9 @@ export const defaultLocales: AbstractIntlMessages = {
         downloads_buttons: {
             title: 'Vous pouvez maintenant télécharger ce diaporama ou son fichier de montage pour y intégrer vos plans vidéos.',
         },
-        download_mp4_button: {
-            label: 'Télécharger votre vidéo',
+        download_video_button: {
             generate: 'Générer votre vidéo !',
-            loading: 'Création de votre vidéo...',
-            user_disabled: 'Connectez-vous et créez un projet pour générer une vidéo.',
-            project_disabled: 'Créez un projet pour générer une vidéo.',
-        },
-        download_browser_video_button: {
-            generate: 'Générer dans le navigateur (bêta)',
-            download: 'Télécharger la vidéo générée',
+            download: 'Télécharger votre vidéo',
             saved: 'La vidéo a été enregistrée.',
             modal_title: 'Création de votre vidéo',
             keep_page_open: 'Veuillez garder cette page ouverte jusqu’à la fin de la génération.',
@@ -299,10 +292,10 @@ export const defaultLocales: AbstractIntlMessages = {
             'loading-assets': 'Chargement des médias...',
             rendering: 'Création des images de la vidéo...',
             finalizing: 'Finalisation de la vidéo...',
-            failed: 'Impossible de générer la vidéo dans ce navigateur.',
-            too_long: 'Cette vidéo est trop longue pour une génération dans le navigateur. Durée maximale approximative : {maxDuration}.',
-            'missing-webcodecs': 'Votre navigateur ne prend pas en charge la génération vidéo locale.',
-            'missing-codecs': 'Votre navigateur ne prend pas en charge les codecs nécessaires à la génération vidéo locale.',
+            failed: 'Impossible de générer la vidéo avec ce navigateur.',
+            too_long: 'Cette vidéo est trop longue pour être générée ici. Durée maximale approximative : {maxDuration}.',
+            'missing-webcodecs': 'Votre navigateur ne prend pas en charge la génération vidéo.',
+            'missing-codecs': 'Votre navigateur ne prend pas en charge les codecs nécessaires à la génération vidéo.',
         },
         download_mlt_button: {
             label: 'Télécharger le fichier de montage',

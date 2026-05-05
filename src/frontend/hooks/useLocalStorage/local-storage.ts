@@ -71,7 +71,7 @@ function isProjectShape(value: unknown): value is ProjectData {
     );
 }
 
-export type LocalStorageKey = 'themes' | 'scenarios' | 'project' | 'projectId' | 'videoJobId';
+export type LocalStorageKey = 'themes' | 'scenarios' | 'project' | 'projectId';
 export type ObjectType<T extends LocalStorageKey> = T extends 'themes'
     ? LocalTheme[]
     : T extends 'scenarios'
@@ -80,16 +80,13 @@ export type ObjectType<T extends LocalStorageKey> = T extends 'themes'
         ? ProjectData
         : T extends 'projectId'
           ? number
-          : T extends 'videoJobId'
-            ? string
-            : never;
+          : never;
 
 const localStorageCache: Record<LocalStorageKey, unknown> = {
     themes: undefined,
     scenarios: undefined,
     project: undefined,
     projectId: undefined,
-    videoJobId: undefined,
 };
 
 const typeGuards: Record<LocalStorageKey, (value: unknown) => boolean> = {
@@ -97,7 +94,6 @@ const typeGuards: Record<LocalStorageKey, (value: unknown) => boolean> = {
     scenarios: isLocalScenariosShape,
     project: isProjectShape,
     projectId: (value) => typeof value === 'number',
-    videoJobId: (value) => typeof value === 'string',
 };
 
 export function getFromLocalStorage<T extends LocalStorageKey>(key: T): ObjectType<T> | undefined {
