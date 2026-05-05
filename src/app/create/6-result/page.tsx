@@ -22,7 +22,6 @@ import { userContext } from '@frontend/contexts/userContext';
 import { useCollaboration } from '@frontend/hooks/useCollaboration';
 import { useCurrentProject } from '@frontend/hooks/useCurrentProject';
 import { useDeepMemo } from '@frontend/hooks/useDeepMemo';
-import { useLocalStorage } from '@frontend/hooks/useLocalStorage';
 import {
     detectBrowserVideoSupport,
     isBrowserVideoCanceledError,
@@ -35,7 +34,6 @@ import VideoFile from '@frontend/svg/plan.svg';
 import { getFormatedTime } from '@lib/get-formatted-time';
 import { getSounds } from '@lib/get-sounds';
 import { getMltZip } from '@server-actions/projects/generate-mlt-zip';
-import { generateVideo, getVideoProgress } from '@server-actions/projects/generate-video';
 
 type FilePickerAcceptType = {
     description: string;
@@ -144,31 +142,17 @@ const isFilePickerAbortError = (error: unknown) => {
 export default function ResultPage() {
     const { t } = useTranslation();
     const user = React.useContext(userContext);
-    const [projectId] = useLocalStorage('projectId');
     const { projectData, name } = useCurrentProject();
     useCollaboration(); // Listen to collaboration updates
     const sounds = useDeepMemo(getSounds(projectData?.questions || []));
 
     const [isLoading, setIsLoading] = React.useState(false);
-    const [videoProgress, setVideoProgress] = React.useState<{
-        percentage: number;
-        url: string;
-    } | null>(null);
     const [browserSupport, setBrowserSupport] = React.useState<BrowserVideoSupport | null>(null);
     const [browserGeneration, setBrowserGeneration] = React.useState<BrowserGenerationState>(initialBrowserGenerationState);
     const browserGenerationAbortController = React.useRef<AbortController | null>(null);
     const downloadBrowserVideoRef = React.useRef<HTMLAnchorElement | null>(null);
     const canStreamVideoToFile = React.useMemo(() => getCanStreamVideoToFile(), []);
 
-    // Automatically download the video when it's ready
-    const willAutoDownload = React.useRef(false);
-    const downloadVideoRef = React.useRef<HTMLAnchorElement | null>(null);
-    React.useEffect(() => {
-        if (videoProgress?.url && willAutoDownload.current && downloadVideoRef.current) {
-            willAutoDownload.current = false;
-            downloadVideoRef.current.click();
-        }
-    }, [videoProgress]);
     React.useEffect(() => {
         detectBrowserVideoSupport()
             .then(setBrowserSupport)
@@ -198,56 +182,9 @@ export default function ResultPage() {
         }
     }, [browserGeneration.status]);
 
-    // Fetch video job status every second
-    React.useEffect(() => {
-        if (!videoProgress || videoProgress.percentage === 100) {
-            return;
-        }
-        const fetchVideoProgress = async () => {
-            const newProgress = await getVideoProgress(projectId);
-            setVideoProgress(newProgress);
-            if (newProgress === null) {
-                sendToast({
-                    message: t('common.errors.unknown'),
-                    type: 'error',
-                });
-            }
-        };
-        const timeout = setTimeout(fetchVideoProgress, 1000);
-        return () => {
-            clearTimeout(timeout);
-        };
-    }, [t, videoProgress, projectId]);
-
     if (!projectData || user?.role === 'student') {
         return null;
     }
-
-    const generateMP4 = async () => {
-        if (!user || !projectId) {
-            return;
-        }
-        setIsLoading(true);
-        const response = await generateVideo(projectData, name || 'video', projectId);
-        setIsLoading(false);
-        if (response) {
-            setVideoProgress(response);
-            if (response.percentage !== 100) {
-                willAutoDownload.current = true; // Will auto download when the video is ready
-            }
-            if (response.percentage === 100 && response.url) {
-                const link = document.createElement('a');
-                link.href = response.url;
-                link.download = 'video.mp4';
-                link.click();
-            }
-        } else {
-            sendToast({
-                message: t('common.errors.unknown'),
-                type: 'error',
-            });
-        }
-    };
 
     const generateBrowserVideo = async () => {
         if (!projectData || browserSupport?.supported !== true) {
@@ -279,7 +216,7 @@ export default function ResultPage() {
                     return;
                 }
                 sendToast({
-                    message: t('6_result_page.download_browser_video_button.failed'),
+                    message: t('6_result_page.download_video_button.failed'),
                     type: 'error',
                 });
                 return;
@@ -349,7 +286,7 @@ export default function ResultPage() {
                     outputKind: 'file',
                 });
                 sendToast({
-                    message: t('6_result_page.download_browser_video_button.saved'),
+                    message: t('6_result_page.download_video_button.saved'),
                     type: 'success',
                 });
             }
@@ -367,10 +304,10 @@ export default function ResultPage() {
             if (!isBrowserVideoCanceledError(error)) {
                 sendToast({
                     message: isBrowserVideoDurationLimitError(error)
-                        ? t('6_result_page.download_browser_video_button.too_long', {
+                        ? t('6_result_page.download_video_button.too_long', {
                               maxDuration: getFormatedTime(error.maxDurationMs),
                           })
-                        : t('6_result_page.download_browser_video_button.failed'),
+                        : t('6_result_page.download_video_button.failed'),
                     type: 'error',
                 });
             }
@@ -401,7 +338,7 @@ export default function ResultPage() {
         browserGeneration.status === 'loading-assets' ||
         browserGeneration.status === 'rendering' ||
         browserGeneration.status === 'finalizing';
-    const browserGenerationStageLabel = browserGeneration.stage ? t(`6_result_page.download_browser_video_button.${browserGeneration.stage}`) : '';
+    const browserGenerationStageLabel = browserGeneration.stage ? t(`6_result_page.download_video_button.${browserGeneration.stage}`) : '';
 
     return (
         <Container paddingBottom="xl">
@@ -432,89 +369,42 @@ export default function ResultPage() {
                 {t('6_result_page.downloads_buttons.title')}
             </Title>
             <Flex flexDirection="column" alignItems="center" marginX="auto" marginY="lg" style={{ maxWidth: '400px' }}>
-                {browserGeneration.status === 'ready' && browserGeneration.url && (
-                    <a
-                        href={browserGeneration.url}
-                        ref={downloadBrowserVideoRef}
-                        download={`video.${browserGeneration.extension}`}
-                        style={{ display: 'none' }}
-                    />
-                )}
                 <Tooltip
                     content={
                         browserSupport === null
-                            ? t('6_result_page.download_browser_video_button.checking_support')
+                            ? t('6_result_page.download_video_button.checking_support')
                             : browserSupport.supported
                               ? ''
-                              : t(`6_result_page.download_browser_video_button.${browserSupport.reason}`)
+                              : t(`6_result_page.download_video_button.${browserSupport.reason}`)
                     }
                     hasArrow
                 >
-                    <Button
-                        label={t('6_result_page.download_browser_video_button.generate')}
-                        className="full-width"
-                        variant="contained"
-                        color="secondary"
-                        onClick={generateBrowserVideo}
-                        disabled={browserSupport?.supported !== true}
-                        style={{ width: '100%' }}
-                        leftIcon={<VideoIcon style={{ marginRight: '10px', width: '24px', height: '24px' }} />}
-                    ></Button>
-                </Tooltip>
-                <Or />
-                {videoProgress?.url ? (
-                    <Button
-                        label={t('6_result_page.download_mp4_button.label')}
-                        as="a"
-                        href={videoProgress.url}
-                        ref={downloadVideoRef}
-                        className="full-width"
-                        variant="contained"
-                        color="secondary"
-                        style={{ width: '100%' }}
-                        leftIcon={<VideoIcon style={{ marginRight: '10px', width: '24px', height: '24px' }} />}
-                        download
-                    />
-                ) : videoProgress ? (
-                    <div
-                        style={{
-                            width: '100%',
-                            textAlign: 'center',
-                            padding: '0.5rem 1rem',
-                            border: '1px solid #79C3A5',
-                            boxSizing: 'border-box',
-                            borderRadius: 4,
-                            boxShadow: '0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%)',
-                        }}
-                    >
-                        <Text className="color-secondary" style={{ fontSize: '0.8rem', marginBottom: '0.5rem' }}>
-                            {t('6_result_page.download_mp4_button.loading')}
-                        </Text>
-                        <LinearProgressWithLabel value={videoProgress.percentage} />
-                    </div>
-                ) : (
-                    <Tooltip
-                        content={
-                            user === undefined
-                                ? t('6_result_page.download_mp4_button.user_disabled')
-                                : !projectId
-                                  ? t('6_result_page.download_mp4_button.project_disabled')
-                                  : ''
-                        }
-                        hasArrow
-                    >
+                    {browserGeneration.status === 'ready' && browserGeneration.url ? (
                         <Button
-                            label={t('6_result_page.download_mp4_button.generate')}
+                            label={t('6_result_page.download_video_button.download')}
+                            as="a"
+                            href={browserGeneration.url}
+                            ref={downloadBrowserVideoRef}
+                            download={`video.${browserGeneration.extension}`}
                             className="full-width"
                             variant="contained"
                             color="secondary"
-                            onClick={generateMP4}
-                            disabled={user === undefined || !projectId}
                             style={{ width: '100%' }}
                             leftIcon={<VideoIcon style={{ marginRight: '10px', width: '24px', height: '24px' }} />}
-                        ></Button>
-                    </Tooltip>
-                )}
+                        />
+                    ) : (
+                        <Button
+                            label={t('6_result_page.download_video_button.generate')}
+                            className="full-width"
+                            variant="contained"
+                            color="secondary"
+                            onClick={generateBrowserVideo}
+                            disabled={browserSupport?.supported !== true}
+                            style={{ width: '100%' }}
+                            leftIcon={<VideoIcon style={{ marginRight: '10px', width: '24px', height: '24px' }} />}
+                        />
+                    )}
+                </Tooltip>
                 <Or />
                 <Button
                     label={t('6_result_page.download_mlt_button.label')}
@@ -529,7 +419,7 @@ export default function ResultPage() {
             <Modal
                 isOpen={isBrowserGenerationModalOpen}
                 onClose={() => {}}
-                title={t('6_result_page.download_browser_video_button.modal_title')}
+                title={t('6_result_page.download_video_button.modal_title')}
                 hasCloseButton={false}
                 hasCancelButton={false}
                 onOpenAutoFocus={false}
@@ -540,7 +430,7 @@ export default function ResultPage() {
                 </Text>
                 <LinearProgressWithLabel value={browserGeneration.percentage} />
                 <Text marginTop="md" style={{ display: 'inline-block' }}>
-                    {t('6_result_page.download_browser_video_button.keep_page_open')}
+                    {t('6_result_page.download_video_button.keep_page_open')}
                 </Text>
             </Modal>
             <Loader isLoading={isLoading} />

@@ -1,5 +1,3 @@
-'use client';
-
 export default function myImageLoader({ src, width, quality }) {
     if (typeof src !== 'string') {
         return '';

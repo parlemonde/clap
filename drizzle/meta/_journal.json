@@ -22,6 +22,13 @@
       "when": 1776880987267,
       "tag": "0002_boring_whiplash",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1777647878728,
+      "tag": "0003_lame_terrax",
+      "breakpoints": true
     }
   ]
 }

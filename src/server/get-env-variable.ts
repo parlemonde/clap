@@ -12,7 +12,6 @@ export const envDefaults = {
     AWS_SESSION_TOKEN: '',
     AWS_REGION: '',
     S3_BUCKET_NAME: '',
-    AWS_LAMBDA_VIDEO_FUNCTION_NAME: '',
     // SSO
     CLIENT_ID: '',
     CLIENT_SECRET: '',

@@ -163,7 +163,6 @@ const eslintConfig = defineConfig([
         'public/*',
         'server-pdf-generation/*',
         'server-preview-proxy/*',
-        'server-video-generation/*',
         'server-websockets/*',
         '.postgres-data/*',
         '.next/*',
