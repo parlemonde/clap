@@ -1,13 +1,13 @@
 'use client';
 
 import { usePathname, useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import type { FormEvent } from 'react';
 import React from 'react';
 
 import { Button } from '@frontend/components/layout/Button';
 import { Field, Form, Input } from '@frontend/components/layout/Form';
 import { Link } from '@frontend/components/navigation/Link';
-import { useTranslation } from '@frontend/contexts/translationContext';
 
 interface InviteTokenFormProps {
     initialCode?: string;
@@ -15,7 +15,7 @@ interface InviteTokenFormProps {
 export const InviteTokenForm = ({ initialCode }: InviteTokenFormProps) => {
     const router = useRouter();
     const pathname = usePathname();
-    const { t } = useTranslation();
+    const t = useTranslations();
     const [inviteCode, setInviteCode] = React.useState(initialCode || '');
 
     const onSubmit = (e: FormEvent) => {

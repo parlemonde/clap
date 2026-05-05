@@ -1,9 +1,9 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import React from 'react';
 
-import { useTranslation } from '@frontend/contexts/translationContext';
 import { useLocalStorage } from '@frontend/hooks/useLocalStorage';
 import { deleteFromLocalStorage } from '@frontend/hooks/useLocalStorage/local-storage';
 import type { Project } from '@server/database/schemas/projects';
@@ -16,7 +16,7 @@ interface VideoListProps {
 
 export const VideoList = ({ projects }: VideoListProps) => {
     const [, setProjectId] = useLocalStorage('projectId');
-    const { t } = useTranslation();
+    const t = useTranslations();
     const router = useRouter();
 
     const handleWipProjectClickEdit = (projectId: number) => () => {

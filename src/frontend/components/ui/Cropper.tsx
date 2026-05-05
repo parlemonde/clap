@@ -1,10 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
+import { useTranslations } from 'next-intl';
 import * as React from 'react';
 
 import { KeepRatio } from '@frontend/components/layout/KeepRatio';
 import { Modal } from '@frontend/components/layout/Modal';
 import { sendToast } from '@frontend/components/ui/Toasts';
-import { useTranslation } from '@frontend/contexts/translationContext';
 
 const PRIMARY_COLOR = '#6065fc';
 const CANVAS_ID = 'cropper-canvas';
@@ -19,7 +19,7 @@ interface CropperProps {
 }
 
 export const Cropper = ({ ratio, imageUrl, isOpen, maxWidth = '800px', onClose, onCrop }: CropperProps) => {
-    const { t } = useTranslation();
+    const t = useTranslations();
     const [imageSize, setImageSize] = React.useState({ width: 0, height: 0 });
 
     const [x, setX] = React.useState(0);

@@ -2,6 +2,7 @@
 
 import { InfoCircledIcon } from '@radix-ui/react-icons';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import React from 'react';
 
 import { Button } from '@frontend/components/layout/Button';
@@ -10,8 +11,6 @@ import { Flex } from '@frontend/components/layout/Flex';
 import { Field, Input } from '@frontend/components/layout/Form';
 import { Modal } from '@frontend/components/layout/Modal';
 import { Title } from '@frontend/components/layout/Typography';
-import { Trans } from '@frontend/components/ui/Trans';
-import { useTranslation } from '@frontend/contexts/translationContext';
 import { useLocalStorage } from '@frontend/hooks/useLocalStorage';
 import { deleteFromLocalStorage } from '@frontend/hooks/useLocalStorage/local-storage';
 import type { Project } from '@server/database/schemas/projects';
@@ -24,7 +23,7 @@ interface ProjectFormProps {
 export const ProjectForm = ({ project }: ProjectFormProps) => {
     const router = useRouter();
     const [, setProjectId] = useLocalStorage('projectId');
-    const { t } = useTranslation();
+    const t = useTranslations();
 
     const [projectTitle, setProjectTitle] = React.useState<string>(project.name);
     const [showTitleModal, setShowTitleModal] = React.useState(false);
@@ -188,10 +187,10 @@ export const ProjectForm = ({ project }: ProjectFormProps) => {
                         }}
                     >
                         <InfoCircledIcon style={{ width: 20, height: 20, marginRight: 8, paddingTop: 1 }} />
-                        <Trans i18nKey="video_page.delete_modal.desc1" i18nParams={{ projetName: project.name }}>
-                            Attention! Êtes-vous sur de vouloir supprimer le projet <strong>{project.name}</strong> ? Cette action est{' '}
-                            <strong>irréversible</strong> et supprimera toutes les données du projet incluant questions, plans et images.
-                        </Trans>
+                        {t.rich('video_page.delete_modal.desc1', {
+                            projetName: project.name,
+                            strong: (chunks) => <strong>{chunks}</strong>,
+                        })}
                     </Flex>
                 </div>
             </Modal>

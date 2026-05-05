@@ -1,7 +1,7 @@
+import { useTranslations } from 'next-intl';
 import React from 'react';
 
 import { Modal } from '@frontend/components/layout/Modal';
-import { useTranslation } from '@frontend/contexts/translationContext';
 
 interface ClearModalProps {
     isOpen?: boolean;
@@ -9,7 +9,7 @@ interface ClearModalProps {
 }
 
 export const ClearModal: React.FunctionComponent<ClearModalProps> = ({ isOpen = false, onClear = () => () => {} }: ClearModalProps) => {
-    const { t } = useTranslation();
+    const t = useTranslations();
     return (
         <Modal
             width="sm"

@@ -1,18 +1,17 @@
 'use client';
 
 import { InfoCircledIcon } from '@radix-ui/react-icons';
+import { useTranslations } from 'next-intl';
 import React from 'react';
 
 import { Button } from '@frontend/components/layout/Button';
 import { Flex } from '@frontend/components/layout/Flex';
 import { Input } from '@frontend/components/layout/Form';
 import { Modal } from '@frontend/components/layout/Modal';
-import { Trans } from '@frontend/components/ui/Trans';
-import { useTranslation } from '@frontend/contexts/translationContext';
 import { deleteUser } from '@server-actions/users/delete-user';
 
 export const DeleteAccountButton = () => {
-    const { t } = useTranslation();
+    const t = useTranslations();
     const [isUpdateModalOpen, setIsUpdateModalOpen] = React.useState(false);
     const [isLoading, setIsLoading] = React.useState(false);
 
@@ -78,16 +77,14 @@ export const DeleteAccountButton = () => {
                     >
                         <InfoCircledIcon style={{ width: 20, height: 20, marginRight: 8, paddingTop: 1 }} />
                         <span>
-                            <Trans i18nKey="my_account_page.delete_account_modal.warning1">
-                                Attention! Êtes-vous sur de vouloir supprimer votre compte ? Cette action est <strong>irréversible</strong>.
-                            </Trans>
+                            {t.rich('my_account_page.delete_account_modal.warning1', {
+                                strong: (chunks) => <strong>{chunks}</strong>,
+                            })}
                             <br />
-                            <Trans
-                                i18nKey="my_account_page.delete_account_modal.warning2"
-                                i18nParams={{ deleteConfirm: t('my_account_page.delete_account_modal.delete_confirm') }}
-                            >
-                                Pour supprimer votre compte, veuillez taper <strong>supprimer</strong> ci-dessous et cliquez sur supprimer.
-                            </Trans>
+                            {t.rich('my_account_page.delete_account_modal.warning2', {
+                                deleteConfirm: t('my_account_page.delete_account_modal.delete_confirm'),
+                                strong: (chunks) => <strong>{chunks}</strong>,
+                            })}
                         </span>
                     </Flex>
                     <Input

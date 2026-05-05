@@ -1,3 +1,4 @@
+import { getLocale, getTranslations } from 'next-intl/server';
 import * as React from 'react';
 
 import { ScenarioCard } from '@frontend/components/create/ScenarioCard';
@@ -6,12 +7,10 @@ import { Title } from '@frontend/components/layout/Typography';
 import { Steps } from '@frontend/components/navigation/Steps';
 import { ThemeBreadcrumbs } from '@frontend/components/navigation/ThemeBreadcrumbs';
 import { Inverted } from '@frontend/components/ui/Inverted';
-import { Trans } from '@frontend/components/ui/Trans';
 import type { ServerPageProps } from '@lib/page-props.types';
 import { getThemeId } from '@lib/search-params/get-theme-id';
 import { serializeToQueryUrl } from '@lib/serialize-to-query-url';
 import { getCurrentUser } from '@server/auth/get-current-user';
-import { getTranslation } from '@server-actions/get-translation';
 import { listScenarios } from '@server-actions/scenarios/list-scenarios';
 
 import { Scenarios } from './Scenarios';
@@ -27,7 +26,7 @@ const getScenarios = async (themeId: number, userId: string | undefined, questio
 export default async function ScenarioPage(props: ServerPageProps) {
     const searchParams = await props.searchParams;
     const themeId = getThemeId(searchParams);
-    const { t, currentLocale } = await getTranslation();
+    const [t, currentLocale] = await Promise.all([getTranslations(), getLocale()]);
     const user = await getCurrentUser();
 
     if (user?.role === 'student') {
@@ -42,9 +41,9 @@ export default async function ScenarioPage(props: ServerPageProps) {
             <Steps activeStep={0} themeId={themeId}></Steps>
             <Title color="primary" marginY="md" variant="h1">
                 <Inverted isRound>1</Inverted>{' '}
-                <Trans i18nKey="1_scenario_page.header.title">
-                    Quel <Inverted>scénario</Inverted> choisir ?
-                </Trans>
+                {t.rich('1_scenario_page.header.title', {
+                    inverted: (chunks) => <Inverted>{chunks}</Inverted>,
+                })}
             </Title>
             <Title color="inherit" variant="h2" marginBottom="md">
                 {t('1_scenario_page.secondary.title')}

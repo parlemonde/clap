@@ -1,9 +1,9 @@
 import { TrashIcon } from '@radix-ui/react-icons';
+import { useTranslations } from 'next-intl';
 import * as React from 'react';
 
 import { IconButton } from '@frontend/components/layout/Button/IconButton';
 import { Link } from '@frontend/components/navigation/Link';
-import { useTranslation } from '@frontend/contexts/translationContext';
 import { serializeToQueryUrl } from '@lib/serialize-to-query-url';
 import type { Sequence } from '@server/database/schemas/projects';
 
@@ -18,7 +18,7 @@ type TitleCardProps = {
 
 export const TitleCard = ({ title, questionIndex, onDelete = () => {}, isDisabled }: TitleCardProps) => {
     const canvasId = `canvas-${React.useId()}`;
-    const { t } = useTranslation();
+    const t = useTranslations();
 
     // Use a ResizeObserver to get the height of the canvas
     // This is used to calculate the font size and position of the title

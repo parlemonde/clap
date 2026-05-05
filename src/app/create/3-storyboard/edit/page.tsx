@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import * as React from 'react';
 
 import { Container } from '@frontend/components/layout/Container';
@@ -8,7 +9,6 @@ import { Title } from '@frontend/components/layout/Typography';
 import { Steps } from '@frontend/components/navigation/Steps';
 import { ThemeBreadcrumbs } from '@frontend/components/navigation/ThemeBreadcrumbs';
 import { Inverted } from '@frontend/components/ui/Inverted';
-import { useTranslation } from '@frontend/contexts/translationContext';
 import { userContext } from '@frontend/contexts/userContext';
 import { useCollaboration } from '@frontend/hooks/useCollaboration';
 import { useCurrentProject } from '@frontend/hooks/useCurrentProject';
@@ -20,7 +20,7 @@ import { PlanForm } from './PlanForm';
 export default function StoryboardPlanPage(props: ServerPageProps) {
     const router = useRouter();
     const user = React.useContext(userContext);
-    const { t } = useTranslation();
+    const t = useTranslations();
     const { projectData, setProjectData } = useCurrentProject();
     useCollaboration(); // Listen to collaboration updates
 

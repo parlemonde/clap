@@ -5,15 +5,15 @@ import type { AbstractIntlMessages } from 'next-intl';
 export const defaultLocales: AbstractIntlMessages = {
     home_page: {
         header: {
-            title: 'Sur quel <child1>thème</child1> sera votre vidéo ?',
+            title: 'Sur quel <inverted>thème</inverted> sera votre vidéo ?',
         },
     },
     new_theme_page: {
         header: {
-            title: 'Créer votre <child1>thème</child1> :',
+            title: 'Créer votre <inverted>thème</inverted> :',
         },
         name_field: {
-            label: 'Nom du thème<child1>*</child1>:',
+            label: 'Nom du thème<required>*</required>:',
             placeholder: 'Nouveau thème',
         },
         common: {
@@ -22,7 +22,7 @@ export const defaultLocales: AbstractIntlMessages = {
     },
     '1_scenario_page': {
         header: {
-            title: 'Quel <child1>scénario</child1> choisir ?',
+            title: 'Quel <inverted>scénario</inverted> choisir ?',
         },
         secondary: {
             title: "C'est à votre tour, sélectionnez un scénario à filmer",
@@ -37,10 +37,10 @@ export const defaultLocales: AbstractIntlMessages = {
     },
     '1_new_scenario_page': {
         header: {
-            title: 'Crée ton nouveau <child1>scénario</child1> !',
+            title: 'Crée ton nouveau <inverted>scénario</inverted> !',
         },
         title_field: {
-            label: 'Choisis ton titre<child1>*</child1> :',
+            label: 'Choisis ton titre<required>*</required> :',
             placeholder: 'Mon scénario',
         },
         desc_field: {
@@ -50,7 +50,7 @@ export const defaultLocales: AbstractIntlMessages = {
     },
     '2_questions_page': {
         header: {
-            title: 'Mes <child1>séquences</child1>',
+            title: 'Mes <inverted>séquences</inverted>',
         },
         secondary: {
             title: 'Pour structurer votre scénario, nous vous proposons de le découper en séquences. Souvent une séquence correspond à une idée.',
@@ -86,7 +86,7 @@ export const defaultLocales: AbstractIntlMessages = {
     },
     '3_storyboard_page': {
         header: {
-            title: 'Création du <child1>Storyboard</child1>',
+            title: 'Création du <inverted>Storyboard</inverted>',
         },
         secondary: {
             title: "Ici créez votre storyboard ! C'est une représentation de votre film sous forme de dessins et le résultat final de votre vidéo sera l'assemblage de ces plans les uns après les autres.\n",
@@ -222,7 +222,7 @@ export const defaultLocales: AbstractIntlMessages = {
     },
     '4_pre_mounting_page': {
         header: {
-            title: 'Prémontez votre <child1>film</child1>',
+            title: 'Prémontez votre <inverted>film</inverted>',
         },
         secondary: {
             title: 'Pour chaque séquence vous pouvez écrire et enregistrer une voix-off.',
@@ -273,7 +273,7 @@ export const defaultLocales: AbstractIntlMessages = {
     },
     '6_result_page': {
         header: {
-            title: 'À votre <child1>caméra</child1> !',
+            title: 'À votre <inverted>caméra</inverted> !',
         },
         secondary: {
             title: 'À cette étape,  vous pouvez pré-visualiser votre diaporama sonore achevé.',
@@ -448,15 +448,15 @@ export const defaultLocales: AbstractIntlMessages = {
         },
         delete_account_modal: {
             title: 'Supprimer mon compte',
-            warning1: 'Attention! Êtes-vous sur de vouloir supprimer votre compte ? Cette action est <child0>irréversible</child0>.',
-            warning2: "Pour supprimer votre compte, veuillez taper '<child0>{deleteConfirm}</child0>' ci-dessous et cliquez sur supprimer.",
+            warning1: 'Attention! Êtes-vous sur de vouloir supprimer votre compte ? Cette action est <strong>irréversible</strong>.',
+            warning2: "Pour supprimer votre compte, veuillez taper '<strong>{deleteConfirm}</strong>' ci-dessous et cliquez sur supprimer.",
             delete_confirm: 'supprimer',
             placeholder: 'Tapez {deleteConfirm} ici',
         },
     },
     my_videos_page: {
         header: {
-            title: 'Mes <child1>super</child1> vidéos',
+            title: 'Mes <inverted>super</inverted> vidéos',
         },
         project_card: {
             theme_name: 'Thème : {themeName}',

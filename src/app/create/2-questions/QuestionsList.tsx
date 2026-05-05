@@ -1,9 +1,9 @@
+import { useTranslations } from 'next-intl';
 import React from 'react';
 
 import { QuestionCard } from '@frontend/components/create/QuestionCard';
 import { Modal } from '@frontend/components/layout/Modal';
 import { Sortable } from '@frontend/components/ui/Sortable';
-import { useTranslation } from '@frontend/contexts/translationContext';
 import type { ProjectData, Sequence } from '@server/database/schemas/projects';
 
 interface QuestionsListProps {
@@ -12,7 +12,7 @@ interface QuestionsListProps {
 }
 
 export const QuestionsList = ({ project, setProject }: QuestionsListProps) => {
-    const { t } = useTranslation();
+    const t = useTranslations();
     const questions = project.questions;
     const [deleteQuestionIndex, setDeleteQuestionIndex] = React.useState(-1);
 

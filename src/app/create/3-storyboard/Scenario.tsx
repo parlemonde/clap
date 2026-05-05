@@ -1,4 +1,5 @@
 import { PlusIcon } from '@radix-ui/react-icons';
+import { useTranslations } from 'next-intl';
 import React from 'react';
 
 import { FeedbackForm } from '@frontend/components/collaboration/FeedbackForm';
@@ -12,7 +13,6 @@ import { Flex } from '@frontend/components/layout/Flex';
 import { Modal } from '@frontend/components/layout/Modal';
 import { Tooltip } from '@frontend/components/layout/Tooltip';
 import { Title } from '@frontend/components/layout/Typography';
-import { useTranslation } from '@frontend/contexts/translationContext';
 import type { Plan, Sequence } from '@server/database/schemas/projects';
 
 interface Scenario {
@@ -36,7 +36,7 @@ export const Scenario = ({
     isCollaborationEnabled,
     isStudent,
 }: Scenario) => {
-    const { t } = useTranslation();
+    const t = useTranslations();
     const [showDeleteTitle, setShowDeleteTitle] = React.useState(false);
     const [deletePlanIndex, setDeletePlanIndex] = React.useState(-1);
 

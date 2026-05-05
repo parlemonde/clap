@@ -1,6 +1,7 @@
 'use client';
 
 import { EyeNoneIcon, EyeOpenIcon } from '@radix-ui/react-icons';
+import { useTranslations } from 'next-intl';
 import React from 'react';
 
 import { Button } from '@frontend/components/layout/Button';
@@ -8,13 +9,12 @@ import { IconButton } from '@frontend/components/layout/Button/IconButton';
 import { Divider } from '@frontend/components/layout/Divider';
 import { Field, Input } from '@frontend/components/layout/Form';
 import { Modal } from '@frontend/components/layout/Modal';
-import { useTranslation } from '@frontend/contexts/translationContext';
 import { authClient } from '@frontend/lib/auth-client';
 
 const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/;
 
 export const UpdatePasswordButton = () => {
-    const { t } = useTranslation();
+    const t = useTranslations();
     const [isUpdateModalOpen, setIsUpdateModalOpen] = React.useState(false);
     const [isLoading, setIsLoading] = React.useState(false);
     const [updateErrorMessage, setUpdateErrorMessage] = React.useState<string | null>(null);

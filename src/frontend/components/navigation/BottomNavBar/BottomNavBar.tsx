@@ -2,18 +2,18 @@
 
 import classNames from 'clsx';
 import { usePathname } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { NavigationMenu } from 'radix-ui';
 import * as React from 'react';
 
 import { Link as NextLink } from '@frontend/components/navigation/Link';
-import { useTranslation } from '@frontend/contexts/translationContext';
 import { userContext } from '@frontend/contexts/userContext';
 import { getTabs } from '@frontend/lib/get-tabs';
 
 import styles from './bottom-nav-bar.module.css';
 
 export const BottomNavBar = () => {
-    const { t } = useTranslation();
+    const t = useTranslations();
     const user = React.useContext(userContext);
 
     const currentPathName = usePathname().split('/')[1];

@@ -1,7 +1,7 @@
+import { useTranslations } from 'next-intl';
 import React from 'react';
 
 import { Modal } from '@frontend/components/layout/Modal';
-import { useTranslation } from '@frontend/contexts/translationContext';
 
 const colors = ['#444', '#eda000', '#79c3a5', '#6065fc', '#c36561'];
 
@@ -16,7 +16,7 @@ export const ColorModal: React.FunctionComponent<ColorModalProps> = ({
     setIsOpen = () => {},
     setColor = () => {},
 }: ColorModalProps) => {
-    const { t } = useTranslation();
+    const t = useTranslations();
     const handleCloseModalColor = (color?: string) => () => {
         setIsOpen(false);
         if (color !== undefined) {

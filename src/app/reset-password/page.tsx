@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import React from 'react';
 
 import { Button } from '@frontend/components/layout/Button';
@@ -9,11 +10,10 @@ import { Title } from '@frontend/components/layout/Typography';
 import { Link } from '@frontend/components/navigation/Link';
 import { Loader } from '@frontend/components/ui/Loader';
 import { sendToast } from '@frontend/components/ui/Toasts';
-import { useTranslation } from '@frontend/contexts/translationContext';
 import { requestPasswordReset } from '@server-actions/authentication/request-password-reset';
 
 export default function ResetPasswordPage() {
-    const { t } = useTranslation();
+    const t = useTranslations();
 
     const [isLoading, setIsLoading] = React.useState(false);
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

@@ -1,8 +1,8 @@
 import { DragHandleDots2Icon, PauseIcon } from '@radix-ui/react-icons';
+import { useTranslations } from 'next-intl';
 import React from 'react';
 
 import { KeepRatio } from '@frontend/components/layout/KeepRatio';
-import { useTranslation } from '@frontend/contexts/translationContext';
 import type { Title } from '@server/database/schemas/projects';
 
 import styles from './title-form.module.css';
@@ -16,7 +16,7 @@ interface TitleFormProps {
 
 export const TitleForm = ({ title, onTitleChange }: TitleFormProps) => {
     const canvasId = `canvas-${React.useId()}`;
-    const { t } = useTranslation();
+    const t = useTranslations();
     const [isDragging, setIsDragging] = React.useState(false);
     const [isCenteringX, setIsCenteringX] = React.useState(false);
     const [isCenteringY, setIsCenteringY] = React.useState(false);

@@ -1,11 +1,11 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import * as React from 'react';
 
 import type { MarginProps } from '@frontend/components/layout';
 import { Box } from '@frontend/components/layout/Box';
 import { Button } from '@frontend/components/layout/Button';
-import { useTranslation } from '@frontend/contexts/translationContext';
 
 import styles from './next-button.module.css';
 
@@ -18,7 +18,7 @@ type NextButtonProps = {
 } & MarginProps;
 
 export const NextButton = ({ label, backHref, type, onNext, isDisabled, ...marginProps }: NextButtonProps) => {
-    const { t } = useTranslation();
+    const t = useTranslations();
 
     return (
         <Box as="div" className={styles.nextButton} {...marginProps}>

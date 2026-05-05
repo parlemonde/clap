@@ -1,6 +1,7 @@
 'use client';
 
 import { VideoIcon } from '@radix-ui/react-icons';
+import { useTranslations } from 'next-intl';
 import * as React from 'react';
 
 import { DiaporamaPlayer } from '@frontend/components/create/DiaporamaPlayer';
@@ -16,8 +17,6 @@ import { ThemeBreadcrumbs } from '@frontend/components/navigation/ThemeBreadcrum
 import { Inverted } from '@frontend/components/ui/Inverted';
 import { Loader } from '@frontend/components/ui/Loader';
 import { sendToast } from '@frontend/components/ui/Toasts';
-import { Trans } from '@frontend/components/ui/Trans';
-import { useTranslation } from '@frontend/contexts/translationContext';
 import { userContext } from '@frontend/contexts/userContext';
 import { useCollaboration } from '@frontend/hooks/useCollaboration';
 import { useCurrentProject } from '@frontend/hooks/useCurrentProject';
@@ -78,7 +77,7 @@ function LinearProgressWithLabel({ value }: { value: number }) {
 }
 
 const Or = () => {
-    const { t } = useTranslation();
+    const t = useTranslations();
     return (
         <div className="or-horizontal-divider">
             <div style={styles.verticalLine} />
@@ -140,7 +139,7 @@ const isFilePickerAbortError = (error: unknown) => {
 };
 
 export default function ResultPage() {
-    const { t } = useTranslation();
+    const t = useTranslations();
     const user = React.useContext(userContext);
     const { projectData, name } = useCurrentProject();
     useCollaboration(); // Listen to collaboration updates
@@ -346,9 +345,9 @@ export default function ResultPage() {
             <Steps activeStep={5} themeId={projectData.themeId}></Steps>
             <Title color="primary" variant="h1" marginY="md">
                 <Inverted isRound>6</Inverted>
-                <Trans i18nKey="6_result_page.header.title">
-                    À votre <Inverted>caméra</Inverted> !
-                </Trans>
+                {t.rich('6_result_page.header.title', {
+                    inverted: (chunks) => <Inverted>{chunks}</Inverted>,
+                })}
             </Title>
             <Title color="inherit" variant="h2">
                 {t('6_result_page.secondary.title')}

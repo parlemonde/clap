@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { useLocale, useTranslations } from 'next-intl';
 import React from 'react';
 import useSWR from 'swr';
 
@@ -9,8 +10,6 @@ import { Title } from '@frontend/components/layout/Typography';
 import { NextButton } from '@frontend/components/navigation/NextButton';
 import { Loader } from '@frontend/components/ui/Loader';
 import { sendToast } from '@frontend/components/ui/Toasts';
-import { Trans } from '@frontend/components/ui/Trans';
-import { useTranslation } from '@frontend/contexts/translationContext';
 import { userContext } from '@frontend/contexts/userContext';
 import { useCurrentProject } from '@frontend/hooks/useCurrentProject';
 import { useLocalStorage } from '@frontend/hooks/useLocalStorage';
@@ -27,7 +26,8 @@ type NewScenarioFormProps = {
 export const NewScenarioForm = ({ backUrl, themeId }: NewScenarioFormProps) => {
     const router = useRouter();
     const user = React.useContext(userContext);
-    const { t, currentLocale } = useTranslation();
+    const t = useTranslations();
+    const currentLocale = useLocale();
 
     const { setProjectData } = useCurrentProject();
 
@@ -94,9 +94,9 @@ export const NewScenarioForm = ({ backUrl, themeId }: NewScenarioFormProps) => {
                     name="scenario_title"
                     label={
                         <Title color="inherit" variant="h2">
-                            <Trans i18nKey="1_new_scenario_page.title_field.label">
-                                Choisis ton titre<span style={{ color: 'red' }}>*</span> :
-                            </Trans>
+                            {t.rich('1_new_scenario_page.title_field.label', {
+                                required: (chunks) => <span style={{ color: 'red' }}>{chunks}</span>,
+                            })}
                         </Title>
                     }
                     input={

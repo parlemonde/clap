@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import * as React from 'react';
 
 import { Button } from '@frontend/components/layout/Button';
@@ -8,7 +9,6 @@ import { Field, Form, Input } from '@frontend/components/layout/Form';
 import { Title } from '@frontend/components/layout/Typography';
 import { Link } from '@frontend/components/navigation/Link';
 import { Loader } from '@frontend/components/ui/Loader';
-import { useTranslation } from '@frontend/contexts/translationContext';
 import { setToLocalStorage } from '@frontend/hooks/useLocalStorage/local-storage';
 import type { Project } from '@server/database/schemas/projects';
 import { getProjectByCode } from '@server-actions/projects/get-project';
@@ -17,7 +17,7 @@ import { StudentQuestionChoice } from './StudentQuestionChoice';
 
 export const LoginStudentForm = () => {
     const router = useRouter();
-    const { t } = useTranslation();
+    const t = useTranslations();
     const [message, setMessage] = React.useState('');
     const [isLoading, setIsLoading] = React.useState(false);
     const [projectCode, setProjectCode] = React.useState('');

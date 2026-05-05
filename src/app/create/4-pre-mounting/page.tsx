@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import * as React from 'react';
 
 import { FeedbackModal } from '@frontend/components/collaboration/FeedbackModal';
@@ -14,8 +15,6 @@ import { NextButton } from '@frontend/components/navigation/NextButton';
 import { Steps } from '@frontend/components/navigation/Steps';
 import { ThemeBreadcrumbs } from '@frontend/components/navigation/ThemeBreadcrumbs';
 import { Inverted } from '@frontend/components/ui/Inverted';
-import { Trans } from '@frontend/components/ui/Trans';
-import { useTranslation } from '@frontend/contexts/translationContext';
 import { userContext } from '@frontend/contexts/userContext';
 import { useCollaboration } from '@frontend/hooks/useCollaboration';
 import { useCurrentProject } from '@frontend/hooks/useCurrentProject';
@@ -24,7 +23,7 @@ import type { Sequence } from '@server/database/schemas/projects';
 
 export default function PreMountingPage() {
     const router = useRouter();
-    const { t } = useTranslation();
+    const t = useTranslations();
     const { projectData, setProjectData } = useCurrentProject();
     const { collaborationButton, isCollaborationEnabled, sendCollaborationValidationMsg } = useCollaboration();
     const user = React.useContext(userContext);
@@ -53,9 +52,9 @@ export default function PreMountingPage() {
             <Flex flexDirection="row" alignItems="center" marginY="md">
                 <Title color="primary" variant="h1" marginRight="xl">
                     <Inverted isRound>4</Inverted>{' '}
-                    <Trans i18nKey="4_pre_mounting_page.header.title">
-                        Prémontez votre <Inverted>film</Inverted>
-                    </Trans>
+                    {t.rich('4_pre_mounting_page.header.title', {
+                        inverted: (chunks) => <Inverted>{chunks}</Inverted>,
+                    })}
                 </Title>
                 {!isStudent && collaborationButton}
             </Flex>

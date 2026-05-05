@@ -1,10 +1,10 @@
 import { DiscIcon, ResetIcon, Cross1Icon, BlendingModeIcon } from '@radix-ui/react-icons';
+import { useTranslations } from 'next-intl';
 import React, { useEffect, useState } from 'react';
 
 import { IconButton } from '@frontend/components/layout/Button/IconButton';
 import { KeepRatio } from '@frontend/components/layout/KeepRatio';
 import { Tooltip } from '@frontend/components/layout/Tooltip';
-import { useTranslation } from '@frontend/contexts/translationContext';
 
 import { ClearModal } from './ClearModal';
 import { ColorModal } from './ColorModal';
@@ -32,7 +32,7 @@ interface Path {
 }
 
 const CanvasComponent = (_: unknown, ref: React.ForwardedRef<HTMLCanvasElement | null>) => {
-    const { t } = useTranslation();
+    const t = useTranslations();
     const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
     const [isDrawing, setIsDrawing] = useState<boolean>(false);
     const [paths, setPaths] = useState<Array<Path>>([]);

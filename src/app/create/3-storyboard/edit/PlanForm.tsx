@@ -1,5 +1,6 @@
 import { CameraIcon, ImageIcon, LightningBoltIcon, Pencil2Icon, UploadIcon } from '@radix-ui/react-icons';
 import Image from 'next/legacy/image';
+import { useTranslations } from 'next-intl';
 import React from 'react';
 import Camera from 'react-html5-camera-photo';
 
@@ -14,7 +15,6 @@ import { NextButton } from '@frontend/components/navigation/NextButton';
 import { Cropper } from '@frontend/components/ui/Cropper';
 import { Loader } from '@frontend/components/ui/Loader';
 import { sendToast } from '@frontend/components/ui/Toasts';
-import { useTranslation } from '@frontend/contexts/translationContext';
 import { uploadImage } from '@frontend/lib/upload-image';
 import type { Plan } from '@server/database/schemas/projects';
 import { deleteImage } from '@server-actions/files/delete-image';
@@ -28,7 +28,7 @@ interface PlanFormProps {
 }
 
 export const PlanForm = ({ plan, setPlan, onSubmit }: PlanFormProps) => {
-    const { t } = useTranslation();
+    const t = useTranslations();
 
     const [isUploading, setIsUploading] = React.useState(false);
     const [newImageData, setNewImageData] = React.useState<Blob | null | undefined>(undefined); // null = delete image
@@ -321,7 +321,7 @@ type EditImageButtonsProps = {
     onDraw(): void;
 };
 const EditImageButtons = ({ imageUploadId, onShowCamera, onDraw }: EditImageButtonsProps) => {
-    const { t } = useTranslation();
+    const t = useTranslations();
 
     return (
         <div className="edit-plans-container">

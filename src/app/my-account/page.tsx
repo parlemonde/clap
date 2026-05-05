@@ -1,3 +1,4 @@
+import { getTranslations } from 'next-intl/server';
 import * as React from 'react';
 
 import { Container } from '@frontend/components/layout/Container';
@@ -5,7 +6,6 @@ import { Divider } from '@frontend/components/layout/Divider';
 import { Title } from '@frontend/components/layout/Typography';
 import { getCurrentUser } from '@server/auth/get-current-user';
 import { isSSOUser } from '@server/auth/is-sso-user';
-import { getTranslation } from '@server-actions/get-translation';
 
 import { DeleteAccountButton } from './DeleteAccountButton';
 import { LogoutForm } from './LogoutForm';
@@ -14,7 +14,7 @@ import { UpdateNameForm } from './UpdateNameForm';
 import { UpdatePasswordButton } from './UpdatePasswordButton';
 
 export default async function AccountPage() {
-    const { t } = await getTranslation();
+    const t = await getTranslations();
     const user = await getCurrentUser();
 
     if (!user || user.role === 'student') {

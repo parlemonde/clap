@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import * as React from 'react';
 
 import { Container } from '@frontend/components/layout/Container';
@@ -10,8 +11,6 @@ import { NextButton } from '@frontend/components/navigation/NextButton';
 import { Steps } from '@frontend/components/navigation/Steps';
 import { ThemeBreadcrumbs } from '@frontend/components/navigation/ThemeBreadcrumbs';
 import { Inverted } from '@frontend/components/ui/Inverted';
-import { Trans } from '@frontend/components/ui/Trans';
-import { useTranslation } from '@frontend/contexts/translationContext';
 import { useCollaboration } from '@frontend/hooks/useCollaboration';
 import { useCurrentProject } from '@frontend/hooks/useCurrentProject';
 import type { ServerPageProps } from '@lib/page-props.types';
@@ -20,7 +19,7 @@ export default function ScenarioPage(props: ServerPageProps) {
     const router = useRouter();
     const { projectData, setProjectData } = useCurrentProject();
     useCollaboration(); // Listen to collaboration updates
-    const { t } = useTranslation();
+    const t = useTranslations();
 
     const searchParams = React.use(props.searchParams);
     const questionIndex = typeof searchParams.question === 'string' ? Number(searchParams.question) : undefined;
@@ -50,9 +49,9 @@ export default function ScenarioPage(props: ServerPageProps) {
             <Steps activeStep={1} themeId={projectData.themeId}></Steps>
             <Title color="primary" marginY="md" variant="h1">
                 <Inverted isRound>2</Inverted>{' '}
-                <Trans i18nKey="2_questions_page.header.title">
-                    Mes <Inverted>séquences</Inverted>
-                </Trans>
+                {t.rich('2_questions_page.header.title', {
+                    inverted: (chunks) => <Inverted>{chunks}</Inverted>,
+                })}
             </Title>
             <Form onSubmit={onUpdateQuestion}>
                 <Field
