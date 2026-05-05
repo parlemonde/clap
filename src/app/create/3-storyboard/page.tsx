@@ -15,7 +15,6 @@ import { ThemeBreadcrumbs } from '@frontend/components/navigation/ThemeBreadcrum
 import { Inverted } from '@frontend/components/ui/Inverted';
 import { Loader } from '@frontend/components/ui/Loader';
 import { sendToast } from '@frontend/components/ui/Toasts';
-import { Trans } from '@frontend/components/ui/Trans';
 import { userContext } from '@frontend/contexts/userContext';
 import { useCollaboration } from '@frontend/hooks/useCollaboration';
 import { useCurrentProject } from '@frontend/hooks/useCurrentProject';
@@ -89,9 +88,9 @@ export default function StoryboardPage() {
             <Flex flexDirection="row" alignItems="center" marginY="md">
                 <Title color="primary" variant="h1" marginRight="xl">
                     <Inverted isRound>3</Inverted>{' '}
-                    <Trans i18nKey="3_storyboard_page.header.title">
-                        Création du <Inverted>Storyboard</Inverted>
-                    </Trans>
+                    {t.rich('3_storyboard_page.header.title', {
+                        inverted: (chunks) => <Inverted>{chunks}</Inverted>,
+                    })}
                 </Title>
                 {!isStudent && collaborationButton}
             </Flex>

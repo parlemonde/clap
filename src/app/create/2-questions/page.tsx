@@ -15,7 +15,6 @@ import { Steps } from '@frontend/components/navigation/Steps';
 import { ThemeBreadcrumbs } from '@frontend/components/navigation/ThemeBreadcrumbs';
 import { Inverted } from '@frontend/components/ui/Inverted';
 import { sendToast } from '@frontend/components/ui/Toasts';
-import { Trans } from '@frontend/components/ui/Trans';
 import { userContext } from '@frontend/contexts/userContext';
 import { useCollaboration } from '@frontend/hooks/useCollaboration';
 import { useCurrentProject } from '@frontend/hooks/useCurrentProject';
@@ -79,9 +78,9 @@ export default function QuestionPage() {
             <Flex flexDirection="row" alignItems="center" marginY="md">
                 <Title color="primary" variant="h1" marginRight="xl">
                     <Inverted isRound>2</Inverted>{' '}
-                    <Trans i18nKey="2_questions_page.header.title">
-                        Mes <Inverted>séquences</Inverted>
-                    </Trans>
+                    {t.rich('2_questions_page.header.title', {
+                        inverted: (chunks) => <Inverted>{chunks}</Inverted>,
+                    })}
                 </Title>
                 {collaborationButton}
             </Flex>

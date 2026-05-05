@@ -15,7 +15,6 @@ import { NextButton } from '@frontend/components/navigation/NextButton';
 import { Steps } from '@frontend/components/navigation/Steps';
 import { ThemeBreadcrumbs } from '@frontend/components/navigation/ThemeBreadcrumbs';
 import { Inverted } from '@frontend/components/ui/Inverted';
-import { Trans } from '@frontend/components/ui/Trans';
 import { userContext } from '@frontend/contexts/userContext';
 import { useCollaboration } from '@frontend/hooks/useCollaboration';
 import { useCurrentProject } from '@frontend/hooks/useCurrentProject';
@@ -53,9 +52,9 @@ export default function PreMountingPage() {
             <Flex flexDirection="row" alignItems="center" marginY="md">
                 <Title color="primary" variant="h1" marginRight="xl">
                     <Inverted isRound>4</Inverted>{' '}
-                    <Trans i18nKey="4_pre_mounting_page.header.title">
-                        Prémontez votre <Inverted>film</Inverted>
-                    </Trans>
+                    {t.rich('4_pre_mounting_page.header.title', {
+                        inverted: (chunks) => <Inverted>{chunks}</Inverted>,
+                    })}
                 </Title>
                 {!isStudent && collaborationButton}
             </Flex>

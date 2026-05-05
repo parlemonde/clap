@@ -11,7 +11,6 @@ import { NextButton } from '@frontend/components/navigation/NextButton';
 import { Steps } from '@frontend/components/navigation/Steps';
 import { ThemeBreadcrumbs } from '@frontend/components/navigation/ThemeBreadcrumbs';
 import { Inverted } from '@frontend/components/ui/Inverted';
-import { Trans } from '@frontend/components/ui/Trans';
 import { useCollaboration } from '@frontend/hooks/useCollaboration';
 import { useCurrentProject } from '@frontend/hooks/useCurrentProject';
 import type { ServerPageProps } from '@lib/page-props.types';
@@ -50,9 +49,9 @@ export default function ScenarioPage(props: ServerPageProps) {
             <Steps activeStep={1} themeId={projectData.themeId}></Steps>
             <Title color="primary" marginY="md" variant="h1">
                 <Inverted isRound>2</Inverted>{' '}
-                <Trans i18nKey="2_questions_page.header.title">
-                    Mes <Inverted>séquences</Inverted>
-                </Trans>
+                {t.rich('2_questions_page.header.title', {
+                    inverted: (chunks) => <Inverted>{chunks}</Inverted>,
+                })}
             </Title>
             <Form onSubmit={onUpdateQuestion}>
                 <Field

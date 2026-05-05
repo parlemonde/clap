@@ -9,7 +9,6 @@ import { Title } from '@frontend/components/layout/Typography';
 import { NextButton } from '@frontend/components/navigation/NextButton';
 import { Loader } from '@frontend/components/ui/Loader';
 import { sendToast } from '@frontend/components/ui/Toasts';
-import { Trans } from '@frontend/components/ui/Trans';
 import { userContext } from '@frontend/contexts/userContext';
 import { useLocalStorage } from '@frontend/hooks/useLocalStorage';
 import type { LocalTheme } from '@frontend/hooks/useLocalStorage/local-storage';
@@ -53,9 +52,9 @@ export const NewThemeForm = () => {
                     name="themeName"
                     label={
                         <Title color="inherit" variant="h2">
-                            <Trans i18nKey="new_theme_page.name_field.label">
-                                Nom du thème<span style={{ color: 'red' }}>*</span> :
-                            </Trans>
+                            {t.rich('new_theme_page.name_field.label', {
+                                required: (chunks) => <span style={{ color: 'red' }}>{chunks}</span>,
+                            })}
                         </Title>
                     }
                     input={
