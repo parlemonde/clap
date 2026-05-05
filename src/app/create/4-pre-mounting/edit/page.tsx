@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import * as React from 'react';
 
 import { FeedbackForm } from '@frontend/components/collaboration/FeedbackForm';
@@ -11,7 +12,6 @@ import { Title } from '@frontend/components/layout/Typography';
 import { Steps } from '@frontend/components/navigation/Steps';
 import { ThemeBreadcrumbs } from '@frontend/components/navigation/ThemeBreadcrumbs';
 import { Inverted } from '@frontend/components/ui/Inverted';
-import { useTranslation } from '@frontend/contexts/translationContext';
 import { userContext } from '@frontend/contexts/userContext';
 import { useCollaboration } from '@frontend/hooks/useCollaboration';
 import { useCurrentProject } from '@frontend/hooks/useCurrentProject';
@@ -24,7 +24,7 @@ export default function MontagePage(props: ServerPageProps) {
     const router = useRouter();
     const user = React.useContext(userContext);
     const isStudent = user?.role === 'student';
-    const { t } = useTranslation();
+    const t = useTranslations();
     const { projectData, setProjectData } = useCurrentProject();
     const { isCollaborationEnabled, sendCollaborationValidationMsg } = useCollaboration(); // Listen to collaboration updates
 

@@ -1,10 +1,10 @@
 'use client';
 
+import { useLocale, useTranslations } from 'next-intl';
 import React from 'react';
 
 import { Field, Form } from '@frontend/components/layout/Form';
 import { Select } from '@frontend/components/layout/Form/Select';
-import { useTranslation } from '@frontend/contexts/translationContext';
 import type { LanguageOption } from '@server/database/schemas/languages';
 
 interface LanguageSelectProps {
@@ -13,7 +13,8 @@ interface LanguageSelectProps {
 }
 
 export const LanguageSelect = ({ languages, cookieName }: LanguageSelectProps) => {
-    const { t, currentLocale } = useTranslation();
+    const t = useTranslations();
+    const currentLocale = useLocale();
 
     return (
         <Form preventSubmit>

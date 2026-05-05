@@ -1,3 +1,4 @@
+import { getLocale, getTranslations } from 'next-intl/server';
 import * as React from 'react';
 
 import { ScenarioCard } from '@frontend/components/create/ScenarioCard';
@@ -11,7 +12,6 @@ import type { ServerPageProps } from '@lib/page-props.types';
 import { getThemeId } from '@lib/search-params/get-theme-id';
 import { serializeToQueryUrl } from '@lib/serialize-to-query-url';
 import { getCurrentUser } from '@server/auth/get-current-user';
-import { getTranslation } from '@server-actions/get-translation';
 import { listScenarios } from '@server-actions/scenarios/list-scenarios';
 
 import { Scenarios } from './Scenarios';
@@ -27,7 +27,7 @@ const getScenarios = async (themeId: number, userId: string | undefined, questio
 export default async function ScenarioPage(props: ServerPageProps) {
     const searchParams = await props.searchParams;
     const themeId = getThemeId(searchParams);
-    const { t, currentLocale } = await getTranslation();
+    const [t, currentLocale] = await Promise.all([getTranslations(), getLocale()]);
     const user = await getCurrentUser();
 
     if (user?.role === 'student') {

@@ -2,6 +2,7 @@
 
 import { EyeOpenIcon, EyeNoneIcon } from '@radix-ui/react-icons';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import React from 'react';
 
 import { Button } from '@frontend/components/layout/Button';
@@ -9,7 +10,6 @@ import { IconButton } from '@frontend/components/layout/Button/IconButton';
 import { Field, Form, Input } from '@frontend/components/layout/Form';
 import { Loader } from '@frontend/components/ui/Loader';
 import { sendToast } from '@frontend/components/ui/Toasts';
-import { useTranslation } from '@frontend/contexts/translationContext';
 import { authClient } from '@frontend/lib/auth-client';
 
 const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/;
@@ -18,7 +18,7 @@ interface UpdatePasswordFormProps {
     verifyToken: string;
 }
 export const UpdatePasswordForm = ({ verifyToken }: UpdatePasswordFormProps) => {
-    const { t } = useTranslation();
+    const t = useTranslations();
     const router = useRouter();
 
     const [password, setPassword] = React.useState('');

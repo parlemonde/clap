@@ -1,3 +1,4 @@
+import { getTranslations } from 'next-intl/server';
 import * as React from 'react';
 
 import { Button } from '@frontend/components/layout/Button';
@@ -6,7 +7,6 @@ import { Flex } from '@frontend/components/layout/Flex';
 import { Text, Title } from '@frontend/components/layout/Typography';
 import type { ServerPageProps } from '@lib/page-props.types';
 import { getCurrentUser } from '@server/auth/get-current-user';
-import { getTranslation } from '@server-actions/get-translation';
 import { getProject } from '@server-actions/projects/get-project';
 
 import { ProjectForm } from './ProjectForm';
@@ -21,7 +21,7 @@ export default async function EditProjectPage(props: ServerPageProps) {
 
     const projectId = Number(params.id);
     const project = await getProject(projectId);
-    const { t } = await getTranslation();
+    const t = await getTranslations();
 
     if (!project) {
         return (

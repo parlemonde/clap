@@ -2,6 +2,7 @@
 
 import { UploadIcon } from '@radix-ui/react-icons';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import * as React from 'react';
 
 import { DiaporamaPlayer } from '@frontend/components/create/DiaporamaPlayer';
@@ -14,7 +15,6 @@ import { ThemeBreadcrumbs } from '@frontend/components/navigation/ThemeBreadcrum
 import { Inverted } from '@frontend/components/ui/Inverted';
 import { Loader } from '@frontend/components/ui/Loader';
 import { sendToast } from '@frontend/components/ui/Toasts';
-import { useTranslation } from '@frontend/contexts/translationContext';
 import { userContext } from '@frontend/contexts/userContext';
 import { useCollaboration } from '@frontend/hooks/useCollaboration';
 import { useCurrentProject } from '@frontend/hooks/useCurrentProject';
@@ -25,7 +25,7 @@ import { deleteSound } from '@server-actions/files/delete-sound';
 
 export default function MusicPage() {
     const router = useRouter();
-    const { t } = useTranslation();
+    const t = useTranslations();
     const { projectData, setProjectData } = useCurrentProject();
     useCollaboration(); // Listen to collaboration updates
     const user = React.useContext(userContext);

@@ -2,11 +2,11 @@
 
 import { Pencil1Icon } from '@radix-ui/react-icons';
 import clsx from 'clsx';
+import { useTranslations } from 'next-intl';
 import * as React from 'react';
 
 import { IconButton } from '@frontend/components/layout/Button/IconButton';
 import { Title } from '@frontend/components/layout/Typography';
-import { useTranslation } from '@frontend/contexts/translationContext';
 
 import styles from './project-card.module.css';
 
@@ -18,7 +18,7 @@ type ProjectCardProps = {
     className?: string;
 };
 export const ProjectCard = ({ title = '', themeName = '', onClick, onClickEdit, className }: ProjectCardProps) => {
-    const { t } = useTranslation();
+    const t = useTranslations();
 
     return (
         <div

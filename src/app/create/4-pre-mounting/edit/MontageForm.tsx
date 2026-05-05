@@ -1,4 +1,5 @@
 import { FileTextIcon, SpeakerLoudIcon, TimerIcon, UploadIcon } from '@radix-ui/react-icons';
+import { useTranslations } from 'next-intl';
 import * as React from 'react';
 
 import { DiaporamaPlayer } from '@frontend/components/create/DiaporamaPlayer';
@@ -9,7 +10,6 @@ import { Title } from '@frontend/components/layout/Typography';
 import { NextButton } from '@frontend/components/navigation/NextButton';
 import { Loader } from '@frontend/components/ui/Loader';
 import { sendToast } from '@frontend/components/ui/Toasts';
-import { useTranslation } from '@frontend/contexts/translationContext';
 import { uploadSound } from '@frontend/lib/upload-sound';
 import type { Sound } from '@lib/get-sounds';
 import type { Sequence } from '@server/database/schemas/projects';
@@ -22,7 +22,7 @@ interface MontageFormProps {
     feedbackForm?: React.ReactNode;
 }
 export const MontageForm = ({ sequence, setSequence, onSubmit, feedbackForm }: MontageFormProps) => {
-    const { t } = useTranslation();
+    const t = useTranslations();
 
     const [newSoundFile, setNewSoundFile] = React.useState<File | null | undefined>(undefined); // null = delete sound
     const newSoundUrl = React.useMemo(() => (newSoundFile ? URL.createObjectURL(newSoundFile) : null), [newSoundFile]);

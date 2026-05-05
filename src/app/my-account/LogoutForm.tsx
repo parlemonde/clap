@@ -1,14 +1,14 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import React from 'react';
 
 import { Button } from '@frontend/components/layout/Button';
 import { Loader } from '@frontend/components/ui/Loader';
-import { useTranslation } from '@frontend/contexts/translationContext';
 import { logout } from '@server-actions/authentication/logout';
 
 export const LogoutForm = () => {
-    const { t } = useTranslation();
+    const t = useTranslations();
     const [isLoading, setIsLoading] = React.useState(false);
 
     return (

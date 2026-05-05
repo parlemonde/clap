@@ -1,12 +1,12 @@
 import { Cross2Icon } from '@radix-ui/react-icons';
 import classNames from 'clsx';
+import { useTranslations } from 'next-intl';
 import { Dialog } from 'radix-ui';
 import React from 'react';
 
 import { Button } from '@frontend/components/layout/Button';
 import { IconButton } from '@frontend/components/layout/Button/IconButton';
 import { CircularProgress } from '@frontend/components/layout/CircularProgress';
-import { useTranslation } from '@frontend/contexts/translationContext';
 
 import styles from './modal.module.css';
 
@@ -47,7 +47,7 @@ export const Modal = ({
     onOpenAutoFocus = true,
     children,
 }: React.PropsWithChildren<ModalProps>) => {
-    const { t } = useTranslation();
+    const t = useTranslations();
     const defaultCancelLabel = t('common.actions.cancel');
     const defaultConfirmLabel = t('common.actions.validate');
 

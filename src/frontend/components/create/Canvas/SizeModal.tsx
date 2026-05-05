@@ -1,7 +1,7 @@
+import { useTranslations } from 'next-intl';
 import React from 'react';
 
 import { Modal } from '@frontend/components/layout/Modal';
-import { useTranslation } from '@frontend/contexts/translationContext';
 
 interface SizeModalProps {
     isOpen: boolean;
@@ -10,7 +10,7 @@ interface SizeModalProps {
 }
 
 export const SizeModal: React.FunctionComponent<SizeModalProps> = ({ isOpen = false, setIsOpen = () => {}, setSize = () => {} }: SizeModalProps) => {
-    const { t } = useTranslation();
+    const t = useTranslations();
     const handleCloseModalSize = (size?: number) => () => {
         setIsOpen(false);
         if (size !== undefined) {

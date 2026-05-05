@@ -1,11 +1,11 @@
 'use client';
 
 import { Pencil1Icon } from '@radix-ui/react-icons';
+import { useTranslations } from 'next-intl';
 import React from 'react';
 
 import { IconButton } from '@frontend/components/layout/Button/IconButton';
 import { Title } from '@frontend/components/layout/Typography';
-import { useTranslation } from '@frontend/contexts/translationContext';
 import { useCurrentProject } from '@frontend/hooks/useCurrentProject';
 import { useLocalStorage } from '@frontend/hooks/useLocalStorage';
 
@@ -13,7 +13,7 @@ export const ProjectTitle = () => {
     const [projectId] = useLocalStorage('projectId');
     const { projectData, name } = useCurrentProject();
 
-    const { t } = useTranslation();
+    const t = useTranslations();
     if (!projectData || !projectId || !name) {
         return null;
     }

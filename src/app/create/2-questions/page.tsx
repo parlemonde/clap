@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { useLocale, useTranslations } from 'next-intl';
 import * as React from 'react';
 
 import { Button } from '@frontend/components/layout/Button';
@@ -15,7 +16,6 @@ import { ThemeBreadcrumbs } from '@frontend/components/navigation/ThemeBreadcrum
 import { Inverted } from '@frontend/components/ui/Inverted';
 import { sendToast } from '@frontend/components/ui/Toasts';
 import { Trans } from '@frontend/components/ui/Trans';
-import { useTranslation } from '@frontend/contexts/translationContext';
 import { userContext } from '@frontend/contexts/userContext';
 import { useCollaboration } from '@frontend/hooks/useCollaboration';
 import { useCurrentProject } from '@frontend/hooks/useCurrentProject';
@@ -27,7 +27,8 @@ import { QuestionsList } from './QuestionsList';
 
 export default function QuestionPage() {
     const router = useRouter();
-    const { t, currentLocale } = useTranslation();
+    const t = useTranslations();
+    const currentLocale = useLocale();
     const user = React.useContext(userContext);
     const [projectId, setProjectId] = useLocalStorage('projectId');
     const { projectData, setProjectData } = useCurrentProject();

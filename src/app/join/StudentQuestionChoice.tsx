@@ -1,9 +1,9 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import * as React from 'react';
 
 import { Text, Title } from '@frontend/components/layout/Typography';
-import { useTranslation } from '@frontend/contexts/translationContext';
 import { COLORS } from '@frontend/lib/colors';
 import type { ProjectData } from '@server/database/schemas/projects';
 
@@ -12,7 +12,7 @@ interface StudentQuestionChoiceProps {
     onSelectQuestion?: (questionId: number) => void;
 }
 export const StudentQuestionChoice = ({ project, onSelectQuestion }: StudentQuestionChoiceProps) => {
-    const { t } = useTranslation();
+    const t = useTranslations();
     return (
         <>
             <Title marginY="xl">{t('join_page.question_choice.title')}</Title>

@@ -1,11 +1,11 @@
 'use client';
 
+import { useLocale, useTranslations } from 'next-intl';
 import React from 'react';
 import useSWR from 'swr';
 
 import { Breadcrumbs } from '@frontend/components/layout/Breadcrumbs';
 import { Placeholder } from '@frontend/components/layout/Placeholder';
-import { useTranslation } from '@frontend/contexts/translationContext';
 import { userContext } from '@frontend/contexts/userContext';
 import { useLocalStorage } from '@frontend/hooks/useLocalStorage';
 import { isLocalTheme } from '@frontend/hooks/useLocalStorage/local-storage';
@@ -17,7 +17,8 @@ type ThemeBreadcrumbsProps = {
 };
 
 export const ThemeBreadcrumbs = ({ themeId }: ThemeBreadcrumbsProps) => {
-    const { t, currentLocale } = useTranslation();
+    const t = useTranslations();
+    const currentLocale = useLocale();
     const user = React.useContext(userContext);
     const { data: themes, isLoading } = useSWR<Theme[]>('/api/themes', jsonFetcher);
     const [localThemes, _setLocalThemes, isLoadingLocalThemes] = useLocalStorage('themes', []);

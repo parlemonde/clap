@@ -1,11 +1,11 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { useLocale, useTranslations } from 'next-intl';
 import React from 'react';
 import useSWR from 'swr';
 
 import { ScenarioCard } from '@frontend/components/create/ScenarioCard';
-import { useTranslation } from '@frontend/contexts/translationContext';
 import { useLocalStorage } from '@frontend/hooks/useLocalStorage';
 import { deleteFromLocalStorage, isLocalScenario, isLocalTheme, setToLocalStorage } from '@frontend/hooks/useLocalStorage/local-storage';
 import { jsonFetcher } from '@lib/json-fetcher';
@@ -21,7 +21,8 @@ interface ScenariosProps {
 
 export const Scenarios = ({ scenarios, themeId }: ScenariosProps) => {
     const router = useRouter();
-    const { t, currentLocale } = useTranslation();
+    const t = useTranslations();
+    const currentLocale = useLocale();
 
     const { data: themes } = useSWR<Theme[]>('/api/themes', jsonFetcher);
     const [localThemes] = useLocalStorage('themes', []);

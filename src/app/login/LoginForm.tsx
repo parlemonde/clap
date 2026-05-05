@@ -1,6 +1,7 @@
 'use client';
 
 import { EyeNoneIcon, EyeOpenIcon } from '@radix-ui/react-icons';
+import { useTranslations } from 'next-intl';
 import * as React from 'react';
 
 import { Button } from '@frontend/components/layout/Button';
@@ -8,7 +9,6 @@ import { IconButton } from '@frontend/components/layout/Button/IconButton';
 import { Field, Form, Input } from '@frontend/components/layout/Form';
 import { Link } from '@frontend/components/navigation/Link';
 import { FormLoader } from '@frontend/components/ui/Loader';
-import { useTranslation } from '@frontend/contexts/translationContext';
 import { authClient } from '@frontend/lib/auth-client';
 import { login } from '@server-actions/authentication/login';
 
@@ -18,7 +18,7 @@ interface LoginFormProps {
 
 export const LoginForm = ({ provider }: LoginFormProps) => {
     const [message, formAction] = React.useActionState(login, '');
-    const { t } = useTranslation();
+    const t = useTranslations();
 
     const [showPassword, setShowPassword] = React.useState(false);
 

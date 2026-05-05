@@ -1,3 +1,4 @@
+import { getTranslations } from 'next-intl/server';
 import * as React from 'react';
 
 import { Container } from '@frontend/components/layout/Container';
@@ -5,12 +6,11 @@ import { Title } from '@frontend/components/layout/Typography';
 import { db } from '@server/database';
 import { languages } from '@server/database/schemas/languages';
 import { APP_LANGUAGE_COOKIE_NAME } from '@server/i18n/constants';
-import { getTranslation } from '@server-actions/get-translation';
 
 import { LanguageSelect } from './LanguageSelect';
 
 export default async function SettingsPage() {
-    const { t } = await getTranslation();
+    const t = await getTranslations();
     const availableLanguages = await db.select({ value: languages.value, label: languages.label }).from(languages);
 
     return (

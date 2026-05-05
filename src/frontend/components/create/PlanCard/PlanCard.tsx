@@ -1,11 +1,11 @@
 import { TrashIcon, LightningBoltIcon } from '@radix-ui/react-icons';
 import classNames from 'clsx';
+import { useTranslations } from 'next-intl';
 import * as React from 'react';
 import { createPortal } from 'react-dom';
 
 import { IconButton } from '@frontend/components/layout/Button/IconButton';
 import { Link } from '@frontend/components/navigation/Link';
-import { useTranslation } from '@frontend/contexts/translationContext';
 import { serializeToQueryUrl } from '@lib/serialize-to-query-url';
 import type { Plan } from '@server/database/schemas/projects';
 
@@ -35,7 +35,7 @@ export const PlanCard = ({
     onDelete = () => {},
     canEdit = true,
 }: PlanCardProps) => {
-    const { t } = useTranslation();
+    const t = useTranslations();
     const buttonStyle: React.CSSProperties = { width: '100%', height: '100%', pointerEvents: canEdit ? 'auto' : 'none' };
     if (plan.imageUrl) {
         buttonStyle.backgroundImage = `url('${plan.imageUrl}')`;

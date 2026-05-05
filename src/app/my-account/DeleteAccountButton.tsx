@@ -1,6 +1,7 @@
 'use client';
 
 import { InfoCircledIcon } from '@radix-ui/react-icons';
+import { useTranslations } from 'next-intl';
 import React from 'react';
 
 import { Button } from '@frontend/components/layout/Button';
@@ -8,11 +9,10 @@ import { Flex } from '@frontend/components/layout/Flex';
 import { Input } from '@frontend/components/layout/Form';
 import { Modal } from '@frontend/components/layout/Modal';
 import { Trans } from '@frontend/components/ui/Trans';
-import { useTranslation } from '@frontend/contexts/translationContext';
 import { deleteUser } from '@server-actions/users/delete-user';
 
 export const DeleteAccountButton = () => {
-    const { t } = useTranslation();
+    const t = useTranslations();
     const [isUpdateModalOpen, setIsUpdateModalOpen] = React.useState(false);
     const [isLoading, setIsLoading] = React.useState(false);
 

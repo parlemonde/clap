@@ -1,11 +1,11 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import React from 'react';
 
 import { Field, Input } from '@frontend/components/layout/Form';
 import { Modal } from '@frontend/components/layout/Modal';
-import { useTranslation } from '@frontend/contexts/translationContext';
 import { authClient } from '@frontend/lib/auth-client';
 import type { User } from '@server/database/schemas/users';
 
@@ -14,7 +14,7 @@ interface UpdateNameFormProps {
 }
 
 export const UpdateNameForm = ({ user }: UpdateNameFormProps) => {
-    const { t } = useTranslation();
+    const t = useTranslations();
     const router = useRouter();
     const [isUpdateModalOpen, setIsUpdateModalOpen] = React.useState(false);
     const [updateErrorMessage, setUpdateErrorMessage] = React.useState<string | null>(null);

@@ -2,6 +2,7 @@
 
 import { EyeOpenIcon, EyeNoneIcon } from '@radix-ui/react-icons';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import React from 'react';
 
 import { Button } from '@frontend/components/layout/Button';
@@ -10,7 +11,6 @@ import { Field, Form, Input } from '@frontend/components/layout/Form';
 import { Link } from '@frontend/components/navigation/Link';
 import { Loader } from '@frontend/components/ui/Loader';
 import { sendToast } from '@frontend/components/ui/Toasts';
-import { useTranslation } from '@frontend/contexts/translationContext';
 
 const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/;
 const EMAIL_REGEX = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
@@ -20,7 +20,7 @@ interface SignUpFormProps {
 }
 export const SignUpForm = ({ inviteCode }: SignUpFormProps) => {
     const router = useRouter();
-    const { t } = useTranslation();
+    const t = useTranslations();
 
     const [name, setName] = React.useState('');
     const [email, setEmail] = React.useState('');

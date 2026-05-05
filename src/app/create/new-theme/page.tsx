@@ -1,3 +1,4 @@
+import { getTranslations } from 'next-intl/server';
 import * as React from 'react';
 
 import { Breadcrumbs } from '@frontend/components/layout/Breadcrumbs';
@@ -6,12 +7,11 @@ import { Title } from '@frontend/components/layout/Typography';
 import { BackButton } from '@frontend/components/navigation/BackButton';
 import { Inverted } from '@frontend/components/ui/Inverted';
 import { Trans } from '@frontend/components/ui/Trans';
-import { getTranslation } from '@server-actions/get-translation';
 
 import { NewThemeForm } from './NewThemeForm';
 
 export default async function NewThemePage() {
-    const { t } = await getTranslation();
+    const t = await getTranslations();
 
     return (
         <Container paddingBottom="xl">

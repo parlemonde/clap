@@ -1,9 +1,9 @@
 'use client';
 
+import { useLocale, useTranslations } from 'next-intl';
 import * as React from 'react';
 
 import { ThemeCard } from '@frontend/components/create/ThemeCard';
-import { useTranslation } from '@frontend/contexts/translationContext';
 import { useLocalStorage } from '@frontend/hooks/useLocalStorage';
 import type { Theme } from '@server/database/schemas/themes';
 
@@ -12,7 +12,8 @@ interface ThemesProps {
 }
 
 export const Themes = ({ themes }: ThemesProps) => {
-    const { t, currentLocale } = useTranslation();
+    const t = useTranslations();
+    const currentLocale = useLocale();
     const [localThemes] = useLocalStorage('themes', []);
 
     return (

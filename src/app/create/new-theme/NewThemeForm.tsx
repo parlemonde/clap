@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import * as React from 'react';
 
 import { Field, Form, Input } from '@frontend/components/layout/Form';
@@ -9,7 +10,6 @@ import { NextButton } from '@frontend/components/navigation/NextButton';
 import { Loader } from '@frontend/components/ui/Loader';
 import { sendToast } from '@frontend/components/ui/Toasts';
 import { Trans } from '@frontend/components/ui/Trans';
-import { useTranslation } from '@frontend/contexts/translationContext';
 import { userContext } from '@frontend/contexts/userContext';
 import { useLocalStorage } from '@frontend/hooks/useLocalStorage';
 import type { LocalTheme } from '@frontend/hooks/useLocalStorage/local-storage';
@@ -17,7 +17,7 @@ import { createTheme } from '@server-actions/themes/create-theme';
 
 export const NewThemeForm = () => {
     const router = useRouter();
-    const { t } = useTranslation();
+    const t = useTranslations();
     const user = React.useContext(userContext);
     const [themeName, setThemeName] = React.useState('');
     const [isLoading, setIsLoading] = React.useState(false);

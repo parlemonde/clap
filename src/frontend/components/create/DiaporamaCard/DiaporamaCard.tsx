@@ -1,9 +1,9 @@
 import { FileTextIcon, SpeakerLoudIcon } from '@radix-ui/react-icons';
 import classNames from 'clsx';
+import { useTranslations } from 'next-intl';
 import React from 'react';
 
 import { Link } from '@frontend/components/navigation/Link';
-import { useTranslation } from '@frontend/contexts/translationContext';
 import TimerIcon from '@frontend/svg/timer.svg';
 import { getSequenceDuration } from '@lib/get-sequence-duration';
 import { serializeToQueryUrl } from '@lib/serialize-to-query-url';
@@ -17,7 +17,7 @@ type DiaporamaCardProps = {
     isDisabled?: boolean;
 };
 export const DiaporamaCard = ({ questionIndex, sequence, isDisabled }: DiaporamaCardProps) => {
-    const { t } = useTranslation();
+    const t = useTranslations();
     const [frameIndex, setFrameIndex] = React.useState<'title' | number>(sequence.title !== null ? 'title' : 0);
     const [canvasHeight, setCanvasHeight] = React.useState(0); // TODO
     const resizeObserver = React.useMemo<ResizeObserver>(

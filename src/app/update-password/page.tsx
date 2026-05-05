@@ -1,11 +1,11 @@
 'use server';
 
+import { getTranslations } from 'next-intl/server';
 import React from 'react';
 
 import { Container } from '@frontend/components/layout/Container';
 import { Title } from '@frontend/components/layout/Typography';
 import type { ServerPageProps } from '@lib/page-props.types';
-import { getTranslation } from '@server-actions/get-translation';
 
 import { UpdatePasswordForm } from './UpdatePasswordForm';
 
@@ -13,7 +13,7 @@ export default async function UpdatePasswordPage(props: ServerPageProps) {
     const searchParams = await props.searchParams;
     const verifyToken = typeof searchParams['verify-token'] === 'string' ? searchParams['verify-token'] : '';
 
-    const { t } = await getTranslation();
+    const t = await getTranslations();
 
     return (
         <Container className="text-center">
