@@ -5,13 +5,15 @@
 This file is the working guide for coding agents in the `clap` repository.
 It is intentionally focused on the live application code under `src/`.
 
-Do not spend time on the separate `server-*` folders when working from this guide:
+Do not spend time on separate `server-*` folders when working from this guide.
+If such folders exist, they are out of scope for the main app. The current
+standalone folder is:
 
-- `server-video-generation/`
-- `server-pdf-generation/`
 - `server-websockets/`
 
-Those folders exist today, but they are out of scope here and are expected to be removed. If a task mentions "the app", "the frontend", "the Next.js codebase", or "the main product", treat that as the `src/` application unless the user explicitly says otherwise.
+The old standalone video-generation server has been removed. If a task mentions
+"the app", "the frontend", "the Next.js codebase", or "the main product", treat
+that as the `src/` application unless the user explicitly says otherwise.
 
 ## What This Repo Is
 
@@ -174,8 +176,6 @@ Notable fields:
 - display metadata: `name`, `language`
 - collaboration metadata:
   `collaborationCode`, `collaborationCodeExpiresAt`
-- generation metadata:
-  `videoJobId`
 - structured content payload:
   `data`
 
@@ -326,23 +326,23 @@ Do not remove or break collaboration hooks inside the app just because `server-w
 
 ## Media And Generation
 
-The app initiates media generation from inside `src/server-actions/projects/`.
+The app handles media generation across browser-side video helpers and server
+actions for export formats that still need server work.
 
 Important files:
 
-- `generate-video.ts`
+- `src/frontend/lib/browser-video/index.ts`
 - `generate-pdf/`
 - `generate-mlt-zip.ts`
 - `project-to-mlt.ts`
 
 The main app responsibilities here are:
 
-- building generation payloads from `ProjectData`
-- checking progress
-- invoking Lambda-backed jobs
-- exposing downloadable URLs
+- generating MP4/WebM video in the browser
+- building PDF and MLT export payloads from `ProjectData`
+- exposing downloadable PDF and MLT ZIP URLs
 
-Even if the backing workers live elsewhere, the app-side orchestration is in scope.
+MLT export remains supported for external editing workflows.
 
 ## Internationalization
 
