@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useLocale, useTranslations } from 'next-intl';
+import { useExtracted, useLocale } from 'next-intl';
 import React from 'react';
 import useSWR from 'swr';
 
@@ -26,7 +26,9 @@ type NewScenarioFormProps = {
 export const NewScenarioForm = ({ backUrl, themeId }: NewScenarioFormProps) => {
     const router = useRouter();
     const user = React.useContext(userContext);
-    const t = useTranslations();
+
+    const t = useExtracted('create.1-scenario.new.newScenarioForm');
+    const commonT = useExtracted('common');
     const currentLocale = useLocale();
 
     const { setProjectData } = useCurrentProject();
@@ -70,7 +72,7 @@ export const NewScenarioForm = ({ backUrl, themeId }: NewScenarioFormProps) => {
                 createNewProject(newScenario);
                 router.push('/create/2-questions');
             } else {
-                sendToast({ message: t('common.errors.unknown'), type: 'error' });
+                sendToast({ message: commonT('Une erreur est survenue...'), type: 'error' });
             }
             setIsLoading(false);
         } else {
@@ -94,7 +96,7 @@ export const NewScenarioForm = ({ backUrl, themeId }: NewScenarioFormProps) => {
                     name="scenario_title"
                     label={
                         <Title color="inherit" variant="h2">
-                            {t.rich('1_new_scenario_page.title_field.label', {
+                            {t.rich('Choisis ton titre<required>*</required> :', {
                                 required: (chunks) => <span style={{ color: 'red' }}>{chunks}</span>,
                             })}
                         </Title>
@@ -107,7 +109,7 @@ export const NewScenarioForm = ({ backUrl, themeId }: NewScenarioFormProps) => {
                                 setName(event.target.value.slice(0, 200));
                             }}
                             required
-                            placeholder={t('1_new_scenario_page.title_field.placeholder')}
+                            placeholder={t('Mon scénario')}
                             isFullWidth
                             marginTop="sm"
                             color="secondary"
@@ -121,7 +123,7 @@ export const NewScenarioForm = ({ backUrl, themeId }: NewScenarioFormProps) => {
                     name="scenario_description"
                     label={
                         <Title color="inherit" variant="h2">
-                            {t('1_new_scenario_page.desc_field.label')}
+                            {t('Fais en une rapide description :')}
                         </Title>
                     }
                     input={
@@ -131,7 +133,7 @@ export const NewScenarioForm = ({ backUrl, themeId }: NewScenarioFormProps) => {
                             onChange={(event) => {
                                 setDescription(event.target.value.slice(0, 400));
                             }}
-                            placeholder={t('1_new_scenario_page.desc_field.placeholder')}
+                            placeholder={t('Ma description')}
                             isFullWidth
                             style={{ marginTop: '0.5rem' }}
                             color="secondary"

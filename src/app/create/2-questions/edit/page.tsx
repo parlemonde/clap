@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useTranslations } from 'next-intl';
+import { useExtracted } from 'next-intl';
 import * as React from 'react';
 
 import { Container } from '@frontend/components/layout/Container';
@@ -19,7 +19,7 @@ export default function ScenarioPage(props: ServerPageProps) {
     const router = useRouter();
     const { projectData, setProjectData } = useCurrentProject();
     useCollaboration(); // Listen to collaboration updates
-    const t = useTranslations();
+    const t = useExtracted('create.2-questions.edit');
 
     const searchParams = React.use(props.searchParams);
     const questionIndex = typeof searchParams.question === 'string' ? Number(searchParams.question) : undefined;
@@ -49,7 +49,7 @@ export default function ScenarioPage(props: ServerPageProps) {
             <Steps activeStep={1} themeId={projectData.themeId}></Steps>
             <Title color="primary" marginY="md" variant="h1">
                 <Inverted isRound>2</Inverted>{' '}
-                {t.rich('2_questions_page.header.title', {
+                {t.rich('Mes <inverted>séquences</inverted>', {
                     inverted: (chunks) => <Inverted>{chunks}</Inverted>,
                 })}
             </Title>
@@ -58,7 +58,7 @@ export default function ScenarioPage(props: ServerPageProps) {
                     name="question"
                     label={
                         <Title color="inherit" variant="h2">
-                            {t('2_edit_questions_page.question_field.label')}
+                            {t('Modifier une séquence :')}
                         </Title>
                     }
                     input={
@@ -70,7 +70,7 @@ export default function ScenarioPage(props: ServerPageProps) {
                             }}
                             required
                             id="question"
-                            placeholder={t('2_edit_questions_page.question_field.placeholder')}
+                            placeholder={t('Ma séquence')}
                             isFullWidth
                             color="secondary"
                             autoComplete="off"

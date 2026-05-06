@@ -1,4 +1,5 @@
 'use client';
+import { useExtracted } from 'next-intl';
 import * as React from 'react';
 import type { JSX } from 'react';
 
@@ -18,75 +19,81 @@ const UserIcon = (
     </svg>
 );
 
+type TabDefinition = {
+    icon: JSX.Element | null;
+    label: 'create' | 'my-videos' | 'settings' | 'login' | 'app' | 'admin' | 'my-account';
+    path: string;
+};
+
 type Tab = {
     icon: JSX.Element | null;
     label: string;
     path: string;
 };
 
-const defaultTabs: Tab[] = [
+const defaultTabs: TabDefinition[] = [
     {
         icon: <CreateLogo style={{ fill: 'currentcolor', height: '20px' }} />,
-        label: 'common.navigation.create',
+        label: 'create',
         path: '/',
     },
     {
         icon: <SettingsLogo style={{ fill: 'currentcolor', height: '20px' }} />,
-        label: 'common.navigation.settings',
+        label: 'settings',
         path: '/settings',
     },
     {
         icon: UserIcon,
-        label: 'common.navigation.login',
+        label: 'login',
         path: '/login',
     },
 ];
 
-const teacherTabs: Tab[] = [
+const teacherTabs: TabDefinition[] = [
     {
-        label: 'common.navigation.create',
+        label: 'create',
         path: '/',
         icon: <CreateLogo style={{ fill: 'currentcolor' }} />,
     },
     {
-        label: 'common.navigation.my_videos',
+        label: 'my-videos',
         path: '/my-videos',
         icon: <MoviesLogo style={{ fill: 'currentcolor' }} />,
     },
     {
         icon: <SettingsLogo style={{ fill: 'currentcolor' }} />,
-        label: 'common.navigation.settings',
+        label: 'settings',
         path: '/settings',
     },
     {
-        label: 'common.navigation.my_account',
+        label: 'my-account',
         path: '/my-account',
         icon: UserIcon,
     },
 ];
 
-const studentTabs: Tab[] = [
+const studentTabs: TabDefinition[] = [
     {
-        label: 'common.navigation.create',
+        label: 'create',
         path: '/create/3-storyboard',
         icon: <CreateLogo style={{ fill: 'currentcolor' }} />,
     },
     {
         icon: <SettingsLogo style={{ fill: 'currentcolor' }} />,
-        label: 'common.navigation.settings',
+        label: 'settings',
         path: '/settings',
     },
 ];
 
-const adminTabs: Tab[] = [
+const adminTabs: TabDefinition[] = [
     {
-        label: 'common.navigation.app',
+        label: 'app',
         path: '/',
         icon: null,
     },
 ];
 
-export const getTabs = (userRole?: User['role'], isOnAdminPages: boolean = false): Tab[] => {
+const getTabs = (userRole?: User['role'], isOnAdminPages: boolean = false): TabDefinition[] => {
     if (!userRole) {
         return defaultTabs;
     }
@@ -104,7 +111,7 @@ export const getTabs = (userRole?: User['role'], isOnAdminPages: boolean = false
             return [
                 ...teacherTabs,
                 {
-                    label: 'common.navigation.admin',
+                    label: 'admin',
                     path: '/admin/themes',
                     icon: <SettingsLogo style={{ fill: 'currentcolor' }} />,
                 },
@@ -113,4 +120,32 @@ export const getTabs = (userRole?: User['role'], isOnAdminPages: boolean = false
 
     // Should never happen
     return [];
+};
+
+export const useTabs = (userRole?: User['role'], isOnAdminPages: boolean = false): Tab[] => {
+    const commonT = useExtracted('common');
+    const tabs = getTabs(userRole, isOnAdminPages);
+
+    return React.useMemo(
+        () =>
+            tabs.map((tab) => {
+                switch (tab.label) {
+                    case 'create':
+                        return { ...tab, label: commonT('Créer') };
+                    case 'my-videos':
+                        return { ...tab, label: commonT('Mes vidéos') };
+                    case 'settings':
+                        return { ...tab, label: commonT('Réglages') };
+                    case 'login':
+                        return { ...tab, label: commonT('Je me connecte !') };
+                    case 'app':
+                        return { ...tab, label: commonT('Application') };
+                    case 'admin':
+                        return { ...tab, label: commonT('Admin') };
+                    case 'my-account':
+                        return { ...tab, label: commonT('Mon compte') };
+                }
+            }),
+        [commonT, tabs],
+    );
 };

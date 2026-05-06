@@ -1,4 +1,4 @@
-import { useTranslations } from 'next-intl';
+import { useExtracted } from 'next-intl';
 import React from 'react';
 
 import { QuestionCard } from '@frontend/components/create/QuestionCard';
@@ -12,7 +12,8 @@ interface QuestionsListProps {
 }
 
 export const QuestionsList = ({ project, setProject }: QuestionsListProps) => {
-    const t = useTranslations();
+    const t = useExtracted('create.2-questions.QuestionsList');
+    const commonT = useExtracted('common');
     const questions = project.questions;
     const [deleteQuestionIndex, setDeleteQuestionIndex] = React.useState(-1);
 
@@ -68,11 +69,13 @@ export const QuestionsList = ({ project, setProject }: QuestionsListProps) => {
                     setProject({ ...project, questions: newQuestions });
                     setDeleteQuestionIndex(-1);
                 }}
-                title={t('2_questions_page.delete_sequence_modal.title')}
-                confirmLabel={t('common.actions.delete')}
+                title={t('Supprimer la séquence ?')}
+                confirmLabel={commonT('Supprimer')}
                 confirmLevel="error"
             >
-                {t('2_questions_page.delete_sequence_modal.desc')} {questions[deleteQuestionIndex]?.question || ''} ?
+                {t('Voulez-vous vraiment supprimer la séquence {sequenceName} ?', {
+                    sequenceName: questions[deleteQuestionIndex]?.question || '',
+                })}
             </Modal>
         </>
     );

@@ -1,4 +1,4 @@
-import { getTranslations } from 'next-intl/server';
+import { getExtracted } from 'next-intl/server';
 import * as React from 'react';
 
 import { Breadcrumbs } from '@frontend/components/layout/Breadcrumbs';
@@ -10,19 +10,20 @@ import { Inverted } from '@frontend/components/ui/Inverted';
 import { NewThemeForm } from './NewThemeForm';
 
 export default async function NewThemePage() {
-    const t = await getTranslations();
+    const t = await getExtracted('create.new-theme');
+    const commonT = await getExtracted('common');
 
     return (
         <Container paddingBottom="xl">
             <Breadcrumbs
                 className="for-tablet-up-only"
                 marginTop="sm"
-                links={[{ href: '/', label: t('common.filters.all_themes') }]}
-                currentLabel={t('new_theme_page.common.add_theme')}
+                links={[{ href: '/', label: commonT('Tous les thèmes') }]}
+                currentLabel={t('Ajouter votre thème')}
             />
             <BackButton href="/" />
             <Title marginY="md">
-                {t.rich('new_theme_page.header.title', {
+                {t.rich('Créer votre <inverted>thème</inverted> :', {
                     inverted: (chunks) => <Inverted>{chunks}</Inverted>,
                 })}
             </Title>

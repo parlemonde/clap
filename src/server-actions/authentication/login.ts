@@ -3,6 +3,7 @@
 
 import { eq, and } from 'drizzle-orm';
 import { redirect, RedirectType } from 'next/navigation';
+import { getExtracted } from 'next-intl/server';
 
 import { getStringValue } from '@lib/get-string-value';
 import { getAuth } from '@server/auth/auth';
@@ -12,6 +13,7 @@ import { auth_accounts } from '@server/database/schemas/auth-schemas';
 import { users } from '@server/database/schemas/users';
 
 export async function login(_previousState: string, formData: FormData): Promise<string> {
+    const commonT = await getExtracted('common');
     const email = getStringValue(formData.get('email'));
     const password = getStringValue(formData.get('password'));
 
@@ -24,7 +26,7 @@ export async function login(_previousState: string, formData: FormData): Promise
         .leftJoin(users, eq(users.id, auth_accounts.userId))
         .where(and(eq(users.email, email)));
     if (result.some((r) => r.providers === ssoProvider) && result.every((r) => r.providers !== 'credential')) {
-        return 'common.errors.sso_connection_required';
+        return commonT('Veuillez utiliser la connexion avec prof.parlemonde.org pour vous connecter.');
     }
 
     try {
@@ -35,7 +37,7 @@ export async function login(_previousState: string, formData: FormData): Promise
             },
         });
     } catch {
-        return 'common.errors.invalid_credentials';
+        return commonT('Identifiants invalides.');
     }
     redirect('/', RedirectType.push);
 }

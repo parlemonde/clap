@@ -1,4 +1,4 @@
-import { getTranslations } from 'next-intl/server';
+import { getExtracted } from 'next-intl/server';
 import * as React from 'react';
 
 import { Container } from '@frontend/components/layout/Container';
@@ -10,14 +10,15 @@ import { getProjects } from '@server-actions/projects/get-projects';
 import { VideoList } from './VideosList';
 
 export default async function SettingsPage() {
-    const [projects, user, t] = await Promise.all([getProjects(), getCurrentUser(), getTranslations()]);
+    const [projects, user] = await Promise.all([getProjects(), getCurrentUser()]);
+    const t = await getExtracted('my-videos');
     if (!user || user.role === 'student') {
         return null;
     }
     return (
         <Container paddingBottom="xl">
             <Title color="primary" variant="h1" marginY="md">
-                {t.rich('my_videos_page.header.title', {
+                {t.rich('Mes <inverted>super</inverted> vidéos', {
                     inverted: (chunks) => <Inverted>{chunks}</Inverted>,
                 })}
             </Title>

@@ -25,7 +25,7 @@ export const DeleteLanguageModal: React.FunctionComponent<DeleteLanguageModalPro
         setIsLoading(true);
         try {
             await deleteLanguage(language.value);
-            sendToast({ message: 'Language supprimé avec succès!', type: 'success' });
+            sendToast({ message: 'Langue supprimée avec succès !', type: 'success' });
             onClose();
         } catch (err) {
             console.error(err);

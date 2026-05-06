@@ -2,7 +2,7 @@
 
 import { InfoCircledIcon } from '@radix-ui/react-icons';
 import { useRouter } from 'next/navigation';
-import { useTranslations } from 'next-intl';
+import { useExtracted } from 'next-intl';
 import React from 'react';
 
 import { Flex } from '@frontend/components/layout/Flex';
@@ -19,7 +19,8 @@ interface UpdateEmailFormProps {
 }
 
 export const UpdateEmailForm = ({ user }: UpdateEmailFormProps) => {
-    const t = useTranslations();
+    const t = useExtracted('my-account.UpdateEmailForm');
+    const commonT = useExtracted('common');
     const router = useRouter();
     const [isUpdateModalOpen, setIsUpdateModalOpen] = React.useState(false);
     const [updateErrorMessage, setUpdateErrorMessage] = React.useState<string | null>(null);
@@ -62,7 +63,7 @@ export const UpdateEmailForm = ({ user }: UpdateEmailFormProps) => {
                     setIsUpdateModalOpen(true);
                 }}
             >
-                {t('my_account_page.change_email_button.label')}
+                {t('Changer mon e-mail')}
             </a>
             <Modal
                 isOpen={isUpdateModalOpen}
@@ -72,9 +73,9 @@ export const UpdateEmailForm = ({ user }: UpdateEmailFormProps) => {
                     setEmail(user.email);
                 }}
                 onConfirm={onSubmit}
-                confirmLabel={t('common.actions.edit')}
-                cancelLabel={t('common.actions.cancel')}
-                title={t('my_account_page.change_email_modal.title')}
+                confirmLabel={commonT('Modifier')}
+                cancelLabel={commonT('Annuler')}
+                title={t('Changer mon e-mail')}
                 onOpenAutoFocus={false}
                 isFullWidth
             >
@@ -95,11 +96,11 @@ export const UpdateEmailForm = ({ user }: UpdateEmailFormProps) => {
                         }}
                     >
                         <InfoCircledIcon style={{ width: 20, height: 20, marginRight: 8, paddingTop: 1 }} />
-                        {t('my_account_page.change_email_modal.info')}
+                        {t('Votre email est votre identifiant de connexion.')}
                     </Flex>
                     <Field
                         name="email"
-                        label={t('my_account_page.email_field.label')}
+                        label={t('E-mail du professeur')}
                         input={
                             <Input
                                 name="email"
@@ -114,7 +115,7 @@ export const UpdateEmailForm = ({ user }: UpdateEmailFormProps) => {
                                 hasError={!!updateErrorMessage || !isValidEmail}
                             />
                         }
-                        helperText={updateErrorMessage || (!isValidEmail ? t('my_account_page.email_field.error') : '')}
+                        helperText={updateErrorMessage || (!isValidEmail ? t('E-mail invalide') : '')}
                         helperTextStyle={{ textAlign: 'left', color: 'rgb(211, 47, 47)' }}
                     ></Field>
                 </div>

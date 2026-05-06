@@ -87,7 +87,7 @@ export const EditScenarioForm = ({ themes, scenario }: EditScenarioFormProps) =>
         event.preventDefault();
 
         if (themeId === -1) {
-            sendToast({ message: "Le thème n'est pas choisit !", type: 'error' });
+            sendToast({ message: "Le thème n'est pas choisi !", type: 'error' });
             return;
         }
 
@@ -112,7 +112,7 @@ export const EditScenarioForm = ({ themes, scenario }: EditScenarioFormProps) =>
                 descriptions: scenarioDescriptions,
                 themeId,
             });
-            sendToast({ message: 'Scénario mis à jour avec succès!', type: 'success' });
+            sendToast({ message: 'Scénario mis à jour avec succès !', type: 'success' });
             router.push('/admin/scenarios');
         } catch (err) {
             console.error(err);
@@ -233,7 +233,7 @@ export const EditScenarioForm = ({ themes, scenario }: EditScenarioFormProps) =>
                 {availableLanguages.length > 0 && (
                     <Field
                         name="languages-select"
-                        label="Languages"
+                        label="Langues"
                         input={
                             <Select
                                 name="languages-select"

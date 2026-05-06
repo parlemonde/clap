@@ -1,6 +1,6 @@
 'use server';
 
-import { getTranslations } from 'next-intl/server';
+import { getExtracted } from 'next-intl/server';
 import React from 'react';
 
 import { Container } from '@frontend/components/layout/Container';
@@ -13,12 +13,12 @@ export default async function UpdatePasswordPage(props: ServerPageProps) {
     const searchParams = await props.searchParams;
     const verifyToken = typeof searchParams['verify-token'] === 'string' ? searchParams['verify-token'] : '';
 
-    const t = await getTranslations();
+    const t = await getExtracted('update-password');
 
     return (
         <Container className="text-center">
             <Title color="primary" variant="h1" marginTop={48} marginBottom="lg">
-                {t('update_password_page.header.title')}
+                {t('Réinitialiser le mot de passe')}
             </Title>
             <UpdatePasswordForm verifyToken={verifyToken} />
         </Container>

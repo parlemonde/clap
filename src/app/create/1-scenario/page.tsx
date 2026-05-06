@@ -1,4 +1,4 @@
-import { getLocale, getTranslations } from 'next-intl/server';
+import { getExtracted, getLocale } from 'next-intl/server';
 import * as React from 'react';
 
 import { ScenarioCard } from '@frontend/components/create/ScenarioCard';
@@ -26,7 +26,8 @@ const getScenarios = async (themeId: number, userId: string | undefined, questio
 export default async function ScenarioPage(props: ServerPageProps) {
     const searchParams = await props.searchParams;
     const themeId = getThemeId(searchParams);
-    const [t, currentLocale] = await Promise.all([getTranslations(), getLocale()]);
+    const currentLocale = await getLocale();
+    const t = await getExtracted('create.1-scenario');
     const user = await getCurrentUser();
 
     if (user?.role === 'student') {
@@ -41,17 +42,17 @@ export default async function ScenarioPage(props: ServerPageProps) {
             <Steps activeStep={0} themeId={themeId}></Steps>
             <Title color="primary" marginY="md" variant="h1">
                 <Inverted isRound>1</Inverted>{' '}
-                {t.rich('1_scenario_page.header.title', {
+                {t.rich('Quel <inverted>scénario</inverted> choisir ?', {
                     inverted: (chunks) => <Inverted>{chunks}</Inverted>,
                 })}
             </Title>
             <Title color="inherit" variant="h2" marginBottom="md">
-                {t('1_scenario_page.secondary.title')}
+                {t("C'est à votre tour, sélectionnez un scénario à filmer")}
             </Title>
             <ScenarioCard
                 isNew
-                name={t('1_scenario_page.new_scenario_card.name')}
-                description={t('1_scenario_page.new_scenario_card.desc')}
+                name={t('Nouveau scénario')}
+                description={t('Cliquez ici pour créer votre propre scénario !')}
                 href={`/create/1-scenario/new${serializeToQueryUrl({ themeId })}`}
             />
             <Scenarios scenarios={scenarios.filter((s) => s.names[currentLocale] !== undefined || s.isDefault === false)} themeId={themeId} />

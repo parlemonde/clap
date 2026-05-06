@@ -1,5 +1,5 @@
 import { DiscIcon, ResetIcon, Cross1Icon, BlendingModeIcon } from '@radix-ui/react-icons';
-import { useTranslations } from 'next-intl';
+import { useExtracted } from 'next-intl';
 import React, { useEffect, useState } from 'react';
 
 import { IconButton } from '@frontend/components/layout/Button/IconButton';
@@ -32,7 +32,7 @@ interface Path {
 }
 
 const CanvasComponent = (_: unknown, ref: React.ForwardedRef<HTMLCanvasElement | null>) => {
-    const t = useTranslations();
+    const t = useExtracted('Canvas');
     const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
     const [isDrawing, setIsDrawing] = useState<boolean>(false);
     const [paths, setPaths] = useState<Array<Path>>([]);
@@ -180,27 +180,27 @@ const CanvasComponent = (_: unknown, ref: React.ForwardedRef<HTMLCanvasElement |
             <div className="draw-canvas-container-max-width">
                 <div>
                     <div role="group" className="actions-buttons-container" aria-label="outlined primary button group">
-                        <Tooltip sideOffset={0} position="bottom" hasArrow content={t('canvas.color_tool.label')}>
+                        <Tooltip sideOffset={0} position="bottom" hasArrow content={t('Couleur')}>
                             <IconButton
                                 style={{ ...IconButtonStyle, backgroundColor: color === 'white' ? 'grey' : undefined }}
-                                aria-label={t('canvas.color_tool.label')}
+                                aria-label={t('Couleur')}
                                 onClick={handleOpenModalColor}
                                 icon={BlendingModeIcon}
                                 iconProps={{ color }}
                             ></IconButton>
                         </Tooltip>
-                        <Tooltip sideOffset={0} position="bottom" hasArrow content={t('canvas.size_tool.label')}>
+                        <Tooltip sideOffset={0} position="bottom" hasArrow content={t('Épaisseur')}>
                             <IconButton
                                 style={IconButtonStyle}
-                                aria-label={t('canvas.size_tool.label')}
+                                aria-label={t('Épaisseur')}
                                 onClick={handleOpenModalSize}
                                 icon={DiscIcon}
                             ></IconButton>
                         </Tooltip>
-                        <Tooltip sideOffset={0} position="bottom" hasArrow content={t('canvas.undo.label')}>
+                        <Tooltip sideOffset={0} position="bottom" hasArrow content={t('Revenir en arrière')}>
                             <IconButton
                                 style={IconButtonStyle}
-                                aria-label={t('canvas.undo.label')}
+                                aria-label={t('Revenir en arrière')}
                                 onClick={handleUndo}
                                 icon={ResetIcon}
                                 iconProps={{
@@ -208,10 +208,10 @@ const CanvasComponent = (_: unknown, ref: React.ForwardedRef<HTMLCanvasElement |
                                 }}
                             ></IconButton>
                         </Tooltip>
-                        <Tooltip sideOffset={0} position="bottom" hasArrow content={t('canvas.redo.label')}>
+                        <Tooltip sideOffset={0} position="bottom" hasArrow content={t('Revenir en avant')}>
                             <IconButton
                                 style={{ ...IconButtonStyle, borderRight: '1px solid' }}
-                                aria-label={t('canvas.redo.label')}
+                                aria-label={t('Revenir en avant')}
                                 onClick={handleRedo}
                                 icon={ResetIcon}
                                 iconProps={{
@@ -221,10 +221,10 @@ const CanvasComponent = (_: unknown, ref: React.ForwardedRef<HTMLCanvasElement |
                             ></IconButton>
                         </Tooltip>
                         <div style={{ flex: 1 }} />
-                        <Tooltip sideOffset={0} position="bottom" hasArrow content={t('canvas.clear.label')}>
+                        <Tooltip sideOffset={0} position="bottom" hasArrow content={t('Tout effacer')}>
                             <IconButton
                                 style={{ ...IconButtonStyle, borderRight: '1px solid', transform: 'translate(2px, 1px)' }}
-                                aria-label={t('canvas.clear.label')}
+                                aria-label={t('Tout effacer')}
                                 onClick={handleOpenModalClear}
                                 icon={Cross1Icon}
                                 iconProps={{

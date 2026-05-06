@@ -2,7 +2,7 @@
 
 import { ChevronLeftIcon } from '@radix-ui/react-icons';
 import classNames from 'clsx';
-import { useTranslations } from 'next-intl';
+import { useExtracted } from 'next-intl';
 import * as React from 'react';
 
 import { Button } from '@frontend/components/layout/Button';
@@ -16,33 +16,33 @@ import { ProjectTitle } from './ProjectTitle';
 import styles from './steps.module.css';
 
 type StepData = {
-    name: string;
+    name: 'scenario' | 'questions' | 'storyboard' | 'pre-mounting' | 'music' | 'downloads';
     href: string | ((themeId?: number | string | null) => string);
 };
 
 const STEPS: StepData[] = [
     {
-        name: 'common.steps.step1',
+        name: 'scenario',
         href: (themeId) => `/create/1-scenario${serializeToQueryUrl({ themeId })}`,
     },
     {
-        name: 'common.steps.step2',
+        name: 'questions',
         href: '/create/2-questions',
     },
     {
-        name: 'common.steps.step3',
+        name: 'storyboard',
         href: '/create/3-storyboard',
     },
     {
-        name: 'common.steps.step4',
+        name: 'pre-mounting',
         href: '/create/4-pre-mounting',
     },
     {
-        name: 'common.steps.step5',
+        name: 'music',
         href: '/create/5-music',
     },
     {
-        name: 'common.steps.step6',
+        name: 'downloads',
         href: '/create/6-result',
     },
 ];
@@ -53,11 +53,31 @@ type StepsProps = {
     backHref?: string;
 };
 export const Steps = ({ activeStep, backHref, themeId }: StepsProps) => {
-    const t = useTranslations();
+    const t = useExtracted('Steps');
+    const commonT = useExtracted('common');
     const { projectData } = useCurrentProject();
     const user = React.useContext(userContext);
 
     const isStudent = user?.role === 'student';
+    const getStepLabel = React.useCallback(
+        (name: StepData['name']) => {
+            switch (name) {
+                case 'scenario':
+                    return t('Choix du scénario');
+                case 'questions':
+                    return t('Choix des séquences');
+                case 'storyboard':
+                    return t('Storyboard');
+                case 'pre-mounting':
+                    return t('Prémontage');
+                case 'music':
+                    return t('Musique');
+                case 'downloads':
+                    return t('Téléchargements');
+            }
+        },
+        [t],
+    );
 
     return (
         <>
@@ -88,7 +108,7 @@ export const Steps = ({ activeStep, backHref, themeId }: StepsProps) => {
                             </div>
                             <div>
                                 <Text className={classNames(styles.stepText, { [styles['stepText--is-done']]: index <= activeStep })}>
-                                    {t(step.name)}
+                                    {getStepLabel(step.name)}
                                 </Text>
                             </div>
                         </>
@@ -125,7 +145,7 @@ export const Steps = ({ activeStep, backHref, themeId }: StepsProps) => {
                         href={backHref}
                         leftIcon={<ChevronLeftIcon />}
                         className={styles.mobileBackButton}
-                        label={t('common.actions.back')}
+                        label={commonT('Retour')}
                         color="primary"
                         variant="borderless"
                     />

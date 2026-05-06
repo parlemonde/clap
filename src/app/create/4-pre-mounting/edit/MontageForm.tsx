@@ -1,5 +1,5 @@
 import { FileTextIcon, SpeakerLoudIcon, TimerIcon, UploadIcon } from '@radix-ui/react-icons';
-import { useTranslations } from 'next-intl';
+import { useExtracted } from 'next-intl';
 import * as React from 'react';
 
 import { DiaporamaPlayer } from '@frontend/components/create/DiaporamaPlayer';
@@ -22,7 +22,8 @@ interface MontageFormProps {
     feedbackForm?: React.ReactNode;
 }
 export const MontageForm = ({ sequence, setSequence, onSubmit, feedbackForm }: MontageFormProps) => {
-    const t = useTranslations();
+    const t = useExtracted('create.4-pre-mounting.edit.MontageForm');
+    const commonT = useExtracted('common');
 
     const [newSoundFile, setNewSoundFile] = React.useState<File | null | undefined>(undefined); // null = delete sound
     const newSoundUrl = React.useMemo(() => (newSoundFile ? URL.createObjectURL(newSoundFile) : null), [newSoundFile]);
@@ -57,7 +58,7 @@ export const MontageForm = ({ sequence, setSequence, onSubmit, feedbackForm }: M
             } catch (error) {
                 console.error(error);
                 sendToast({
-                    message: t('common.errors.upload_sound'),
+                    message: commonT("Une erreur est survenue lors de l'importation du son."),
                     type: 'error',
                 });
                 setIsUploading(false);
@@ -82,7 +83,7 @@ export const MontageForm = ({ sequence, setSequence, onSubmit, feedbackForm }: M
                 </div>
                 <FlexItem flexGrow={1} flexBasis={0}>
                     <Title color="inherit" variant="h2" style={{ margin: '1rem 0' }}>
-                        {t('4_edit_pre_mounting_page.voice_off_field.label')}
+                        {t("Écrivez ici le texte de la voix-off. Il s'agit du commentaire audio qui peut accompagner votre séquence.")}
                     </Title>
                 </FlexItem>
             </Flex>
@@ -95,7 +96,9 @@ export const MontageForm = ({ sequence, setSequence, onSubmit, feedbackForm }: M
                         onChange={(event) => {
                             setSequence({ ...sequence, voiceText: event.target.value.slice(0, 4000) });
                         }}
-                        placeholder={t('4_edit_pre_mounting_page.voice_off_field.placeholder')}
+                        placeholder={t(
+                            'Vous pourrez enregistrer un élève ou plusieurs élèves lire cette voix-off avec un microphone, comme celui de votre smartphone.\nPensez à enregistrer cette voix-off dans un environnement sonore calme.\nSi vous utilisez votre smartphone, pensez à le mettre en mode avion.\nRendez-vous en bas de cette page pour ajouter votre fichier son à la séquence. ',
+                        )}
                         isFullWidth
                         rows={4}
                         color="secondary"
@@ -112,7 +115,7 @@ export const MontageForm = ({ sequence, setSequence, onSubmit, feedbackForm }: M
                 </div>
                 <FlexItem flexGrow={1} flexBasis={0}>
                     <Title color="inherit" variant="h2" style={{ margin: '1rem 0' }}>
-                        {t('4_edit_pre_mounting_page.duration_field.label')}
+                        {t('Ajustez ici la durée totale de la séquence, ainsi que la durée relative des plans.')}
                     </Title>
                 </FlexItem>
             </Flex>
@@ -140,16 +143,18 @@ export const MontageForm = ({ sequence, setSequence, onSubmit, feedbackForm }: M
                 </div>
                 <FlexItem flexGrow={1} flexBasis={0}>
                     <Title color="inherit" variant="h2" style={{ margin: '1rem 0' }}>
-                        {t('4_edit_pre_mounting_page.audio_field.label')}
+                        {t(
+                            "Mettez en ligne la voix-off que vous avez enregistrée.\n Vous pourrez ensuite l'ajuster à la séquence et régler son volume, dans la table de montage ci-dessus.",
+                        )}
                     </Title>
                 </FlexItem>
             </Flex>
             <div className="text-center">
                 <label htmlFor="sequence-sound-upload" className="text-center" style={{ marginBottom: '10px' }}>
-                    {t('4_edit_pre_mounting_page.audio_import_button.formats')}
+                    {t('Formats acceptés : .aac, .ogg, .opus, .mp3, .wav')}
                 </label>
                 <Button
-                    label={t('4_edit_pre_mounting_page.audio_import_button.label')}
+                    label={t('Importer un son')}
                     variant="outlined"
                     color="secondary"
                     as="label"
@@ -174,7 +179,7 @@ export const MontageForm = ({ sequence, setSequence, onSubmit, feedbackForm }: M
                 style={{ display: 'none' }}
             />
             {feedbackForm}
-            <NextButton label={t('common.actions.continue')} backHref="/create/4-pre-mounting" type="submit" />
+            <NextButton label={commonT('Continuer')} backHref="/create/4-pre-mounting" type="submit" />
             <Loader isLoading={isUploading} />
         </Form>
     );

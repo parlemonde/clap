@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useTranslations } from 'next-intl';
+import { useExtracted } from 'next-intl';
 import * as React from 'react';
 
 import { Field, Form, Input } from '@frontend/components/layout/Form';
@@ -16,7 +16,9 @@ import { createTheme } from '@server-actions/themes/create-theme';
 
 export const NewThemeForm = () => {
     const router = useRouter();
-    const t = useTranslations();
+
+    const t = useExtracted('create.new-theme.NewThemeForm');
+    const commonT = useExtracted('common');
     const user = React.useContext(userContext);
     const [themeName, setThemeName] = React.useState('');
     const [isLoading, setIsLoading] = React.useState(false);
@@ -31,7 +33,7 @@ export const NewThemeForm = () => {
             if (newTheme) {
                 router.push(`/create/1-scenario?themeId=${newTheme.id}`);
             } else {
-                sendToast({ message: t('common.errors.unknown'), type: 'error' });
+                sendToast({ message: commonT('Une erreur est survenue...'), type: 'error' });
             }
             setIsLoading(false);
         } else {
@@ -52,7 +54,7 @@ export const NewThemeForm = () => {
                     name="themeName"
                     label={
                         <Title color="inherit" variant="h2">
-                            {t.rich('new_theme_page.name_field.label', {
+                            {t.rich('Nom du thème<required>*</required>:', {
                                 required: (chunks) => <span style={{ color: 'red' }}>{chunks}</span>,
                             })}
                         </Title>
@@ -68,7 +70,7 @@ export const NewThemeForm = () => {
                                 setThemeName(event.target.value.slice(0, 200));
                             }}
                             required
-                            placeholder={t('new_theme_page.name_field.placeholder')}
+                            placeholder={t('Nouveau thème')}
                             style={{ marginTop: '8px' }}
                             color="secondary"
                             autoComplete="off"

@@ -27,7 +27,7 @@ export const UploadLanguageModal = ({ language = null, onClose = () => {} }: Upl
                 method: 'PUT',
                 body: formData,
             });
-            sendToast({ message: 'Traductions modifiées avec succès!', type: 'success' });
+            sendToast({ message: 'Traductions modifiées avec succès !', type: 'success' });
             setFile(null);
             onClose();
         } catch (err) {

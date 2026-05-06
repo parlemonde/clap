@@ -245,7 +245,7 @@ export function StoryboardPdfTemplate({
     scenarioDescription,
     logoFont,
     userLogo,
-    t,
+    labels,
     qrCode,
 }: StoryboardPdfTemplateProps) {
     const questionsWithPlanNumbers = getQuestionsWithPlanNumbers(project.questions);
@@ -285,7 +285,7 @@ ${pdfStyles}`,
                 </header>
                 <main>
                     <div className="text-center">
-                        <h1 style={titleStyle}>{t('pdf.title')}</h1>
+                        <h1 style={titleStyle}>{labels.title}</h1>
                     </div>
                     {project.name ? (
                         <div className="text-center">
@@ -293,21 +293,21 @@ ${pdfStyles}`,
                         </div>
                     ) : null}
                     <div>
-                        <h2>{t('pdf.subtitle_description')}</h2>
+                        <h2>{labels.subtitleDescription}</h2>
                         <div className="content">
                             <div style={{ margin: '0.1rem 0' }}>
-                                <label>{t('pdf.theme')}</label>
+                                <label>{labels.theme}</label>
                                 <p className="inline"> {project.themeName}</p>
                             </div>
                             <div style={{ margin: '0.1rem 0' }}>
-                                <label>{t('pdf.scenario')}</label>
+                                <label>{labels.scenario}</label>
                                 <p className="inline"> {project.scenarioName}</p>
                             </div>
                             {scenarioDescription ? <p>{scenarioDescription}</p> : null}
                         </div>
                     </div>
                     <div>
-                        <h2>{t('pdf.subtitle_storyboard')}</h2>
+                        <h2>{labels.subtitleStoryboard}</h2>
                         {questionsWithPlanNumbers.map(({ question, numberedPlans }, questionIndex) => (
                             <div key={question.id} className="content scene">
                                 <h3>
@@ -348,9 +348,9 @@ ${pdfStyles}`,
                     </div>
                     {qrCode ? (
                         <div>
-                            <h2>{t('pdf.subtitle_tocamera')}</h2>
+                            <h2>{labels.subtitleToCamera}</h2>
                             <div className="content">
-                                <p>{t('pdf.tocamera_desc')}</p>
+                                <p>{labels.toCameraDescription}</p>
                                 <div className="text-center" style={{ marginTop: '1rem' }}>
                                     <img alt="qrcode" style={qrCodeStyle} src={qrCode} />
                                 </div>

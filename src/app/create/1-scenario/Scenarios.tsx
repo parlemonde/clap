@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useLocale, useTranslations } from 'next-intl';
+import { useExtracted, useLocale } from 'next-intl';
 import React from 'react';
 import useSWR from 'swr';
 
@@ -21,7 +21,7 @@ interface ScenariosProps {
 
 export const Scenarios = ({ scenarios, themeId }: ScenariosProps) => {
     const router = useRouter();
-    const t = useTranslations();
+    const t = useExtracted('create.1-scenario.Scenarios');
     const currentLocale = useLocale();
 
     const { data: themes } = useSWR<Theme[]>('/api/themes', jsonFetcher);
@@ -46,7 +46,7 @@ export const Scenarios = ({ scenarios, themeId }: ScenariosProps) => {
                             isLocalScenario(s)
                                 ? undefined
                                 : s.questionsCount
-                                  ? t('1_scenario_page.scenario_card.step_count', { count: s.questionsCount })
+                                  ? t('{count, plural, one {# étape} other {# étapes}}', { count: s.questionsCount })
                                   : undefined
                         }
                         href="/create/2-questions"

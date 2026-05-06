@@ -29,7 +29,7 @@ export const AddLanguageModal = ({ open = false, onClose = () => {} }: AddLangua
                 value: allLanguages[selectedLanguageIndex].value,
                 label: allLanguages[selectedLanguageIndex].label,
             });
-            sendToast({ message: 'Langue ajoutée avec succès!', type: 'success' });
+            sendToast({ message: 'Langue ajoutée avec succès !', type: 'success' });
             setSelectedLanguageIndex(-1);
             onClose();
         } catch (err) {

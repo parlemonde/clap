@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useLocale, useTranslations } from 'next-intl';
+import { useExtracted, useLocale } from 'next-intl';
 import * as React from 'react';
 
 import { Button } from '@frontend/components/layout/Button';
@@ -26,7 +26,8 @@ import { QuestionsList } from './QuestionsList';
 
 export default function QuestionPage() {
     const router = useRouter();
-    const t = useTranslations();
+    const t = useExtracted('create.2-questions');
+    const commonT = useExtracted('common');
     const currentLocale = useLocale();
     const user = React.useContext(userContext);
     const [projectId, setProjectId] = useLocalStorage('projectId');
@@ -65,7 +66,7 @@ export default function QuestionPage() {
             router.push('/create/3-storyboard');
         } else {
             sendToast({
-                message: t('common.errors.unknown'),
+                message: commonT('Une erreur est survenue...'),
                 type: 'error',
             });
         }
@@ -78,19 +79,19 @@ export default function QuestionPage() {
             <Flex flexDirection="row" alignItems="center" marginY="md">
                 <Title color="primary" variant="h1" marginRight="xl">
                     <Inverted isRound>2</Inverted>{' '}
-                    {t.rich('2_questions_page.header.title', {
+                    {t.rich('Mes <inverted>séquences</inverted>', {
                         inverted: (chunks) => <Inverted>{chunks}</Inverted>,
                     })}
                 </Title>
                 {collaborationButton}
             </Flex>
             <Title color="inherit" variant="h2" marginBottom="lg">
-                {t('2_questions_page.secondary.title')}
+                {t('Pour structurer votre scénario, nous vous proposons de le découper en séquences. Souvent une séquence correspond à une idée.')}
             </Title>
             <Button
                 as="a"
                 href={`/create/2-questions/new`}
-                label={t('2_questions_page.add_question_button.label')}
+                label={t('Ajouter une séquence')}
                 variant="outlined"
                 color="secondary"
                 isUpperCase={false}
@@ -113,15 +114,19 @@ export default function QuestionPage() {
                 }}
                 onConfirm={onSaveProject}
                 hasCloseButton={false}
-                title={t('2_questions_page.save_project_modal.title')}
-                cancelLabel={t('2_questions_page.save_project_modal.cancel')}
-                confirmLabel={t('2_questions_page.save_project_modal.confirm')}
+                title={t('Sauvegarder le projet ?')}
+                cancelLabel={t('Ne pas sauvegarder')}
+                confirmLabel={t('Sauvegarder le projet')}
                 confirmLevel="secondary"
                 isConfirmDisabled={title.length === 0}
                 isLoading={isCreatingProject}
             >
                 <div id="save-project-form">
-                    <p>{t('2_questions_page.save_project_modal.desc')}</p>
+                    <p>
+                        {t(
+                            'Enregistrer le projet vous permettra de le retrouver dans l\'onglet "Mes vidéos" et également dans l\'application Par Le Monde.',
+                        )}
+                    </p>
                     <Form
                         className="project-form"
                         noValidate
@@ -134,7 +139,7 @@ export default function QuestionPage() {
                     >
                         <Field
                             name="project-name"
-                            label={t('2_questions_page.save_project_name_field.label')}
+                            label={t('Nom du projet :')}
                             input={
                                 <Input
                                     id="project-name"

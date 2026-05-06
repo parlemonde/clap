@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useTranslations } from 'next-intl';
+import { useExtracted } from 'next-intl';
 import * as React from 'react';
 
 import { FeedbackModal } from '@frontend/components/collaboration/FeedbackModal';
@@ -23,7 +23,7 @@ import type { Sequence } from '@server/database/schemas/projects';
 
 export default function PreMountingPage() {
     const router = useRouter();
-    const t = useTranslations();
+    const t = useExtracted('create.4-pre-mounting');
     const { projectData, setProjectData } = useCurrentProject();
     const { collaborationButton, isCollaborationEnabled, sendCollaborationValidationMsg } = useCollaboration();
     const user = React.useContext(userContext);
@@ -52,14 +52,14 @@ export default function PreMountingPage() {
             <Flex flexDirection="row" alignItems="center" marginY="md">
                 <Title color="primary" variant="h1" marginRight="xl">
                     <Inverted isRound>4</Inverted>{' '}
-                    {t.rich('4_pre_mounting_page.header.title', {
+                    {t.rich('Prémontez votre <inverted>film</inverted>', {
                         inverted: (chunks) => <Inverted>{chunks}</Inverted>,
                     })}
                 </Title>
                 {!isStudent && collaborationButton}
             </Flex>
             <Title color="inherit" variant="h2">
-                {t('4_pre_mounting_page.secondary.title')}
+                {t('Pour chaque séquence vous pouvez écrire et enregistrer une voix-off.')}
             </Title>
             {filteredQuestions.map((q) => {
                 const hasBeenEdited = q.title !== undefined || (q.plans || []).some((plan) => plan.description || plan.imageUrl);
@@ -78,7 +78,7 @@ export default function PreMountingPage() {
                                 <DiaporamaCard sequence={q} questionIndex={index} isDisabled={!canEdit} />
                             </div>
                         ) : (
-                            <p style={{ marginTop: '1rem' }}>{t('4_pre_mounting_page.not_edited.placeholder')}</p>
+                            <p style={{ marginTop: '1rem' }}>{t('Vous devez éditer au moins un plan pour monter cette séquence.')}</p>
                         )}
                     </div>
                 );
@@ -87,9 +87,9 @@ export default function PreMountingPage() {
                 <NextButton
                     label={
                         isStudent && studentQuestion?.status === 'pre-mounting-validating'
-                            ? t('4_pre_mounting_page.collaboration.awaiting_validation')
+                            ? t('En attente de validation du prémontage')
                             : isStudent
-                              ? t('4_pre_mounting_page.collaboration.send_for_validation')
+                              ? t('Envoyer pour vérification')
                               : undefined
                     }
                     isDisabled={isStudent && studentQuestion?.status !== 'pre-mounting'}

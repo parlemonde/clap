@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useTranslations } from 'next-intl';
+import { useExtracted } from 'next-intl';
 import * as React from 'react';
 
 import { Button } from '@frontend/components/layout/Button';
@@ -17,7 +17,7 @@ import { StudentQuestionChoice } from './StudentQuestionChoice';
 
 export const LoginStudentForm = () => {
     const router = useRouter();
-    const t = useTranslations();
+    const t = useExtracted('join.LoginStudentForm');
     const [message, setMessage] = React.useState('');
     const [isLoading, setIsLoading] = React.useState(false);
     const [projectCode, setProjectCode] = React.useState('');
@@ -28,7 +28,7 @@ export const LoginStudentForm = () => {
         setIsLoading(true);
         const project = await getProjectByCode(projectCode.trim());
         if (!project) {
-            setMessage(t('join_page.errors.invalid_code'));
+            setMessage(t('Code de collaboration invalide'));
         } else {
             setMessage('');
             setProject(project);
@@ -50,13 +50,13 @@ export const LoginStudentForm = () => {
         });
 
         if (!response.ok) {
-            setMessage(t('join_page.errors.invalid_code'));
+            setMessage(t('Code de collaboration invalide'));
             setIsLoading(false);
             return;
         }
 
         if (!project) {
-            setMessage(t('join_page.errors.invalid_code'));
+            setMessage(t('Code de collaboration invalide'));
             setIsLoading(false);
             return;
         }
@@ -74,13 +74,13 @@ export const LoginStudentForm = () => {
             ) : (
                 <>
                     <Title color="primary" variant="h1" marginTop={48} marginBottom="lg">
-                        {t('join_page.header.title')}
+                        {t('Rejoindre une session collaborative')}
                     </Title>
                     <Form className="login-form" onSubmit={onSubmit}>
                         {message && <span style={{ color: 'rgb(211, 47, 47)', display: 'block' }}>{message}</span>}
                         <Field
                             name="projectCode"
-                            label={<span style={{ display: 'inline-block', marginBottom: 4 }}>{t('join_page.project_code_field.label')}</span>}
+                            label={<span style={{ display: 'inline-block', marginBottom: 4 }}>{t('Code de collaboration')}</span>}
                             input={
                                 <Input
                                     id="projectCode"
@@ -94,19 +94,13 @@ export const LoginStudentForm = () => {
                                 />
                             }
                         ></Field>
-                        <Button
-                            label={t('join_page.submit_button.label')}
-                            variant="contained"
-                            color="secondary"
-                            type="submit"
-                            value="Submit"
-                        ></Button>
+                        <Button label={t('Rejoindre')} variant="contained" color="secondary" type="submit" value="Submit"></Button>
                     </Form>
                 </>
             )}
             <div className="text-center">
                 <Link href="/login" className="color-primary">
-                    {t('join_page.back_to_login_link.label')}
+                    {t('Retour à la page de connexion')}
                 </Link>
             </div>
             <Loader isLoading={isLoading} />

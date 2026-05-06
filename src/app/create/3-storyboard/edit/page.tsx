@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useTranslations } from 'next-intl';
+import { useExtracted, useFormatter } from 'next-intl';
 import * as React from 'react';
 
 import { Container } from '@frontend/components/layout/Container';
@@ -20,7 +20,8 @@ import { PlanForm } from './PlanForm';
 export default function StoryboardPlanPage(props: ServerPageProps) {
     const router = useRouter();
     const user = React.useContext(userContext);
-    const t = useTranslations();
+    const t = useExtracted('create.3-storyboard.edit');
+    const format = useFormatter();
     const { projectData, setProjectData } = useCurrentProject();
     useCollaboration(); // Listen to collaboration updates
 
@@ -52,16 +53,16 @@ export default function StoryboardPlanPage(props: ServerPageProps) {
             <ThemeBreadcrumbs themeId={projectData.themeId}></ThemeBreadcrumbs>
             <Steps activeStep={2} themeId={projectData.themeId} backHref="/create/3-storyboard"></Steps>
             <Title color="primary" variant="h1" marginY="md">
-                <Inverted isRound>3</Inverted> {t('3_edit_storyboard_page.header.title')}
+                <Inverted isRound>3</Inverted> {t('Créez votre plan')}
             </Title>
             <Title color="inherit" variant="h2">
-                {t('3_edit_storyboard_page.secondary.question_name', {
+                {t('Séquence : {sequenceName}', {
                     sequenceName: sequence?.question || '',
                 })}
             </Title>
             <Title color="inherit" variant="h2" marginY="md">
-                {t('3_edit_storyboard_page.secondary.plan_number', {
-                    planNumber: planStartIndex + planIndex,
+                {t('Plan numéro : {planNumber}', {
+                    planNumber: format.number(planStartIndex + planIndex),
                 })}
             </Title>
             <PlanForm

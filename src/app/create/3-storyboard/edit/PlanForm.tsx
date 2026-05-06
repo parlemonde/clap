@@ -1,6 +1,6 @@
 import { CameraIcon, ImageIcon, LightningBoltIcon, Pencil2Icon, UploadIcon } from '@radix-ui/react-icons';
 import Image from 'next/legacy/image';
-import { useTranslations } from 'next-intl';
+import { useExtracted } from 'next-intl';
 import React from 'react';
 import Camera from 'react-html5-camera-photo';
 
@@ -28,7 +28,8 @@ interface PlanFormProps {
 }
 
 export const PlanForm = ({ plan, setPlan, onSubmit }: PlanFormProps) => {
-    const t = useTranslations();
+    const t = useExtracted('create.3-storyboard.edit.PlanForm');
+    const commonT = useExtracted('common');
 
     const [isUploading, setIsUploading] = React.useState(false);
     const [newImageData, setNewImageData] = React.useState<Blob | null | undefined>(undefined); // null = delete image
@@ -77,7 +78,7 @@ export const PlanForm = ({ plan, setPlan, onSubmit }: PlanFormProps) => {
             } catch (error) {
                 console.error(error);
                 sendToast({
-                    message: t('common.errors.upload_image'),
+                    message: commonT("Une erreur est survenue lors de l'importation de l'image."),
                     type: 'error',
                 });
                 setIsUploading(false);
@@ -97,7 +98,7 @@ export const PlanForm = ({ plan, setPlan, onSubmit }: PlanFormProps) => {
                 </div>
                 <FlexItem flexGrow={1} flexBasis={0}>
                     <Title color="inherit" variant="h2" style={{ margin: '1rem 0' }}>
-                        {t('3_edit_storyboard_page.edit_description.label')}
+                        {t('Description du plan :')}
                     </Title>
                 </FlexItem>
             </Flex>
@@ -109,7 +110,9 @@ export const PlanForm = ({ plan, setPlan, onSubmit }: PlanFormProps) => {
                         onChange={(event) => {
                             setPlan({ ...plan, description: event.target.value.slice(0, 2000) });
                         }}
-                        placeholder={t('3_edit_storyboard_page.edit_description.placeholder')}
+                        placeholder={t(
+                            "Ici, vous pouvez décrire comment vous allez filmer ce plan.\nPar exemple :\n\tQUI ? quels élèves sont impliqués dans le tournage de ce plan ?\n\tCOMMENT ? Comment sont répartis les rôles entre élèves ? (qui tient la caméra, qui surveille le cadre, qui apparaît à l'écran ?)\n\tQUOI ? Que vont faire ou dire vos élèves ?\n\tQUAND ? À quelle date vous allez filmer ce plan ?\n\tOÙ ? Dans quel lieu allez-vous tourner ce plan ?",
+                        )}
                         isFullWidth
                         rows={7}
                         color="secondary"
@@ -125,15 +128,15 @@ export const PlanForm = ({ plan, setPlan, onSubmit }: PlanFormProps) => {
                 </div>
                 <FlexItem flexGrow={1} flexBasis={0}>
                     <Title color="inherit" variant="h2">
-                        {t('3_edit_storyboard_page.edit_image.label')}
+                        {t('Dessin du plan :')}
                     </Title>
                 </FlexItem>
             </Flex>
             <Title color="inherit" variant="h3" className="for-tablet-up-only">
-                {t('3_edit_storyboard_page.edit_image.desktop_desc')}
+                {t("Pour créer votre plan vous pouvez soit l'importer, soit le prendre en photo ou le dessiner en ligne !")}
             </Title>
             <Title color="inherit" variant="h3" className="for-mobile-only">
-                {t('3_edit_storyboard_page.edit_image.mobile_desc')}
+                {t("Pour créer votre plan vous pouvez l'importer ou le prendre en photo !")}
             </Title>
             <div style={{ width: '100%', maxWidth: '600px', margin: '2rem auto' }}>
                 <KeepRatio
@@ -163,7 +166,7 @@ export const PlanForm = ({ plan, setPlan, onSubmit }: PlanFormProps) => {
                 {imageUrl && (
                     <div className="text-center">
                         <Button
-                            label={t('3_edit_storyboard_page.update_image_button.label')}
+                            label={t('Changer le dessin')}
                             className="plan-button"
                             variant="outlined"
                             color="secondary"
@@ -174,7 +177,7 @@ export const PlanForm = ({ plan, setPlan, onSubmit }: PlanFormProps) => {
                             marginTop="md"
                         ></Button>
                         <Button
-                            label={t('common.actions.delete')}
+                            label={commonT('Supprimer')}
                             className="plan-button"
                             variant="outlined"
                             color="secondary"
@@ -190,7 +193,7 @@ export const PlanForm = ({ plan, setPlan, onSubmit }: PlanFormProps) => {
                             onClose={() => {
                                 setShowChangeModal(false);
                             }}
-                            title={t('3_edit_storyboard_page.update_image_modal.title')}
+                            title={t('Changer le dessin du plan')}
                             isFullWidth
                         >
                             <EditImageButtons
@@ -228,7 +231,7 @@ export const PlanForm = ({ plan, setPlan, onSubmit }: PlanFormProps) => {
                 onClose={() => {
                     setShowCameraModal(false);
                 }}
-                title={t('3_edit_storyboard_page.take_picture_modal.title')}
+                title={t('Prendre une photo')}
                 isFullWidth
             >
                 <div style={{ maxWidth: '120vh', margin: '0 auto' }}>
@@ -250,7 +253,7 @@ export const PlanForm = ({ plan, setPlan, onSubmit }: PlanFormProps) => {
                 onClose={() => {
                     setShowDrawModal(false);
                 }}
-                confirmLabel={t('common.actions.save')}
+                confirmLabel={t('Enregistrer')}
                 confirmLevel="secondary"
                 onConfirm={async () => {
                     setIsCreatingBlob(true);
@@ -276,19 +279,19 @@ export const PlanForm = ({ plan, setPlan, onSubmit }: PlanFormProps) => {
                     if (blob !== null) {
                         setNewImageData(blob);
                     } else {
-                        sendToast({ message: t('common.errors.unknown'), type: 'error' });
+                        sendToast({ message: commonT('Une erreur est survenue...'), type: 'error' });
                     }
                     setIsCreatingBlob(false);
                     setShowDrawModal(false);
                 }}
-                title={t('3_edit_storyboard_page.draw_plan_modal.title')}
+                title={t('Dessiner le plan')}
                 isFullWidth
                 onOpenAutoFocus={false}
             >
                 <Canvas ref={canvasRef} />
             </Modal>
 
-            <NextButton label={t('common.actions.continue')} backHref="/create/3-storyboard" type="submit" />
+            <NextButton label={commonT('Continuer')} backHref="/create/3-storyboard" type="submit" />
 
             <Loader isLoading={isUploading} />
         </Form>
@@ -321,7 +324,8 @@ type EditImageButtonsProps = {
     onDraw(): void;
 };
 const EditImageButtons = ({ imageUploadId, onShowCamera, onDraw }: EditImageButtonsProps) => {
-    const t = useTranslations();
+    const t = useExtracted('create.3-storyboard.edit.PlanForm');
+    const commonT = useExtracted('common');
 
     return (
         <div className="edit-plans-container">
@@ -329,7 +333,7 @@ const EditImageButtons = ({ imageUploadId, onShowCamera, onDraw }: EditImageButt
                 variant="outlined"
                 color="secondary"
                 as="label"
-                label={t('3_edit_storyboard_page.upload_image_button.label')}
+                label={t('Importer une image')}
                 htmlFor={imageUploadId}
                 isUpperCase={false}
                 role="button"
@@ -344,11 +348,11 @@ const EditImageButtons = ({ imageUploadId, onShowCamera, onDraw }: EditImageButt
             ></Button>
             <div className="or-horizontal-divider">
                 <div style={styles.verticalLine} />
-                <span style={styles.secondaryColor}>{t('common.actions.or').toUpperCase()}</span>
+                <span style={styles.secondaryColor}>{commonT('ou').toUpperCase()}</span>
                 <div style={styles.verticalLine} />
             </div>
             <Button
-                label={t('3_edit_storyboard_page.take_picture_button.label')}
+                label={t('Prendre une photo')}
                 variant="outlined"
                 color="secondary"
                 isUpperCase={false}
@@ -357,11 +361,11 @@ const EditImageButtons = ({ imageUploadId, onShowCamera, onDraw }: EditImageButt
             ></Button>
             <div className="or-horizontal-divider for-tablet-up">
                 <div style={styles.verticalLine} />
-                <span style={styles.secondaryColor}>{t('common.actions.or').toUpperCase()}</span>
+                <span style={styles.secondaryColor}>{commonT('ou').toUpperCase()}</span>
                 <div style={styles.verticalLine} />
             </div>
             <Button
-                label={t('3_edit_storyboard_page.draw_plan_button.label')}
+                label={t('Dessiner le plan')}
                 variant="outlined"
                 color="secondary"
                 isUpperCase={false}

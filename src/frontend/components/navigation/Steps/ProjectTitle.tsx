@@ -1,7 +1,7 @@
 'use client';
 
 import { Pencil1Icon } from '@radix-ui/react-icons';
-import { useTranslations } from 'next-intl';
+import { useExtracted } from 'next-intl';
 import React from 'react';
 
 import { IconButton } from '@frontend/components/layout/Button/IconButton';
@@ -13,7 +13,7 @@ export const ProjectTitle = () => {
     const [projectId] = useLocalStorage('projectId');
     const { projectData, name } = useCurrentProject();
 
-    const t = useTranslations();
+    const t = useExtracted('ProjectTitle');
     if (!projectData || !projectId || !name) {
         return null;
     }
@@ -28,7 +28,7 @@ export const ProjectTitle = () => {
                 }}
                 marginRight="sm"
             >
-                {t('video_page.header.title')}
+                {t('Projet :')}
             </Title>
             <Title
                 color="inherit"

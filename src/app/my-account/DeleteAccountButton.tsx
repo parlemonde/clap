@@ -1,7 +1,7 @@
 'use client';
 
 import { InfoCircledIcon } from '@radix-ui/react-icons';
-import { useTranslations } from 'next-intl';
+import { useExtracted } from 'next-intl';
 import React from 'react';
 
 import { Button } from '@frontend/components/layout/Button';
@@ -11,13 +11,14 @@ import { Modal } from '@frontend/components/layout/Modal';
 import { deleteUser } from '@server-actions/users/delete-user';
 
 export const DeleteAccountButton = () => {
-    const t = useTranslations();
+    const t = useExtracted('my-account.DeleteAccountButton');
+    const commonT = useExtracted('common');
     const [isUpdateModalOpen, setIsUpdateModalOpen] = React.useState(false);
     const [isLoading, setIsLoading] = React.useState(false);
 
     const [confirmText, setConfirmText] = React.useState('');
 
-    const isConfirmTextValid = confirmText.toLowerCase() === t('my_account_page.delete_account_modal.delete_confirm').toLowerCase();
+    const isConfirmTextValid = confirmText.toLowerCase() === t('supprimer').toLowerCase();
 
     const onSubmit = async () => {
         if (!isConfirmTextValid) {
@@ -33,7 +34,7 @@ export const DeleteAccountButton = () => {
     return (
         <>
             <Button
-                label={t('my_account_page.delete_account_button.label')}
+                label={t('Supprimer mon compte')}
                 style={{ marginTop: '0.8rem' }}
                 className="mobile-full-width"
                 variant="contained"
@@ -52,10 +53,10 @@ export const DeleteAccountButton = () => {
                     setConfirmText('');
                 }}
                 onConfirm={onSubmit}
-                confirmLabel={t('common.actions.delete')}
+                confirmLabel={commonT('Supprimer')}
                 confirmLevel="error"
-                cancelLabel={t('common.actions.cancel')}
-                title={t('my_account_page.delete_account_modal.title')}
+                cancelLabel={commonT('Annuler')}
+                title={t('Supprimer mon compte')}
                 isConfirmDisabled={!isConfirmTextValid}
                 isFullWidth
             >
@@ -77,12 +78,11 @@ export const DeleteAccountButton = () => {
                     >
                         <InfoCircledIcon style={{ width: 20, height: 20, marginRight: 8, paddingTop: 1 }} />
                         <span>
-                            {t.rich('my_account_page.delete_account_modal.warning1', {
+                            {t.rich('Attention ! Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est <strong>irréversible</strong>.', {
                                 strong: (chunks) => <strong>{chunks}</strong>,
                             })}
                             <br />
-                            {t.rich('my_account_page.delete_account_modal.warning2', {
-                                deleteConfirm: t('my_account_page.delete_account_modal.delete_confirm'),
+                            {t.rich("Pour supprimer votre compte, veuillez taper '<strong>supprimer</strong>' ci-dessous et cliquez sur supprimer.", {
                                 strong: (chunks) => <strong>{chunks}</strong>,
                             })}
                         </span>
@@ -90,8 +90,8 @@ export const DeleteAccountButton = () => {
                     <Input
                         isFullWidth
                         value={confirmText}
-                        placeholder={t('my_account_page.delete_account_modal.placeholder', {
-                            deleteConfirm: t('my_account_page.delete_account_modal.delete_confirm'),
+                        placeholder={t('Tapez {deleteConfirm} ici', {
+                            deleteConfirm: t('supprimer'),
                         })}
                         color="secondary"
                         onChange={(event) => {

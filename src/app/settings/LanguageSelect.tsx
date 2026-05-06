@@ -1,6 +1,6 @@
 'use client';
 
-import { useLocale, useTranslations } from 'next-intl';
+import { useExtracted, useLocale } from 'next-intl';
 import React from 'react';
 
 import { Field, Form } from '@frontend/components/layout/Form';
@@ -13,14 +13,14 @@ interface LanguageSelectProps {
 }
 
 export const LanguageSelect = ({ languages, cookieName }: LanguageSelectProps) => {
-    const t = useTranslations();
+    const t = useExtracted('settings.LanguageSelect');
     const currentLocale = useLocale();
 
     return (
         <Form preventSubmit>
             <Field
                 name="language"
-                label={t('settings_page.language_field.label')}
+                label={t('Langue')}
                 input={
                     <Select
                         name="language"

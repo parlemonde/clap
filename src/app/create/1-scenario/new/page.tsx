@@ -1,4 +1,4 @@
-import { getTranslations } from 'next-intl/server';
+import { getExtracted } from 'next-intl/server';
 import * as React from 'react';
 
 import { Container } from '@frontend/components/layout/Container';
@@ -16,7 +16,7 @@ export default async function ScenarioPage(props: ServerPageProps) {
     const searchParams = await props.searchParams;
     const themeId = getThemeId(searchParams);
     const backUrl = `/create/1-scenario${serializeToQueryUrl({ themeId })}`;
-    const t = await getTranslations();
+    const t = await getExtracted('create.1-scenario.new');
 
     return (
         <Container paddingBottom="xl">
@@ -24,7 +24,7 @@ export default async function ScenarioPage(props: ServerPageProps) {
             <Steps activeStep={0} themeId={themeId} backHref={backUrl}></Steps>
             <Title color="primary" marginY="md" variant="h1">
                 <Inverted isRound>1</Inverted>{' '}
-                {t.rich('1_new_scenario_page.header.title', {
+                {t.rich('Crée ton nouveau <inverted>scénario</inverted> !', {
                     inverted: (chunks) => <Inverted>{chunks}</Inverted>,
                 })}
             </Title>

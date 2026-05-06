@@ -1,6 +1,6 @@
 'use client';
 
-import { useLocale, useTranslations } from 'next-intl';
+import { useExtracted, useLocale } from 'next-intl';
 import React from 'react';
 import useSWR from 'swr';
 
@@ -17,7 +17,7 @@ type ThemeBreadcrumbsProps = {
 };
 
 export const ThemeBreadcrumbs = ({ themeId }: ThemeBreadcrumbsProps) => {
-    const t = useTranslations();
+    const commonT = useExtracted('common');
     const currentLocale = useLocale();
     const user = React.useContext(userContext);
     const { data: themes, isLoading } = useSWR<Theme[]>('/api/themes', jsonFetcher);
@@ -31,7 +31,7 @@ export const ThemeBreadcrumbs = ({ themeId }: ThemeBreadcrumbsProps) => {
         return (
             <Breadcrumbs
                 marginTop="sm"
-                links={[{ href: '/', label: t('common.filters.all_themes') }]}
+                links={[{ href: '/', label: commonT('Tous les thèmes') }]}
                 currentLabel={<Placeholder variant="text" width="100px" style={{ verticalAlign: 'bottom' }} />}
                 className="for-tablet-up-only"
             />
@@ -44,7 +44,7 @@ export const ThemeBreadcrumbs = ({ themeId }: ThemeBreadcrumbsProps) => {
     return (
         <Breadcrumbs
             marginTop="sm"
-            links={[{ href: '/', label: t('common.filters.all_themes') }]}
+            links={[{ href: '/', label: commonT('Tous les thèmes') }]}
             currentLabel={themeName}
             className="for-tablet-up-only"
         />

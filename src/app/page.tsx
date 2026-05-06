@@ -1,6 +1,5 @@
 import { redirect } from 'next/navigation';
-import { getTranslations } from 'next-intl/server';
-import * as React from 'react';
+import { getExtracted } from 'next-intl/server';
 
 import { Container } from '@frontend/components/layout/Container';
 import { Title } from '@frontend/components/layout/Typography';
@@ -12,7 +11,8 @@ import { Themes } from './Themes';
 
 export default async function Page() {
     const user = await getCurrentUser();
-    const [themes, t] = await Promise.all([listThemes({ userId: user?.id }), getTranslations()]);
+    const themes = await listThemes({ userId: user?.id });
+    const t = await getExtracted();
 
     if (user?.role === 'student') {
         redirect('/create/3-storyboard');
@@ -21,7 +21,7 @@ export default async function Page() {
     return (
         <Container paddingBottom="xl">
             <Title marginY="md">
-                {t.rich('home_page.header.title', {
+                {t.rich('Sur quel <inverted>thème</inverted> sera votre vidéo ?', {
                     inverted: (chunks) => <Inverted>{chunks}</Inverted>,
                 })}
             </Title>

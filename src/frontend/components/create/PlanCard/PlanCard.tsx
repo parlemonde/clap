@@ -1,6 +1,6 @@
 import { TrashIcon, LightningBoltIcon } from '@radix-ui/react-icons';
 import classNames from 'clsx';
-import { useTranslations } from 'next-intl';
+import { useExtracted } from 'next-intl';
 import * as React from 'react';
 import { createPortal } from 'react-dom';
 
@@ -35,7 +35,7 @@ export const PlanCard = ({
     onDelete = () => {},
     canEdit = true,
 }: PlanCardProps) => {
-    const t = useTranslations();
+    const commonT = useExtracted('common');
     const buttonStyle: React.CSSProperties = { width: '100%', height: '100%', pointerEvents: canEdit ? 'auto' : 'none' };
     if (plan.imageUrl) {
         buttonStyle.backgroundImage = `url('${plan.imageUrl}')`;
@@ -123,11 +123,11 @@ export const PlanCard = ({
                 <div className={classNames('pill', styles.planCard__bolt, { ['pill--green']: Boolean(plan.description) })}>
                     <LightningBoltIcon />
                 </div>
-                {!isDragging && <div className={styles.planCard__editButton}>{t('common.actions.edit')}</div>}
+                {!isDragging && <div className={styles.planCard__editButton}>{commonT('Modifier')}</div>}
                 {canDelete && !isDragging && (
                     <IconButton
                         className={styles.planCard__deleteButton}
-                        aria-label={t('common.actions.delete')}
+                        aria-label={commonT('Supprimer')}
                         icon={TrashIcon}
                         color="error"
                         variant="contained"
