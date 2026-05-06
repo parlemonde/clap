@@ -8,7 +8,6 @@ import { languages } from '@server/database/schemas/languages';
 import { logger } from '@server/logger';
 
 import { APP_LANGUAGE_COOKIE_NAME, DEFAULT_LOCALE } from './constants';
-import { defaultLocales } from './default-locales';
 
 function mergeMessages(baseMessages: AbstractIntlMessages, overrideMessages: AbstractIntlMessages): AbstractIntlMessages {
     const mergedMessages: AbstractIntlMessages = { ...baseMessages };
@@ -50,8 +49,7 @@ export async function getLocalesForLanguage(languageCode: string) {
     cacheLife('hours');
     cacheTag(getLocalesCacheTag(languageCode));
 
-    let locales: AbstractIntlMessages = defaultLocales;
-    locales = mergeMessages(locales, await getExtractedMessages());
+    let locales = await getExtractedMessages();
 
     try {
         const language = await db.query.languages.findFirst({

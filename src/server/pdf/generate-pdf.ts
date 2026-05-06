@@ -1,7 +1,7 @@
 'use server';
 
 import { eq } from 'drizzle-orm';
-import { getLocale, getTranslations } from 'next-intl/server';
+import { getExtracted, getLocale } from 'next-intl/server';
 import puppeteer from 'puppeteer';
 import { createElement } from 'react';
 import { v4 } from 'uuid';
@@ -18,6 +18,7 @@ import { logger } from '@server/logger';
 import fontBase64 from './assets/font_base64.txt';
 import userLogoBase64 from './assets/userLogo_base64.txt';
 import StoryboardPdfTemplate from './templates/StoryboardPdf';
+import type { StoryboardPdfLabels } from './templates/templates.types';
 
 const getScenarioDescription = async (scenarioId: ProjectData['scenarioId'], locale: string): Promise<string | null> => {
     if (typeof scenarioId !== 'number') {
@@ -44,7 +45,7 @@ const getPdfHtml = async (params: {
     project: ProjectData & { name?: string | null };
     pseudo: string | null;
     scenarioDescription: string | null;
-    t: Awaited<ReturnType<typeof getTranslations>>;
+    labels: StoryboardPdfLabels;
     userLogo: string;
 }): Promise<string> => {
     const { renderToStaticMarkup } = await import('react-dom/server');
@@ -104,7 +105,17 @@ const getSignedProjectImages = async (projectData: ProjectData, userId: string):
 
 export async function generatePdf(projectData: ProjectData): Promise<string | false> {
     const user = await getCurrentUser();
-    const [t, currentLocale] = await Promise.all([getTranslations(), getLocale()]);
+    const tx = await getExtracted('pdf');
+    const currentLocale = await getLocale();
+    const labels: StoryboardPdfLabels = {
+        title: tx('Plan de tournage'),
+        subtitleDescription: tx('Description générale :'),
+        theme: tx('Thème :'),
+        scenario: tx('Scénario :'),
+        subtitleStoryboard: tx('Storyboard :'),
+        subtitleToCamera: tx('À votre caméra !'),
+        toCameraDescription: tx("Flashez le code QR suivant pour accéder directement à l'application et démarrer le tournage."),
+    };
     const hostUrl = getHostUrl();
 
     try {
@@ -117,7 +128,7 @@ export async function generatePdf(projectData: ProjectData): Promise<string | fa
             project,
             pseudo: user?.name || null,
             scenarioDescription,
-            t,
+            labels,
             userLogo: userLogoBase64,
         });
         const pdfBuffer = await getPdfBuffer(html);

@@ -77,15 +77,27 @@ const styles = {
 
 export interface ResetPasswordTemplateProps extends BaseTemplateProps {
     token: string;
+    copy: {
+        preview: string;
+        welcome: string;
+        text: string;
+        button: string;
+        text2: string;
+        end: string;
+        signature: string;
+        endText: string;
+        endText2: string;
+        contactLink: string;
+    };
 }
 
-export function ResetPasswordTemplate({ appUrl, token, receiverEmail, contactEmail, t }: ResetPasswordTemplateProps) {
+export function ResetPasswordTemplate({ appUrl, token, receiverEmail, contactEmail, copy }: ResetPasswordTemplateProps) {
     const logoUrl = `${appUrl}/static/images/email_header_logo.png`;
 
     return (
         <Html lang="fr">
             <Head />
-            <Preview>{t('email.reset_password.text')}</Preview>
+            <Preview>{copy.preview}</Preview>
             <Font fontFamily="Roboto" fallbackFontFamily="Arial" fontWeight={400} fontStyle="normal" />
             <Body style={styles.body}>
                 <Container style={styles.container}>
@@ -97,34 +109,34 @@ export function ResetPasswordTemplate({ appUrl, token, receiverEmail, contactEma
 
                     <Section style={styles.content}>
                         <Heading as="h1" style={styles.heading}>
-                            {t('email.welcome2')}
+                            {copy.welcome}
                         </Heading>
 
-                        <Text style={styles.paragraph}>{t('email.reset_password.text')}</Text>
+                        <Text style={styles.paragraph}>{copy.text}</Text>
 
                         <Section style={styles.buttonSection}>
                             <Button href={`${appUrl}/update-password?verify-token=${encodeURIComponent(token)}`} style={styles.button}>
-                                {t('email.reset_password.button')}
+                                {copy.button}
                             </Button>
                         </Section>
 
-                        <Text style={{ ...styles.paragraph, marginTop: '0' }}>{t('email.reset_password.text_2')}</Text>
+                        <Text style={{ ...styles.paragraph, marginTop: '0' }}>{copy.text2}</Text>
 
                         <Text style={styles.paragraph}>
-                            {t('email.end')}
+                            {copy.end}
                             <br />
-                            {t('email.signature')}
+                            {copy.signature}
                         </Text>
                     </Section>
 
                     <Text style={styles.footer}>
-                        {t('email.end_text')}{' '}
+                        {copy.endText}{' '}
                         <Link href={`mailto:${receiverEmail}`} style={styles.footerLink}>
                             {receiverEmail}
                         </Link>
-                        . {t('email.end_text_2')}
+                        . {copy.endText2}
                         <Link href={`mailto:${contactEmail}`} style={styles.contactLink}>
-                            {t('email.contact_link')}
+                            {copy.contactLink}
                         </Link>
                         .
                     </Text>
@@ -139,18 +151,18 @@ ResetPasswordTemplate.PreviewProps = {
     token: 'abcd',
     receiverEmail: 'eleve@example.com',
     contactEmail: 'contact@parlemonde.org',
-    t: (key: string) =>
-        ({
-            'email.reset_password.text': 'Vous pouvez réinitialiser votre mot de passe en cliquant sur le lien ci-dessous :',
-            'email.welcome2': 'Bonjour,',
-            'email.reset_password.button': 'RÉINITIALISER MON MOT DE PASSE',
-            'email.reset_password.text_2': "Si vous n'avez pas demandé la réinitialisation de votre mot de passe, vous pouvez ignorer cet email.",
-            'email.end': 'Cordialement,',
-            'email.signature': "L'équipe Par Le Monde.",
-            'email.end_text': 'Ce message a été envoyé à',
-            'email.end_text_2': "Si vous avez des questions ou ne souhaitez plus recevoir d'emails, ",
-            'email.contact_link': 'contactez-nous',
-        })[key] || '',
+    copy: {
+        preview: 'Vous pouvez réinitialiser votre mot de passe en cliquant sur le lien ci-dessous :',
+        welcome: 'Bonjour,',
+        text: 'Vous pouvez réinitialiser votre mot de passe en cliquant sur le lien ci-dessous :',
+        button: 'RÉINITIALISER MON MOT DE PASSE',
+        text2: "Si vous n'avez pas demandé la réinitialisation de votre mot de passe, vous pouvez ignorer cet email.",
+        end: 'Cordialement,',
+        signature: "L'équipe Par Le Monde.",
+        endText: 'Ce message a été envoyé à',
+        endText2: "Si vous avez des questions ou ne souhaitez plus recevoir d'emails, ",
+        contactLink: 'contactez-nous',
+    },
 };
 
 export default ResetPasswordTemplate;

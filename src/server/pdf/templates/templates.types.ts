@@ -1,6 +1,14 @@
-import type { getTranslations } from 'next-intl/server';
-
 import type { ProjectData } from '@server/database/schemas/projects';
+
+export type StoryboardPdfLabels = {
+    title: string;
+    subtitleDescription: string;
+    theme: string;
+    scenario: string;
+    subtitleStoryboard: string;
+    subtitleToCamera: string;
+    toCameraDescription: string;
+};
 
 export interface StoryboardPdfTemplateProps {
     hostUrl: string;
@@ -12,6 +20,6 @@ export interface StoryboardPdfTemplateProps {
     scenarioDescription: string | null;
     logoFont: string;
     userLogo: string;
-    t: Awaited<ReturnType<typeof getTranslations>>;
+    labels: StoryboardPdfLabels;
     qrCode?: string | null;
 }

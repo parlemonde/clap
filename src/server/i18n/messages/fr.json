@@ -349,5 +349,26 @@
   },
   "Cropper": {
     "Dow2ok": "Redimensionner l'image"
+  },
+  "email": {
+    "sJRXwd": "Réinitialisez votre mot de passe",
+    "Ei50Dl": "Vous pouvez réinitialiser votre mot de passe en cliquant sur le lien ci-dessous :",
+    "ORSUA0": "Bonjour,",
+    "kKzN+6": "RÉINITIALISER MON MOT DE PASSE",
+    "OXh9t+": "Si vous n'avez pas demandé la réinitialisation de votre mot de passe, vous pouvez ignorer cet email.",
+    "gkzM4A": "Cordialement,",
+    "PKOmjy": "L'équipe Par Le Monde.",
+    "6HcDnR": "Ce message a été envoyé à",
+    "vWVeAx": "Si vous avez des questions ou ne souhaitez plus recevoir d'emails, ",
+    "zI1aQe": "contactez-nous"
+  },
+  "pdf": {
+    "ljHE59": "Plan de tournage",
+    "fy7cC6": "Description générale :",
+    "yrOJVN": "Thème :",
+    "Hnsg3B": "Scénario :",
+    "qRVThY": "Storyboard :",
+    "Bt52ev": "À votre caméra !",
+    "jId1Rb": "Flashez le code QR suivant pour accéder directement à l'application et démarrer le tournage."
   }
 }
