@@ -1,8 +1,5 @@
 import type { NextConfig } from 'next';
 import createNextIntlPlugin from 'next-intl/plugin';
-import path from 'path';
-
-const withNextIntl = createNextIntlPlugin('./src/server/i18n/request.ts');
 
 const nextConfig: NextConfig = {
     experimental: {
@@ -14,7 +11,6 @@ const nextConfig: NextConfig = {
             test: /\.svg$/,
             use: ['@svgr/webpack'],
         });
-
         config.module.rules.push({
             test: /\.(html|txt|pug)$/,
             use: ['raw-loader'],
@@ -41,9 +37,6 @@ const nextConfig: NextConfig = {
             },
         },
     },
-    sassOptions: {
-        includePaths: [path.join('src', 'styles')],
-    },
     output: 'standalone',
     outputFileTracingExcludes: {
         '/*': ['./tmp/**/*'],
@@ -53,5 +46,20 @@ const nextConfig: NextConfig = {
         loaderFile: './src/image-loader.js',
     },
 };
+
+const withNextIntl = createNextIntlPlugin({
+    requestConfig: './src/server/i18n/request.ts',
+    experimental: {
+        srcPath: './src',
+        extract: {
+            sourceLocale: 'fr',
+        },
+        messages: {
+            path: './src/server/i18n/messages',
+            format: 'json',
+            locales: ['fr'],
+        },
+    },
+});
 
 export default withNextIntl(nextConfig);

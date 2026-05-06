@@ -2,7 +2,7 @@
 
 import { ChevronLeftIcon } from '@radix-ui/react-icons';
 import classNames from 'clsx';
-import { useTranslations } from 'next-intl';
+import { useExtracted } from 'next-intl';
 import * as React from 'react';
 
 import { Button } from '@frontend/components/layout/Button';
@@ -17,13 +17,13 @@ type BackButtonProps = {
     style?: React.CSSProperties;
 };
 
-export const BackButton = ({ href, label = 'common.actions.back', onClick, className, style }: BackButtonProps) => {
-    const t = useTranslations();
+export const BackButton = ({ href, label, onClick, className, style }: BackButtonProps) => {
+    const commonT = useExtracted('common');
     return (
         <Button
             color="primary"
             variant="borderless"
-            label={t(label)}
+            label={label || commonT('Retour')}
             className={classNames(styles.backButton, className)}
             as="a"
             href={href}

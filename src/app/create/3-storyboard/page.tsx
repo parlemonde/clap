@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useTranslations } from 'next-intl';
+import { useExtracted } from 'next-intl';
 import * as React from 'react';
 
 import { getStatus } from '@frontend/components/collaboration/get-status';
@@ -27,7 +27,9 @@ import { Scenario } from './Scenario';
 
 export default function StoryboardPage() {
     const router = useRouter();
-    const t = useTranslations();
+
+    const tx = useExtracted('create.3-storyboard');
+    const commonT = useExtracted('common');
     const { projectData, setProjectData } = useCurrentProject();
     const { collaborationButton, isCollaborationEnabled, sendCollaborationValidationMsg } = useCollaboration();
     const user = React.useContext(userContext);
@@ -65,14 +67,14 @@ export default function StoryboardPage() {
                 a.click();
             } else {
                 sendToast({
-                    message: t('common.errors.unknown'),
+                    message: commonT('Une erreur est survenue...'),
                     type: 'error',
                 });
                 newWindow?.close();
             }
         } catch (e) {
             sendToast({
-                message: t('common.errors.unknown'),
+                message: commonT('Une erreur est survenue...'),
                 type: 'error',
             });
             newWindow?.close();
@@ -88,14 +90,16 @@ export default function StoryboardPage() {
             <Flex flexDirection="row" alignItems="center" marginY="md">
                 <Title color="primary" variant="h1" marginRight="xl">
                     <Inverted isRound>3</Inverted>{' '}
-                    {t.rich('3_storyboard_page.header.title', {
+                    {tx.rich('Création du <inverted>Storyboard</inverted>', {
                         inverted: (chunks) => <Inverted>{chunks}</Inverted>,
                     })}
                 </Title>
                 {!isStudent && collaborationButton}
             </Flex>
             <Title color="inherit" variant="h2">
-                {t('3_storyboard_page.secondary.title')}
+                {tx(
+                    "Ici créez votre storyboard ! C'est une représentation de votre film sous forme de dessins et le résultat final de votre vidéo sera l'assemblage de ces plans les uns après les autres.\n",
+                )}
             </Title>
             {filteredQuestions.map((sequence) => (
                 <Scenario
@@ -130,7 +134,7 @@ export default function StoryboardPage() {
             {!isStudent && (
                 <div style={{ margin: '32px 0' }}>
                     <Button
-                        label={t('3_storyboard_page.pdf_button.label')}
+                        label={tx('Télécharger le storyboard')}
                         leftIcon={<PictureAsPdf style={{ marginRight: '10px' }} />}
                         variant="outlined"
                         color="secondary"
@@ -143,9 +147,9 @@ export default function StoryboardPage() {
                 isDisabled={studentQuestion?.status === 'storyboard-validating'}
                 label={
                     studentQuestion?.status === 'storyboard-validating'
-                        ? t('3_storyboard_page.collaboration.awaiting_validation')
+                        ? tx('En attente de validation du storyboard')
                         : isStudent && (!studentQuestion?.status || studentQuestion?.status === 'storyboard')
-                          ? t('3_storyboard_page.collaboration.send_for_validation')
+                          ? tx('Envoyer pour vérification')
                           : undefined
                 }
                 onNext={() => {

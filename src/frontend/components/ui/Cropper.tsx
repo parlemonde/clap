@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import { useTranslations } from 'next-intl';
+import { useExtracted } from 'next-intl';
 import * as React from 'react';
 
 import { KeepRatio } from '@frontend/components/layout/KeepRatio';
@@ -19,7 +19,8 @@ interface CropperProps {
 }
 
 export const Cropper = ({ ratio, imageUrl, isOpen, maxWidth = '800px', onClose, onCrop }: CropperProps) => {
-    const t = useTranslations();
+    const tx = useExtracted('Cropper');
+    const commonT = useExtracted('common');
     const [imageSize, setImageSize] = React.useState({ width: 0, height: 0 });
 
     const [x, setX] = React.useState(0);
@@ -177,12 +178,12 @@ export const Cropper = ({ ratio, imageUrl, isOpen, maxWidth = '800px', onClose, 
     return (
         <Modal
             width="lg"
-            title={t('cropper.resize_image_modal.title')}
+            title={tx("Redimensionner l'image")}
             isOpen={isOpen}
             onClose={onClose}
             onConfirm={onConfirm}
-            confirmLabel={t('common.actions.validate')}
-            cancelLabel={t('common.actions.cancel')}
+            confirmLabel={commonT('Valider')}
+            cancelLabel={commonT('Annuler')}
             isLoading={isLoading}
         >
             <div style={{ width: '100%', maxWidth, margin: '0 auto', userSelect: 'none' }}>

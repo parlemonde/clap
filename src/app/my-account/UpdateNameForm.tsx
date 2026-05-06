@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useTranslations } from 'next-intl';
+import { useExtracted } from 'next-intl';
 import React from 'react';
 
 import { Field, Input } from '@frontend/components/layout/Form';
@@ -14,7 +14,8 @@ interface UpdateNameFormProps {
 }
 
 export const UpdateNameForm = ({ user }: UpdateNameFormProps) => {
-    const t = useTranslations();
+    const tx = useExtracted('my-account.UpdateNameForm');
+    const commonT = useExtracted('common');
     const router = useRouter();
     const [isUpdateModalOpen, setIsUpdateModalOpen] = React.useState(false);
     const [updateErrorMessage, setUpdateErrorMessage] = React.useState<string | null>(null);
@@ -57,7 +58,7 @@ export const UpdateNameForm = ({ user }: UpdateNameFormProps) => {
                     setIsUpdateModalOpen(true);
                 }}
             >
-                {t('my_account_page.change_name_button.label')}
+                {tx('Changer mon nom')}
             </a>
             <Modal
                 isOpen={isUpdateModalOpen}
@@ -67,16 +68,16 @@ export const UpdateNameForm = ({ user }: UpdateNameFormProps) => {
                     setName(user.name);
                 }}
                 onConfirm={onSubmit}
-                confirmLabel={t('common.actions.edit')}
-                cancelLabel={t('common.actions.cancel')}
-                title={t('my_account_page.change_name_modal.title')}
+                confirmLabel={commonT('Modifier')}
+                cancelLabel={commonT('Annuler')}
+                title={tx('Changer mon nom')}
                 onOpenAutoFocus={false}
                 isFullWidth
             >
                 <div id="pseudo-dialog-description">
                     <Field
                         name="pseudo"
-                        label={t('my_account_page.name_field.label')}
+                        label={tx('Nom du professeur')}
                         input={
                             <Input
                                 id="name"
@@ -91,7 +92,7 @@ export const UpdateNameForm = ({ user }: UpdateNameFormProps) => {
                                 hasError={!!updateErrorMessage || !isValidName}
                             />
                         }
-                        helperText={updateErrorMessage || (isValidName ? '' : t('my_account_page.name_field.error'))}
+                        helperText={updateErrorMessage || (isValidName ? '' : tx('Nom invalide'))}
                         helperTextStyle={{ textAlign: 'left', color: 'rgb(211, 47, 47)' }}
                     ></Field>
                 </div>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useTranslations } from 'next-intl';
+import { useExtracted } from 'next-intl';
 import * as React from 'react';
 
 import { FeedbackForm } from '@frontend/components/collaboration/FeedbackForm';
@@ -24,7 +24,7 @@ export default function MontagePage(props: ServerPageProps) {
     const router = useRouter();
     const user = React.useContext(userContext);
     const isStudent = user?.role === 'student';
-    const t = useTranslations();
+    const tx = useExtracted('create.4-pre-mounting.edit');
     const { projectData, setProjectData } = useCurrentProject();
     const { isCollaborationEnabled, sendCollaborationValidationMsg } = useCollaboration(); // Listen to collaboration updates
 
@@ -48,12 +48,14 @@ export default function MontagePage(props: ServerPageProps) {
             <Flex flexDirection="row" alignItems="center" isFullWidth marginY="md">
                 <Title color="primary" variant="h1">
                     <Inverted isRound>4</Inverted>
-                    {t('4_edit_pre_mounting_page.header.title', { number: questionIndex + 1 })}
+                    {tx('Écrire, ajouter une voix-off et ajuster la séquence n°{number}', { number: String(questionIndex + 1) })}
                 </Title>
                 {isStudent && sequence.status === 'pre-mounting' && <FeedbackModal question={sequence} />}
             </Flex>
             <Title variant="h2" color="inherit" marginBottom="md">
-                {t('4_edit_pre_mounting_page.secondary.title')}
+                {tx(
+                    'À cette étape, vous pouvez écrire et ajouter une voix-off, modifier combien de temps apparaîssent vos plans, et la durée de votre séquence.',
+                )}
             </Title>
             <MontageForm
                 sequence={newQuestion || sequence}

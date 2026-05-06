@@ -1,7 +1,7 @@
 'use client';
 
 import { EyeNoneIcon, EyeOpenIcon } from '@radix-ui/react-icons';
-import { useTranslations } from 'next-intl';
+import { useExtracted } from 'next-intl';
 import React from 'react';
 
 import { Button } from '@frontend/components/layout/Button';
@@ -14,7 +14,8 @@ import { authClient } from '@frontend/lib/auth-client';
 const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/;
 
 export const UpdatePasswordButton = () => {
-    const t = useTranslations();
+    const tx = useExtracted('my-account.UpdatePasswordButton');
+    const commonT = useExtracted('common');
     const [isUpdateModalOpen, setIsUpdateModalOpen] = React.useState(false);
     const [isLoading, setIsLoading] = React.useState(false);
     const [updateErrorMessage, setUpdateErrorMessage] = React.useState<string | null>(null);
@@ -53,7 +54,7 @@ export const UpdatePasswordButton = () => {
     return (
         <>
             <Button
-                label={t('my_account_page.change_password_button.label')}
+                label={tx('Changer mon mot de passe')}
                 style={{ marginTop: '0.8rem' }}
                 className="mobile-full-width"
                 onClick={() => {
@@ -74,9 +75,9 @@ export const UpdatePasswordButton = () => {
                     setPasswordConfirm('');
                 }}
                 onConfirm={onSubmit}
-                confirmLabel={t('common.actions.edit')}
-                cancelLabel={t('common.actions.cancel')}
-                title={t('my_account_page.change_password_modal.title')}
+                confirmLabel={commonT('Modifier')}
+                cancelLabel={commonT('Annuler')}
+                title={tx('Changer mon mot de passe')}
                 onOpenAutoFocus={false}
                 isFullWidth
             >
@@ -84,7 +85,7 @@ export const UpdatePasswordButton = () => {
                     {updateErrorMessage && <p style={{ color: 'var(--error-color)', marginBottom: 4, textAlign: 'center' }}>{updateErrorMessage}</p>}
                     <Field
                         name="old_password"
-                        label={t('my_account_page.current_password_field.label')}
+                        label={tx('Mot de passe actuel')}
                         input={
                             <Input
                                 type={showPassword ? 'text' : 'password'}
@@ -114,7 +115,7 @@ export const UpdatePasswordButton = () => {
                     <Divider marginY="lg" />
                     <Field
                         name="new_password"
-                        label={t('my_account_page.new_password_field.label')}
+                        label={tx('Nouveau mot de passe')}
                         input={
                             <Input
                                 type={showPassword ? 'text' : 'password'}
@@ -141,12 +142,18 @@ export const UpdatePasswordButton = () => {
                                 hasError={!isValidPassword}
                             />
                         }
-                        helperText={!isValidPassword ? t('my_account_page.new_password_field.error') : ''}
+                        helperText={
+                            !isValidPassword
+                                ? tx(
+                                      'Mot de passe trop faible. Il doit contenir au moins 8 charactères avec des lettres minuscules, majuscules et des chiffres.',
+                                  )
+                                : ''
+                        }
                         helperTextStyle={{ textAlign: 'left', color: 'rgb(211, 47, 47)' }}
                     />
                     <Field
                         name="new_password_confirm"
-                        label={t('my_account_page.new_password_confirm_field.label')}
+                        label={tx('Confirmer le nouveau mot de passe')}
                         input={
                             <Input
                                 style={{ marginTop: '1rem' }}
@@ -178,7 +185,7 @@ export const UpdatePasswordButton = () => {
                                 hasError={hasConfirmError}
                             />
                         }
-                        helperText={hasConfirmError ? t('my_account_page.new_password_confirm_field.error') : ''}
+                        helperText={hasConfirmError ? tx('Mots de passe différents') : ''}
                         helperTextStyle={{ textAlign: 'left', color: 'rgb(211, 47, 47)' }}
                     />
                 </div>

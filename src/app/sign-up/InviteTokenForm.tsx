@@ -1,7 +1,7 @@
 'use client';
 
 import { usePathname, useRouter } from 'next/navigation';
-import { useTranslations } from 'next-intl';
+import { useExtracted } from 'next-intl';
 import type { FormEvent } from 'react';
 import React from 'react';
 
@@ -15,7 +15,9 @@ interface InviteTokenFormProps {
 export const InviteTokenForm = ({ initialCode }: InviteTokenFormProps) => {
     const router = useRouter();
     const pathname = usePathname();
-    const t = useTranslations();
+
+    const tx = useExtracted('sign-up.InviteTokenForm');
+    const commonT = useExtracted('common');
     const [inviteCode, setInviteCode] = React.useState(initialCode || '');
 
     const onSubmit = (e: FormEvent) => {
@@ -30,11 +32,11 @@ export const InviteTokenForm = ({ initialCode }: InviteTokenFormProps) => {
 
     return (
         <Form onSubmit={onSubmit} className="signup-form" autoComplete="off" style={{ textAlign: 'left' }}>
-            <label style={{ fontWeight: 'bold', fontSize: '1rem' }}>{t('signup_page.invite_code_field.title')}</label>
+            <label style={{ fontWeight: 'bold', fontSize: '1rem' }}>{tx("Créez votre compte classe avec votre code d'invitation :")}</label>
             <Field
                 marginTop="md"
                 name="inviteCode"
-                label={t('signup_page.invite_code_field.label')}
+                label={tx("Saisir votre code d'invitation")}
                 input={
                     <Input
                         id="inviteCode"
@@ -50,12 +52,12 @@ export const InviteTokenForm = ({ initialCode }: InviteTokenFormProps) => {
                         hasError={!!initialCode}
                     />
                 }
-                helperText={initialCode ? t('signup_page.invite_code_field.error') : ''}
+                helperText={initialCode ? tx("Code d'invitation invalide...") : ''}
                 helperTextStyle={{ textAlign: 'left', color: 'rgb(211, 47, 47)' }}
             ></Field>
-            <Button label={t('signup_page.continue_button.label')} variant="contained" color="secondary" type="submit" value="Submit"></Button>
+            <Button label={commonT('Continuer')} variant="contained" color="secondary" type="submit" value="Submit"></Button>
             <div className="text-center" style={{ marginBottom: '2rem' }}>
-                {t('signup_page.login_link.already')} <Link href="/login">{t('signup_page.login_link.label')}</Link>
+                {tx('Compte déjà créé ?')} <Link href="/login">{tx('Se connecter')}</Link>
             </div>
         </Form>
     );

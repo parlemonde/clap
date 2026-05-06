@@ -1,5 +1,5 @@
 import { PlusIcon } from '@radix-ui/react-icons';
-import { useTranslations } from 'next-intl';
+import { useExtracted } from 'next-intl';
 import React from 'react';
 
 import { FeedbackForm } from '@frontend/components/collaboration/FeedbackForm';
@@ -36,7 +36,8 @@ export const Scenario = ({
     isCollaborationEnabled,
     isStudent,
 }: Scenario) => {
-    const t = useTranslations();
+    const tx = useExtracted('create.3-storyboard.Scenario');
+    const commonT = useExtracted('common');
     const [showDeleteTitle, setShowDeleteTitle] = React.useState(false);
     const [deletePlanIndex, setDeletePlanIndex] = React.useState(-1);
 
@@ -108,11 +109,11 @@ export const Scenario = ({
                 ))}
                 {sequence.plans.length < 5 && !isDragging && canEdit && (
                     <div className="plan-button-container add">
-                        <Tooltip position="bottom" content={t('3_storyboard_page.button.add_plan')} hasArrow>
+                        <Tooltip position="bottom" content={tx('Ajouter un plan')} hasArrow>
                             <IconButton
                                 color="primary"
                                 variant="contained"
-                                aria-label={t('3_storyboard_page.button.add_plan')}
+                                aria-label={tx('Ajouter un plan')}
                                 onClick={() => {
                                     const plans = sequence.plans;
                                     const ids = plans.map((plan) => plan.id);
@@ -160,11 +161,11 @@ export const Scenario = ({
                     onUpdateSequence?.(newSequence);
                     setDeletePlanIndex(-1);
                 }}
-                title={t('3_storyboard_page.delete_plan_modal.title')}
-                confirmLabel={t('common.actions.delete')}
+                title={tx('Supprimer le plan ?')}
+                confirmLabel={commonT('Supprimer')}
                 confirmLevel="error"
             >
-                {t('3_storyboard_page.delete_plan_modal.desc', { planNumber: planStartIndex + deletePlanIndex })}
+                {tx('Voulez-vous vraiment supprimer le plan n° {planNumber} ?', { planNumber: String(planStartIndex + deletePlanIndex) })}
             </Modal>
             <Modal
                 isOpen={showDeleteTitle}
@@ -176,11 +177,11 @@ export const Scenario = ({
                     onUpdateSequence?.(newSequence);
                     setShowDeleteTitle(false);
                 }}
-                title={t('3_storyboard_page.delete_title_modal.title')}
-                confirmLabel={t('common.actions.delete')}
+                title={tx('Supprimer le titre ?')}
+                confirmLabel={commonT('Supprimer')}
                 confirmLevel="error"
             >
-                {t('3_storyboard_page.delete_title_modal.desc')}
+                {tx('Voulez-vous vraiment supprimer le titre ?')}
             </Modal>
         </div>
     );

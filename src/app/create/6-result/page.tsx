@@ -1,7 +1,7 @@
 'use client';
 
 import { VideoIcon } from '@radix-ui/react-icons';
-import { useTranslations } from 'next-intl';
+import { useExtracted } from 'next-intl';
 import * as React from 'react';
 
 import { DiaporamaPlayer } from '@frontend/components/create/DiaporamaPlayer';
@@ -77,11 +77,11 @@ function LinearProgressWithLabel({ value }: { value: number }) {
 }
 
 const Or = () => {
-    const t = useTranslations();
+    const commonT = useExtracted('common');
     return (
         <div className="or-horizontal-divider">
             <div style={styles.verticalLine} />
-            <Text className="color-secondary">{t('common.actions.or').toUpperCase()}</Text>
+            <Text className="color-secondary">{commonT('ou').toUpperCase()}</Text>
             <div style={styles.verticalLine} />
         </div>
     );
@@ -139,7 +139,7 @@ const isFilePickerAbortError = (error: unknown) => {
 };
 
 export default function ResultPage() {
-    const t = useTranslations();
+    const t = useExtracted('create.6-result');
     const user = React.useContext(userContext);
     const { projectData, name } = useCurrentProject();
     useCollaboration(); // Listen to collaboration updates
@@ -180,6 +180,33 @@ export default function ResultPage() {
             downloadBrowserVideoRef.current.click();
         }
     }, [browserGeneration.status]);
+    const browserGenerationStageLabel = React.useMemo(() => {
+        switch (browserGeneration.stage) {
+            case 'checking-support':
+                return t('Vérification de la compatibilité du navigateur...');
+            case 'loading-assets':
+                return t('Chargement des médias...');
+            case 'rendering':
+                return t('Création des images de la vidéo...');
+            case 'finalizing':
+                return t('Finalisation de la vidéo...');
+            case null:
+            case undefined:
+                return '';
+        }
+    }, [browserGeneration.stage, t]);
+    const browserSupportReasonLabel = React.useMemo(() => {
+        if (browserSupport?.supported !== false) {
+            return '';
+        }
+
+        switch (browserSupport.reason) {
+            case 'missing-webcodecs':
+                return t('Votre navigateur ne prend pas en charge la génération vidéo.');
+            case 'missing-codecs':
+                return t('Votre navigateur ne prend pas en charge les codecs nécessaires à la génération vidéo.');
+        }
+    }, [browserSupport, t]);
 
     if (!projectData || user?.role === 'student') {
         return null;
@@ -215,7 +242,7 @@ export default function ResultPage() {
                     return;
                 }
                 sendToast({
-                    message: t('6_result_page.download_video_button.failed'),
+                    message: t('Impossible de générer la vidéo avec ce navigateur.'),
                     type: 'error',
                 });
                 return;
@@ -285,7 +312,7 @@ export default function ResultPage() {
                     outputKind: 'file',
                 });
                 sendToast({
-                    message: t('6_result_page.download_video_button.saved'),
+                    message: t('La vidéo a été enregistrée.'),
                     type: 'success',
                 });
             }
@@ -303,10 +330,10 @@ export default function ResultPage() {
             if (!isBrowserVideoCanceledError(error)) {
                 sendToast({
                     message: isBrowserVideoDurationLimitError(error)
-                        ? t('6_result_page.download_video_button.too_long', {
+                        ? t('Cette vidéo est trop longue pour être générée ici. Durée maximale approximative : {maxDuration}.', {
                               maxDuration: getFormatedTime(error.maxDurationMs),
                           })
-                        : t('6_result_page.download_video_button.failed'),
+                        : t('Impossible de générer la vidéo avec ce navigateur.'),
                     type: 'error',
                 });
             }
@@ -337,7 +364,6 @@ export default function ResultPage() {
         browserGeneration.status === 'loading-assets' ||
         browserGeneration.status === 'rendering' ||
         browserGeneration.status === 'finalizing';
-    const browserGenerationStageLabel = browserGeneration.stage ? t(`6_result_page.download_video_button.${browserGeneration.stage}`) : '';
 
     return (
         <Container paddingBottom="xl">
@@ -345,12 +371,12 @@ export default function ResultPage() {
             <Steps activeStep={5} themeId={projectData.themeId}></Steps>
             <Title color="primary" variant="h1" marginY="md">
                 <Inverted isRound>6</Inverted>
-                {t.rich('6_result_page.header.title', {
+                {t.rich('À votre <inverted>caméra</inverted> !', {
                     inverted: (chunks) => <Inverted>{chunks}</Inverted>,
                 })}
             </Title>
             <Title color="inherit" variant="h2">
-                {t('6_result_page.secondary.title')}
+                {t('À cette étape,  vous pouvez pré-visualiser votre diaporama sonore achevé.')}
             </Title>
             <div style={{ margin: '16px 0' }}>
                 <DiaporamaPlayer
@@ -365,22 +391,22 @@ export default function ResultPage() {
             </div>
 
             <Title variant="h2" style={{ margin: '16px 0' }}>
-                {t('6_result_page.downloads_buttons.title')}
+                {t('Vous pouvez maintenant télécharger ce diaporama ou son fichier de montage pour y intégrer vos plans vidéos.')}
             </Title>
             <Flex flexDirection="column" alignItems="center" marginX="auto" marginY="lg" style={{ maxWidth: '400px' }}>
                 <Tooltip
                     content={
                         browserSupport === null
-                            ? t('6_result_page.download_video_button.checking_support')
+                            ? t('Vérification de la compatibilité du navigateur...')
                             : browserSupport.supported
                               ? ''
-                              : t(`6_result_page.download_video_button.${browserSupport.reason}`)
+                              : browserSupportReasonLabel
                     }
                     hasArrow
                 >
                     {browserGeneration.status === 'ready' && browserGeneration.url ? (
                         <Button
-                            label={t('6_result_page.download_video_button.download')}
+                            label={t('Télécharger votre vidéo')}
                             as="a"
                             href={browserGeneration.url}
                             ref={downloadBrowserVideoRef}
@@ -393,7 +419,7 @@ export default function ResultPage() {
                         />
                     ) : (
                         <Button
-                            label={t('6_result_page.download_video_button.generate')}
+                            label={t('Générer votre vidéo !')}
                             className="full-width"
                             variant="contained"
                             color="secondary"
@@ -406,7 +432,7 @@ export default function ResultPage() {
                 </Tooltip>
                 <Or />
                 <Button
-                    label={t('6_result_page.download_mlt_button.label')}
+                    label={t('Télécharger le fichier de montage')}
                     leftIcon={<VideoFile style={{ marginRight: '10px' }} />}
                     className="full-width"
                     variant="contained"
@@ -418,7 +444,7 @@ export default function ResultPage() {
             <Modal
                 isOpen={isBrowserGenerationModalOpen}
                 onClose={() => {}}
-                title={t('6_result_page.download_video_button.modal_title')}
+                title={t('Création de votre vidéo')}
                 hasCloseButton={false}
                 hasCancelButton={false}
                 onOpenAutoFocus={false}
@@ -429,7 +455,7 @@ export default function ResultPage() {
                 </Text>
                 <LinearProgressWithLabel value={browserGeneration.percentage} />
                 <Text marginTop="md" style={{ display: 'inline-block' }}>
-                    {t('6_result_page.download_video_button.keep_page_open')}
+                    {t('Veuillez garder cette page ouverte jusqu’à la fin de la génération.')}
                 </Text>
             </Modal>
             <Loader isLoading={isLoading} />

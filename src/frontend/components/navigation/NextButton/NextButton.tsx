@@ -1,6 +1,6 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
+import { useExtracted } from 'next-intl';
 import * as React from 'react';
 
 import type { MarginProps } from '@frontend/components/layout';
@@ -18,14 +18,14 @@ type NextButtonProps = {
 } & MarginProps;
 
 export const NextButton = ({ label, backHref, type, onNext, isDisabled, ...marginProps }: NextButtonProps) => {
-    const t = useTranslations();
+    const commonT = useExtracted('common');
 
     return (
         <Box as="div" className={styles.nextButton} {...marginProps}>
             {backHref && (
                 <Button
                     className={styles.nextButton__back}
-                    label={t('common.actions.cancel')}
+                    label={commonT('Annuler')}
                     as="a"
                     href={backHref}
                     variant="outlined"
@@ -35,7 +35,7 @@ export const NextButton = ({ label, backHref, type, onNext, isDisabled, ...margi
             )}
             <Button
                 className={styles.nextButton__next}
-                label={label || t('common.actions.next')}
+                label={label || commonT('Suivant')}
                 variant="contained"
                 color="secondary"
                 type={type}

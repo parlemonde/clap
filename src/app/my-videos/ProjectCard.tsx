@@ -2,7 +2,7 @@
 
 import { Pencil1Icon } from '@radix-ui/react-icons';
 import clsx from 'clsx';
-import { useTranslations } from 'next-intl';
+import { useExtracted } from 'next-intl';
 import * as React from 'react';
 
 import { IconButton } from '@frontend/components/layout/Button/IconButton';
@@ -18,7 +18,8 @@ type ProjectCardProps = {
     className?: string;
 };
 export const ProjectCard = ({ title = '', themeName = '', onClick, onClickEdit, className }: ProjectCardProps) => {
-    const t = useTranslations();
+    const tx = useExtracted('my-videos.ProjectCard');
+    const commonT = useExtracted('common');
 
     return (
         <div
@@ -37,14 +38,14 @@ export const ProjectCard = ({ title = '', themeName = '', onClick, onClickEdit, 
             </Title>
             {themeName !== '' && (
                 <div className={styles.ProjectCard__ThemeName}>
-                    <label>{t('my_videos_page.project_card.theme_name', { themeName })}</label>
+                    <label>{tx('Thème : {themeName}', { themeName })}</label>
                 </div>
             )}
             {onClickEdit !== undefined && (
                 <div className={styles.ProjectCard__EditButton}>
                     <IconButton
                         color="primary"
-                        aria-label={t('common.actions.edit')}
+                        aria-label={commonT('Modifier')}
                         size="sm"
                         onClick={(event) => {
                             event.preventDefault();

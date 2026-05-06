@@ -2,7 +2,7 @@
 
 import { UploadIcon } from '@radix-ui/react-icons';
 import { useRouter } from 'next/navigation';
-import { useTranslations } from 'next-intl';
+import { useExtracted } from 'next-intl';
 import * as React from 'react';
 
 import { DiaporamaPlayer } from '@frontend/components/create/DiaporamaPlayer';
@@ -25,7 +25,9 @@ import { deleteSound } from '@server-actions/files/delete-sound';
 
 export default function MusicPage() {
     const router = useRouter();
-    const t = useTranslations();
+
+    const tx = useExtracted('create.5-music');
+    const commonT = useExtracted('common');
     const { projectData, setProjectData } = useCurrentProject();
     useCollaboration(); // Listen to collaboration updates
     const user = React.useContext(userContext);
@@ -53,7 +55,7 @@ export default function MusicPage() {
                 setProjectData({ ...projectData, soundUrl, soundBeginTime: 0 });
             } catch {
                 sendToast({
-                    message: t('common.errors.upload_sound'),
+                    message: commonT("Une erreur est survenue lors de l'importation du son."),
                     type: 'error',
                 });
             }
@@ -67,10 +69,10 @@ export default function MusicPage() {
             <ThemeBreadcrumbs themeId={projectData.themeId}></ThemeBreadcrumbs>
             <Steps activeStep={4} themeId={projectData.themeId}></Steps>
             <Title color="primary" variant="h1" marginY="md">
-                <Inverted isRound>5</Inverted> {t('5_music_page.header.title')}
+                <Inverted isRound>5</Inverted> {tx('Ajouter une musique en fond sonore')}
             </Title>
             <Title color="inherit" variant="h2">
-                {t('5_music_page.secondary.title')}
+                {tx('À cette étape,  vous pouvez pré-visualiser votre diaporama sonore et y ajouter une musique. ')}
             </Title>
             <div style={{ margin: '16px 0' }}>
                 <DiaporamaPlayer
@@ -90,10 +92,10 @@ export default function MusicPage() {
             </div>
             <div className="text-center">
                 <label htmlFor="sequence-sound-upload" className="text-center" style={{ marginBottom: '10px' }}>
-                    {t('4_edit_pre_mounting_page.audio_import_button.formats')}
+                    {tx('Formats acceptés : .acc, .ogg, .opus, .mp3, .wav')}
                 </label>
                 <Button
-                    label={t('4_edit_pre_mounting_page.audio_import_button.label')}
+                    label={tx('Importer un son')}
                     variant="outlined"
                     color="secondary"
                     as="label"

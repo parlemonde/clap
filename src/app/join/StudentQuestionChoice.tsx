@@ -1,6 +1,6 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
+import { useExtracted } from 'next-intl';
 import * as React from 'react';
 
 import { Text, Title } from '@frontend/components/layout/Typography';
@@ -12,10 +12,10 @@ interface StudentQuestionChoiceProps {
     onSelectQuestion?: (questionId: number) => void;
 }
 export const StudentQuestionChoice = ({ project, onSelectQuestion }: StudentQuestionChoiceProps) => {
-    const t = useTranslations();
+    const tx = useExtracted('join.StudentQuestionChoice');
     return (
         <>
-            <Title marginY="xl">{t('join_page.question_choice.title')}</Title>
+            <Title marginY="xl">{tx('Sélectionnez votre séquence :')}</Title>
             <div className="sequency-list">
                 {project.questions.map((q, index) => {
                     return (
@@ -26,7 +26,7 @@ export const StudentQuestionChoice = ({ project, onSelectQuestion }: StudentQues
                             }}
                             key={index}
                         >
-                            <Text marginBottom="sm">{`${t('join_page.question_choice.sequence_number', { number: index + 1 })}`}</Text>
+                            <Text marginBottom="sm">{`${tx('Séquence n°{number}', { number: String(index + 1) })}`}</Text>
                             <Text marginBottom="sm">{q.question}</Text>
                             <div style={{ height: '150px', width: '150px', backgroundColor: COLORS[index] }}></div>
                         </div>

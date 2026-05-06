@@ -1,6 +1,6 @@
 import { FileTextIcon, SpeakerLoudIcon } from '@radix-ui/react-icons';
 import classNames from 'clsx';
-import { useTranslations } from 'next-intl';
+import { useExtracted } from 'next-intl';
 import React from 'react';
 
 import { Link } from '@frontend/components/navigation/Link';
@@ -17,7 +17,7 @@ type DiaporamaCardProps = {
     isDisabled?: boolean;
 };
 export const DiaporamaCard = ({ questionIndex, sequence, isDisabled }: DiaporamaCardProps) => {
-    const t = useTranslations();
+    const commonT = useExtracted('common');
     const [frameIndex, setFrameIndex] = React.useState<'title' | number>(sequence.title !== null ? 'title' : 0);
     const [canvasHeight, setCanvasHeight] = React.useState(0); // TODO
     const resizeObserver = React.useMemo<ResizeObserver>(
@@ -108,7 +108,7 @@ export const DiaporamaCard = ({ questionIndex, sequence, isDisabled }: Diaporama
                 </p>
             )}
 
-            <div className={styles.DiaporamaCard__editButton}>{t('common.actions.edit')}</div>
+            <div className={styles.DiaporamaCard__editButton}>{commonT('Modifier')}</div>
             <div className={classNames('pill', styles.DiaporamaCard__voice, { ['pill--green']: Boolean(sequence.voiceText) })}>
                 {/* Boolean(sequence.voiceOff) */}
                 <FileTextIcon />

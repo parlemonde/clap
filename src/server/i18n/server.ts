@@ -40,6 +40,10 @@ export function revalidateLocalesCacheTag(languageCode: string): void {
     revalidateTag(getLocalesCacheTag(languageCode), 'max');
 }
 
+async function getExtractedMessages(): Promise<AbstractIntlMessages> {
+    return (await import(`./messages/fr.json`)).default;
+}
+
 export async function getLocalesForLanguage(languageCode: string) {
     'use cache';
 
@@ -47,6 +51,7 @@ export async function getLocalesForLanguage(languageCode: string) {
     cacheTag(getLocalesCacheTag(languageCode));
 
     let locales: AbstractIntlMessages = defaultLocales;
+    locales = mergeMessages(locales, await getExtractedMessages());
 
     try {
         const language = await db.query.languages.findFirst({

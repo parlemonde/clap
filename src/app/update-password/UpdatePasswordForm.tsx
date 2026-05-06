@@ -2,7 +2,7 @@
 
 import { EyeOpenIcon, EyeNoneIcon } from '@radix-ui/react-icons';
 import { useRouter } from 'next/navigation';
-import { useTranslations } from 'next-intl';
+import { useExtracted } from 'next-intl';
 import React from 'react';
 
 import { Button } from '@frontend/components/layout/Button';
@@ -18,7 +18,8 @@ interface UpdatePasswordFormProps {
     verifyToken: string;
 }
 export const UpdatePasswordForm = ({ verifyToken }: UpdatePasswordFormProps) => {
-    const t = useTranslations();
+    const tx = useExtracted('update-password.UpdatePasswordForm');
+    const commonT = useExtracted('common');
     const router = useRouter();
 
     const [password, setPassword] = React.useState('');
@@ -41,13 +42,13 @@ export const UpdatePasswordForm = ({ verifyToken }: UpdatePasswordFormProps) => 
         setIsLoading(false);
         if (error) {
             sendToast({
-                message: t('common.errors.unknown'),
+                message: commonT('Une erreur est survenue...'),
                 type: 'error',
             });
         } else {
             router.push('/login');
             sendToast({
-                message: t('update_password_page.toast_message.update_success'),
+                message: tx('Le mot de passe de votre compte a été réinitialisé avec succès !'),
                 type: 'success',
             });
         }
@@ -57,7 +58,7 @@ export const UpdatePasswordForm = ({ verifyToken }: UpdatePasswordFormProps) => 
         <Form className="login-form" autoComplete="off" onSubmit={onSubmit}>
             <Field
                 name="new_password"
-                label={t('update_password_page.password_field.label')}
+                label={tx('Nouveau mot de passe')}
                 input={
                     <Input
                         type={showPassword ? 'text' : 'password'}
@@ -84,12 +85,18 @@ export const UpdatePasswordForm = ({ verifyToken }: UpdatePasswordFormProps) => 
                         hasError={!isValidPassword}
                     />
                 }
-                helperText={!isValidPassword ? t('update_password_page.password_field.error') : ''}
+                helperText={
+                    !isValidPassword
+                        ? tx(
+                              'Mot de passe trop faible. Il doit contenir au moins 8 charactères avec des lettres minuscules, majuscules et des chiffres.',
+                          )
+                        : ''
+                }
                 helperTextStyle={{ textAlign: 'left', color: 'rgb(211, 47, 47)' }}
             />
             <Field
                 name="new_password_confirm"
-                label={t('update_password_page.password_confirm_field.label')}
+                label={tx('Confirmer le nouveau mot de passe')}
                 input={
                     <Input
                         style={{ marginTop: '1rem' }}
@@ -121,10 +128,10 @@ export const UpdatePasswordForm = ({ verifyToken }: UpdatePasswordFormProps) => 
                         hasError={hasConfirmError}
                     />
                 }
-                helperText={hasConfirmError ? t('update_password_page.password_confirm_field.error') : ''}
+                helperText={hasConfirmError ? tx('Mots de passe différents.') : ''}
                 helperTextStyle={{ textAlign: 'left', color: 'rgb(211, 47, 47)' }}
             />
-            <Button label={t('update_password_page.submit_button.label')} variant="contained" color="secondary" type="submit"></Button>
+            <Button label={tx('Réinitialiser')} variant="contained" color="secondary" type="submit"></Button>
             <Loader isLoading={isLoading} />
         </Form>
     );

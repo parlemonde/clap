@@ -1,5 +1,5 @@
 import { DragHandleDots2Icon, PauseIcon } from '@radix-ui/react-icons';
-import { useTranslations } from 'next-intl';
+import { useExtracted } from 'next-intl';
 import React from 'react';
 
 import { KeepRatio } from '@frontend/components/layout/KeepRatio';
@@ -16,7 +16,7 @@ interface TitleFormProps {
 
 export const TitleForm = ({ title, onTitleChange }: TitleFormProps) => {
     const canvasId = `canvas-${React.useId()}`;
-    const t = useTranslations();
+    const tx = useExtracted('create.3-storyboard.title.TitleForm');
     const [isDragging, setIsDragging] = React.useState(false);
     const [isCenteringX, setIsCenteringX] = React.useState(false);
     const [isCenteringY, setIsCenteringY] = React.useState(false);
@@ -91,11 +91,11 @@ export const TitleForm = ({ title, onTitleChange }: TitleFormProps) => {
                         cursor: 'pointer',
                     }}
                 >
-                    <option value={'white'}>{t('3_title_storyboard_page.title_form_color.white')}</option>
-                    <option value={'black'}>{t('3_title_storyboard_page.title_form_color.black')}</option>
-                    <option value={'#ffadac'}>{t('3_title_storyboard_page.title_form_color.red')}</option>
-                    <option value={'#dad7fe'}>{t('3_title_storyboard_page.title_form_color.blue')}</option>
-                    <option value={'#e2fbd7'}>{t('3_title_storyboard_page.title_form_color.green')}</option>
+                    <option value={'white'}>{tx('blanc')}</option>
+                    <option value={'black'}>{tx('noir')}</option>
+                    <option value={'#ffadac'}>{tx('rouge')}</option>
+                    <option value={'#dad7fe'}>{tx('bleu')}</option>
+                    <option value={'#e2fbd7'}>{tx('vert')}</option>
                 </select>
             </div>
             <KeepRatio
@@ -227,9 +227,9 @@ export const TitleForm = ({ title, onTitleChange }: TitleFormProps) => {
                                     cursor: 'pointer',
                                 }}
                             >
-                                <option value={6}>{t('3_title_storyboard_page.title_form_size.small')}</option>
-                                <option value={8}>{t('3_title_storyboard_page.title_form_size.medium')}</option>
-                                <option value={10}>{t('3_title_storyboard_page.title_form_size.big')}</option>
+                                <option value={6}>{tx('petit')}</option>
+                                <option value={8}>{tx('moyen')}</option>
+                                <option value={10}>{tx('grand')}</option>
                             </select>
                             <div style={{ height: '1rem', width: '1px', backgroundColor: '#fff', margin: '0 4px' }}></div>
                             <select
@@ -249,10 +249,10 @@ export const TitleForm = ({ title, onTitleChange }: TitleFormProps) => {
                                     cursor: 'pointer',
                                 }}
                             >
-                                <option value={'left'}>{t('3_title_storyboard_page.title_form_alignment.left')}</option>
-                                <option value={'center'}>{t('3_title_storyboard_page.title_form_alignment.center')}</option>
-                                <option value={'right'}>{t('3_title_storyboard_page.title_form_alignment.right')}</option>
-                                <option value={'justify'}>{t('3_title_storyboard_page.title_form_alignment.justify')}</option>
+                                <option value={'left'}>{tx('gauche')}</option>
+                                <option value={'center'}>{tx('centré')}</option>
+                                <option value={'right'}>{tx('droite')}</option>
+                                <option value={'justify'}>{tx('justifié')}</option>
                             </select>
                         </div>
                         <div

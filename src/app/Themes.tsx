@@ -1,6 +1,6 @@
 'use client';
 
-import { useLocale, useTranslations } from 'next-intl';
+import { useExtracted, useLocale } from 'next-intl';
 import * as React from 'react';
 
 import { ThemeCard } from '@frontend/components/create/ThemeCard';
@@ -12,13 +12,13 @@ interface ThemesProps {
 }
 
 export const Themes = ({ themes }: ThemesProps) => {
-    const t = useTranslations();
+    const tx = useExtracted('Themes');
     const currentLocale = useLocale();
     const [localThemes] = useLocalStorage('themes', []);
 
     return (
         <div className="themes-grid">
-            <ThemeCard href="/create/new-theme" name={t('new_theme_page.common.add_theme')} />
+            <ThemeCard href="/create/new-theme" name={tx('Ajouter votre thème')} />
             {themes?.map((theme, index) => (
                 <ThemeCard
                     key={theme.id}

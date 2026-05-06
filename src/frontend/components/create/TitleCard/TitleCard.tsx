@@ -1,5 +1,5 @@
 import { TrashIcon } from '@radix-ui/react-icons';
-import { useTranslations } from 'next-intl';
+import { useExtracted } from 'next-intl';
 import * as React from 'react';
 
 import { IconButton } from '@frontend/components/layout/Button/IconButton';
@@ -18,7 +18,9 @@ type TitleCardProps = {
 
 export const TitleCard = ({ title, questionIndex, onDelete = () => {}, isDisabled }: TitleCardProps) => {
     const canvasId = `canvas-${React.useId()}`;
-    const t = useTranslations();
+
+    const tx = useExtracted('TitleCard');
+    const commonT = useExtracted('common');
 
     // Use a ResizeObserver to get the height of the canvas
     // This is used to calculate the font size and position of the title
@@ -89,15 +91,15 @@ export const TitleCard = ({ title, questionIndex, onDelete = () => {}, isDisable
             ) : (
                 <>
                     <span className={styles.titleCard__placeholder}>T</span>
-                    <span className={styles.titleCard__placeholderDesc}>{t('3_title_storyboard_page.add_title_card.label')}</span>
+                    <span className={styles.titleCard__placeholderDesc}>{tx('Ajouter un titre')}</span>
                 </>
             )}
             {title && (
                 <>
-                    <div className={styles.titleCard__editButton}>{t('common.actions.edit')}</div>
+                    <div className={styles.titleCard__editButton}>{commonT('Modifier')}</div>
                     <IconButton
                         className={styles.titleCard__deleteButton}
-                        aria-label={t('common.actions.delete')}
+                        aria-label={commonT('Supprimer')}
                         icon={TrashIcon}
                         color="error"
                         variant="contained"

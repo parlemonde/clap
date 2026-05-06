@@ -2,7 +2,7 @@
 
 import { InfoCircledIcon } from '@radix-ui/react-icons';
 import { useRouter } from 'next/navigation';
-import { useTranslations } from 'next-intl';
+import { useExtracted } from 'next-intl';
 import React from 'react';
 
 import { Button } from '@frontend/components/layout/Button';
@@ -23,7 +23,9 @@ interface ProjectFormProps {
 export const ProjectForm = ({ project }: ProjectFormProps) => {
     const router = useRouter();
     const [, setProjectId] = useLocalStorage('projectId');
-    const t = useTranslations();
+
+    const tx = useExtracted('my-videos.[id].ProjectForm');
+    const commonT = useExtracted('common');
 
     const [projectTitle, setProjectTitle] = React.useState<string>(project.name);
     const [showTitleModal, setShowTitleModal] = React.useState(false);
@@ -53,7 +55,7 @@ export const ProjectForm = ({ project }: ProjectFormProps) => {
         <>
             <div style={{ marginTop: '0.5rem' }}>
                 <label style={{ marginRight: '0.5rem' }}>
-                    <strong>{t('video_page.name_field.label')}</strong>
+                    <strong>{tx('Nom du projet :')}</strong>
                 </label>
                 {project.name} -{' '}
                 <a
@@ -72,35 +74,35 @@ export const ProjectForm = ({ project }: ProjectFormProps) => {
                         setShowTitleModal(true);
                     }}
                 >
-                    {t('video_page.update_name_button.label')}
+                    {tx('Changer')}
                 </a>
             </div>
             <div style={{ marginTop: '0.5rem' }}>
                 <label style={{ marginRight: '0.5rem' }}>
-                    <strong>{t('video_page.theme_field.label')}</strong>
+                    <strong>{tx('Thème :')}</strong>
                 </label>
                 {project.data.themeName}
             </div>
             <div style={{ marginTop: '0.5rem' }}>
                 <label style={{ marginRight: '0.5rem' }}>
-                    <strong>{t('video_page.scenario_field.label')}</strong>
+                    <strong>{tx('Scénario :')}</strong>
                 </label>
                 {project.data.scenarioName}
             </div>
             <div style={{ marginTop: '0.5rem' }}>
                 <label style={{ marginRight: '0.5rem' }}>
-                    <strong>{t('video_page.question_number_field.label')}</strong>
+                    <strong>{tx('Nombre de séquences :')}</strong>
                 </label>
                 {project.data.questions.length || 0}
             </div>
             <div style={{ marginTop: '0.5rem' }}>
                 <label style={{ marginRight: '0.5rem' }}>
-                    <strong>{t('video_page.plan_number_field.label')}</strong>
+                    <strong>{tx('Nombre de plans :')}</strong>
                 </label>
                 {project.data.questions.reduce<number>((n, q) => n + (q.plans || []).length, 0) ?? 0}
             </div>
             <Button
-                label={t('video_page.see_plans_button.label')}
+                label={tx('Voir les plans')}
                 marginTop="md"
                 className="mobile-full-width"
                 variant="contained"
@@ -114,10 +116,10 @@ export const ProjectForm = ({ project }: ProjectFormProps) => {
             ></Button>
             <Divider marginY="md" />
             <Title color="inherit" variant="h2">
-                {t('video_page.delete_button.label')}
+                {tx('Supprimer le projet')}
             </Title>
             <Button
-                label={t('video_page.delete_button.label')}
+                label={tx('Supprimer le projet')}
                 marginTop="md"
                 onClick={() => setShowDeleteModal(true)}
                 className="mobile-full-width"
@@ -131,9 +133,9 @@ export const ProjectForm = ({ project }: ProjectFormProps) => {
                     setShowTitleModal(false);
                 }}
                 onConfirm={onUpdateName}
-                confirmLabel={t('common.actions.edit')}
-                cancelLabel={t('common.actions.cancel')}
-                title={t('video_page.edit_name_modal.title')}
+                confirmLabel={commonT('Modifier')}
+                cancelLabel={commonT('Annuler')}
+                title={tx('Modifier le nom du projet')}
                 isLoading={isUpdating}
                 onOpenAutoFocus={false}
                 isFullWidth
@@ -141,14 +143,14 @@ export const ProjectForm = ({ project }: ProjectFormProps) => {
                 <div id="project-dialog-description">
                     <Field
                         name="description"
-                        label={t('video_page.edit_name_field.label')}
+                        label={tx('Nom du projet')}
                         input={
                             <Input
                                 name="description"
                                 id="description"
                                 isFullWidth
                                 value={projectTitle}
-                                placeholder={t('video_page.edit_name_field.placeholder')}
+                                placeholder={tx('Mon projet')}
                                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                                     setProjectTitle(event.target.value.slice(0, 200));
                                 }}
@@ -163,10 +165,10 @@ export const ProjectForm = ({ project }: ProjectFormProps) => {
                 isOpen={showDeleteModal}
                 onClose={() => setShowDeleteModal(false)}
                 onConfirm={onDelete}
-                confirmLabel={t('common.actions.delete')}
+                confirmLabel={commonT('Supprimer')}
                 confirmLevel="error"
-                cancelLabel={t('common.actions.cancel')}
-                title={t('video_page.delete_modal.title')}
+                cancelLabel={commonT('Annuler')}
+                title={tx('Supprimer le projet ?')}
                 isLoading={isDeleting}
                 isFullWidth
             >
@@ -187,7 +189,7 @@ export const ProjectForm = ({ project }: ProjectFormProps) => {
                         }}
                     >
                         <InfoCircledIcon style={{ width: 20, height: 20, marginRight: 8, paddingTop: 1 }} />
-                        {t.rich('video_page.delete_modal.desc1', {
+                        {tx.rich('Voulez-vous vraiment supprimer le projet <strong>{projetName}</strong> ?', {
                             projetName: project.name,
                             strong: (chunks) => <strong>{chunks}</strong>,
                         })}

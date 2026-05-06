@@ -2,24 +2,22 @@
 
 import classNames from 'clsx';
 import { usePathname } from 'next/navigation';
-import { useTranslations } from 'next-intl';
 import { NavigationMenu } from 'radix-ui';
 import * as React from 'react';
 
 import { Link as NextLink } from '@frontend/components/navigation/Link';
 import { userContext } from '@frontend/contexts/userContext';
-import { getTabs } from '@frontend/lib/get-tabs';
+import { useTabs } from '@frontend/lib/use-tabs';
 
 import styles from './bottom-nav-bar.module.css';
 
 export const BottomNavBar = () => {
-    const t = useTranslations();
     const user = React.useContext(userContext);
 
     const currentPathName = usePathname().split('/')[1];
     const currentPath = currentPathName && currentPathName !== 'create' ? `/${currentPathName}` : '/';
     const isOnAdmin = currentPath === '/admin';
-    const tabs = getTabs(user?.role);
+    const tabs = useTabs(user?.role);
 
     if (isOnAdmin) {
         return null;
@@ -37,7 +35,7 @@ export const BottomNavBar = () => {
                             >
                                 <NextLink className={styles.navigationButton} href={tab.path}>
                                     <span style={{ marginBottom: '2px' }}>{tab.icon}</span>
-                                    <span>{t(tab.label)}</span>
+                                    <span>{tab.label}</span>
                                 </NextLink>
                             </NavigationMenu.Link>
                         </NavigationMenu.Item>

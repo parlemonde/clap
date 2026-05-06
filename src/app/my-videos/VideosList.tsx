@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useTranslations } from 'next-intl';
+import { useExtracted } from 'next-intl';
 import React from 'react';
 
 import { useLocalStorage } from '@frontend/hooks/useLocalStorage';
@@ -16,7 +16,7 @@ interface VideoListProps {
 
 export const VideoList = ({ projects }: VideoListProps) => {
     const [, setProjectId] = useLocalStorage('projectId');
-    const t = useTranslations();
+    const tx = useExtracted('my-videos.VideosList');
     const router = useRouter();
 
     const handleWipProjectClickEdit = (projectId: number) => () => {
@@ -43,7 +43,7 @@ export const VideoList = ({ projects }: VideoListProps) => {
                 </React.Fragment>
             ) : (
                 <ProjectCard
-                    title={t('my_videos_page.empty_list.title')}
+                    title={tx("Vous n'avez pas encore de projet en cours. En créer un ?")}
                     onClick={() => {
                         router.push('/');
                     }}

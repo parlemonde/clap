@@ -1,6 +1,6 @@
 import { Cross2Icon } from '@radix-ui/react-icons';
 import classNames from 'clsx';
-import { useTranslations } from 'next-intl';
+import { useExtracted } from 'next-intl';
 import { Dialog } from 'radix-ui';
 import React from 'react';
 
@@ -47,9 +47,9 @@ export const Modal = ({
     onOpenAutoFocus = true,
     children,
 }: React.PropsWithChildren<ModalProps>) => {
-    const t = useTranslations();
-    const defaultCancelLabel = t('common.actions.cancel');
-    const defaultConfirmLabel = t('common.actions.validate');
+    const commonT = useExtracted('common');
+    const defaultCancelLabel = commonT('Annuler');
+    const defaultConfirmLabel = commonT('Valider');
 
     return (
         <Dialog.Root

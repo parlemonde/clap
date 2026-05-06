@@ -2,7 +2,7 @@
 
 import { EyeOpenIcon, EyeNoneIcon } from '@radix-ui/react-icons';
 import { useRouter } from 'next/navigation';
-import { useTranslations } from 'next-intl';
+import { useExtracted } from 'next-intl';
 import React from 'react';
 
 import { Button } from '@frontend/components/layout/Button';
@@ -20,7 +20,9 @@ interface SignUpFormProps {
 }
 export const SignUpForm = ({ inviteCode }: SignUpFormProps) => {
     const router = useRouter();
-    const t = useTranslations();
+
+    const tx = useExtracted('sign-up.SignUpForm');
+    const commonT = useExtracted('common');
 
     const [name, setName] = React.useState('');
     const [email, setEmail] = React.useState('');
@@ -44,7 +46,7 @@ export const SignUpForm = ({ inviteCode }: SignUpFormProps) => {
             });
             if (!response.ok) {
                 sendToast({
-                    message: t('common.errors.unknown'),
+                    message: commonT('Une erreur est survenue...'),
                     type: 'error',
                 });
             } else {
@@ -53,7 +55,7 @@ export const SignUpForm = ({ inviteCode }: SignUpFormProps) => {
             }
         } catch {
             sendToast({
-                message: t('common.errors.unknown'),
+                message: commonT('Une erreur est survenue...'),
                 type: 'error',
             });
         }
@@ -64,7 +66,7 @@ export const SignUpForm = ({ inviteCode }: SignUpFormProps) => {
             <Form onSubmit={onSubmit} className="signup-form" autoComplete="off">
                 <Field
                     name="username"
-                    label={t('signup_page.name_field.label')}
+                    label={tx('Nom du professeur')}
                     input={
                         <Input
                             id="name"
@@ -82,7 +84,7 @@ export const SignUpForm = ({ inviteCode }: SignUpFormProps) => {
                 />
                 <Field
                     name="email"
-                    label={t('signup_page.email_field.label')}
+                    label={tx('E-mail du professeur')}
                     input={
                         <Input
                             id="email"
@@ -101,12 +103,12 @@ export const SignUpForm = ({ inviteCode }: SignUpFormProps) => {
                             hasError={!isEmailValid}
                         />
                     }
-                    helperText={!isEmailValid ? t('signup_page.email_field.error') : ''}
+                    helperText={!isEmailValid ? tx('E-mail invalide.') : ''}
                     helperTextStyle={{ textAlign: 'left', color: 'rgb(211, 47, 47)' }}
                 />
                 <Field
                     name="password"
-                    label={t('signup_page.password_field.label')}
+                    label={tx('Mot de passe')}
                     input={
                         <Input
                             type={showPassword ? 'text' : 'password'}
@@ -136,12 +138,18 @@ export const SignUpForm = ({ inviteCode }: SignUpFormProps) => {
                             hasError={!isPasswordValid}
                         />
                     }
-                    helperText={!isPasswordValid ? t('signup_page.password_field.error') : ''}
+                    helperText={
+                        !isPasswordValid
+                            ? tx(
+                                  'Mot de passe trop faible. Il doit contenir au moins 8 charactères avec des lettres minuscules, majuscules et des chiffres.',
+                              )
+                            : ''
+                    }
                     helperTextStyle={{ textAlign: 'left', color: 'rgb(211, 47, 47)' }}
                 />
                 <Field
                     name="password_confirm"
-                    label={t('signup_page.password_confirm_field.label')}
+                    label={tx('Confirmer le mot de passe')}
                     input={
                         <Input
                             style={{ marginTop: '1rem' }}
@@ -173,13 +181,13 @@ export const SignUpForm = ({ inviteCode }: SignUpFormProps) => {
                             hasError={hasConfirmError}
                         />
                     }
-                    helperText={hasConfirmError ? t('signup_page.password_confirm_field.error') : ''}
+                    helperText={hasConfirmError ? tx('Mots de passe différents.') : ''}
                     helperTextStyle={{ textAlign: 'left', color: 'rgb(211, 47, 47)' }}
                 />
-                <Button label={t('signup_page.submit_button.label')} variant="contained" color={'secondary'} type="submit" value="Submit"></Button>
+                <Button label={tx("S'inscrire !")} variant="contained" color={'secondary'} type="submit" value="Submit"></Button>
             </Form>
             <div className="text-center" style={{ marginBottom: '2rem' }}>
-                {t('signup_page.login_link.already')} <Link href="/login">{t('signup_page.login_link.label')}</Link>
+                {tx('Compte déjà créé ?')} <Link href="/login">{tx('Se connecter')}</Link>
             </div>
             <Loader isLoading={false} />
         </>

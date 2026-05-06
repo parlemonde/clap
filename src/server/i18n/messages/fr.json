@@ -1,0 +1,353 @@
+{
+  "common": {
+    "GwOflP": "Une erreur est survenue...",
+    "jTJesD": "Supprimer",
+    "WVjBwU": "Une erreur est survenue lors de l'importation de l'image.",
+    "n0lg1w": "Continuer",
+    "qwbZAF": "ou",
+    "bpWqj5": "Une erreur est survenue lors de l'importation du son.",
+    "eJNDkT": "Tout les thèmes",
+    "8Kvk8a": "Annuler",
+    "ho0AzM": "Modifier",
+    "L3I+Rg": "Valider",
+    "tNDdHY": "Retour",
+    "XlYmFI": "Suivant",
+    "vp7lzP": "Créer",
+    "jl8GYd": "Mes vidéos",
+    "Nf4aIk": "Réglages",
+    "mJr9un": "Je me connecte !",
+    "jwhET3": "Application",
+    "iHN12u": "Admin",
+    "Zm1Gfe": "Mon compte",
+    "VVAEJC": "Veuillez utiliser la connection avec prof.ParLeMonde.org pour vous connecter.",
+    "6WkZQg": "Identifiants invalides."
+  },
+  "create": {
+    "1-scenario": {
+      "new": {
+        "newScenarioForm": {
+          "+0eone": "Choisis ton titre<required>*</required> :",
+          "WtqrSD": "Mon scénario",
+          "foV5rH": "Fais en une rapide description :",
+          "ps9TZg": "Ma description"
+        },
+        "lQUIy0": "Crée ton nouveau <inverted>scénario</inverted> !"
+      },
+      "H1o0oX": "Quel <inverted>scénario</inverted> choisir ?",
+      "G+iOg4": "C'est à votre tour, sélectionnez un scénario à filmer",
+      "KtN6oa": "Nouveau scénario",
+      "wro5gM": "Cliquez ici pour créer votre propre scénario !",
+      "Scenarios": {
+        "KN89Fm": "{count, plural, one {# étape} other {# étapes}}"
+      }
+    },
+    "2-questions": {
+      "edit": {
+        "FJjs1k": "Mes <inverted>séquences</inverted>",
+        "f685W/": "Modifier une séquence :",
+        "kQZd4t": "Ma séquence"
+      },
+      "new": {
+        "FJjs1k": "Mes <inverted>séquences</inverted>",
+        "mIxOPI": "Ajoute une séquence :",
+        "kQZd4t": "Ma séquence"
+      },
+      "FJjs1k": "Mes <inverted>séquences</inverted>",
+      "IB5q9J": "Pour structurer votre scénario, nous vous proposons de le découper en séquences. Souvent une séquence correspond à une idée.",
+      "ouASJ3": "Ajouter une séquence",
+      "UEdUwY": "Sauvegarder le projet ?",
+      "W02S7k": "Ne pas sauvegarder",
+      "o4k3c0": "Sauvegarder le projet",
+      "OjHBwo": "Enregistrer le projet vous permettra de le retrouver dans l'onglet \"Mes vidéos\" et également dans l'application Par Le Monde.",
+      "DDs8OX": "Nom du projet :",
+      "QuestionsList": {
+        "xSl0Cg": "Supprimer la séquence ?",
+        "KYR0Vq": "Voulez-vous vraiment supprimer la séquence :"
+      }
+    },
+    "3-storyboard": {
+      "edit": {
+        "FHED4J": "Créez votre plan",
+        "vz6By/": "Séquence : {sequenceName}",
+        "kSPJAF": "Plan numéro : {planNumber}",
+        "PlanForm": {
+          "fAnM7w": "Description du plan :",
+          "BiWWhx": "Ici, vous pouvez décrire comment vous allez filmer ce plan.\nPar exemple :\n\tQUI ? quels élèves sont impliqués dans le tournage de ce plan ?\n\tCOMMENT ? Comment sont répartis les rôles entre élèves ? (qui tient la caméra, qui surveille le cadre, qui apparaît à l'écran ?)\n\tQUOI ? Que vont faire ou dire vos élèves ?\n\tQUAND ? À quelle date vous allez filmer ce plan ?\n\tOÙ ? Dans quel lieu allez-vous tourner ce plan ?",
+          "Z0BXoA": "Dessin du plan :",
+          "oKHddr": "Pour créer votre plan vous pouvez soit l'importer, soit le prendre en photo ou le dessiner en ligne !",
+          "6u5c3j": "Pour créer votre plan vous pouvez l'importer ou le prendre en photo !",
+          "NB2wBH": "Changer le dessin",
+          "vvqqV+": "Changer le dessin du plan",
+          "uvbGvR": "Prendre une photo",
+          "8pmblh": "Enregistrer",
+          "nY2Emy": "Dessiner le plan",
+          "THzx0r": "Importer une image"
+        }
+      },
+      "generating-pdf": {
+        "8fWOsR": "Génération du PDF..."
+      },
+      "DGBL6o": "Création du <inverted>Storyboard</inverted>",
+      "F5Iv9t": "Ici créez votre storyboard ! C'est une représentation de votre film sous forme de dessins et le résultat final de votre vidéo sera l'assemblage de ces plans les uns après les autres.\n",
+      "OmZ8z2": "Télécharger le storyboard",
+      "Ypm283": "En attente de validation du storyboard",
+      "Vs8cqR": "Envoyer pour vérification",
+      "Scenario": {
+        "hxvP55": "Ajouter un plan",
+        "epezGc": "Supprimer le plan ?",
+        "x2CXWR": "Voulez-vous vraiment supprimer le plan n° {planNumber} ?",
+        "I+3GuW": "Supprimer le titre ?",
+        "NUNXte": "Voulez-vous vraiment supprimer le titre ?"
+      },
+      "title": {
+        "+tJv02": "Création du titre de la séquence n° {planNumber}",
+        "vz6By/": "Séquence : {sequenceName}",
+        "W++0LP": "Pour chaque séquence, vous pouvez choisir d'ajouter un titre. Par défaut, il s'agit du titre de la séquence, mais vous pouvez le modifier !",
+        "TitleForm": {
+          "hf/kAB": "blanc",
+          "GZbDsc": "noir",
+          "hsNbHs": "rouge",
+          "QbISGc": "bleu",
+          "GEGsWx": "vert",
+          "2OiECg": "petit",
+          "/MWUKy": "moyen",
+          "N0R+ga": "grand",
+          "DNPRDK": "gauche",
+          "ax+YLy": "centré",
+          "PbDpyL": "droite",
+          "JNq10g": "justifié"
+        }
+      }
+    },
+    "4-pre-mounting": {
+      "edit": {
+        "MontageForm": {
+          "IDWgxb": "Écrivez ici le texte de la voix-off. Il s'agit du commentaire audio qui peut accompagner votre séquence.",
+          "3UsuPK": "Vous pourrez enregistrer un élève ou plusieurs élèves lire cette voix-off avec un microphone, comme celui de votre smartphone.\nPensez à enregistrer cette voix-off dans un environnement sonore calme.\nSi vous utilisez votre smartphone, pensez à le mettre en mode avion.\nRendez-vous en bas de cette page pour ajouter votre fichier son à la séquence. ",
+          "JCw1Tv": "Ajustez ici la durée totale de la séquence, ainsi que la durée relative des plans.",
+          "zDn85M": "Mettez en ligne la voix-off que vous avez enregistrée.\n Vous pourrez ensuite l'ajuster à la séquence et régler son volume, dans la table de montage ci-dessus.",
+          "srkFZ+": "Formats acceptés : .acc, .ogg, .opus, .mp3, .wav",
+          "OaMs4b": "Importer un son"
+        },
+        "oLExg4": "Écrire, ajouter une voix-off et ajuster la séquence n°{number}",
+        "NYBhUA": "À cette étape, vous pouvez écrire et ajouter une voix-off, modifier combien de temps apparaîssent vos plans, et la durée de votre séquence."
+      },
+      "IxU7dH": "Prémontez votre <inverted>film</inverted>",
+      "5+H8tM": "Pour chaque séquence vous pouvez écrire et enregistrer une voix-off.",
+      "A+hbiy": "Vous devez éditer au moins un plan pour monter cette séquence.",
+      "/pjtOx": "En attente de validation du prémontage",
+      "Vs8cqR": "Envoyer pour vérification"
+    },
+    "5-music": {
+      "Pni/kw": "Ajouter une musique en fond sonore",
+      "B9ckCV": "À cette étape,  vous pouvez pré-visualiser votre diaporama sonore et y ajouter une musique. ",
+      "srkFZ+": "Formats acceptés : .acc, .ogg, .opus, .mp3, .wav",
+      "OaMs4b": "Importer un son"
+    },
+    "6-result": {
+      "SPmB9H": "Vérification de la compatibilité du navigateur...",
+      "OtDoXg": "Chargement des médias...",
+      "YbXzoa": "Création des images de la vidéo...",
+      "ddcOo3": "Finalisation de la vidéo...",
+      "46oh5E": "Votre navigateur ne prend pas en charge la génération vidéo.",
+      "UDpSX4": "Votre navigateur ne prend pas en charge les codecs nécessaires à la génération vidéo.",
+      "VrfWni": "Impossible de générer la vidéo avec ce navigateur.",
+      "F7lDJ7": "La vidéo a été enregistrée.",
+      "czYCcl": "Cette vidéo est trop longue pour être générée ici. Durée maximale approximative : {maxDuration}.",
+      "jiUP2b": "À votre <inverted>caméra</inverted> !",
+      "m7kz8U": "À cette étape,  vous pouvez pré-visualiser votre diaporama sonore achevé.",
+      "7ch4OK": "Vous pouvez maintenant télécharger ce diaporama ou son fichier de montage pour y intégrer vos plans vidéos.",
+      "uNRngJ": "Télécharger votre vidéo",
+      "Oumdfl": "Générer votre vidéo !",
+      "13Odhn": "Télécharger le fichier de montage",
+      "z3QguU": "Création de votre vidéo",
+      "Q2K30Q": "Veuillez garder cette page ouverte jusqu’à la fin de la génération."
+    },
+    "new-theme": {
+      "NewThemeForm": {
+        "VSiOvi": "Nom du thème<required>*</required>:",
+        "VJo1Bz": "Nouveau thème"
+      },
+      "l5hnMi": "Ajouter votre thème",
+      "TXuz7x": "Créer votre <inverted>thème</inverted> :"
+    }
+  },
+  "join": {
+    "LoginStudentForm": {
+      "/omLcg": "Code de collaboration invalide",
+      "v95OJN": "Rejoindre une session collaborative",
+      "taPAfU": "Code de collaboration",
+      "c7Azuw": "Rejoindre",
+      "Zx5cPz": "Retour à la page de connexion"
+    },
+    "StudentQuestionChoice": {
+      "u1+3BS": "Sélectionnez votre séquence :",
+      "Wx+XLs": "Séquence n°{number}"
+    }
+  },
+  "login": {
+    "LoginForm": {
+      "nzTWoT": "Se connecter avec prof.parlemonde.org",
+      "3kb11u": "E-mail du professeur",
+      "ZVILrU": "Mot de passe",
+      "uaRvSg": "Se connecter",
+      "iCW/Y9": "Je suis un·e élève",
+      "2oHcL9": "Mot de passe oublié ?",
+      "cj/Mlf": "Nouveau sur Par Le Monde ?",
+      "wzNBlT": "S'inscrire"
+    },
+    "K3Cvti": "Connexion à votre compte classe"
+  },
+  "my-account": {
+    "DeleteAccountButton": {
+      "y7ovCd": "supprimer",
+      "Qpvylr": "Supprimer mon compte",
+      "fxBXNC": "Attention! Êtes-vous sur de vouloir supprimer votre compte ? Cette action est <strong>irréversible</strong>.",
+      "HTH4n2": "Pour supprimer votre compte, veuillez taper '<strong>supprimer</strong>' ci-dessous et cliquez sur supprimer.",
+      "REOc6i": "Tapez {deleteConfirm} ici"
+    },
+    "LogoutForm": {
+      "B80/7m": "Se déconnecter"
+    },
+    "Zm1Gfe": "Mon compte",
+    "RoAjLn": "Mes identifiants",
+    "wl0DdQ": "Nom du professeur",
+    "3kb11u": "E-mail du professeur",
+    "B80/7m": "Se déconnecter",
+    "Qpvylr": "Supprimer mon compte",
+    "UpdateEmailForm": {
+      "DvRmR5": "Changer mon e-mail",
+      "+4dVRY": "Votre email est votre identifiant de connection.",
+      "3kb11u": "E-mail du professeur",
+      "z/PYOC": "E-mail invalide"
+    },
+    "UpdateNameForm": {
+      "ZGtGl4": "Changer mon nom",
+      "wl0DdQ": "Nom du professeur",
+      "ygOFHS": "Nom invalide"
+    },
+    "UpdatePasswordButton": {
+      "mbh4Fy": "Changer mon mot de passe",
+      "DZQ1DH": "Mot de passe actuel",
+      "mVbqoP": "Nouveau mot de passe",
+      "0zHLO5": "Mot de passe trop faible. Il doit contenir au moins 8 charactères avec des lettres minuscules, majuscules et des chiffres.",
+      "H0cnMY": "Confirmer le nouveau mot de passe",
+      "yHU4dJ": "Mots de passe différents"
+    }
+  },
+  "my-videos": {
+    "[id]": {
+      "voZkAY": "Cette vidéo n'existe pas !",
+      "Xqh81k": "Retour à la page d'accueil",
+      "gv+hXw": "Projet :",
+      "heveOg": "Détails du projets",
+      "ProjectForm": {
+        "DDs8OX": "Nom du projet :",
+        "/p21wQ": "Changer",
+        "yrOJVN": "Thème :",
+        "Hnsg3B": "Scénario :",
+        "0ZcS5b": "Nombre de séquences :",
+        "JQi3Zs": "Nombre de plans :",
+        "ryJyvA": "Voir les plans",
+        "q+YurW": "Supprimer le projet",
+        "YR56+U": "Modifier le nom du projet",
+        "wmHmBM": "Nom du projet",
+        "dRcFCW": "Mon projet",
+        "7hq/Xq": "Supprimer le projet ?",
+        "z/RV6B": "Voulez-vous vraiment supprimer le projet <strong>{projetName}</strong> ?"
+      }
+    },
+    "RpYjQO": "Mes <inverted>super</inverted> vidéos",
+    "ProjectCard": {
+      "anJsfF": "Thème : {themeName}"
+    },
+    "VideosList": {
+      "88K2T3": "Vous n'avez pas encore de projet en cours. En créer un ?"
+    }
+  },
+  "qv6QMM": "Sur quel <inverted>thème</inverted> sera votre vidéo ?",
+  "reset-password": {
+    "Ht3zTQ": "Un lien pour réinitialiser le mot de passe de votre compte a été envoyé avec succès à votre addresse e-mail !",
+    "ghVHdo": "Réinitialiser le mot de passe",
+    "tkwCac": "E-mail",
+    "y62iF6": "Réinitialiser",
+    "Zx5cPz": "Retour à la page de connexion"
+  },
+  "settings": {
+    "LanguageSelect": {
+      "L6iE8o": "Langue"
+    },
+    "Nf4aIk": "Réglages",
+    "PZnYhz": "Changer la langue de l'application :"
+  },
+  "sign-up": {
+    "InviteTokenForm": {
+      "1kCPLT": "Créez votre compte classe avec votre code d'invitation :",
+      "Oa4Ezl": "Saisir votre code d'invitation",
+      "sYQhxA": "Code d'invitation invalide...",
+      "zVZ1d2": "Compte déjà créé ?",
+      "uaRvSg": "Se connecter"
+    },
+    "MJSiX+": "Création du compte classe",
+    "SignUpForm": {
+      "wl0DdQ": "Nom du professeur",
+      "3kb11u": "E-mail du professeur",
+      "/1inSm": "E-mail invalide.",
+      "ZVILrU": "Mot de passe",
+      "0zHLO5": "Mot de passe trop faible. Il doit contenir au moins 8 charactères avec des lettres minuscules, majuscules et des chiffres.",
+      "lJVoKg": "Confirmer le mot de passe",
+      "txSjTb": "Mots de passe différents.",
+      "urP3Xp": "S'inscrire !",
+      "zVZ1d2": "Compte déjà créé ?",
+      "uaRvSg": "Se connecter"
+    }
+  },
+  "Themes": {
+    "l5hnMi": "Ajouter votre thème"
+  },
+  "update-password": {
+    "ghVHdo": "Réinitialiser le mot de passe",
+    "UpdatePasswordForm": {
+      "CxfaKN": "Le mot de passe de votre compte a été réinitialisé avec succès !",
+      "mVbqoP": "Nouveau mot de passe",
+      "0zHLO5": "Mot de passe trop faible. Il doit contenir au moins 8 charactères avec des lettres minuscules, majuscules et des chiffres.",
+      "H0cnMY": "Confirmer le nouveau mot de passe",
+      "txSjTb": "Mots de passe différents.",
+      "y62iF6": "Réinitialiser"
+    }
+  },
+  "Canvas": {
+    "jr63by": "Couleur",
+    "wxgh/f": "Épaisseur",
+    "9+lfXd": "Revenir en arrière",
+    "dZVdtr": "Revenir en avant",
+    "MDw6qS": "Tout effacer"
+  },
+  "ClearModal": {
+    "sgOR6B": "Effacer le canvas",
+    "U9jqRL": "Êtes-vous sûr de vouloir effacer totalement le canvas ?"
+  },
+  "ColorModal": {
+    "UwpYJc": "Choisissez la couleur du trait"
+  },
+  "SizeModal": {
+    "uotfFV": "Choisissez l'épaisseur du trait"
+  },
+  "TitleCard": {
+    "yipxDx": "Ajouter un titre"
+  },
+  "ProjectTitle": {
+    "gv+hXw": "Projet :"
+  },
+  "Steps": {
+    "B1dL1n": "Choix du scénario",
+    "pFEb+f": "Choix des séquences",
+    "DfonhZ": "Storyboard",
+    "uQ/PH5": "Prémontage",
+    "UNkiHQ": "Musique",
+    "up9Bhi": "Téléchargements"
+  },
+  "Cropper": {
+    "Dow2ok": "Redimensionner l'image"
+  }
+}

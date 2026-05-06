@@ -1,4 +1,4 @@
-import { getTranslations } from 'next-intl/server';
+import { getExtracted } from 'next-intl/server';
 import * as React from 'react';
 
 import { Container } from '@frontend/components/layout/Container';
@@ -14,7 +14,7 @@ import { UpdateNameForm } from './UpdateNameForm';
 import { UpdatePasswordButton } from './UpdatePasswordButton';
 
 export default async function AccountPage() {
-    const t = await getTranslations();
+    const tx = await getExtracted('my-account');
     const user = await getCurrentUser();
 
     if (!user || user.role === 'student') {
@@ -27,21 +27,21 @@ export default async function AccountPage() {
         <Container>
             <div className="text-center">
                 <Title color="primary" variant="h1" marginY="md">
-                    {t('my_account_page.header.title')}
+                    {tx('Mon compte')}
                 </Title>
             </div>
             <Title color="inherit" variant="h2">
-                {t('my_account_page.connection_subheader.title')}
+                {tx('Mes identifiants')}
             </Title>
             <div style={{ marginTop: '0.5rem' }}>
                 <label>
-                    <strong>{t('my_account_page.name_field.label')} : </strong>
+                    <strong>{tx('Nom du professeur')} : </strong>
                 </label>
                 {user.name} - <UpdateNameForm user={user} />
             </div>
             <div style={{ marginTop: '4px' }}>
                 <label>
-                    <strong>{t('my_account_page.email_field.label')} : </strong>
+                    <strong>{tx('E-mail du professeur')} : </strong>
                 </label>
                 {user.email}
                 {!isSso && (
@@ -54,12 +54,12 @@ export default async function AccountPage() {
             {!isSso && <UpdatePasswordButton />}
             <Divider marginY="lg" />
             <Title color="inherit" variant="h2">
-                {t('my_account_page.logout_button.title')}
+                {tx('Se déconnecter')}
             </Title>
             <LogoutForm />
             <Divider marginY="lg" />
             <Title color="inherit" variant="h2">
-                {t('my_account_page.delete_account_button.title')}
+                {tx('Supprimer mon compte')}
             </Title>
             <DeleteAccountButton />
         </Container>
