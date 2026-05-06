@@ -20,7 +20,7 @@ import { PlanForm } from './PlanForm';
 export default function StoryboardPlanPage(props: ServerPageProps) {
     const router = useRouter();
     const user = React.useContext(userContext);
-    const tx = useExtracted('create.3-storyboard.edit');
+    const t = useExtracted('create.3-storyboard.edit');
     const { projectData, setProjectData } = useCurrentProject();
     useCollaboration(); // Listen to collaboration updates
 
@@ -52,15 +52,15 @@ export default function StoryboardPlanPage(props: ServerPageProps) {
             <ThemeBreadcrumbs themeId={projectData.themeId}></ThemeBreadcrumbs>
             <Steps activeStep={2} themeId={projectData.themeId} backHref="/create/3-storyboard"></Steps>
             <Title color="primary" variant="h1" marginY="md">
-                <Inverted isRound>3</Inverted> {tx('Créez votre plan')}
+                <Inverted isRound>3</Inverted> {t('Créez votre plan')}
             </Title>
             <Title color="inherit" variant="h2">
-                {tx('Séquence : {sequenceName}', {
+                {t('Séquence : {sequenceName}', {
                     sequenceName: sequence?.question || '',
                 })}
             </Title>
             <Title color="inherit" variant="h2" marginY="md">
-                {tx('Plan numéro : {planNumber}', {
+                {t('Plan numéro : {planNumber}', {
                     planNumber: String(planStartIndex + planIndex),
                 })}
             </Title>

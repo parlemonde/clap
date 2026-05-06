@@ -10,7 +10,7 @@ interface SizeModalProps {
 }
 
 export const SizeModal: React.FunctionComponent<SizeModalProps> = ({ isOpen = false, setIsOpen = () => {}, setSize = () => {} }: SizeModalProps) => {
-    const tx = useExtracted('SizeModal');
+    const t = useExtracted('SizeModal');
     const handleCloseModalSize = (size?: number) => () => {
         setIsOpen(false);
         if (size !== undefined) {
@@ -19,7 +19,7 @@ export const SizeModal: React.FunctionComponent<SizeModalProps> = ({ isOpen = fa
     };
 
     return (
-        <Modal width="sm" isOpen={isOpen} onClose={handleCloseModalSize()} title={tx("Choisissez l'épaisseur du trait")} hasCancelButton={false}>
+        <Modal width="sm" isOpen={isOpen} onClose={handleCloseModalSize()} title={t("Choisissez l'épaisseur du trait")} hasCancelButton={false}>
             <div className="canvas-colors-container" id="size-dialog-description">
                 <button
                     type="button"

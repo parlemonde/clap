@@ -18,7 +18,7 @@ interface LoginFormProps {
 
 export const LoginForm = ({ provider }: LoginFormProps) => {
     const [message, formAction] = React.useActionState(login, '');
-    const tx = useExtracted('login.LoginForm');
+    const t = useExtracted('login.LoginForm');
 
     const [showPassword, setShowPassword] = React.useState(false);
 
@@ -28,7 +28,7 @@ export const LoginForm = ({ provider }: LoginFormProps) => {
             {provider ? (
                 <>
                     <Button
-                        label={tx('Se connecter avec prof.parlemonde.org')}
+                        label={t('Se connecter avec prof.parlemonde.org')}
                         variant="contained"
                         color="secondary"
                         onClick={() => authClient.signIn.social({ provider })}
@@ -43,12 +43,12 @@ export const LoginForm = ({ provider }: LoginFormProps) => {
             ) : null}
             <Field
                 name="email"
-                label={<span style={{ display: 'inline-block', marginBottom: 4 }}>{tx('E-mail du professeur')}</span>}
+                label={<span style={{ display: 'inline-block', marginBottom: 4 }}>{t('E-mail du professeur')}</span>}
                 input={<Input id="email" name="email" type="text" color="secondary" isFullWidth required />}
             ></Field>
             <Field
                 name="password"
-                label={<span style={{ display: 'inline-block', marginBottom: 4 }}>{tx('Mot de passe')}</span>}
+                label={<span style={{ display: 'inline-block', marginBottom: 4 }}>{t('Mot de passe')}</span>}
                 input={
                     <Input
                         type={showPassword ? 'text' : 'password'}
@@ -72,15 +72,15 @@ export const LoginForm = ({ provider }: LoginFormProps) => {
                     />
                 }
             ></Field>
-            <Button label={tx('Se connecter')} variant="contained" color="secondary" type="submit" value="Submit"></Button>
-            <Button marginTop="lg" as="a" href="/join" isFullWidth label={tx('Je suis un·e élève')} variant="outlined" color="secondary"></Button>
+            <Button label={t('Se connecter')} variant="contained" color="secondary" type="submit" value="Submit"></Button>
+            <Button marginTop="lg" as="a" href="/join" isFullWidth label={t('Je suis un·e élève')} variant="outlined" color="secondary"></Button>
             <div className="text-center">
                 <Link href="/reset-password" className="color-primary">
-                    {tx('Mot de passe oublié ?')}
+                    {t('Mot de passe oublié ?')}
                 </Link>
             </div>
             <div className="text-center" style={{ marginBottom: '2rem' }}>
-                {tx('Nouveau sur Par Le Monde ?')} <Link href="/sign-up">{tx("S'inscrire")}</Link>
+                {t('Nouveau sur Par Le Monde ?')} <Link href="/sign-up">{t("S'inscrire")}</Link>
             </div>
             <div className="loader-wrapper">
                 <FormLoader />

@@ -18,7 +18,7 @@ interface UpdatePasswordFormProps {
     verifyToken: string;
 }
 export const UpdatePasswordForm = ({ verifyToken }: UpdatePasswordFormProps) => {
-    const tx = useExtracted('update-password.UpdatePasswordForm');
+    const t = useExtracted('update-password.UpdatePasswordForm');
     const commonT = useExtracted('common');
     const router = useRouter();
 
@@ -48,7 +48,7 @@ export const UpdatePasswordForm = ({ verifyToken }: UpdatePasswordFormProps) => 
         } else {
             router.push('/login');
             sendToast({
-                message: tx('Le mot de passe de votre compte a été réinitialisé avec succès !'),
+                message: t('Le mot de passe de votre compte a été réinitialisé avec succès !'),
                 type: 'success',
             });
         }
@@ -58,7 +58,7 @@ export const UpdatePasswordForm = ({ verifyToken }: UpdatePasswordFormProps) => 
         <Form className="login-form" autoComplete="off" onSubmit={onSubmit}>
             <Field
                 name="new_password"
-                label={tx('Nouveau mot de passe')}
+                label={t('Nouveau mot de passe')}
                 input={
                     <Input
                         type={showPassword ? 'text' : 'password'}
@@ -87,7 +87,7 @@ export const UpdatePasswordForm = ({ verifyToken }: UpdatePasswordFormProps) => 
                 }
                 helperText={
                     !isValidPassword
-                        ? tx(
+                        ? t(
                               'Mot de passe trop faible. Il doit contenir au moins 8 charactères avec des lettres minuscules, majuscules et des chiffres.',
                           )
                         : ''
@@ -96,7 +96,7 @@ export const UpdatePasswordForm = ({ verifyToken }: UpdatePasswordFormProps) => 
             />
             <Field
                 name="new_password_confirm"
-                label={tx('Confirmer le nouveau mot de passe')}
+                label={t('Confirmer le nouveau mot de passe')}
                 input={
                     <Input
                         style={{ marginTop: '1rem' }}
@@ -128,10 +128,10 @@ export const UpdatePasswordForm = ({ verifyToken }: UpdatePasswordFormProps) => 
                         hasError={hasConfirmError}
                     />
                 }
-                helperText={hasConfirmError ? tx('Mots de passe différents.') : ''}
+                helperText={hasConfirmError ? t('Mots de passe différents.') : ''}
                 helperTextStyle={{ textAlign: 'left', color: 'rgb(211, 47, 47)' }}
             />
-            <Button label={tx('Réinitialiser')} variant="contained" color="secondary" type="submit"></Button>
+            <Button label={t('Réinitialiser')} variant="contained" color="secondary" type="submit"></Button>
             <Loader isLoading={isLoading} />
         </Form>
     );

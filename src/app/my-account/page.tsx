@@ -14,7 +14,7 @@ import { UpdateNameForm } from './UpdateNameForm';
 import { UpdatePasswordButton } from './UpdatePasswordButton';
 
 export default async function AccountPage() {
-    const tx = await getExtracted('my-account');
+    const t = await getExtracted('my-account');
     const user = await getCurrentUser();
 
     if (!user || user.role === 'student') {
@@ -27,21 +27,21 @@ export default async function AccountPage() {
         <Container>
             <div className="text-center">
                 <Title color="primary" variant="h1" marginY="md">
-                    {tx('Mon compte')}
+                    {t('Mon compte')}
                 </Title>
             </div>
             <Title color="inherit" variant="h2">
-                {tx('Mes identifiants')}
+                {t('Mes identifiants')}
             </Title>
             <div style={{ marginTop: '0.5rem' }}>
                 <label>
-                    <strong>{tx('Nom du professeur')} : </strong>
+                    <strong>{t('Nom du professeur')} : </strong>
                 </label>
                 {user.name} - <UpdateNameForm user={user} />
             </div>
             <div style={{ marginTop: '4px' }}>
                 <label>
-                    <strong>{tx('E-mail du professeur')} : </strong>
+                    <strong>{t('E-mail du professeur')} : </strong>
                 </label>
                 {user.email}
                 {!isSso && (
@@ -54,12 +54,12 @@ export default async function AccountPage() {
             {!isSso && <UpdatePasswordButton />}
             <Divider marginY="lg" />
             <Title color="inherit" variant="h2">
-                {tx('Se déconnecter')}
+                {t('Se déconnecter')}
             </Title>
             <LogoutForm />
             <Divider marginY="lg" />
             <Title color="inherit" variant="h2">
-                {tx('Supprimer mon compte')}
+                {t('Supprimer mon compte')}
             </Title>
             <DeleteAccountButton />
         </Container>

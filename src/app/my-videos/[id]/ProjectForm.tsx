@@ -24,7 +24,7 @@ export const ProjectForm = ({ project }: ProjectFormProps) => {
     const router = useRouter();
     const [, setProjectId] = useLocalStorage('projectId');
 
-    const tx = useExtracted('my-videos.[id].ProjectForm');
+    const t = useExtracted('my-videos.[id].ProjectForm');
     const commonT = useExtracted('common');
 
     const [projectTitle, setProjectTitle] = React.useState<string>(project.name);
@@ -55,7 +55,7 @@ export const ProjectForm = ({ project }: ProjectFormProps) => {
         <>
             <div style={{ marginTop: '0.5rem' }}>
                 <label style={{ marginRight: '0.5rem' }}>
-                    <strong>{tx('Nom du projet :')}</strong>
+                    <strong>{t('Nom du projet :')}</strong>
                 </label>
                 {project.name} -{' '}
                 <a
@@ -74,35 +74,35 @@ export const ProjectForm = ({ project }: ProjectFormProps) => {
                         setShowTitleModal(true);
                     }}
                 >
-                    {tx('Changer')}
+                    {t('Changer')}
                 </a>
             </div>
             <div style={{ marginTop: '0.5rem' }}>
                 <label style={{ marginRight: '0.5rem' }}>
-                    <strong>{tx('Thème :')}</strong>
+                    <strong>{t('Thème :')}</strong>
                 </label>
                 {project.data.themeName}
             </div>
             <div style={{ marginTop: '0.5rem' }}>
                 <label style={{ marginRight: '0.5rem' }}>
-                    <strong>{tx('Scénario :')}</strong>
+                    <strong>{t('Scénario :')}</strong>
                 </label>
                 {project.data.scenarioName}
             </div>
             <div style={{ marginTop: '0.5rem' }}>
                 <label style={{ marginRight: '0.5rem' }}>
-                    <strong>{tx('Nombre de séquences :')}</strong>
+                    <strong>{t('Nombre de séquences :')}</strong>
                 </label>
                 {project.data.questions.length || 0}
             </div>
             <div style={{ marginTop: '0.5rem' }}>
                 <label style={{ marginRight: '0.5rem' }}>
-                    <strong>{tx('Nombre de plans :')}</strong>
+                    <strong>{t('Nombre de plans :')}</strong>
                 </label>
                 {project.data.questions.reduce<number>((n, q) => n + (q.plans || []).length, 0) ?? 0}
             </div>
             <Button
-                label={tx('Voir les plans')}
+                label={t('Voir les plans')}
                 marginTop="md"
                 className="mobile-full-width"
                 variant="contained"
@@ -116,10 +116,10 @@ export const ProjectForm = ({ project }: ProjectFormProps) => {
             ></Button>
             <Divider marginY="md" />
             <Title color="inherit" variant="h2">
-                {tx('Supprimer le projet')}
+                {t('Supprimer le projet')}
             </Title>
             <Button
-                label={tx('Supprimer le projet')}
+                label={t('Supprimer le projet')}
                 marginTop="md"
                 onClick={() => setShowDeleteModal(true)}
                 className="mobile-full-width"
@@ -135,7 +135,7 @@ export const ProjectForm = ({ project }: ProjectFormProps) => {
                 onConfirm={onUpdateName}
                 confirmLabel={commonT('Modifier')}
                 cancelLabel={commonT('Annuler')}
-                title={tx('Modifier le nom du projet')}
+                title={t('Modifier le nom du projet')}
                 isLoading={isUpdating}
                 onOpenAutoFocus={false}
                 isFullWidth
@@ -143,14 +143,14 @@ export const ProjectForm = ({ project }: ProjectFormProps) => {
                 <div id="project-dialog-description">
                     <Field
                         name="description"
-                        label={tx('Nom du projet')}
+                        label={t('Nom du projet')}
                         input={
                             <Input
                                 name="description"
                                 id="description"
                                 isFullWidth
                                 value={projectTitle}
-                                placeholder={tx('Mon projet')}
+                                placeholder={t('Mon projet')}
                                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                                     setProjectTitle(event.target.value.slice(0, 200));
                                 }}
@@ -168,7 +168,7 @@ export const ProjectForm = ({ project }: ProjectFormProps) => {
                 confirmLabel={commonT('Supprimer')}
                 confirmLevel="error"
                 cancelLabel={commonT('Annuler')}
-                title={tx('Supprimer le projet ?')}
+                title={t('Supprimer le projet ?')}
                 isLoading={isDeleting}
                 isFullWidth
             >
@@ -189,7 +189,7 @@ export const ProjectForm = ({ project }: ProjectFormProps) => {
                         }}
                     >
                         <InfoCircledIcon style={{ width: 20, height: 20, marginRight: 8, paddingTop: 1 }} />
-                        {tx.rich('Voulez-vous vraiment supprimer le projet <strong>{projetName}</strong> ?', {
+                        {t.rich('Voulez-vous vraiment supprimer le projet <strong>{projetName}</strong> ?', {
                             projetName: project.name,
                             strong: (chunks) => <strong>{chunks}</strong>,
                         })}

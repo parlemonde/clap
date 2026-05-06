@@ -16,7 +16,7 @@ export const InviteTokenForm = ({ initialCode }: InviteTokenFormProps) => {
     const router = useRouter();
     const pathname = usePathname();
 
-    const tx = useExtracted('sign-up.InviteTokenForm');
+    const t = useExtracted('sign-up.InviteTokenForm');
     const commonT = useExtracted('common');
     const [inviteCode, setInviteCode] = React.useState(initialCode || '');
 
@@ -32,11 +32,11 @@ export const InviteTokenForm = ({ initialCode }: InviteTokenFormProps) => {
 
     return (
         <Form onSubmit={onSubmit} className="signup-form" autoComplete="off" style={{ textAlign: 'left' }}>
-            <label style={{ fontWeight: 'bold', fontSize: '1rem' }}>{tx("Créez votre compte classe avec votre code d'invitation :")}</label>
+            <label style={{ fontWeight: 'bold', fontSize: '1rem' }}>{t("Créez votre compte classe avec votre code d'invitation :")}</label>
             <Field
                 marginTop="md"
                 name="inviteCode"
-                label={tx("Saisir votre code d'invitation")}
+                label={t("Saisir votre code d'invitation")}
                 input={
                     <Input
                         id="inviteCode"
@@ -52,12 +52,12 @@ export const InviteTokenForm = ({ initialCode }: InviteTokenFormProps) => {
                         hasError={!!initialCode}
                     />
                 }
-                helperText={initialCode ? tx("Code d'invitation invalide...") : ''}
+                helperText={initialCode ? t("Code d'invitation invalide...") : ''}
                 helperTextStyle={{ textAlign: 'left', color: 'rgb(211, 47, 47)' }}
             ></Field>
             <Button label={commonT('Continuer')} variant="contained" color="secondary" type="submit" value="Submit"></Button>
             <div className="text-center" style={{ marginBottom: '2rem' }}>
-                {tx('Compte déjà créé ?')} <Link href="/login">{tx('Se connecter')}</Link>
+                {t('Compte déjà créé ?')} <Link href="/login">{t('Se connecter')}</Link>
             </div>
         </Form>
     );

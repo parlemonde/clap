@@ -21,7 +21,7 @@ interface ScenariosProps {
 
 export const Scenarios = ({ scenarios, themeId }: ScenariosProps) => {
     const router = useRouter();
-    const tx = useExtracted('create.1-scenario.Scenarios');
+    const t = useExtracted('create.1-scenario.Scenarios');
     const currentLocale = useLocale();
 
     const { data: themes } = useSWR<Theme[]>('/api/themes', jsonFetcher);
@@ -46,7 +46,7 @@ export const Scenarios = ({ scenarios, themeId }: ScenariosProps) => {
                             isLocalScenario(s)
                                 ? undefined
                                 : s.questionsCount
-                                  ? tx('{count, plural, one {# étape} other {# étapes}}', { count: s.questionsCount })
+                                  ? t('{count, plural, one {# étape} other {# étapes}}', { count: s.questionsCount })
                                   : undefined
                         }
                         href="/create/2-questions"

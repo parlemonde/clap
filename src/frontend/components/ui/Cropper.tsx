@@ -19,7 +19,7 @@ interface CropperProps {
 }
 
 export const Cropper = ({ ratio, imageUrl, isOpen, maxWidth = '800px', onClose, onCrop }: CropperProps) => {
-    const tx = useExtracted('Cropper');
+    const t = useExtracted('Cropper');
     const commonT = useExtracted('common');
     const [imageSize, setImageSize] = React.useState({ width: 0, height: 0 });
 
@@ -178,7 +178,7 @@ export const Cropper = ({ ratio, imageUrl, isOpen, maxWidth = '800px', onClose, 
     return (
         <Modal
             width="lg"
-            title={tx("Redimensionner l'image")}
+            title={t("Redimensionner l'image")}
             isOpen={isOpen}
             onClose={onClose}
             onConfirm={onConfirm}

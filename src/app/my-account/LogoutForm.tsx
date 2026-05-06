@@ -8,7 +8,7 @@ import { Loader } from '@frontend/components/ui/Loader';
 import { logout } from '@server-actions/authentication/logout';
 
 export const LogoutForm = () => {
-    const tx = useExtracted('my-account.LogoutForm');
+    const t = useExtracted('my-account.LogoutForm');
     const [isLoading, setIsLoading] = React.useState(false);
 
     return (
@@ -27,7 +27,7 @@ export const LogoutForm = () => {
         >
             <Button
                 style={{ marginTop: '0.8rem' }}
-                label={tx('Se déconnecter')}
+                label={t('Se déconnecter')}
                 variant="outlined"
                 color="error"
                 className="mobile-full-width"

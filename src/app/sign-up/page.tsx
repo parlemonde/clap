@@ -17,7 +17,7 @@ export default async function SignUpPage(props: ServerPageProps) {
     const currentUser = await getCurrentUser();
     const searchParams = await props.searchParams;
     const tokenQueryParam = typeof searchParams.inviteCode === 'string' ? searchParams.inviteCode : undefined;
-    const tx = await getExtracted('sign-up');
+    const t = await getExtracted('sign-up');
 
     if (currentUser) {
         redirect('/');
@@ -28,7 +28,7 @@ export default async function SignUpPage(props: ServerPageProps) {
     return (
         <Container className="text-center">
             <Title color="primary" variant="h1" marginTop="lg" marginBottom="md">
-                {tx('Création du compte classe')}
+                {t('Création du compte classe')}
             </Title>
 
             {isCodeValid ? <SignUpForm inviteCode={tokenQueryParam} /> : <InviteTokenForm initialCode={tokenQueryParam} />}

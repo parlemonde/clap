@@ -34,27 +34,27 @@ export const sendEmail = async <Kind extends templatesKind>(
         const user = domain ? `ne-pas-repondre@${domain}` : getEnvVariable('NODEMAILER_USER');
         const transporter = await getTransporter();
         const appUrl = getAppUrl();
-        const tx = await getExtracted('email');
+        const t = await getExtracted('email');
         const subject = (() => {
             switch (kind) {
                 case 'reset-password':
-                    return tx('Réinitialisez votre mot de passe');
+                    return t('Réinitialisez votre mot de passe');
             }
         })();
         const copy = (() => {
             switch (kind) {
                 case 'reset-password':
                     return {
-                        preview: tx('Vous pouvez réinitialiser votre mot de passe en cliquant sur le lien ci-dessous :'),
-                        welcome: tx('Bonjour,'),
-                        text: tx('Vous pouvez réinitialiser votre mot de passe en cliquant sur le lien ci-dessous :'),
-                        button: tx('RÉINITIALISER MON MOT DE PASSE'),
-                        text2: tx("Si vous n'avez pas demandé la réinitialisation de votre mot de passe, vous pouvez ignorer cet email."),
-                        end: tx('Cordialement,'),
-                        signature: tx("L'équipe Par Le Monde."),
-                        endText: tx('Ce message a été envoyé à'),
-                        endText2: tx("Si vous avez des questions ou ne souhaitez plus recevoir d'emails, "),
-                        contactLink: tx('contactez-nous'),
+                        preview: t('Vous pouvez réinitialiser votre mot de passe en cliquant sur le lien ci-dessous :'),
+                        welcome: t('Bonjour,'),
+                        text: t('Vous pouvez réinitialiser votre mot de passe en cliquant sur le lien ci-dessous :'),
+                        button: t('RÉINITIALISER MON MOT DE PASSE'),
+                        text2: t("Si vous n'avez pas demandé la réinitialisation de votre mot de passe, vous pouvez ignorer cet email."),
+                        end: t('Cordialement,'),
+                        signature: t("L'équipe Par Le Monde."),
+                        endText: t('Ce message a été envoyé à'),
+                        endText2: t("Si vous avez des questions ou ne souhaitez plus recevoir d'emails, "),
+                        contactLink: t('contactez-nous'),
                     } satisfies ResetPasswordTemplateProps['copy'];
             }
         })();

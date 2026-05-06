@@ -27,7 +27,7 @@ export const NewScenarioForm = ({ backUrl, themeId }: NewScenarioFormProps) => {
     const router = useRouter();
     const user = React.useContext(userContext);
 
-    const tx = useExtracted('create.1-scenario.new.newScenarioForm');
+    const t = useExtracted('create.1-scenario.new.newScenarioForm');
     const commonT = useExtracted('common');
     const currentLocale = useLocale();
 
@@ -96,7 +96,7 @@ export const NewScenarioForm = ({ backUrl, themeId }: NewScenarioFormProps) => {
                     name="scenario_title"
                     label={
                         <Title color="inherit" variant="h2">
-                            {tx.rich('Choisis ton titre<required>*</required> :', {
+                            {t.rich('Choisis ton titre<required>*</required> :', {
                                 required: (chunks) => <span style={{ color: 'red' }}>{chunks}</span>,
                             })}
                         </Title>
@@ -109,7 +109,7 @@ export const NewScenarioForm = ({ backUrl, themeId }: NewScenarioFormProps) => {
                                 setName(event.target.value.slice(0, 200));
                             }}
                             required
-                            placeholder={tx('Mon scénario')}
+                            placeholder={t('Mon scénario')}
                             isFullWidth
                             marginTop="sm"
                             color="secondary"
@@ -123,7 +123,7 @@ export const NewScenarioForm = ({ backUrl, themeId }: NewScenarioFormProps) => {
                     name="scenario_description"
                     label={
                         <Title color="inherit" variant="h2">
-                            {tx('Fais en une rapide description :')}
+                            {t('Fais en une rapide description :')}
                         </Title>
                     }
                     input={
@@ -133,7 +133,7 @@ export const NewScenarioForm = ({ backUrl, themeId }: NewScenarioFormProps) => {
                             onChange={(event) => {
                                 setDescription(event.target.value.slice(0, 400));
                             }}
-                            placeholder={tx('Ma description')}
+                            placeholder={t('Ma description')}
                             isFullWidth
                             style={{ marginTop: '0.5rem' }}
                             color="secondary"

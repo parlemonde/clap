@@ -10,7 +10,7 @@ import { Inverted } from '@frontend/components/ui/Inverted';
 import { NewThemeForm } from './NewThemeForm';
 
 export default async function NewThemePage() {
-    const tx = await getExtracted('create.new-theme');
+    const t = await getExtracted('create.new-theme');
     const commonT = await getExtracted('common');
 
     return (
@@ -19,11 +19,11 @@ export default async function NewThemePage() {
                 className="for-tablet-up-only"
                 marginTop="sm"
                 links={[{ href: '/', label: commonT('Tout les thèmes') }]}
-                currentLabel={tx('Ajouter votre thème')}
+                currentLabel={t('Ajouter votre thème')}
             />
             <BackButton href="/" />
             <Title marginY="md">
-                {tx.rich('Créer votre <inverted>thème</inverted> :', {
+                {t.rich('Créer votre <inverted>thème</inverted> :', {
                     inverted: (chunks) => <Inverted>{chunks}</Inverted>,
                 })}
             </Title>

@@ -36,7 +36,7 @@ export const Scenario = ({
     isCollaborationEnabled,
     isStudent,
 }: Scenario) => {
-    const tx = useExtracted('create.3-storyboard.Scenario');
+    const t = useExtracted('create.3-storyboard.Scenario');
     const commonT = useExtracted('common');
     const [showDeleteTitle, setShowDeleteTitle] = React.useState(false);
     const [deletePlanIndex, setDeletePlanIndex] = React.useState(-1);
@@ -109,11 +109,11 @@ export const Scenario = ({
                 ))}
                 {sequence.plans.length < 5 && !isDragging && canEdit && (
                     <div className="plan-button-container add">
-                        <Tooltip position="bottom" content={tx('Ajouter un plan')} hasArrow>
+                        <Tooltip position="bottom" content={t('Ajouter un plan')} hasArrow>
                             <IconButton
                                 color="primary"
                                 variant="contained"
-                                aria-label={tx('Ajouter un plan')}
+                                aria-label={t('Ajouter un plan')}
                                 onClick={() => {
                                     const plans = sequence.plans;
                                     const ids = plans.map((plan) => plan.id);
@@ -161,11 +161,11 @@ export const Scenario = ({
                     onUpdateSequence?.(newSequence);
                     setDeletePlanIndex(-1);
                 }}
-                title={tx('Supprimer le plan ?')}
+                title={t('Supprimer le plan ?')}
                 confirmLabel={commonT('Supprimer')}
                 confirmLevel="error"
             >
-                {tx('Voulez-vous vraiment supprimer le plan n° {planNumber} ?', { planNumber: String(planStartIndex + deletePlanIndex) })}
+                {t('Voulez-vous vraiment supprimer le plan n° {planNumber} ?', { planNumber: String(planStartIndex + deletePlanIndex) })}
             </Modal>
             <Modal
                 isOpen={showDeleteTitle}
@@ -177,11 +177,11 @@ export const Scenario = ({
                     onUpdateSequence?.(newSequence);
                     setShowDeleteTitle(false);
                 }}
-                title={tx('Supprimer le titre ?')}
+                title={t('Supprimer le titre ?')}
                 confirmLabel={commonT('Supprimer')}
                 confirmLevel="error"
             >
-                {tx('Voulez-vous vraiment supprimer le titre ?')}
+                {t('Voulez-vous vraiment supprimer le titre ?')}
             </Modal>
         </div>
     );

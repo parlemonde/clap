@@ -27,7 +27,7 @@ export default async function ScenarioPage(props: ServerPageProps) {
     const searchParams = await props.searchParams;
     const themeId = getThemeId(searchParams);
     const currentLocale = await getLocale();
-    const tx = await getExtracted('create.1-scenario');
+    const t = await getExtracted('create.1-scenario');
     const user = await getCurrentUser();
 
     if (user?.role === 'student') {
@@ -42,17 +42,17 @@ export default async function ScenarioPage(props: ServerPageProps) {
             <Steps activeStep={0} themeId={themeId}></Steps>
             <Title color="primary" marginY="md" variant="h1">
                 <Inverted isRound>1</Inverted>{' '}
-                {tx.rich('Quel <inverted>scénario</inverted> choisir ?', {
+                {t.rich('Quel <inverted>scénario</inverted> choisir ?', {
                     inverted: (chunks) => <Inverted>{chunks}</Inverted>,
                 })}
             </Title>
             <Title color="inherit" variant="h2" marginBottom="md">
-                {tx("C'est à votre tour, sélectionnez un scénario à filmer")}
+                {t("C'est à votre tour, sélectionnez un scénario à filmer")}
             </Title>
             <ScenarioCard
                 isNew
-                name={tx('Nouveau scénario')}
-                description={tx('Cliquez ici pour créer votre propre scénario !')}
+                name={t('Nouveau scénario')}
+                description={t('Cliquez ici pour créer votre propre scénario !')}
                 href={`/create/1-scenario/new${serializeToQueryUrl({ themeId })}`}
             />
             <Scenarios scenarios={scenarios.filter((s) => s.names[currentLocale] !== undefined || s.isDefault === false)} themeId={themeId} />

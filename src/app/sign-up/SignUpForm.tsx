@@ -21,7 +21,7 @@ interface SignUpFormProps {
 export const SignUpForm = ({ inviteCode }: SignUpFormProps) => {
     const router = useRouter();
 
-    const tx = useExtracted('sign-up.SignUpForm');
+    const t = useExtracted('sign-up.SignUpForm');
     const commonT = useExtracted('common');
 
     const [name, setName] = React.useState('');
@@ -66,7 +66,7 @@ export const SignUpForm = ({ inviteCode }: SignUpFormProps) => {
             <Form onSubmit={onSubmit} className="signup-form" autoComplete="off">
                 <Field
                     name="username"
-                    label={tx('Nom du professeur')}
+                    label={t('Nom du professeur')}
                     input={
                         <Input
                             id="name"
@@ -84,7 +84,7 @@ export const SignUpForm = ({ inviteCode }: SignUpFormProps) => {
                 />
                 <Field
                     name="email"
-                    label={tx('E-mail du professeur')}
+                    label={t('E-mail du professeur')}
                     input={
                         <Input
                             id="email"
@@ -103,12 +103,12 @@ export const SignUpForm = ({ inviteCode }: SignUpFormProps) => {
                             hasError={!isEmailValid}
                         />
                     }
-                    helperText={!isEmailValid ? tx('E-mail invalide.') : ''}
+                    helperText={!isEmailValid ? t('E-mail invalide.') : ''}
                     helperTextStyle={{ textAlign: 'left', color: 'rgb(211, 47, 47)' }}
                 />
                 <Field
                     name="password"
-                    label={tx('Mot de passe')}
+                    label={t('Mot de passe')}
                     input={
                         <Input
                             type={showPassword ? 'text' : 'password'}
@@ -140,7 +140,7 @@ export const SignUpForm = ({ inviteCode }: SignUpFormProps) => {
                     }
                     helperText={
                         !isPasswordValid
-                            ? tx(
+                            ? t(
                                   'Mot de passe trop faible. Il doit contenir au moins 8 charactères avec des lettres minuscules, majuscules et des chiffres.',
                               )
                             : ''
@@ -149,7 +149,7 @@ export const SignUpForm = ({ inviteCode }: SignUpFormProps) => {
                 />
                 <Field
                     name="password_confirm"
-                    label={tx('Confirmer le mot de passe')}
+                    label={t('Confirmer le mot de passe')}
                     input={
                         <Input
                             style={{ marginTop: '1rem' }}
@@ -181,13 +181,13 @@ export const SignUpForm = ({ inviteCode }: SignUpFormProps) => {
                             hasError={hasConfirmError}
                         />
                     }
-                    helperText={hasConfirmError ? tx('Mots de passe différents.') : ''}
+                    helperText={hasConfirmError ? t('Mots de passe différents.') : ''}
                     helperTextStyle={{ textAlign: 'left', color: 'rgb(211, 47, 47)' }}
                 />
-                <Button label={tx("S'inscrire !")} variant="contained" color={'secondary'} type="submit" value="Submit"></Button>
+                <Button label={t("S'inscrire !")} variant="contained" color={'secondary'} type="submit" value="Submit"></Button>
             </Form>
             <div className="text-center" style={{ marginBottom: '2rem' }}>
-                {tx('Compte déjà créé ?')} <Link href="/login">{tx('Se connecter')}</Link>
+                {t('Compte déjà créé ?')} <Link href="/login">{t('Se connecter')}</Link>
             </div>
             <Loader isLoading={false} />
         </>

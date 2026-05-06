@@ -13,12 +13,12 @@ export default async function UpdatePasswordPage(props: ServerPageProps) {
     const searchParams = await props.searchParams;
     const verifyToken = typeof searchParams['verify-token'] === 'string' ? searchParams['verify-token'] : '';
 
-    const tx = await getExtracted('update-password');
+    const t = await getExtracted('update-password');
 
     return (
         <Container className="text-center">
             <Title color="primary" variant="h1" marginTop={48} marginBottom="lg">
-                {tx('Réinitialiser le mot de passe')}
+                {t('Réinitialiser le mot de passe')}
             </Title>
             <UpdatePasswordForm verifyToken={verifyToken} />
         </Container>

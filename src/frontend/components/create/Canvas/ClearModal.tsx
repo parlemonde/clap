@@ -9,10 +9,10 @@ interface ClearModalProps {
 }
 
 export const ClearModal: React.FunctionComponent<ClearModalProps> = ({ isOpen = false, onClear = () => () => {} }: ClearModalProps) => {
-    const tx = useExtracted('ClearModal');
+    const t = useExtracted('ClearModal');
     return (
-        <Modal width="sm" isOpen={isOpen} onClose={onClear(false)} onConfirm={onClear(true)} confirmLevel="error" title={tx('Effacer le canvas')}>
-            {tx('Êtes-vous sûr de vouloir effacer totalement le canvas ?')}
+        <Modal width="sm" isOpen={isOpen} onClose={onClear(false)} onConfirm={onClear(true)} confirmLevel="error" title={t('Effacer le canvas')}>
+            {t('Êtes-vous sûr de vouloir effacer totalement le canvas ?')}
         </Modal>
     );
 };

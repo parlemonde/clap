@@ -12,13 +12,13 @@ interface ThemesProps {
 }
 
 export const Themes = ({ themes }: ThemesProps) => {
-    const tx = useExtracted('Themes');
+    const t = useExtracted('Themes');
     const currentLocale = useLocale();
     const [localThemes] = useLocalStorage('themes', []);
 
     return (
         <div className="themes-grid">
-            <ThemeCard href="/create/new-theme" name={tx('Ajouter votre thème')} />
+            <ThemeCard href="/create/new-theme" name={t('Ajouter votre thème')} />
             {themes?.map((theme, index) => (
                 <ThemeCard
                     key={theme.id}

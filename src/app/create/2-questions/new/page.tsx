@@ -18,7 +18,7 @@ export default function QuestionNewPage() {
     const router = useRouter();
     const { projectData, setProjectData } = useCurrentProject();
     useCollaboration(); // Listen to collaboration updates
-    const tx = useExtracted('create.2-questions.new');
+    const t = useExtracted('create.2-questions.new');
 
     const [question, setQuestion] = React.useState('');
 
@@ -41,7 +41,7 @@ export default function QuestionNewPage() {
             <Steps activeStep={1} themeId={projectData.themeId}></Steps>
             <Title color="primary" marginY="md" variant="h1">
                 <Inverted isRound>2</Inverted>{' '}
-                {tx.rich('Mes <inverted>séquences</inverted>', {
+                {t.rich('Mes <inverted>séquences</inverted>', {
                     inverted: (chunks) => <Inverted>{chunks}</Inverted>,
                 })}
             </Title>
@@ -50,7 +50,7 @@ export default function QuestionNewPage() {
                     name="question"
                     label={
                         <Title color="inherit" variant="h2">
-                            {tx('Ajoute une séquence :')}
+                            {t('Ajoute une séquence :')}
                         </Title>
                     }
                     input={
@@ -62,7 +62,7 @@ export default function QuestionNewPage() {
                             }}
                             required
                             id="question"
-                            placeholder={tx('Ma séquence')}
+                            placeholder={t('Ma séquence')}
                             isFullWidth
                             color="secondary"
                             autoComplete="off"

@@ -10,14 +10,14 @@ import { APP_LANGUAGE_COOKIE_NAME } from '@server/i18n/constants';
 import { LanguageSelect } from './LanguageSelect';
 
 export default async function SettingsPage() {
-    const tx = await getExtracted('settings');
+    const t = await getExtracted('settings');
     const availableLanguages = await db.select({ value: languages.value, label: languages.label }).from(languages);
 
     return (
         <Container paddingBottom="xl">
-            <Title marginY="md">{tx('Réglages')}</Title>
+            <Title marginY="md">{t('Réglages')}</Title>
             <Title color="inherit" variant="h2" marginTop="sm" marginBottom="md" style={{ width: '100%', textAlign: 'left' }}>
-                {tx("Changer la langue de l'application :")}
+                {t("Changer la langue de l'application :")}
             </Title>
             <LanguageSelect languages={availableLanguages} cookieName={APP_LANGUAGE_COOKIE_NAME} />
         </Container>

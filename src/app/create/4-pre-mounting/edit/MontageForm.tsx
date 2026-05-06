@@ -22,7 +22,7 @@ interface MontageFormProps {
     feedbackForm?: React.ReactNode;
 }
 export const MontageForm = ({ sequence, setSequence, onSubmit, feedbackForm }: MontageFormProps) => {
-    const tx = useExtracted('create.4-pre-mounting.edit.MontageForm');
+    const t = useExtracted('create.4-pre-mounting.edit.MontageForm');
     const commonT = useExtracted('common');
 
     const [newSoundFile, setNewSoundFile] = React.useState<File | null | undefined>(undefined); // null = delete sound
@@ -83,7 +83,7 @@ export const MontageForm = ({ sequence, setSequence, onSubmit, feedbackForm }: M
                 </div>
                 <FlexItem flexGrow={1} flexBasis={0}>
                     <Title color="inherit" variant="h2" style={{ margin: '1rem 0' }}>
-                        {tx("Écrivez ici le texte de la voix-off. Il s'agit du commentaire audio qui peut accompagner votre séquence.")}
+                        {t("Écrivez ici le texte de la voix-off. Il s'agit du commentaire audio qui peut accompagner votre séquence.")}
                     </Title>
                 </FlexItem>
             </Flex>
@@ -96,7 +96,7 @@ export const MontageForm = ({ sequence, setSequence, onSubmit, feedbackForm }: M
                         onChange={(event) => {
                             setSequence({ ...sequence, voiceText: event.target.value.slice(0, 4000) });
                         }}
-                        placeholder={tx(
+                        placeholder={t(
                             'Vous pourrez enregistrer un élève ou plusieurs élèves lire cette voix-off avec un microphone, comme celui de votre smartphone.\nPensez à enregistrer cette voix-off dans un environnement sonore calme.\nSi vous utilisez votre smartphone, pensez à le mettre en mode avion.\nRendez-vous en bas de cette page pour ajouter votre fichier son à la séquence. ',
                         )}
                         isFullWidth
@@ -115,7 +115,7 @@ export const MontageForm = ({ sequence, setSequence, onSubmit, feedbackForm }: M
                 </div>
                 <FlexItem flexGrow={1} flexBasis={0}>
                     <Title color="inherit" variant="h2" style={{ margin: '1rem 0' }}>
-                        {tx('Ajustez ici la durée totale de la séquence, ainsi que la durée relative des plans.')}
+                        {t('Ajustez ici la durée totale de la séquence, ainsi que la durée relative des plans.')}
                     </Title>
                 </FlexItem>
             </Flex>
@@ -143,7 +143,7 @@ export const MontageForm = ({ sequence, setSequence, onSubmit, feedbackForm }: M
                 </div>
                 <FlexItem flexGrow={1} flexBasis={0}>
                     <Title color="inherit" variant="h2" style={{ margin: '1rem 0' }}>
-                        {tx(
+                        {t(
                             "Mettez en ligne la voix-off que vous avez enregistrée.\n Vous pourrez ensuite l'ajuster à la séquence et régler son volume, dans la table de montage ci-dessus.",
                         )}
                     </Title>
@@ -151,10 +151,10 @@ export const MontageForm = ({ sequence, setSequence, onSubmit, feedbackForm }: M
             </Flex>
             <div className="text-center">
                 <label htmlFor="sequence-sound-upload" className="text-center" style={{ marginBottom: '10px' }}>
-                    {tx('Formats acceptés : .acc, .ogg, .opus, .mp3, .wav')}
+                    {t('Formats acceptés : .acc, .ogg, .opus, .mp3, .wav')}
                 </label>
                 <Button
-                    label={tx('Importer un son')}
+                    label={t('Importer un son')}
                     variant="outlined"
                     color="secondary"
                     as="label"

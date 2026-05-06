@@ -18,7 +18,7 @@ type ProjectCardProps = {
     className?: string;
 };
 export const ProjectCard = ({ title = '', themeName = '', onClick, onClickEdit, className }: ProjectCardProps) => {
-    const tx = useExtracted('my-videos.ProjectCard');
+    const t = useExtracted('my-videos.ProjectCard');
     const commonT = useExtracted('common');
 
     return (
@@ -38,7 +38,7 @@ export const ProjectCard = ({ title = '', themeName = '', onClick, onClickEdit, 
             </Title>
             {themeName !== '' && (
                 <div className={styles.ProjectCard__ThemeName}>
-                    <label>{tx('Thème : {themeName}', { themeName })}</label>
+                    <label>{t('Thème : {themeName}', { themeName })}</label>
                 </div>
             )}
             {onClickEdit !== undefined && (

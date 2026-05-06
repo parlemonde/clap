@@ -28,7 +28,7 @@ import { Scenario } from './Scenario';
 export default function StoryboardPage() {
     const router = useRouter();
 
-    const tx = useExtracted('create.3-storyboard');
+    const t = useExtracted('create.3-storyboard');
     const commonT = useExtracted('common');
     const { projectData, setProjectData } = useCurrentProject();
     const { collaborationButton, isCollaborationEnabled, sendCollaborationValidationMsg } = useCollaboration();
@@ -90,14 +90,14 @@ export default function StoryboardPage() {
             <Flex flexDirection="row" alignItems="center" marginY="md">
                 <Title color="primary" variant="h1" marginRight="xl">
                     <Inverted isRound>3</Inverted>{' '}
-                    {tx.rich('Création du <inverted>Storyboard</inverted>', {
+                    {t.rich('Création du <inverted>Storyboard</inverted>', {
                         inverted: (chunks) => <Inverted>{chunks}</Inverted>,
                     })}
                 </Title>
                 {!isStudent && collaborationButton}
             </Flex>
             <Title color="inherit" variant="h2">
-                {tx(
+                {t(
                     "Ici créez votre storyboard ! C'est une représentation de votre film sous forme de dessins et le résultat final de votre vidéo sera l'assemblage de ces plans les uns après les autres.\n",
                 )}
             </Title>
@@ -134,7 +134,7 @@ export default function StoryboardPage() {
             {!isStudent && (
                 <div style={{ margin: '32px 0' }}>
                     <Button
-                        label={tx('Télécharger le storyboard')}
+                        label={t('Télécharger le storyboard')}
                         leftIcon={<PictureAsPdf style={{ marginRight: '10px' }} />}
                         variant="outlined"
                         color="secondary"
@@ -147,9 +147,9 @@ export default function StoryboardPage() {
                 isDisabled={studentQuestion?.status === 'storyboard-validating'}
                 label={
                     studentQuestion?.status === 'storyboard-validating'
-                        ? tx('En attente de validation du storyboard')
+                        ? t('En attente de validation du storyboard')
                         : isStudent && (!studentQuestion?.status || studentQuestion?.status === 'storyboard')
-                          ? tx('Envoyer pour vérification')
+                          ? t('Envoyer pour vérification')
                           : undefined
                 }
                 onNext={() => {

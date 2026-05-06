@@ -17,7 +17,7 @@ import { createTheme } from '@server-actions/themes/create-theme';
 export const NewThemeForm = () => {
     const router = useRouter();
 
-    const tx = useExtracted('create.new-theme.NewThemeForm');
+    const t = useExtracted('create.new-theme.NewThemeForm');
     const commonT = useExtracted('common');
     const user = React.useContext(userContext);
     const [themeName, setThemeName] = React.useState('');
@@ -54,7 +54,7 @@ export const NewThemeForm = () => {
                     name="themeName"
                     label={
                         <Title color="inherit" variant="h2">
-                            {tx.rich('Nom du thème<required>*</required>:', {
+                            {t.rich('Nom du thème<required>*</required>:', {
                                 required: (chunks) => <span style={{ color: 'red' }}>{chunks}</span>,
                             })}
                         </Title>
@@ -70,7 +70,7 @@ export const NewThemeForm = () => {
                                 setThemeName(event.target.value.slice(0, 200));
                             }}
                             required
-                            placeholder={tx('Nouveau thème')}
+                            placeholder={t('Nouveau thème')}
                             style={{ marginTop: '8px' }}
                             color="secondary"
                             autoComplete="off"

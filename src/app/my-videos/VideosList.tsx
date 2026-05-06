@@ -16,7 +16,7 @@ interface VideoListProps {
 
 export const VideoList = ({ projects }: VideoListProps) => {
     const [, setProjectId] = useLocalStorage('projectId');
-    const tx = useExtracted('my-videos.VideosList');
+    const t = useExtracted('my-videos.VideosList');
     const router = useRouter();
 
     const handleWipProjectClickEdit = (projectId: number) => () => {
@@ -43,7 +43,7 @@ export const VideoList = ({ projects }: VideoListProps) => {
                 </React.Fragment>
             ) : (
                 <ProjectCard
-                    title={tx("Vous n'avez pas encore de projet en cours. En créer un ?")}
+                    title={t("Vous n'avez pas encore de projet en cours. En créer un ?")}
                     onClick={() => {
                         router.push('/');
                     }}

@@ -105,16 +105,16 @@ const getSignedProjectImages = async (projectData: ProjectData, userId: string):
 
 export async function generatePdf(projectData: ProjectData): Promise<string | false> {
     const user = await getCurrentUser();
-    const tx = await getExtracted('pdf');
+    const t = await getExtracted('pdf');
     const currentLocale = await getLocale();
     const labels: StoryboardPdfLabels = {
-        title: tx('Plan de tournage'),
-        subtitleDescription: tx('Description générale :'),
-        theme: tx('Thème :'),
-        scenario: tx('Scénario :'),
-        subtitleStoryboard: tx('Storyboard :'),
-        subtitleToCamera: tx('À votre caméra !'),
-        toCameraDescription: tx("Flashez le code QR suivant pour accéder directement à l'application et démarrer le tournage."),
+        title: t('Plan de tournage'),
+        subtitleDescription: t('Description générale :'),
+        theme: t('Thème :'),
+        scenario: t('Scénario :'),
+        subtitleStoryboard: t('Storyboard :'),
+        subtitleToCamera: t('À votre caméra !'),
+        toCameraDescription: t("Flashez le code QR suivant pour accéder directement à l'application et démarrer le tournage."),
     };
     const hostUrl = getHostUrl();
 

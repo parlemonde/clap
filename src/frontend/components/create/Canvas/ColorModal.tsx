@@ -16,7 +16,7 @@ export const ColorModal: React.FunctionComponent<ColorModalProps> = ({
     setIsOpen = () => {},
     setColor = () => {},
 }: ColorModalProps) => {
-    const tx = useExtracted('ColorModal');
+    const t = useExtracted('ColorModal');
     const handleCloseModalColor = (color?: string) => () => {
         setIsOpen(false);
         if (color !== undefined) {
@@ -25,7 +25,7 @@ export const ColorModal: React.FunctionComponent<ColorModalProps> = ({
     };
 
     return (
-        <Modal width="sm" isOpen={isOpen} onClose={handleCloseModalColor()} title={tx('Choisissez la couleur du trait')} hasCancelButton={false}>
+        <Modal width="sm" isOpen={isOpen} onClose={handleCloseModalColor()} title={t('Choisissez la couleur du trait')} hasCancelButton={false}>
             <div className="canvas-colors-container" id="color-dialog-description">
                 {colors.map((c) => (
                     <button

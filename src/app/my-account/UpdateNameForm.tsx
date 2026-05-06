@@ -14,7 +14,7 @@ interface UpdateNameFormProps {
 }
 
 export const UpdateNameForm = ({ user }: UpdateNameFormProps) => {
-    const tx = useExtracted('my-account.UpdateNameForm');
+    const t = useExtracted('my-account.UpdateNameForm');
     const commonT = useExtracted('common');
     const router = useRouter();
     const [isUpdateModalOpen, setIsUpdateModalOpen] = React.useState(false);
@@ -58,7 +58,7 @@ export const UpdateNameForm = ({ user }: UpdateNameFormProps) => {
                     setIsUpdateModalOpen(true);
                 }}
             >
-                {tx('Changer mon nom')}
+                {t('Changer mon nom')}
             </a>
             <Modal
                 isOpen={isUpdateModalOpen}
@@ -70,14 +70,14 @@ export const UpdateNameForm = ({ user }: UpdateNameFormProps) => {
                 onConfirm={onSubmit}
                 confirmLabel={commonT('Modifier')}
                 cancelLabel={commonT('Annuler')}
-                title={tx('Changer mon nom')}
+                title={t('Changer mon nom')}
                 onOpenAutoFocus={false}
                 isFullWidth
             >
                 <div id="pseudo-dialog-description">
                     <Field
                         name="pseudo"
-                        label={tx('Nom du professeur')}
+                        label={t('Nom du professeur')}
                         input={
                             <Input
                                 id="name"
@@ -92,7 +92,7 @@ export const UpdateNameForm = ({ user }: UpdateNameFormProps) => {
                                 hasError={!!updateErrorMessage || !isValidName}
                             />
                         }
-                        helperText={updateErrorMessage || (isValidName ? '' : tx('Nom invalide'))}
+                        helperText={updateErrorMessage || (isValidName ? '' : t('Nom invalide'))}
                         helperTextStyle={{ textAlign: 'left', color: 'rgb(211, 47, 47)' }}
                     ></Field>
                 </div>

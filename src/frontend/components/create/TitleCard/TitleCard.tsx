@@ -19,7 +19,7 @@ type TitleCardProps = {
 export const TitleCard = ({ title, questionIndex, onDelete = () => {}, isDisabled }: TitleCardProps) => {
     const canvasId = `canvas-${React.useId()}`;
 
-    const tx = useExtracted('TitleCard');
+    const t = useExtracted('TitleCard');
     const commonT = useExtracted('common');
 
     // Use a ResizeObserver to get the height of the canvas
@@ -91,7 +91,7 @@ export const TitleCard = ({ title, questionIndex, onDelete = () => {}, isDisable
             ) : (
                 <>
                     <span className={styles.titleCard__placeholder}>T</span>
-                    <span className={styles.titleCard__placeholderDesc}>{tx('Ajouter un titre')}</span>
+                    <span className={styles.titleCard__placeholderDesc}>{t('Ajouter un titre')}</span>
                 </>
             )}
             {title && (

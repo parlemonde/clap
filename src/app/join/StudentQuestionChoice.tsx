@@ -12,10 +12,10 @@ interface StudentQuestionChoiceProps {
     onSelectQuestion?: (questionId: number) => void;
 }
 export const StudentQuestionChoice = ({ project, onSelectQuestion }: StudentQuestionChoiceProps) => {
-    const tx = useExtracted('join.StudentQuestionChoice');
+    const t = useExtracted('join.StudentQuestionChoice');
     return (
         <>
-            <Title marginY="xl">{tx('Sélectionnez votre séquence :')}</Title>
+            <Title marginY="xl">{t('Sélectionnez votre séquence :')}</Title>
             <div className="sequency-list">
                 {project.questions.map((q, index) => {
                     return (
@@ -26,7 +26,7 @@ export const StudentQuestionChoice = ({ project, onSelectQuestion }: StudentQues
                             }}
                             key={index}
                         >
-                            <Text marginBottom="sm">{`${tx('Séquence n°{number}', { number: String(index + 1) })}`}</Text>
+                            <Text marginBottom="sm">{`${t('Séquence n°{number}', { number: String(index + 1) })}`}</Text>
                             <Text marginBottom="sm">{q.question}</Text>
                             <div style={{ height: '150px', width: '150px', backgroundColor: COLORS[index] }}></div>
                         </div>

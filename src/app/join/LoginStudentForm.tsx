@@ -17,7 +17,7 @@ import { StudentQuestionChoice } from './StudentQuestionChoice';
 
 export const LoginStudentForm = () => {
     const router = useRouter();
-    const tx = useExtracted('join.LoginStudentForm');
+    const t = useExtracted('join.LoginStudentForm');
     const [message, setMessage] = React.useState('');
     const [isLoading, setIsLoading] = React.useState(false);
     const [projectCode, setProjectCode] = React.useState('');
@@ -28,7 +28,7 @@ export const LoginStudentForm = () => {
         setIsLoading(true);
         const project = await getProjectByCode(projectCode.trim());
         if (!project) {
-            setMessage(tx('Code de collaboration invalide'));
+            setMessage(t('Code de collaboration invalide'));
         } else {
             setMessage('');
             setProject(project);
@@ -50,13 +50,13 @@ export const LoginStudentForm = () => {
         });
 
         if (!response.ok) {
-            setMessage(tx('Code de collaboration invalide'));
+            setMessage(t('Code de collaboration invalide'));
             setIsLoading(false);
             return;
         }
 
         if (!project) {
-            setMessage(tx('Code de collaboration invalide'));
+            setMessage(t('Code de collaboration invalide'));
             setIsLoading(false);
             return;
         }
@@ -74,13 +74,13 @@ export const LoginStudentForm = () => {
             ) : (
                 <>
                     <Title color="primary" variant="h1" marginTop={48} marginBottom="lg">
-                        {tx('Rejoindre une session collaborative')}
+                        {t('Rejoindre une session collaborative')}
                     </Title>
                     <Form className="login-form" onSubmit={onSubmit}>
                         {message && <span style={{ color: 'rgb(211, 47, 47)', display: 'block' }}>{message}</span>}
                         <Field
                             name="projectCode"
-                            label={<span style={{ display: 'inline-block', marginBottom: 4 }}>{tx('Code de collaboration')}</span>}
+                            label={<span style={{ display: 'inline-block', marginBottom: 4 }}>{t('Code de collaboration')}</span>}
                             input={
                                 <Input
                                     id="projectCode"
@@ -94,13 +94,13 @@ export const LoginStudentForm = () => {
                                 />
                             }
                         ></Field>
-                        <Button label={tx('Rejoindre')} variant="contained" color="secondary" type="submit" value="Submit"></Button>
+                        <Button label={t('Rejoindre')} variant="contained" color="secondary" type="submit" value="Submit"></Button>
                     </Form>
                 </>
             )}
             <div className="text-center">
                 <Link href="/login" className="color-primary">
-                    {tx('Retour à la page de connexion')}
+                    {t('Retour à la page de connexion')}
                 </Link>
             </div>
             <Loader isLoading={isLoading} />

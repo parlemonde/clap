@@ -13,7 +13,7 @@ import { sendToast } from '@frontend/components/ui/Toasts';
 import { requestPasswordReset } from '@server-actions/authentication/request-password-reset';
 
 export default function ResetPasswordPage() {
-    const tx = useExtracted('reset-password');
+    const t = useExtracted('reset-password');
     const commonT = useExtracted('common');
 
     const [isLoading, setIsLoading] = React.useState(false);
@@ -35,7 +35,7 @@ export default function ResetPasswordPage() {
                 });
             } else {
                 sendToast({
-                    message: tx('Un lien pour réinitialiser le mot de passe de votre compte a été envoyé avec succès à votre addresse e-mail !'),
+                    message: t('Un lien pour réinitialiser le mot de passe de votre compte a été envoyé avec succès à votre addresse e-mail !'),
                     type: 'success',
                 });
                 currentTarget.reset();
@@ -52,17 +52,17 @@ export default function ResetPasswordPage() {
     return (
         <Container className="text-center">
             <Title color="primary" variant="h1" marginTop={48} marginBottom="lg">
-                {tx('Réinitialiser le mot de passe')}
+                {t('Réinitialiser le mot de passe')}
             </Title>
             <Form className="login-form" autoComplete="off" onSubmit={onSubmit}>
                 <Field
                     name="email"
-                    label={tx('E-mail')}
+                    label={t('E-mail')}
                     input={<Input id="email" name="email" type="text" color="secondary" required isFullWidth autoComplete="off" />}
                 ></Field>
-                <Button label={tx('Réinitialiser')} variant="contained" color="secondary" type="submit"></Button>
+                <Button label={t('Réinitialiser')} variant="contained" color="secondary" type="submit"></Button>
                 <div className="text-center">
-                    <Link href="/login">{tx('Retour à la page de connexion')}</Link>
+                    <Link href="/login">{t('Retour à la page de connexion')}</Link>
                 </div>
                 <Loader isLoading={isLoading} />
             </Form>

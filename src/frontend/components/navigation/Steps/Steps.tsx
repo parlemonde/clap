@@ -53,7 +53,7 @@ type StepsProps = {
     backHref?: string;
 };
 export const Steps = ({ activeStep, backHref, themeId }: StepsProps) => {
-    const tx = useExtracted('Steps');
+    const t = useExtracted('Steps');
     const commonT = useExtracted('common');
     const { projectData } = useCurrentProject();
     const user = React.useContext(userContext);
@@ -63,20 +63,20 @@ export const Steps = ({ activeStep, backHref, themeId }: StepsProps) => {
         (name: StepData['name']) => {
             switch (name) {
                 case 'scenario':
-                    return tx('Choix du scénario');
+                    return t('Choix du scénario');
                 case 'questions':
-                    return tx('Choix des séquences');
+                    return t('Choix des séquences');
                 case 'storyboard':
-                    return tx('Storyboard');
+                    return t('Storyboard');
                 case 'pre-mounting':
-                    return tx('Prémontage');
+                    return t('Prémontage');
                 case 'music':
-                    return tx('Musique');
+                    return t('Musique');
                 case 'downloads':
-                    return tx('Téléchargements');
+                    return t('Téléchargements');
             }
         },
-        [tx],
+        [t],
     );
 
     return (

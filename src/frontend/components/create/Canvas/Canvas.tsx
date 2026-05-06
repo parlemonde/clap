@@ -32,7 +32,7 @@ interface Path {
 }
 
 const CanvasComponent = (_: unknown, ref: React.ForwardedRef<HTMLCanvasElement | null>) => {
-    const tx = useExtracted('Canvas');
+    const t = useExtracted('Canvas');
     const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
     const [isDrawing, setIsDrawing] = useState<boolean>(false);
     const [paths, setPaths] = useState<Array<Path>>([]);
@@ -180,27 +180,27 @@ const CanvasComponent = (_: unknown, ref: React.ForwardedRef<HTMLCanvasElement |
             <div className="draw-canvas-container-max-width">
                 <div>
                     <div role="group" className="actions-buttons-container" aria-label="outlined primary button group">
-                        <Tooltip sideOffset={0} position="bottom" hasArrow content={tx('Couleur')}>
+                        <Tooltip sideOffset={0} position="bottom" hasArrow content={t('Couleur')}>
                             <IconButton
                                 style={{ ...IconButtonStyle, backgroundColor: color === 'white' ? 'grey' : undefined }}
-                                aria-label={tx('Couleur')}
+                                aria-label={t('Couleur')}
                                 onClick={handleOpenModalColor}
                                 icon={BlendingModeIcon}
                                 iconProps={{ color }}
                             ></IconButton>
                         </Tooltip>
-                        <Tooltip sideOffset={0} position="bottom" hasArrow content={tx('Épaisseur')}>
+                        <Tooltip sideOffset={0} position="bottom" hasArrow content={t('Épaisseur')}>
                             <IconButton
                                 style={IconButtonStyle}
-                                aria-label={tx('Épaisseur')}
+                                aria-label={t('Épaisseur')}
                                 onClick={handleOpenModalSize}
                                 icon={DiscIcon}
                             ></IconButton>
                         </Tooltip>
-                        <Tooltip sideOffset={0} position="bottom" hasArrow content={tx('Revenir en arrière')}>
+                        <Tooltip sideOffset={0} position="bottom" hasArrow content={t('Revenir en arrière')}>
                             <IconButton
                                 style={IconButtonStyle}
-                                aria-label={tx('Revenir en arrière')}
+                                aria-label={t('Revenir en arrière')}
                                 onClick={handleUndo}
                                 icon={ResetIcon}
                                 iconProps={{
@@ -208,10 +208,10 @@ const CanvasComponent = (_: unknown, ref: React.ForwardedRef<HTMLCanvasElement |
                                 }}
                             ></IconButton>
                         </Tooltip>
-                        <Tooltip sideOffset={0} position="bottom" hasArrow content={tx('Revenir en avant')}>
+                        <Tooltip sideOffset={0} position="bottom" hasArrow content={t('Revenir en avant')}>
                             <IconButton
                                 style={{ ...IconButtonStyle, borderRight: '1px solid' }}
-                                aria-label={tx('Revenir en avant')}
+                                aria-label={t('Revenir en avant')}
                                 onClick={handleRedo}
                                 icon={ResetIcon}
                                 iconProps={{
@@ -221,10 +221,10 @@ const CanvasComponent = (_: unknown, ref: React.ForwardedRef<HTMLCanvasElement |
                             ></IconButton>
                         </Tooltip>
                         <div style={{ flex: 1 }} />
-                        <Tooltip sideOffset={0} position="bottom" hasArrow content={tx('Tout effacer')}>
+                        <Tooltip sideOffset={0} position="bottom" hasArrow content={t('Tout effacer')}>
                             <IconButton
                                 style={{ ...IconButtonStyle, borderRight: '1px solid', transform: 'translate(2px, 1px)' }}
-                                aria-label={tx('Tout effacer')}
+                                aria-label={t('Tout effacer')}
                                 onClick={handleOpenModalClear}
                                 icon={Cross1Icon}
                                 iconProps={{

@@ -16,7 +16,7 @@ export default async function ScenarioPage(props: ServerPageProps) {
     const searchParams = await props.searchParams;
     const themeId = getThemeId(searchParams);
     const backUrl = `/create/1-scenario${serializeToQueryUrl({ themeId })}`;
-    const tx = await getExtracted('create.1-scenario.new');
+    const t = await getExtracted('create.1-scenario.new');
 
     return (
         <Container paddingBottom="xl">
@@ -24,7 +24,7 @@ export default async function ScenarioPage(props: ServerPageProps) {
             <Steps activeStep={0} themeId={themeId} backHref={backUrl}></Steps>
             <Title color="primary" marginY="md" variant="h1">
                 <Inverted isRound>1</Inverted>{' '}
-                {tx.rich('Crée ton nouveau <inverted>scénario</inverted> !', {
+                {t.rich('Crée ton nouveau <inverted>scénario</inverted> !', {
                     inverted: (chunks) => <Inverted>{chunks}</Inverted>,
                 })}
             </Title>

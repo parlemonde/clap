@@ -13,14 +13,14 @@ interface LanguageSelectProps {
 }
 
 export const LanguageSelect = ({ languages, cookieName }: LanguageSelectProps) => {
-    const tx = useExtracted('settings.LanguageSelect');
+    const t = useExtracted('settings.LanguageSelect');
     const currentLocale = useLocale();
 
     return (
         <Form preventSubmit>
             <Field
                 name="language"
-                label={tx('Langue')}
+                label={t('Langue')}
                 input={
                     <Select
                         name="language"

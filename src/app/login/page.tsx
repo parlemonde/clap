@@ -11,12 +11,12 @@ import { LoginForm } from './LoginForm';
 
 export default async function LoginPage() {
     const ssoProvider = PARLEMONDE_SSO_PROVIDER_ID;
-    const tx = await getExtracted('login');
+    const t = await getExtracted('login');
 
     return (
         <Container className="text-center">
             <Title color="primary" variant="h1" marginTop={48} marginBottom="lg">
-                {tx('Connexion à votre compte classe')}
+                {t('Connexion à votre compte classe')}
             </Title>
             <LoginForm provider={ssoProvider} />
         </Container>

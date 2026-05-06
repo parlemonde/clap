@@ -26,7 +26,7 @@ import { QuestionsList } from './QuestionsList';
 
 export default function QuestionPage() {
     const router = useRouter();
-    const tx = useExtracted('create.2-questions');
+    const t = useExtracted('create.2-questions');
     const commonT = useExtracted('common');
     const currentLocale = useLocale();
     const user = React.useContext(userContext);
@@ -79,19 +79,19 @@ export default function QuestionPage() {
             <Flex flexDirection="row" alignItems="center" marginY="md">
                 <Title color="primary" variant="h1" marginRight="xl">
                     <Inverted isRound>2</Inverted>{' '}
-                    {tx.rich('Mes <inverted>séquences</inverted>', {
+                    {t.rich('Mes <inverted>séquences</inverted>', {
                         inverted: (chunks) => <Inverted>{chunks}</Inverted>,
                     })}
                 </Title>
                 {collaborationButton}
             </Flex>
             <Title color="inherit" variant="h2" marginBottom="lg">
-                {tx('Pour structurer votre scénario, nous vous proposons de le découper en séquences. Souvent une séquence correspond à une idée.')}
+                {t('Pour structurer votre scénario, nous vous proposons de le découper en séquences. Souvent une séquence correspond à une idée.')}
             </Title>
             <Button
                 as="a"
                 href={`/create/2-questions/new`}
-                label={tx('Ajouter une séquence')}
+                label={t('Ajouter une séquence')}
                 variant="outlined"
                 color="secondary"
                 isUpperCase={false}
@@ -114,16 +114,16 @@ export default function QuestionPage() {
                 }}
                 onConfirm={onSaveProject}
                 hasCloseButton={false}
-                title={tx('Sauvegarder le projet ?')}
-                cancelLabel={tx('Ne pas sauvegarder')}
-                confirmLabel={tx('Sauvegarder le projet')}
+                title={t('Sauvegarder le projet ?')}
+                cancelLabel={t('Ne pas sauvegarder')}
+                confirmLabel={t('Sauvegarder le projet')}
                 confirmLevel="secondary"
                 isConfirmDisabled={title.length === 0}
                 isLoading={isCreatingProject}
             >
                 <div id="save-project-form">
                     <p>
-                        {tx(
+                        {t(
                             'Enregistrer le projet vous permettra de le retrouver dans l\'onglet "Mes vidéos" et également dans l\'application Par Le Monde.',
                         )}
                     </p>
@@ -139,7 +139,7 @@ export default function QuestionPage() {
                     >
                         <Field
                             name="project-name"
-                            label={tx('Nom du projet :')}
+                            label={t('Nom du projet :')}
                             input={
                                 <Input
                                     id="project-name"

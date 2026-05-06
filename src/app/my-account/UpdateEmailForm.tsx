@@ -19,7 +19,7 @@ interface UpdateEmailFormProps {
 }
 
 export const UpdateEmailForm = ({ user }: UpdateEmailFormProps) => {
-    const tx = useExtracted('my-account.UpdateEmailForm');
+    const t = useExtracted('my-account.UpdateEmailForm');
     const commonT = useExtracted('common');
     const router = useRouter();
     const [isUpdateModalOpen, setIsUpdateModalOpen] = React.useState(false);
@@ -63,7 +63,7 @@ export const UpdateEmailForm = ({ user }: UpdateEmailFormProps) => {
                     setIsUpdateModalOpen(true);
                 }}
             >
-                {tx('Changer mon e-mail')}
+                {t('Changer mon e-mail')}
             </a>
             <Modal
                 isOpen={isUpdateModalOpen}
@@ -75,7 +75,7 @@ export const UpdateEmailForm = ({ user }: UpdateEmailFormProps) => {
                 onConfirm={onSubmit}
                 confirmLabel={commonT('Modifier')}
                 cancelLabel={commonT('Annuler')}
-                title={tx('Changer mon e-mail')}
+                title={t('Changer mon e-mail')}
                 onOpenAutoFocus={false}
                 isFullWidth
             >
@@ -96,11 +96,11 @@ export const UpdateEmailForm = ({ user }: UpdateEmailFormProps) => {
                         }}
                     >
                         <InfoCircledIcon style={{ width: 20, height: 20, marginRight: 8, paddingTop: 1 }} />
-                        {tx('Votre email est votre identifiant de connection.')}
+                        {t('Votre email est votre identifiant de connection.')}
                     </Flex>
                     <Field
                         name="email"
-                        label={tx('E-mail du professeur')}
+                        label={t('E-mail du professeur')}
                         input={
                             <Input
                                 name="email"
@@ -115,7 +115,7 @@ export const UpdateEmailForm = ({ user }: UpdateEmailFormProps) => {
                                 hasError={!!updateErrorMessage || !isValidEmail}
                             />
                         }
-                        helperText={updateErrorMessage || (!isValidEmail ? tx('E-mail invalide') : '')}
+                        helperText={updateErrorMessage || (!isValidEmail ? t('E-mail invalide') : '')}
                         helperTextStyle={{ textAlign: 'left', color: 'rgb(211, 47, 47)' }}
                     ></Field>
                 </div>

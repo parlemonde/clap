@@ -11,14 +11,14 @@ import { Modal } from '@frontend/components/layout/Modal';
 import { deleteUser } from '@server-actions/users/delete-user';
 
 export const DeleteAccountButton = () => {
-    const tx = useExtracted('my-account.DeleteAccountButton');
+    const t = useExtracted('my-account.DeleteAccountButton');
     const commonT = useExtracted('common');
     const [isUpdateModalOpen, setIsUpdateModalOpen] = React.useState(false);
     const [isLoading, setIsLoading] = React.useState(false);
 
     const [confirmText, setConfirmText] = React.useState('');
 
-    const isConfirmTextValid = confirmText.toLowerCase() === tx('supprimer').toLowerCase();
+    const isConfirmTextValid = confirmText.toLowerCase() === t('supprimer').toLowerCase();
 
     const onSubmit = async () => {
         if (!isConfirmTextValid) {
@@ -34,7 +34,7 @@ export const DeleteAccountButton = () => {
     return (
         <>
             <Button
-                label={tx('Supprimer mon compte')}
+                label={t('Supprimer mon compte')}
                 style={{ marginTop: '0.8rem' }}
                 className="mobile-full-width"
                 variant="contained"
@@ -56,7 +56,7 @@ export const DeleteAccountButton = () => {
                 confirmLabel={commonT('Supprimer')}
                 confirmLevel="error"
                 cancelLabel={commonT('Annuler')}
-                title={tx('Supprimer mon compte')}
+                title={t('Supprimer mon compte')}
                 isConfirmDisabled={!isConfirmTextValid}
                 isFullWidth
             >
@@ -78,23 +78,20 @@ export const DeleteAccountButton = () => {
                     >
                         <InfoCircledIcon style={{ width: 20, height: 20, marginRight: 8, paddingTop: 1 }} />
                         <span>
-                            {tx.rich('Attention! Êtes-vous sur de vouloir supprimer votre compte ? Cette action est <strong>irréversible</strong>.', {
+                            {t.rich('Attention! Êtes-vous sur de vouloir supprimer votre compte ? Cette action est <strong>irréversible</strong>.', {
                                 strong: (chunks) => <strong>{chunks}</strong>,
                             })}
                             <br />
-                            {tx.rich(
-                                "Pour supprimer votre compte, veuillez taper '<strong>supprimer</strong>' ci-dessous et cliquez sur supprimer.",
-                                {
-                                    strong: (chunks) => <strong>{chunks}</strong>,
-                                },
-                            )}
+                            {t.rich("Pour supprimer votre compte, veuillez taper '<strong>supprimer</strong>' ci-dessous et cliquez sur supprimer.", {
+                                strong: (chunks) => <strong>{chunks}</strong>,
+                            })}
                         </span>
                     </Flex>
                     <Input
                         isFullWidth
                         value={confirmText}
-                        placeholder={tx('Tapez {deleteConfirm} ici', {
-                            deleteConfirm: tx('supprimer'),
+                        placeholder={t('Tapez {deleteConfirm} ici', {
+                            deleteConfirm: t('supprimer'),
                         })}
                         color="secondary"
                         onChange={(event) => {

@@ -12,7 +12,7 @@ interface QuestionsListProps {
 }
 
 export const QuestionsList = ({ project, setProject }: QuestionsListProps) => {
-    const tx = useExtracted('create.2-questions.QuestionsList');
+    const t = useExtracted('create.2-questions.QuestionsList');
     const commonT = useExtracted('common');
     const questions = project.questions;
     const [deleteQuestionIndex, setDeleteQuestionIndex] = React.useState(-1);
@@ -69,11 +69,11 @@ export const QuestionsList = ({ project, setProject }: QuestionsListProps) => {
                     setProject({ ...project, questions: newQuestions });
                     setDeleteQuestionIndex(-1);
                 }}
-                title={tx('Supprimer la séquence ?')}
+                title={t('Supprimer la séquence ?')}
                 confirmLabel={commonT('Supprimer')}
                 confirmLevel="error"
             >
-                {tx('Voulez-vous vraiment supprimer la séquence :')} {questions[deleteQuestionIndex]?.question || ''} ?
+                {t('Voulez-vous vraiment supprimer la séquence :')} {questions[deleteQuestionIndex]?.question || ''} ?
             </Modal>
         </>
     );

@@ -13,7 +13,7 @@ export const ProjectTitle = () => {
     const [projectId] = useLocalStorage('projectId');
     const { projectData, name } = useCurrentProject();
 
-    const tx = useExtracted('ProjectTitle');
+    const t = useExtracted('ProjectTitle');
     if (!projectData || !projectId || !name) {
         return null;
     }
@@ -28,7 +28,7 @@ export const ProjectTitle = () => {
                 }}
                 marginRight="sm"
             >
-                {tx('Projet :')}
+                {t('Projet :')}
             </Title>
             <Title
                 color="inherit"

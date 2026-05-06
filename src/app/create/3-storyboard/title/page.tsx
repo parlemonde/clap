@@ -33,7 +33,7 @@ const getDefaultTitle = (question: string): SequenceTitle => ({
 export default function StoryboardTitlePage(props: ServerPageProps) {
     const router = useRouter();
 
-    const tx = useExtracted('create.3-storyboard.title');
+    const t = useExtracted('create.3-storyboard.title');
     const commonT = useExtracted('common');
     const { projectData, setProjectData } = useCurrentProject();
     useCollaboration(); // Listen to collaboration updates
@@ -54,15 +54,15 @@ export default function StoryboardTitlePage(props: ServerPageProps) {
             <ThemeBreadcrumbs themeId={projectData.themeId}></ThemeBreadcrumbs>
             <Steps activeStep={2} themeId={projectData.themeId} backHref="/create/3-storyboard"></Steps>
             <Title color="primary" variant="h1" marginY="md">
-                <Inverted isRound>3</Inverted> {tx('Création du titre de la séquence n° {planNumber}', { planNumber: String(questionIndex + 1) })}
+                <Inverted isRound>3</Inverted> {t('Création du titre de la séquence n° {planNumber}', { planNumber: String(questionIndex + 1) })}
             </Title>
             <Title color="inherit" variant="h2">
-                {tx('Séquence : {sequenceName}', {
+                {t('Séquence : {sequenceName}', {
                     sequenceName: sequence.question,
                 })}
             </Title>
             <Title color="inherit" variant="h2" marginTop="md">
-                {tx(
+                {t(
                     "Pour chaque séquence, vous pouvez choisir d'ajouter un titre. Par défaut, il s'agit du titre de la séquence, mais vous pouvez le modifier !",
                 )}
             </Title>

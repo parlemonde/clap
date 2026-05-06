@@ -16,7 +16,7 @@ interface TitleFormProps {
 
 export const TitleForm = ({ title, onTitleChange }: TitleFormProps) => {
     const canvasId = `canvas-${React.useId()}`;
-    const tx = useExtracted('create.3-storyboard.title.TitleForm');
+    const t = useExtracted('create.3-storyboard.title.TitleForm');
     const [isDragging, setIsDragging] = React.useState(false);
     const [isCenteringX, setIsCenteringX] = React.useState(false);
     const [isCenteringY, setIsCenteringY] = React.useState(false);
@@ -91,11 +91,11 @@ export const TitleForm = ({ title, onTitleChange }: TitleFormProps) => {
                         cursor: 'pointer',
                     }}
                 >
-                    <option value={'white'}>{tx('blanc')}</option>
-                    <option value={'black'}>{tx('noir')}</option>
-                    <option value={'#ffadac'}>{tx('rouge')}</option>
-                    <option value={'#dad7fe'}>{tx('bleu')}</option>
-                    <option value={'#e2fbd7'}>{tx('vert')}</option>
+                    <option value={'white'}>{t('blanc')}</option>
+                    <option value={'black'}>{t('noir')}</option>
+                    <option value={'#ffadac'}>{t('rouge')}</option>
+                    <option value={'#dad7fe'}>{t('bleu')}</option>
+                    <option value={'#e2fbd7'}>{t('vert')}</option>
                 </select>
             </div>
             <KeepRatio
@@ -227,9 +227,9 @@ export const TitleForm = ({ title, onTitleChange }: TitleFormProps) => {
                                     cursor: 'pointer',
                                 }}
                             >
-                                <option value={6}>{tx('petit')}</option>
-                                <option value={8}>{tx('moyen')}</option>
-                                <option value={10}>{tx('grand')}</option>
+                                <option value={6}>{t('petit')}</option>
+                                <option value={8}>{t('moyen')}</option>
+                                <option value={10}>{t('grand')}</option>
                             </select>
                             <div style={{ height: '1rem', width: '1px', backgroundColor: '#fff', margin: '0 4px' }}></div>
                             <select
@@ -249,10 +249,10 @@ export const TitleForm = ({ title, onTitleChange }: TitleFormProps) => {
                                     cursor: 'pointer',
                                 }}
                             >
-                                <option value={'left'}>{tx('gauche')}</option>
-                                <option value={'center'}>{tx('centré')}</option>
-                                <option value={'right'}>{tx('droite')}</option>
-                                <option value={'justify'}>{tx('justifié')}</option>
+                                <option value={'left'}>{t('gauche')}</option>
+                                <option value={'center'}>{t('centré')}</option>
+                                <option value={'right'}>{t('droite')}</option>
+                                <option value={'justify'}>{t('justifié')}</option>
                             </select>
                         </div>
                         <div

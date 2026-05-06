@@ -28,7 +28,7 @@ interface PlanFormProps {
 }
 
 export const PlanForm = ({ plan, setPlan, onSubmit }: PlanFormProps) => {
-    const tx = useExtracted('create.3-storyboard.edit.PlanForm');
+    const t = useExtracted('create.3-storyboard.edit.PlanForm');
     const commonT = useExtracted('common');
 
     const [isUploading, setIsUploading] = React.useState(false);
@@ -98,7 +98,7 @@ export const PlanForm = ({ plan, setPlan, onSubmit }: PlanFormProps) => {
                 </div>
                 <FlexItem flexGrow={1} flexBasis={0}>
                     <Title color="inherit" variant="h2" style={{ margin: '1rem 0' }}>
-                        {tx('Description du plan :')}
+                        {t('Description du plan :')}
                     </Title>
                 </FlexItem>
             </Flex>
@@ -110,7 +110,7 @@ export const PlanForm = ({ plan, setPlan, onSubmit }: PlanFormProps) => {
                         onChange={(event) => {
                             setPlan({ ...plan, description: event.target.value.slice(0, 2000) });
                         }}
-                        placeholder={tx(
+                        placeholder={t(
                             "Ici, vous pouvez décrire comment vous allez filmer ce plan.\nPar exemple :\n\tQUI ? quels élèves sont impliqués dans le tournage de ce plan ?\n\tCOMMENT ? Comment sont répartis les rôles entre élèves ? (qui tient la caméra, qui surveille le cadre, qui apparaît à l'écran ?)\n\tQUOI ? Que vont faire ou dire vos élèves ?\n\tQUAND ? À quelle date vous allez filmer ce plan ?\n\tOÙ ? Dans quel lieu allez-vous tourner ce plan ?",
                         )}
                         isFullWidth
@@ -128,15 +128,15 @@ export const PlanForm = ({ plan, setPlan, onSubmit }: PlanFormProps) => {
                 </div>
                 <FlexItem flexGrow={1} flexBasis={0}>
                     <Title color="inherit" variant="h2">
-                        {tx('Dessin du plan :')}
+                        {t('Dessin du plan :')}
                     </Title>
                 </FlexItem>
             </Flex>
             <Title color="inherit" variant="h3" className="for-tablet-up-only">
-                {tx("Pour créer votre plan vous pouvez soit l'importer, soit le prendre en photo ou le dessiner en ligne !")}
+                {t("Pour créer votre plan vous pouvez soit l'importer, soit le prendre en photo ou le dessiner en ligne !")}
             </Title>
             <Title color="inherit" variant="h3" className="for-mobile-only">
-                {tx("Pour créer votre plan vous pouvez l'importer ou le prendre en photo !")}
+                {t("Pour créer votre plan vous pouvez l'importer ou le prendre en photo !")}
             </Title>
             <div style={{ width: '100%', maxWidth: '600px', margin: '2rem auto' }}>
                 <KeepRatio
@@ -166,7 +166,7 @@ export const PlanForm = ({ plan, setPlan, onSubmit }: PlanFormProps) => {
                 {imageUrl && (
                     <div className="text-center">
                         <Button
-                            label={tx('Changer le dessin')}
+                            label={t('Changer le dessin')}
                             className="plan-button"
                             variant="outlined"
                             color="secondary"
@@ -193,7 +193,7 @@ export const PlanForm = ({ plan, setPlan, onSubmit }: PlanFormProps) => {
                             onClose={() => {
                                 setShowChangeModal(false);
                             }}
-                            title={tx('Changer le dessin du plan')}
+                            title={t('Changer le dessin du plan')}
                             isFullWidth
                         >
                             <EditImageButtons
@@ -231,7 +231,7 @@ export const PlanForm = ({ plan, setPlan, onSubmit }: PlanFormProps) => {
                 onClose={() => {
                     setShowCameraModal(false);
                 }}
-                title={tx('Prendre une photo')}
+                title={t('Prendre une photo')}
                 isFullWidth
             >
                 <div style={{ maxWidth: '120vh', margin: '0 auto' }}>
@@ -253,7 +253,7 @@ export const PlanForm = ({ plan, setPlan, onSubmit }: PlanFormProps) => {
                 onClose={() => {
                     setShowDrawModal(false);
                 }}
-                confirmLabel={tx('Enregistrer')}
+                confirmLabel={t('Enregistrer')}
                 confirmLevel="secondary"
                 onConfirm={async () => {
                     setIsCreatingBlob(true);
@@ -284,7 +284,7 @@ export const PlanForm = ({ plan, setPlan, onSubmit }: PlanFormProps) => {
                     setIsCreatingBlob(false);
                     setShowDrawModal(false);
                 }}
-                title={tx('Dessiner le plan')}
+                title={t('Dessiner le plan')}
                 isFullWidth
                 onOpenAutoFocus={false}
             >
@@ -324,7 +324,7 @@ type EditImageButtonsProps = {
     onDraw(): void;
 };
 const EditImageButtons = ({ imageUploadId, onShowCamera, onDraw }: EditImageButtonsProps) => {
-    const tx = useExtracted('create.3-storyboard.edit.PlanForm');
+    const t = useExtracted('create.3-storyboard.edit.PlanForm');
     const commonT = useExtracted('common');
 
     return (
@@ -333,7 +333,7 @@ const EditImageButtons = ({ imageUploadId, onShowCamera, onDraw }: EditImageButt
                 variant="outlined"
                 color="secondary"
                 as="label"
-                label={tx('Importer une image')}
+                label={t('Importer une image')}
                 htmlFor={imageUploadId}
                 isUpperCase={false}
                 role="button"
@@ -352,7 +352,7 @@ const EditImageButtons = ({ imageUploadId, onShowCamera, onDraw }: EditImageButt
                 <div style={styles.verticalLine} />
             </div>
             <Button
-                label={tx('Prendre une photo')}
+                label={t('Prendre une photo')}
                 variant="outlined"
                 color="secondary"
                 isUpperCase={false}
@@ -365,7 +365,7 @@ const EditImageButtons = ({ imageUploadId, onShowCamera, onDraw }: EditImageButt
                 <div style={styles.verticalLine} />
             </div>
             <Button
-                label={tx('Dessiner le plan')}
+                label={t('Dessiner le plan')}
                 variant="outlined"
                 color="secondary"
                 isUpperCase={false}
