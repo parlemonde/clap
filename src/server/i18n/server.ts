@@ -40,7 +40,7 @@ export function revalidateLocalesCacheTag(languageCode: string): void {
 }
 
 async function getExtractedMessages(): Promise<AbstractIntlMessages> {
-    return (await import(`./messages/fr.json`)).default;
+    return (await import(`./messages/fr.json`)).default as AbstractIntlMessages;
 }
 
 export async function getLocalesForLanguage(languageCode: string) {
