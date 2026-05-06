@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useExtracted } from 'next-intl';
+import { useExtracted, useFormatter } from 'next-intl';
 import * as React from 'react';
 
 import { Container } from '@frontend/components/layout/Container';
@@ -35,6 +35,7 @@ export default function StoryboardTitlePage(props: ServerPageProps) {
 
     const t = useExtracted('create.3-storyboard.title');
     const commonT = useExtracted('common');
+    const format = useFormatter();
     const { projectData, setProjectData } = useCurrentProject();
     useCollaboration(); // Listen to collaboration updates
 
@@ -54,7 +55,8 @@ export default function StoryboardTitlePage(props: ServerPageProps) {
             <ThemeBreadcrumbs themeId={projectData.themeId}></ThemeBreadcrumbs>
             <Steps activeStep={2} themeId={projectData.themeId} backHref="/create/3-storyboard"></Steps>
             <Title color="primary" variant="h1" marginY="md">
-                <Inverted isRound>3</Inverted> {t('Création du titre de la séquence n° {planNumber}', { planNumber: String(questionIndex + 1) })}
+                <Inverted isRound>3</Inverted>{' '}
+                {t('Création du titre de la séquence n° {sequenceNumber}', { sequenceNumber: format.number(questionIndex + 1) })}
             </Title>
             <Title color="inherit" variant="h2">
                 {t('Séquence : {sequenceName}', {

@@ -78,7 +78,7 @@ export const DeleteAccountButton = () => {
                     >
                         <InfoCircledIcon style={{ width: 20, height: 20, marginRight: 8, paddingTop: 1 }} />
                         <span>
-                            {t.rich('Attention! Êtes-vous sur de vouloir supprimer votre compte ? Cette action est <strong>irréversible</strong>.', {
+                            {t.rich('Attention ! Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est <strong>irréversible</strong>.', {
                                 strong: (chunks) => <strong>{chunks}</strong>,
                             })}
                             <br />

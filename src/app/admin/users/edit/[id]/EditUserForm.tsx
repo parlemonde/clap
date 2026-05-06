@@ -45,7 +45,7 @@ export const EditUserForm = ({ user }: EditUserFormProps) => {
                 name,
                 role,
             });
-            sendToast({ message: 'Utilisateur mis à jour avec succès!', type: 'success' });
+            sendToast({ message: 'Utilisateur mis à jour avec succès !', type: 'success' });
             setIsLoading(false);
             router.push('/admin/users');
         } catch (err) {

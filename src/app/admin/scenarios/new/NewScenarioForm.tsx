@@ -87,7 +87,7 @@ export const NewScenarioForm = ({ themes, defaultThemeId = -1 }: NewScenarioForm
         event.preventDefault();
 
         if (themeId === -1) {
-            sendToast({ message: "Le thème n'est pas choisit !", type: 'error' });
+            sendToast({ message: "Le thème n'est pas choisi !", type: 'error' });
             return;
         }
 
@@ -113,7 +113,7 @@ export const NewScenarioForm = ({ themes, defaultThemeId = -1 }: NewScenarioForm
                 names: newScenarioNames,
                 descriptions: scenarioDescriptions,
             });
-            sendToast({ message: 'Scénario créé avec succès!', type: 'success' });
+            sendToast({ message: 'Scénario créé avec succès !', type: 'success' });
             router.push('/admin/scenarios');
         } catch (err) {
             console.error(err);
@@ -234,7 +234,7 @@ export const NewScenarioForm = ({ themes, defaultThemeId = -1 }: NewScenarioForm
                 {availableLanguages.length > 0 && (
                     <Field
                         name="languages-select"
-                        label="Languages"
+                        label="Langues"
                         input={
                             <Select
                                 name="languages-select"

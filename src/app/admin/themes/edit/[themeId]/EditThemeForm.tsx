@@ -115,7 +115,7 @@ export const EditThemeForm = ({ theme }: EditThemeFormProps) => {
             });
 
             // 4. Redirect to list.
-            sendToast({ message: 'Thème mis à jour avec succès!', type: 'success' });
+            sendToast({ message: 'Thème mis à jour avec succès !', type: 'success' });
             setIsLoading(false);
             router.push('/admin/themes');
         } catch (err) {

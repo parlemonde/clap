@@ -18,7 +18,7 @@ export default async function NewThemePage() {
             <Breadcrumbs
                 className="for-tablet-up-only"
                 marginTop="sm"
-                links={[{ href: '/', label: commonT('Tout les thèmes') }]}
+                links={[{ href: '/', label: commonT('Tous les thèmes') }]}
                 currentLabel={t('Ajouter votre thème')}
             />
             <BackButton href="/" />

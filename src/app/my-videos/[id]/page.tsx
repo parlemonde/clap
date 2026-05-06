@@ -47,7 +47,7 @@ export default async function EditProjectPage(props: ServerPageProps) {
                 </Title>
             </div>
             <Title color="inherit" variant="h2">
-                {t('Détails du projets')}
+                {t('Détails du projet')}
             </Title>
             <ProjectForm project={project} />
         </Container>

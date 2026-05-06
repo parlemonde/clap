@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useExtracted } from 'next-intl';
+import { useExtracted, useFormatter } from 'next-intl';
 import * as React from 'react';
 
 import { Container } from '@frontend/components/layout/Container';
@@ -21,6 +21,7 @@ export default function StoryboardPlanPage(props: ServerPageProps) {
     const router = useRouter();
     const user = React.useContext(userContext);
     const t = useExtracted('create.3-storyboard.edit');
+    const format = useFormatter();
     const { projectData, setProjectData } = useCurrentProject();
     useCollaboration(); // Listen to collaboration updates
 
@@ -61,7 +62,7 @@ export default function StoryboardPlanPage(props: ServerPageProps) {
             </Title>
             <Title color="inherit" variant="h2" marginY="md">
                 {t('Plan numéro : {planNumber}', {
-                    planNumber: String(planStartIndex + planIndex),
+                    planNumber: format.number(planStartIndex + planIndex),
                 })}
             </Title>
             <PlanForm

@@ -96,7 +96,7 @@ export const UpdateEmailForm = ({ user }: UpdateEmailFormProps) => {
                         }}
                     >
                         <InfoCircledIcon style={{ width: 20, height: 20, marginRight: 8, paddingTop: 1 }} />
-                        {t('Votre email est votre identifiant de connection.')}
+                        {t('Votre email est votre identifiant de connexion.')}
                     </Flex>
                     <Field
                         name="email"

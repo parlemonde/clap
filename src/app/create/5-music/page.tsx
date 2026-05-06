@@ -72,7 +72,7 @@ export default function MusicPage() {
                 <Inverted isRound>5</Inverted> {t('Ajouter une musique en fond sonore')}
             </Title>
             <Title color="inherit" variant="h2">
-                {t('À cette étape,  vous pouvez pré-visualiser votre diaporama sonore et y ajouter une musique. ')}
+                {t('À cette étape, vous pouvez prévisualiser votre diaporama sonore et y ajouter une musique.')}
             </Title>
             <div style={{ margin: '16px 0' }}>
                 <DiaporamaPlayer
@@ -92,7 +92,7 @@ export default function MusicPage() {
             </div>
             <div className="text-center">
                 <label htmlFor="sequence-sound-upload" className="text-center" style={{ marginBottom: '10px' }}>
-                    {t('Formats acceptés : .acc, .ogg, .opus, .mp3, .wav')}
+                    {t('Formats acceptés : .aac, .ogg, .opus, .mp3, .wav')}
                 </label>
                 <Button
                     label={t('Importer un son')}

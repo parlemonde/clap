@@ -21,7 +21,7 @@ export async function requestPasswordReset(email: string): Promise<string> {
         .leftJoin(users, eq(users.id, auth_accounts.userId))
         .where(and(eq(users.email, email)));
     if (result.some((r) => r.providers === ssoProvider) && result.every((r) => r.providers !== 'credential')) {
-        return commonT('Veuillez utiliser la connection avec prof.ParLeMonde.org pour vous connecter.');
+        return commonT('Veuillez utiliser la connexion avec prof.parlemonde.org pour vous connecter.');
     }
 
     try {

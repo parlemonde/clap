@@ -31,7 +31,7 @@ export const ThemeBreadcrumbs = ({ themeId }: ThemeBreadcrumbsProps) => {
         return (
             <Breadcrumbs
                 marginTop="sm"
-                links={[{ href: '/', label: commonT('Tout les thèmes') }]}
+                links={[{ href: '/', label: commonT('Tous les thèmes') }]}
                 currentLabel={<Placeholder variant="text" width="100px" style={{ verticalAlign: 'bottom' }} />}
                 className="for-tablet-up-only"
             />
@@ -44,7 +44,7 @@ export const ThemeBreadcrumbs = ({ themeId }: ThemeBreadcrumbsProps) => {
     return (
         <Breadcrumbs
             marginTop="sm"
-            links={[{ href: '/', label: commonT('Tout les thèmes') }]}
+            links={[{ href: '/', label: commonT('Tous les thèmes') }]}
             currentLabel={themeName}
             className="for-tablet-up-only"
         />

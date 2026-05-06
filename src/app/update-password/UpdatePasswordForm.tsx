@@ -88,7 +88,7 @@ export const UpdatePasswordForm = ({ verifyToken }: UpdatePasswordFormProps) => 
                 helperText={
                     !isValidPassword
                         ? t(
-                              'Mot de passe trop faible. Il doit contenir au moins 8 charactères avec des lettres minuscules, majuscules et des chiffres.',
+                              'Mot de passe trop faible. Il doit contenir au moins 8 caractères avec des lettres minuscules, majuscules et des chiffres.',
                           )
                         : ''
                 }

@@ -35,7 +35,7 @@ export default function ResetPasswordPage() {
                 });
             } else {
                 sendToast({
-                    message: t('Un lien pour réinitialiser le mot de passe de votre compte a été envoyé avec succès à votre addresse e-mail !'),
+                    message: t('Un lien pour réinitialiser le mot de passe de votre compte a été envoyé avec succès à votre adresse e-mail !'),
                     type: 'success',
                 });
                 currentTarget.reset();

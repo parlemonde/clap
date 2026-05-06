@@ -1,5 +1,5 @@
 import { PlusIcon } from '@radix-ui/react-icons';
-import { useExtracted } from 'next-intl';
+import { useExtracted, useFormatter } from 'next-intl';
 import React from 'react';
 
 import { FeedbackForm } from '@frontend/components/collaboration/FeedbackForm';
@@ -38,6 +38,7 @@ export const Scenario = ({
 }: Scenario) => {
     const t = useExtracted('create.3-storyboard.Scenario');
     const commonT = useExtracted('common');
+    const format = useFormatter();
     const [showDeleteTitle, setShowDeleteTitle] = React.useState(false);
     const [deletePlanIndex, setDeletePlanIndex] = React.useState(-1);
 
@@ -165,7 +166,7 @@ export const Scenario = ({
                 confirmLabel={commonT('Supprimer')}
                 confirmLevel="error"
             >
-                {t('Voulez-vous vraiment supprimer le plan n° {planNumber} ?', { planNumber: String(planStartIndex + deletePlanIndex) })}
+                {t('Voulez-vous vraiment supprimer le plan n° {planNumber} ?', { planNumber: format.number(planStartIndex + deletePlanIndex) })}
             </Modal>
             <Modal
                 isOpen={showDeleteTitle}

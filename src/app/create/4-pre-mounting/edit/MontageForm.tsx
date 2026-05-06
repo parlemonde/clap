@@ -151,7 +151,7 @@ export const MontageForm = ({ sequence, setSequence, onSubmit, feedbackForm }: M
             </Flex>
             <div className="text-center">
                 <label htmlFor="sequence-sound-upload" className="text-center" style={{ marginBottom: '10px' }}>
-                    {t('Formats acceptés : .acc, .ogg, .opus, .mp3, .wav')}
+                    {t('Formats acceptés : .aac, .ogg, .opus, .mp3, .wav')}
                 </label>
                 <Button
                     label={t('Importer un son')}

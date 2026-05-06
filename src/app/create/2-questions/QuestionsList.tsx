@@ -73,7 +73,9 @@ export const QuestionsList = ({ project, setProject }: QuestionsListProps) => {
                 confirmLabel={commonT('Supprimer')}
                 confirmLevel="error"
             >
-                {t('Voulez-vous vraiment supprimer la séquence :')} {questions[deleteQuestionIndex]?.question || ''} ?
+                {t('Voulez-vous vraiment supprimer la séquence {sequenceName} ?', {
+                    sequenceName: questions[deleteQuestionIndex]?.question || '',
+                })}
             </Modal>
         </>
     );

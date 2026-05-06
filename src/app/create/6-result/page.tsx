@@ -376,7 +376,7 @@ export default function ResultPage() {
                 })}
             </Title>
             <Title color="inherit" variant="h2">
-                {t('À cette étape,  vous pouvez pré-visualiser votre diaporama sonore achevé.')}
+                {t('À cette étape, vous pouvez prévisualiser votre diaporama sonore achevé.')}
             </Title>
             <div style={{ margin: '16px 0' }}>
                 <DiaporamaPlayer
