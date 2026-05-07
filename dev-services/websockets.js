@@ -21,11 +21,6 @@ const APP_SECRET = process.env.COLLABORATION_SERVER_SECRET || process.env.APP_SE
 const rooms = new Map();
 let isShuttingDown = false;
 
-if (!APP_SECRET) {
-    console.error('COLLABORATION_SERVER_SECRET or APP_SECRET must be set');
-    process.exit(1);
-}
-
 const server = http.createServer((_req, res) => {
     res.writeHead(200, { 'content-type': 'text/plain' });
     res.end('OK\n');

@@ -5,13 +5,14 @@ const { PGlite } = require('@electric-sql/pglite');
 const { PGLiteSocketServer } = require('@electric-sql/pglite-socket');
 const path = require('node:path');
 
+const projectRoot = path.resolve(__dirname, '..');
+
 try {
-    process.loadEnvFile?.();
+    process.loadEnvFile?.(path.join(projectRoot, '.env'));
 } catch {
     // Optional convenience for local dev; explicit environment variables still win.
 }
 
-const projectRoot = path.resolve(__dirname, '..');
 const dataDir = path.join(projectRoot, '.pglite');
 const host = process.env.PGLITE_HOST || '127.0.0.1';
 const port = parsePort(process.env.PGLITE_PORT, 5432);
@@ -39,7 +40,7 @@ async function start() {
     await server.start();
     console.log(`PGlite dev database listening on ${host}:${port}`);
     console.log(`PGlite data directory: ${dataDir}`);
-    console.log(`DATABASE_URL=${databaseUrl}`);
+    console.log(`export DATABASE_URL=${databaseUrl}`);
 }
 
 async function stop(signal) {

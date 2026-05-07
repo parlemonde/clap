@@ -45,14 +45,14 @@ When starting a task, prioritize these files and folders:
 
 Ignore:
 
-- `server-*/`
+- `dev-services/`
 - generated build output such as `.next/`
 - `public/` unless the task is asset-specific
 
 ## Runtime And Tooling
 
 - Package manager: `pnpm`
-- Node version: Volta-pinned to `22.15.1`
+- Node version: Node 22.x
 - Framework: Next.js App Router
 - Language: TypeScript with `strict: true`
 - Lint: ESLint flat config in `eslint.config.mjs`
@@ -455,7 +455,6 @@ Use this when deciding where new code should go:
 - The `README.md` project-structure section is outdated relative to the current `src/frontend`, `src/server`, and `src/server-actions` layout
 - Some files still import from `src/...` directly instead of aliases; do not expand that pattern
 - `.DS_Store` files exist in a few places; they are not meaningful application code
-- The root ESLint config already ignores the `server-*` and `server-preview-proxy/` directories
 
 ## Suggested First Read For Most Tasks
 
@@ -474,7 +473,7 @@ If a future agent needs quick orientation, this sequence is usually enough:
 Unless the user says otherwise:
 
 - work only in the main Next.js app
-- ignore `server-*` directories
+- ignore `dev-services/`
 - preserve current route structure
 - preserve current project JSON shape unless the task explicitly requires schema changes
 - prefer server actions over new API routes for internal mutations

@@ -1,19 +1,28 @@
 # project
 .next
+.open-next
 .pglite
 .postgres-data
 /node_modules
+/out
+/build
 /old-migration
 src/server/i18n/messages/*
+dist
 tmp
 .env
 .env.*
 next-env.d.ts
+migrate-db.ts
+dump_*
 
 # pnpm & npm
 /.pnp
 .pnp.js
+.yarn/install-state.gz
 npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
 # misc
 .DS_Store
