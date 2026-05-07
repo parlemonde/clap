@@ -10,6 +10,8 @@ import { Title } from '@frontend/components/layout/Typography';
 import { NextButton } from '@frontend/components/navigation/NextButton';
 import { Loader } from '@frontend/components/ui/Loader';
 import { sendToast } from '@frontend/components/ui/Toasts';
+import { useObjectUrl } from '@frontend/hooks/useObjectUrl';
+import { deleteLocalMedia, insertLocalMedia, isLocalMediaUrl } from '@frontend/lib/local-media';
 import { uploadSound } from '@frontend/lib/upload-sound';
 import type { Sound } from '@lib/get-sounds';
 import type { Sequence } from '@server/database/schemas/projects';
@@ -19,14 +21,15 @@ interface MontageFormProps {
     sequence: Sequence;
     setSequence: (sequence: Sequence) => void;
     onSubmit: (sequence: Sequence) => void;
+    isLocalProject: boolean;
     feedbackForm?: React.ReactNode;
 }
-export const MontageForm = ({ sequence, setSequence, onSubmit, feedbackForm }: MontageFormProps) => {
+export const MontageForm = ({ sequence, setSequence, onSubmit, isLocalProject, feedbackForm }: MontageFormProps) => {
     const t = useExtracted('create.4-pre-mounting.edit.MontageForm');
     const commonT = useExtracted('common');
 
     const [newSoundFile, setNewSoundFile] = React.useState<File | null | undefined>(undefined); // null = delete sound
-    const newSoundUrl = React.useMemo(() => (newSoundFile ? URL.createObjectURL(newSoundFile) : null), [newSoundFile]);
+    const newSoundUrl = useObjectUrl(newSoundFile);
     const onInputUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files !== null && event.target.files.length > 0) {
             setNewSoundFile(event.target.files[0]);
@@ -40,21 +43,14 @@ export const MontageForm = ({ sequence, setSequence, onSubmit, feedbackForm }: M
         event.preventDefault();
         setIsUploading(true);
         const sequenceToSubmit = { ...sequence };
+        const previousSoundUrl = sequence.soundUrl;
 
-        // Remove old sound if needed.
-        if (newSoundFile !== undefined && sequence.soundUrl) {
-            try {
-                await deleteSound(sequence.soundUrl);
-            } catch {
-                // Ignore error
-            }
-            sequenceToSubmit.soundUrl = '';
-        }
-
-        // Upload sound if needed.
+        // Upload the replacement before deleting the current sound so failures keep the existing media intact.
         if (newSoundFile) {
             try {
-                sequenceToSubmit.soundUrl = await uploadSound(newSoundFile);
+                sequenceToSubmit.soundUrl = isLocalProject
+                    ? await insertLocalMedia(newSoundFile, { kind: 'audio', originalName: newSoundFile.name })
+                    : await uploadSound(newSoundFile);
             } catch (error) {
                 console.error(error);
                 sendToast({
@@ -63,6 +59,20 @@ export const MontageForm = ({ sequence, setSequence, onSubmit, feedbackForm }: M
                 });
                 setIsUploading(false);
                 return;
+            }
+        } else if (newSoundFile === null) {
+            sequenceToSubmit.soundUrl = '';
+        }
+
+        if (newSoundFile !== undefined && previousSoundUrl) {
+            try {
+                if (isLocalMediaUrl(previousSoundUrl)) {
+                    await deleteLocalMedia(previousSoundUrl);
+                } else {
+                    await deleteSound(previousSoundUrl);
+                }
+            } catch {
+                // Ignore cleanup errors.
             }
         }
 
@@ -174,7 +184,7 @@ export const MontageForm = ({ sequence, setSequence, onSubmit, feedbackForm }: M
             <input
                 id="sequence-sound-upload"
                 type="file"
-                accept="audio/acc, audio/mpeg, audio/ogg, audio/opus, audio/wav, audio/x-wav"
+                accept="audio/aac, audio/mpeg, audio/ogg, audio/opus, audio/wav, audio/x-wav"
                 onChange={onInputUpload}
                 style={{ display: 'none' }}
             />

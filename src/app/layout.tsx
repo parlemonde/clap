@@ -6,6 +6,7 @@ import { Tooltip } from 'radix-ui';
 import * as React from 'react';
 
 import { AlertModal } from '@frontend/components/collaboration/AlertModal';
+import { LocalMediaServiceWorkerRegistration } from '@frontend/components/local-media/LocalMediaServiceWorkerRegistration';
 import { BottomNavBar } from '@frontend/components/navigation/BottomNavBar';
 import { NProgressDone } from '@frontend/components/navigation/NProgress';
 import { TopNavBar } from '@frontend/components/navigation/TopNavBar';
@@ -86,6 +87,7 @@ export default async function RootLayout({ children }: React.PropsWithChildren) 
                 </Tooltip.Provider>
                 <Toasts />
                 <NProgressDone />
+                <LocalMediaServiceWorkerRegistration />
             </body>
         </html>
     );

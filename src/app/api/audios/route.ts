@@ -13,6 +13,12 @@ export async function POST(request: NextRequest) {
         const formData = await request.formData();
         const file: FormDataEntryValue | undefined = formData.getAll('file')[0];
 
+        if (!currentUser) {
+            return new NextResponse('Unauthorized', {
+                status: 401,
+            });
+        }
+
         if (!file || !(file instanceof File)) {
             return new NextResponse('No file found in request', {
                 status: 400,
@@ -28,9 +34,8 @@ export async function POST(request: NextRequest) {
 
         const uuid = v4();
         const extension = path.extname(file.name).substring(1);
-        const userAudioId = currentUser?.role === 'student' ? currentUser.teacherId : currentUser?.id;
-        const fileName =
-            userAudioId !== undefined ? `media/audios/users/${userAudioId}/${uuid}.${extension}` : `media/audios/tmp/${uuid}.${extension}`;
+        const userAudioId = currentUser.role === 'student' ? currentUser.teacherId : currentUser.id;
+        const fileName = `media/audios/users/${userAudioId}/${uuid}.${extension}`;
         const contentType = mime.lookup(fileName) || undefined;
         await uploadFile(fileName, Buffer.from(await file.arrayBuffer()), contentType);
         return Response.json({ url: `/${fileName}` });

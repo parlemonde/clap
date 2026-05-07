@@ -15,10 +15,14 @@ export async function getS3UploadParameters(fileName: string): Promise<{ formPar
     }
 
     const currentUser = await getCurrentUser();
+    if (!currentUser) {
+        throw new Error('Unauthorized');
+    }
+
     const uuid = v4();
     const extension = path.extname(fileName).substring(1);
-    const userAudioId = currentUser?.role === 'student' ? currentUser.teacherId : currentUser?.id;
-    const key = userAudioId ? `media/audios/users/${userAudioId}/${uuid}.${extension}` : `media/audios/tmp/${uuid}.${extension}`;
+    const userAudioId = currentUser.role === 'student' ? currentUser.teacherId : currentUser.id;
+    const key = `media/audios/users/${userAudioId}/${uuid}.${extension}`;
     const contentType = mime.lookup(key) || undefined;
 
     if (!contentType || !contentType.startsWith('audio/')) {

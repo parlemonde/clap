@@ -13,6 +13,12 @@ export async function POST(request: NextRequest) {
         const file: FormDataEntryValue | undefined = formData.getAll('image')[0];
         const isAdminImage = formData.getAll('isAdminImage')[0] === 'true';
 
+        if (!currentUser) {
+            return new NextResponse('Unauthorized', {
+                status: 401,
+            });
+        }
+
         if (isAdminImage && currentUser?.role !== 'admin') {
             return new NextResponse('Unauthorized', {
                 status: 401,
@@ -25,8 +31,8 @@ export async function POST(request: NextRequest) {
             });
         }
 
-        // Image is over 4MB
-        if (file.size > 4 * 1024 * 1024) {
+        // Image is over 50MB
+        if (file.size > 50 * 1024 * 1024) {
             return new NextResponse('File size is too large', {
                 status: 400,
             });
@@ -45,12 +51,8 @@ export async function POST(request: NextRequest) {
             .toFormat('webp');
         const imageBuffer = await sharpPipeline.toBuffer();
 
-        const userImageId = currentUser?.role === 'student' ? currentUser.teacherId : currentUser?.id;
-        const fileName = isAdminImage
-            ? `media/images/${uuid}.webp`
-            : userImageId !== undefined
-              ? `media/images/users/${userImageId}/${uuid}.webp`
-              : `media/images/tmp/${uuid}.webp`;
+        const userImageId = currentUser.role === 'student' ? currentUser.teacherId : currentUser.id;
+        const fileName = isAdminImage ? `media/images/${uuid}.webp` : `media/images/users/${userImageId}/${uuid}.webp`;
         await uploadFile(fileName, imageBuffer, 'image/webp');
         return Response.json({ url: `/${fileName}` });
     } catch {

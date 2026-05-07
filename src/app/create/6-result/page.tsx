@@ -1,6 +1,7 @@
 'use client';
 
 import { VideoIcon } from '@radix-ui/react-icons';
+import JSZip from 'jszip';
 import { useExtracted } from 'next-intl';
 import * as React from 'react';
 
@@ -29,10 +30,11 @@ import {
     type BrowserVideoProgressStage,
     type BrowserVideoSupport,
 } from '@frontend/lib/browser-video';
+import { collectProjectMediaUrls, getLocalMedia, getLocalMediaExtensionHints, isLocalMediaUrl } from '@frontend/lib/local-media';
 import VideoFile from '@frontend/svg/plan.svg';
 import { getFormatedTime } from '@lib/get-formatted-time';
 import { getSounds } from '@lib/get-sounds';
-import { getMltZip } from '@server-actions/projects/generate-mlt-zip';
+import { getMltArchiveData, getMltZip } from '@server-actions/projects/generate-mlt-zip';
 
 type FilePickerAcceptType = {
     description: string;
@@ -140,8 +142,9 @@ const isFilePickerAbortError = (error: unknown) => {
 
 export default function ResultPage() {
     const t = useExtracted('create.6-result');
+    const commonT = useExtracted('common');
     const user = React.useContext(userContext);
-    const { projectData, name } = useCurrentProject();
+    const { projectData, name, isLocalProject } = useCurrentProject();
     useCollaboration(); // Listen to collaboration updates
     const sounds = useDeepMemo(getSounds(projectData?.questions || []));
 
@@ -349,13 +352,58 @@ export default function ResultPage() {
             return;
         }
         setIsLoading(true);
-        const url = await getMltZip(projectData, name || 'video');
-        setIsLoading(false);
-        if (url) {
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = 'Montage.zip';
-            link.click();
+        try {
+            if (isLocalProject || [...collectProjectMediaUrls(projectData)].some(isLocalMediaUrl)) {
+                const extensionHints = await getLocalMediaExtensionHints(projectData);
+                const { mltStr, files } = await getMltArchiveData(projectData, name || 'video', extensionHints);
+                const zip = new JSZip();
+                zip.file('Montage.mlt', mltStr);
+
+                for (const file of files) {
+                    if (isLocalMediaUrl(file.sourceUrl)) {
+                        const localMedia = await getLocalMedia(file.sourceUrl);
+                        if (!localMedia) {
+                            throw new Error(`Missing local media: ${file.sourceUrl}`);
+                        }
+                        zip.file(file.fileName, localMedia.blob);
+                    } else {
+                        const response = await fetch(file.sourceUrl);
+                        if (!response.ok) {
+                            throw new Error(`Failed to fetch media: ${file.sourceUrl}`);
+                        }
+                        zip.file(file.fileName, await response.blob());
+                    }
+                }
+
+                const zipBlob = await zip.generateAsync({ type: 'blob' });
+                const zipUrl = URL.createObjectURL(zipBlob);
+                try {
+                    const link = document.createElement('a');
+                    link.href = zipUrl;
+                    link.download = 'Montage.zip';
+                    link.click();
+                } finally {
+                    window.setTimeout(() => {
+                        URL.revokeObjectURL(zipUrl);
+                    }, 1000);
+                }
+            } else {
+                const url = await getMltZip(projectData, name || 'video');
+                if (url) {
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = 'Montage.zip';
+                    link.click();
+                }
+            }
+        } catch (error) {
+            console.error(error);
+            sendToast({
+                message: commonT('Une erreur est survenue...'),
+                type: 'error',
+            });
+        } finally {
+            setIsLoading(false);
         }
     };
 
