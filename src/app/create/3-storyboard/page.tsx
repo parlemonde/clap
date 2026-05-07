@@ -19,6 +19,7 @@ import { userContext } from '@frontend/contexts/userContext';
 import { useCollaboration } from '@frontend/hooks/useCollaboration';
 import { useCurrentProject } from '@frontend/hooks/useCurrentProject';
 import { COLORS } from '@frontend/lib/colors';
+import { collectProjectMediaUrls, isLocalMediaUrl } from '@frontend/lib/local-media';
 import PictureAsPdf from '@frontend/svg/pdf.svg';
 import type { Sequence } from '@server/database/schemas/projects';
 import { generatePdf } from '@server-actions/projects/generate-pdf';
@@ -30,7 +31,7 @@ export default function StoryboardPage() {
 
     const t = useExtracted('create.3-storyboard');
     const commonT = useExtracted('common');
-    const { projectData, setProjectData } = useCurrentProject();
+    const { projectData, setProjectData, isLocalProject } = useCurrentProject();
     const { collaborationButton, isCollaborationEnabled, sendCollaborationValidationMsg } = useCollaboration();
     const user = React.useContext(userContext);
     const isStudent = user?.role === 'student';
@@ -51,6 +52,14 @@ export default function StoryboardPage() {
     const filteredQuestions = isStudent ? (studentQuestion ? [studentQuestion] : []) : projectData.questions;
 
     const onGeneratePDF = async () => {
+        if (projectData && (isLocalProject || [...collectProjectMediaUrls(projectData)].some(isLocalMediaUrl))) {
+            const newWindow = window.open('/create/3-storyboard/print-pdf', '_blank');
+            if (!newWindow) {
+                router.push('/create/3-storyboard/print-pdf');
+            }
+            return;
+        }
+
         setIsGeneratingPDF(true);
         // Open immediately a new tab to avoid the browser blocking the new window
         const newWindow = window.open('/create/3-storyboard/generating-pdf', '_blank');
