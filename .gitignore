@@ -1,63 +1,23 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
+# project
+.next
+.pglite
+.postgres-data
 /node_modules
+/old-migration
+src/server/i18n/messages/*
+tmp
+.env
+.env.*
+next-env.d.ts
+
+# pnpm & npm
 /.pnp
 .pnp.js
-.yarn/install-state.gz
-
-# testing
-/coverage
-
-# next.js
-/.next/
-/out/
-
-# production
-/build
+npm-debug.log*
 
 # misc
 .DS_Store
 *.pem
 
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# local env files
-.env*.local
-
 # typescript
 *.tsbuildinfo
-
-.postgres-data
-.pglite
-.minio-data
-.redis-data
-.dynamodb
-.env
-.env.*
-dist
-tmp
-
-# Websocket server
-server-websockets/target
-server-websockets/cargo.lock
-
-# Pdf server
-server-pdf-generation/node_modules
-
-# Rust proxy server
-server-preview-proxy/target
-server-preview-proxy/cargo.lock
-
-.open-next
-
-dump_*
-
-next-env.d.ts
-migrate-db.ts
-old-migration
-
-src/server/i18n/messages/*

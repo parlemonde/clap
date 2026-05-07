@@ -4,7 +4,7 @@ export const envDefaults = {
     HOST_URL: 'http://localhost:3000',
     BETTER_AUTH_URL: 'http://localhost:3000',
     // DB and Otel
-    DATABASE_URL: 'postgresql://postgres:example@localhost:5432/clap',
+    DATABASE_URL: 'postgresql://postgres:postgres@localhost:5432/postgres?sslmode=disable',
     OTEL_EXPORTER_OTLP_ENDPOINT: 'http://localhost:4318',
     // AWS
     AWS_ACCESS_KEY_ID: '',

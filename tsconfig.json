@@ -15,28 +15,27 @@
     "incremental": true,
     "plugins": [
       {
-        "name": "next"
-      }
+        "name": "next",
+      },
     ],
     "paths": {
       "@app/*": ["./src/app/*"],
       "@frontend/*": ["./src/frontend/*"],
       "@lib/*": ["./src/lib/*"],
       "@server/*": ["./src/server/*"],
-      "@server-actions/*": ["./src/server-actions/*"]
-    }
+      "@server-actions/*": ["./src/server-actions/*"],
+    },
   },
   "include": [
     "drizzle.config.ts",
     "next-env.d.ts",
     "next.config.ts",
-    "src/**/*.html",
     "src/**/*.ts",
     "src/**/*.tsx",
     "src/**/*.txt",
     "src/image-loader.js",
     ".next/types/**/*.ts",
-    ".next/dev/types/**/*.ts"
+    ".next/dev/types/**/*.ts",
   ],
-  "exclude": ["node_modules", ".next"]
+  "exclude": ["node_modules", ".next"],
 }

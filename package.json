@@ -12,10 +12,10 @@
   },
   "scripts": {
     "dev:next": "next dev",
-    "dev:websockets": "node server-websockets/app.js",
-    "dev:services": "docker compose up",
+    "dev:websockets": "node dev-services/websockets.js",
+    "dev:db": "node dev-services/pglite.js",
     "dev:email": "email dev --port 3001 --dir ./src/server/emails/templates",
-    "dev": "concurrently --names nextjs,websockets,docker -c green,yellow,blue --kill-others-on-fail \"pnpm run dev:next\" \"pnpm run dev:websockets\" \"pnpm run dev:services\"",
+    "dev": "concurrently --names nextjs,websockets,pglite -c green,yellow,blue --kill-others-on-fail \"pnpm run dev:next\" \"node dev-services/websockets.js\" \"node dev-services/pglite.js\"",
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
@@ -71,6 +71,8 @@
     "waveform-data": "^4.5.2"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.4.5",
+    "@electric-sql/pglite-socket": "^0.1.5",
     "@eslint/css": "^1.0.0",
     "@eslint/js": "9.39.4",
     "@eslint/json": "^1.2.0",
@@ -101,9 +103,6 @@
     "tsx": "4.21.0",
     "typescript": "5.9.3",
     "typescript-eslint": "8.57.2"
-  },
-  "volta": {
-    "node": "22.15.1"
   },
   "packageManager": "pnpm@10.33.0+sha512.10568bb4a6afb58c9eb3630da90cc9516417abebd3fabbe6739f0ae795728da1491e9db5a544c76ad8eb7570f5c4bb3d6c637b2cb41bfdcdb47fa823c8649319",
   "pnpm": {

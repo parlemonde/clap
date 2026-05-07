@@ -31,12 +31,23 @@ const eslintConfig = defineConfig([
     },
     {
         files: ['**/*.json'],
+        ignores: ['**/tsconfig*.json'],
         language: 'json/json',
         plugins: {
             json: eslintJson,
         },
         rules: {
             'json/no-duplicate-keys': 'error',
+        },
+    },
+    {
+        files: ['**/tsconfig*.json'],
+        language: 'json/jsonc',
+        languageOptions: {
+            allowTrailingCommas: true,
+        },
+        plugins: {
+            json: eslintJson,
         },
     },
     {
@@ -51,6 +62,18 @@ const eslintConfig = defineConfig([
                 'error',
                 {
                     endOfLine: 'auto',
+                },
+            ],
+        },
+    },
+    {
+        files: ['**/tsconfig*.json'],
+        rules: {
+            'prettier/prettier': [
+                'error',
+                {
+                    endOfLine: 'auto',
+                    parser: 'jsonc',
                 },
             ],
         },
@@ -156,17 +179,14 @@ const eslintConfig = defineConfig([
         '.claude/*',
         '.cursor/*',
         '.github/*',
+        '.next/*',
+        '.postgres-data/*',
+        '.pglite/*',
         '.vscode/*',
         '.zed/*',
         'drizzle/*',
         'node_modules/*',
         'public/*',
-        'server-pdf-generation/*',
-        'server-preview-proxy/*',
-        'server-websockets/*',
-        '.postgres-data/*',
-        '.next/*',
-        '.open-next/*',
         'tmp/*',
         'next-env.d.ts',
         'src/server/i18n/messages/*',

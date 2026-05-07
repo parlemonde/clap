@@ -3,17 +3,7 @@
 // For a full list of overridable settings, and general information on folder-specific settings,
 // see the documentation: https://zed.dev/docs/configuring-zed#settings-files
 {
-  "file_scan_exclusions": [
-    "**/.git",
-    "**/.DS_Store",
-    "**/Thumbs.db",
-    "**/.next",
-    "**/.postgres-data",
-    "**/.dynamodb",
-    "**/tmp",
-    "**/.vscode",
-    "**/.pglite",
-  ],
+  "file_scan_exclusions": ["**/.git", "**/.DS_Store", "**/Thumbs.db", "**/.next", "**/.pglite", "**/.postgres-data", "**/tmp", "**/.vscode"],
   "languages": {
     "JavaScript": {
       "formatter": [],

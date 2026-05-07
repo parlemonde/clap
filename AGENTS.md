@@ -5,11 +5,11 @@
 This file is the working guide for coding agents in the `clap` repository.
 It is intentionally focused on the live application code under `src/`.
 
-Do not spend time on separate `server-*` folders when working from this guide.
+Do not spend time on separate standalone service folders when working from this guide.
 If such folders exist, they are out of scope for the main app. The current
 standalone folder is:
 
-- `server-websockets/`
+- `dev-services/`
 
 The old standalone video-generation server has been removed. If a task mentions
 "the app", "the frontend", "the Next.js codebase", or "the main product", treat
@@ -322,7 +322,7 @@ Behavior to preserve:
 - websocket messages trigger project refreshes and validation alerts
 - students and teachers have different editing/validation responsibilities
 
-Do not remove or break collaboration hooks inside the app just because `server-websockets/` is out of scope for this guide.
+Do not remove or break collaboration hooks inside the app just because `dev-services/` is out of scope for this guide.
 
 ## Media And Generation
 
