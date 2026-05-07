@@ -1,7 +1,7 @@
-import { createHmac } from 'crypto';
 import { NextResponse, type NextRequest } from 'next/server';
 
 import { getCurrentUser } from '@server/auth/get-current-user';
+import { hmacSha256, hmacSha256Hex } from '@server/crypto/hmac';
 import { getEnvVariable } from '@server/get-env-variable';
 
 async function getCollaborationWebsocketUrlAndParams(room: string): Promise<{
@@ -10,8 +10,8 @@ async function getCollaborationWebsocketUrlAndParams(room: string): Promise<{
 }> {
     const date = new Date().toISOString();
     const secretKey = `secret:${getEnvVariable('COLLABORATION_SERVER_SECRET')}`;
-    const dateKey = createHmac('sha256', secretKey).update(date).digest();
-    const signature = createHmac('sha256', dateKey).update(room).digest('hex');
+    const dateKey = hmacSha256(secretKey, date);
+    const signature = hmacSha256Hex(dateKey, room);
     return {
         url: `${getEnvVariable('COLLABORATION_SERVER_URL')}?room=${encodeURIComponent(room)}&date=${encodeURIComponent(date)}`,
         protocols: ['json', `auth.${signature}`],

@@ -5,7 +5,7 @@ import path from 'node:path';
 import { v4 } from 'uuid';
 
 import { getCurrentUser } from '@server/auth/get-current-user';
-import { hmac, buf2hex } from '@server/aws/utils';
+import { hmacSha256, hmacSha256Hex } from '@server/crypto/hmac';
 import { isUsingS3 } from '@server/file-upload/file-upload';
 import { getEnvVariable } from '@server/get-env-variable';
 
@@ -72,12 +72,11 @@ export async function getS3UploadParameters(fileName: string): Promise<{ formPar
     }
     const base64Policy = Buffer.from(JSON.stringify(policy)).toString('base64');
 
-    // Signature
-    const kDate = await hmac('AWS4' + awsSecretAccessKey, currentDate.split('T')[0]);
-    const kRegion = await hmac(kDate, awsRegion);
-    const kService = await hmac(kRegion, 's3');
-    const kCredentials = await hmac(kService, 'aws4_request');
-    const signature = await hmac(kCredentials, base64Policy);
+    const kDate = hmacSha256('AWS4' + awsSecretAccessKey, currentDate.split('T')[0]);
+    const kRegion = hmacSha256(kDate, awsRegion);
+    const kService = hmacSha256(kRegion, 's3');
+    const kCredentials = hmacSha256(kService, 'aws4_request');
+    const signature = hmacSha256Hex(kCredentials, base64Policy);
 
     const formParameters: Record<string, string> = {
         bucket: s3BucketName,
@@ -91,6 +90,6 @@ export async function getS3UploadParameters(fileName: string): Promise<{ formPar
         formParameters['X-Amz-Security-Token'] = awsSessionToken;
     }
     formParameters.Policy = base64Policy;
-    formParameters['X-Amz-Signature'] = buf2hex(signature);
+    formParameters['X-Amz-Signature'] = signature;
     return { formParameters, s3Url: `https://${s3BucketName}.s3.${awsRegion}.amazonaws.com/` };
 }
