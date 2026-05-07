@@ -48,7 +48,7 @@ const nextConfig: NextConfig = {
     async headers() {
         return [
             {
-                source: '/static/local-media-sw.js',
+                source: '/media/local-media-sw.js',
                 headers: [
                     {
                         key: 'Service-Worker-Allowed',

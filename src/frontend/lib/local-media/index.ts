@@ -85,7 +85,7 @@ export async function ensureLocalMediaServiceWorker(): Promise<void> {
         throw new Error('Local media storage is not available in this browser.');
     }
 
-    await navigator.serviceWorker.register('/static/local-media-sw.js', { scope: LOCAL_MEDIA_SERVICE_WORKER_SCOPE });
+    await navigator.serviceWorker.register('/media/local-media-sw.js', { scope: LOCAL_MEDIA_SERVICE_WORKER_SCOPE });
 
     if (!window.location.pathname.startsWith(LOCAL_MEDIA_SERVICE_WORKER_SCOPE)) {
         return;
