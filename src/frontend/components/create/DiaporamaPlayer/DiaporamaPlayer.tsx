@@ -20,6 +20,7 @@ import { WaveForm } from './WaveForm';
 import styles from './diaporama-player.module.css';
 import { useAudio } from './useAudio';
 
+const MAX_AUDIO_VOLUME = 200;
 const PLAYER_ID = 'diaporama-player';
 
 type DiaporamaPlayerProps = {
@@ -49,6 +50,7 @@ export const DiaporamaPlayer = ({
     const [isPlaying, setIsPlaying] = React.useState(false);
     const [time, setTime] = React.useState<number>(0);
     const { onPlay: onPlayAudio, onStop: onStopAudio, onUpdateVolume, onUpdateCurrentTime } = useAudio(soundUrl, volume, sounds);
+    const sliderVolume = Math.max(0, Math.min(MAX_AUDIO_VOLUME, volume));
     const mountingTableRef = React.useRef<HTMLDivElement>(null);
     const [mountingTableWidth, setMountingTableWidth] = React.useState(0);
     const animationFrameRef = React.useRef<number | null>(null);
@@ -521,7 +523,7 @@ export const DiaporamaPlayer = ({
                                         soundUrl={soundUrl}
                                         time={time}
                                         duration={duration}
-                                        volume={volume}
+                                        volume={sliderVolume}
                                         beginTime={soundBeginTime + deltaSound}
                                         onUpdateSequenceDuration={(audioDuration) => {
                                             if (!canEditPlans || duration >= audioDuration || soundUrl === questions[0]?.soundUrl) {
@@ -562,12 +564,12 @@ export const DiaporamaPlayer = ({
                                 <SpeakerLoudIcon color="white" />
                                 <Slider
                                     marginY="sm"
-                                    value={volume}
+                                    value={sliderVolume}
                                     onChange={(newValue: number) => {
                                         setVolume(newValue);
                                         onUpdateVolume(newValue);
                                     }}
-                                    max={300}
+                                    max={MAX_AUDIO_VOLUME}
                                     min={0}
                                     orientation="vertical"
                                 />

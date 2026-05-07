@@ -17,9 +17,11 @@ export type File = {
 const WIDTH = 1920; // px
 const HEIGHT = 1080; // px
 const FRAMERATE = 25; // img/s
+const MAX_AUDIO_VOLUME = 200;
 
 const getFramesCount = (duration: number) => Math.round((duration * FRAMERATE) / 1000);
 const clamp = (min: number, max: number, value: number) => Math.max(min, Math.min(max, value));
+const getVolumeGain = (volume: number) => clamp(0, MAX_AUDIO_VOLUME / 100, volume / 100);
 
 const toFullUrl = (url: string) => {
     if (url.startsWith('/media/')) {
@@ -237,7 +239,7 @@ export async function projectToMlt(project: ProjectData, name: string, urlKind: 
                 });
             }
 
-            const volume = clamp(0.01, 1.5, (question.soundVolume || 100) / 100);
+            const volume = getVolumeGain(question.soundVolume ?? 100);
             const gain = Math.round(2000 * Math.log10(volume)) / 100;
 
             if (!fileNames.has(question.soundUrl)) {
@@ -307,7 +309,7 @@ export async function projectToMlt(project: ProjectData, name: string, urlKind: 
         },
         elements: [],
     };
-    if (project.soundUrl) {
+    if (project.soundUrl && (project.soundVolume ?? 100) > 0) {
         const blankDuration = getFramesCount(Math.max(0, project.soundBeginTime || 0));
         const deltaSound = -getFramesCount(Math.min(0, project.soundBeginTime || 0));
         const audioDuration = Math.max(totalFrames, spentDuration) - blankDuration;
@@ -320,7 +322,7 @@ export async function projectToMlt(project: ProjectData, name: string, urlKind: 
             });
         }
 
-        const volume = clamp(0.01, 1.5, (project.soundVolume || 100) / 100);
+        const volume = getVolumeGain(project.soundVolume ?? 100);
         const gain = Math.round(2000 * Math.log10(volume)) / 100;
 
         producerId += 1;

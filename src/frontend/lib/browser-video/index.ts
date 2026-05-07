@@ -28,12 +28,15 @@ const CHANNEL_COUNT = 2;
 const VIDEO_BITRATE = 3_000_000;
 const AUDIO_BITRATE = 128_000;
 const MAX_BUFFER_TARGET_BYTES = 250 * 1024 * 1024;
+const MAX_AUDIO_VOLUME = 200;
 const PROGRESS_RANGES: Record<BrowserVideoProgressStage, { start: number; end: number }> = {
     'checking-support': { start: 0, end: 2 },
     'loading-assets': { start: 2, end: 20 },
     rendering: { start: 20, end: 95 },
     finalizing: { start: 95, end: 100 },
 };
+
+const getVolumeGain = (volume: number) => Math.max(0, Math.min(MAX_AUDIO_VOLUME, volume)) / 100;
 
 type VisualSegment =
     | {
@@ -186,7 +189,7 @@ export function buildTimeline(project: ProjectData): BrowserVideoTimeline {
             startMs: Math.max(0, project.soundBeginTime || 0),
             offsetMs: Math.max(0, -(project.soundBeginTime || 0)),
             durationMs: Math.max(0, durationMs - Math.max(0, project.soundBeginTime || 0)),
-            volume: (project.soundVolume ?? 100) / 100,
+            volume: getVolumeGain(project.soundVolume ?? 100),
         });
     }
 
@@ -208,7 +211,7 @@ function addQuestionAudioClip(audioClips: AudioClip[], question: Sequence, quest
         startMs: questionStartMs + Math.max(0, beginTimeMs),
         offsetMs: Math.max(0, -beginTimeMs),
         durationMs: Math.max(0, questionDurationMs - Math.max(0, beginTimeMs)),
-        volume: (question.soundVolume || 100) / 100,
+        volume: getVolumeGain(question.soundVolume ?? 100),
     });
 }
 
