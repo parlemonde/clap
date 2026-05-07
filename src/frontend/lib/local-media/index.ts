@@ -1,5 +1,7 @@
 'use client';
 
+import mime from 'mime-types';
+
 import { uploadImage } from '@frontend/lib/upload-image';
 import { uploadSound } from '@frontend/lib/upload-sound';
 import type { ProjectData } from '@server/database/schemas/projects';
@@ -186,6 +188,24 @@ export async function purgeUnusedLocalMedia(projectData: ProjectData): Promise<v
     await Promise.all(records.filter((record) => !usedUrls.has(record.url)).map((record) => deleteLocalMedia(record.id)));
 }
 
+export async function getLocalMediaExtensionHints(projectData: ProjectData): Promise<Record<string, string>> {
+    const localUrls = [...collectProjectMediaUrls(projectData)].filter(isLocalMediaUrl);
+    const hints: Record<string, string> = {};
+
+    await Promise.all(
+        localUrls.map(async (url) => {
+            const record = await getLocalMedia(url);
+            if (!record) {
+                throw new Error(`Missing local media: ${url}`);
+            }
+            hints[url] =
+                getExtensionFromFileName(record.originalName) || getExtensionFromMimeType(record.mimeType) || getDefaultExtension(record.kind);
+        }),
+    );
+
+    return hints;
+}
+
 export async function migrateLocalProjectMedia(
     projectData: ProjectData,
     onProgress?: (progress: LocalMediaMigrationProgress) => void,
@@ -233,24 +253,18 @@ function getLocalMediaId(urlOrId: string): string | null {
 }
 
 function getExtensionFromMimeType(mimeType: string): string {
-    switch (mimeType) {
-        case 'audio/aac':
-            return '.aac';
-        case 'audio/mpeg':
-            return '.mp3';
-        case 'audio/ogg':
-            return '.ogg';
-        case 'audio/opus':
-            return '.opus';
-        case 'audio/wav':
-        case 'audio/x-wav':
-            return '.wav';
-        case 'audio/mp4':
-        case 'audio/x-m4a':
-            return '.m4a';
-        default:
-            return '';
-    }
+    const extension = mime.extension(mimeType);
+    return extension ? `.${extension}` : '';
+}
+
+function getExtensionFromFileName(fileName?: string): string {
+    const mimeType = fileName ? mime.lookup(fileName) : false;
+    const extension = mimeType ? mime.extension(mimeType) : false;
+    return extension ? `.${extension}` : '';
+}
+
+function getDefaultExtension(kind: LocalMediaKind): string {
+    return kind === 'image' ? '.png' : '.mp3';
 }
 
 async function putLocalMediaRecord(record: LocalMediaRecord): Promise<void> {

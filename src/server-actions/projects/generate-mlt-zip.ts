@@ -76,3 +76,15 @@ export async function getMltZip(project: ProjectData, name: string) {
     // Return the URL.
     return `/${fileName}`;
 }
+
+export async function getMltArchiveData(
+    project: ProjectData,
+    name: string,
+    extensionHints?: Record<string, string>,
+): Promise<{ mltStr: string; files: Array<{ sourceUrl: string; fileName: string }> }> {
+    const { mltStr, files } = await projectToMlt(project, name, 'local', extensionHints);
+    return {
+        mltStr,
+        files: files.map(({ sourceUrl, fileName }) => ({ sourceUrl, fileName })),
+    };
+}

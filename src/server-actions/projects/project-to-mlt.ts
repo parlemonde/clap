@@ -10,6 +10,7 @@ import type { ProjectData } from '@server/database/schemas/projects';
 import { getEnvVariable } from '@server/get-env-variable';
 
 export type File = {
+    sourceUrl: string;
     fileUrl: string;
     fileName: string;
     isLocal: boolean;
@@ -30,7 +31,7 @@ const toFullUrl = (url: string) => {
     }
 };
 
-export async function projectToMlt(project: ProjectData, name: string, urlKind: 'full' | 'local') {
+export async function projectToMlt(project: ProjectData, name: string, urlKind: 'full' | 'local', extensionHints: Record<string, string> = {}) {
     const questions = project.questions.filter((q) => q.title !== undefined || q.plans.length > 0);
     const totalFrames = getFramesCount(
         questions.reduce(
@@ -45,19 +46,24 @@ export async function projectToMlt(project: ProjectData, name: string, urlKind: 
     let audioCount = 0;
 
     const fileToLocalUrlMap: Record<string, string> = {};
+    const getExtension = (fileUrl: string) => {
+        const extension = path.extname(fileUrl).slice(1);
+        const extensionHint = extensionHints[fileUrl]?.replace(/^\./, '') || '';
+        return extension || extensionHint;
+    };
     const getLocalName = (fileUrl: string, fileType: 'images' | 'audios') => {
         if (fileToLocalUrlMap[fileUrl]) {
             return fileToLocalUrlMap[fileUrl];
         }
         if (fileType === 'images') {
             imageCount += 1;
-            const imageExtension = path.extname(fileUrl).slice(1);
-            fileToLocalUrlMap[fileUrl] = `image_${imageCount}.${imageExtension}`;
+            const imageExtension = getExtension(fileUrl);
+            fileToLocalUrlMap[fileUrl] = `image_${imageCount}${imageExtension ? `.${imageExtension}` : ''}`;
             return fileToLocalUrlMap[fileUrl];
         } else {
             audioCount += 1;
-            const audioExtension = path.extname(fileUrl).slice(1);
-            fileToLocalUrlMap[fileUrl] = `audio_${audioCount}.${audioExtension}`;
+            const audioExtension = getExtension(fileUrl);
+            fileToLocalUrlMap[fileUrl] = `audio_${audioCount}${audioExtension ? `.${audioExtension}` : ''}`;
             return fileToLocalUrlMap[fileUrl];
         }
     };
@@ -186,6 +192,7 @@ export async function projectToMlt(project: ProjectData, name: string, urlKind: 
                     fileNames.add(plan.imageUrl);
                     const isLocal = plan.imageUrl.startsWith('/media/');
                     files.push({
+                        sourceUrl: plan.imageUrl,
                         fileUrl: isLocal ? plan.imageUrl.slice(1) : plan.imageUrl,
                         fileName: getLocalName(plan.imageUrl, 'images'),
                         isLocal,
@@ -245,6 +252,7 @@ export async function projectToMlt(project: ProjectData, name: string, urlKind: 
                 fileNames.add(question.soundUrl);
                 const isLocal = question.soundUrl.startsWith('/media/');
                 files.push({
+                    sourceUrl: question.soundUrl,
                     fileUrl: isLocal ? question.soundUrl.slice(1) : question.soundUrl,
                     fileName: getLocalName(question.soundUrl, 'audios'),
                     isLocal,
@@ -329,6 +337,7 @@ export async function projectToMlt(project: ProjectData, name: string, urlKind: 
             fileNames.add(project.soundUrl);
             const isLocal = project.soundUrl.startsWith('/media/');
             files.push({
+                sourceUrl: project.soundUrl,
                 fileUrl: isLocal ? project.soundUrl.slice(1) : project.soundUrl,
                 fileName: getLocalName(project.soundUrl, 'audios'),
                 isLocal,
