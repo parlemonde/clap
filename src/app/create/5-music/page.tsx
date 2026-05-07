@@ -79,7 +79,7 @@ export default function MusicPage() {
                     canEdit
                     questions={projectData.questions}
                     soundUrl={projectData.soundUrl || ''}
-                    volume={projectData.soundVolume || 100}
+                    volume={projectData.soundVolume ?? 100}
                     setVolume={(newVolume) => {
                         setProjectData({ ...projectData, soundVolume: newVolume });
                     }}

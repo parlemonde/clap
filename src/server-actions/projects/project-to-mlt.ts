@@ -5,6 +5,7 @@ import type { MLT, Playlist } from 'mlt-xml';
 import { mltToXml } from 'mlt-xml';
 import path from 'node:path';
 
+import { getAudioVolumeGain } from '@lib/audio-volume';
 import type { ProjectData } from '@server/database/schemas/projects';
 import { getEnvVariable } from '@server/get-env-variable';
 
@@ -237,7 +238,7 @@ export async function projectToMlt(project: ProjectData, name: string, urlKind: 
                 });
             }
 
-            const volume = clamp(0.01, 1.5, (question.soundVolume || 100) / 100);
+            const volume = getAudioVolumeGain(question.soundVolume ?? 100);
             const gain = Math.round(2000 * Math.log10(volume)) / 100;
 
             if (!fileNames.has(question.soundUrl)) {
@@ -307,7 +308,7 @@ export async function projectToMlt(project: ProjectData, name: string, urlKind: 
         },
         elements: [],
     };
-    if (project.soundUrl) {
+    if (project.soundUrl && (project.soundVolume ?? 100) > 0) {
         const blankDuration = getFramesCount(Math.max(0, project.soundBeginTime || 0));
         const deltaSound = -getFramesCount(Math.min(0, project.soundBeginTime || 0));
         const audioDuration = Math.max(totalFrames, spentDuration) - blankDuration;
@@ -320,7 +321,7 @@ export async function projectToMlt(project: ProjectData, name: string, urlKind: 
             });
         }
 
-        const volume = clamp(0.01, 1.5, (project.soundVolume || 100) / 100);
+        const volume = getAudioVolumeGain(project.soundVolume ?? 100);
         const gain = Math.round(2000 * Math.log10(volume)) / 100;
 
         producerId += 1;

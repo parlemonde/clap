@@ -21,7 +21,7 @@ export function getSounds(questions: Sequence[]): Sound[] {
         if (question.soundUrl) {
             const defaultSoundParams = {
                 soundUrl: question.soundUrl,
-                volume: question.soundVolume || 100,
+                volume: question.soundVolume ?? 100,
             };
 
             const soundBeginTime = question.voiceOffBeginTime ?? 0;

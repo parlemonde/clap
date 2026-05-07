@@ -9,6 +9,7 @@ import { KeepRatio } from '@frontend/components/layout/KeepRatio';
 import { Slider } from '@frontend/components/layout/Slider';
 import { sendToast } from '@frontend/components/ui/Toasts';
 import CodeIcon from '@frontend/svg/code.svg';
+import { getClampedAudioVolume, MAX_AUDIO_VOLUME } from '@lib/audio-volume';
 import { getFormatedTime } from '@lib/get-formatted-time';
 import { getProjectDuration } from '@lib/get-project-duration';
 import { isSequenceAvailable } from '@lib/get-sequence-duration';
@@ -49,12 +50,19 @@ export const DiaporamaPlayer = ({
     const [isPlaying, setIsPlaying] = React.useState(false);
     const [time, setTime] = React.useState<number>(0);
     const { onPlay: onPlayAudio, onStop: onStopAudio, onUpdateVolume, onUpdateCurrentTime } = useAudio(soundUrl, volume, sounds);
+    const sliderVolume = getClampedAudioVolume(volume);
     const mountingTableRef = React.useRef<HTMLDivElement>(null);
     const [mountingTableWidth, setMountingTableWidth] = React.useState(0);
     const animationFrameRef = React.useRef<number | null>(null);
     const previousTimeRef = React.useRef<number | null>(null);
     const questions = React.useMemo(() => allQuestions.filter((q) => isSequenceAvailable(q)), [allQuestions]);
     const duration = React.useMemo(() => getProjectDuration(questions), [questions]);
+
+    React.useEffect(() => {
+        if (canEdit && volume !== sliderVolume) {
+            setVolume(sliderVolume);
+        }
+    }, [canEdit, setVolume, sliderVolume, volume]);
 
     const resizeObserver = React.useMemo<ResizeObserver>(
         () =>
@@ -521,7 +529,7 @@ export const DiaporamaPlayer = ({
                                         soundUrl={soundUrl}
                                         time={time}
                                         duration={duration}
-                                        volume={volume}
+                                        volume={sliderVolume}
                                         beginTime={soundBeginTime + deltaSound}
                                         onUpdateSequenceDuration={(audioDuration) => {
                                             if (!canEditPlans || duration >= audioDuration || soundUrl === questions[0]?.soundUrl) {
@@ -562,12 +570,13 @@ export const DiaporamaPlayer = ({
                                 <SpeakerLoudIcon color="white" />
                                 <Slider
                                     marginY="sm"
-                                    value={volume}
+                                    value={sliderVolume}
                                     onChange={(newValue: number) => {
-                                        setVolume(newValue);
-                                        onUpdateVolume(newValue);
+                                        const clampedVolume = getClampedAudioVolume(newValue);
+                                        setVolume(clampedVolume);
+                                        onUpdateVolume(clampedVolume);
                                     }}
-                                    max={300}
+                                    max={MAX_AUDIO_VOLUME}
                                     min={0}
                                     orientation="vertical"
                                 />

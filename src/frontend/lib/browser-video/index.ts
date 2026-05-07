@@ -15,6 +15,7 @@ import {
     type VideoCodec,
 } from 'mediabunny';
 
+import { getAudioVolumeGain } from '@lib/audio-volume';
 import { getProjectDuration } from '@lib/get-project-duration';
 import { getSequenceDuration, isSequenceAvailable } from '@lib/get-sequence-duration';
 import type { Plan, ProjectData, Sequence, Title } from '@server/database/schemas/projects';
@@ -186,7 +187,7 @@ export function buildTimeline(project: ProjectData): BrowserVideoTimeline {
             startMs: Math.max(0, project.soundBeginTime || 0),
             offsetMs: Math.max(0, -(project.soundBeginTime || 0)),
             durationMs: Math.max(0, durationMs - Math.max(0, project.soundBeginTime || 0)),
-            volume: (project.soundVolume ?? 100) / 100,
+            volume: getAudioVolumeGain(project.soundVolume ?? 100),
         });
     }
 
@@ -208,7 +209,7 @@ function addQuestionAudioClip(audioClips: AudioClip[], question: Sequence, quest
         startMs: questionStartMs + Math.max(0, beginTimeMs),
         offsetMs: Math.max(0, -beginTimeMs),
         durationMs: Math.max(0, questionDurationMs - Math.max(0, beginTimeMs)),
-        volume: (question.soundVolume || 100) / 100,
+        volume: getAudioVolumeGain(question.soundVolume ?? 100),
     });
 }
 

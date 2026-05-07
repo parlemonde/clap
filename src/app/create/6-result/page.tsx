@@ -382,7 +382,7 @@ export default function ResultPage() {
                 <DiaporamaPlayer
                     questions={projectData.questions}
                     soundUrl={projectData.soundUrl || ''}
-                    volume={projectData.soundVolume || 100}
+                    volume={projectData.soundVolume ?? 100}
                     setVolume={() => {}}
                     soundBeginTime={projectData.soundBeginTime || 0}
                     setSoundBeginTime={() => {}}

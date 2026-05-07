@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { getAudioVolumeGain } from '@lib/audio-volume';
 import type { Sound } from '@lib/get-sounds';
 
 export const useAudio = (soundUrl: string, initialVolume: number, sounds: Sound[]) => {
@@ -11,6 +12,9 @@ export const useAudio = (soundUrl: string, initialVolume: number, sounds: Sound[
     const volumeRef = React.useRef(initialVolume);
     React.useEffect(() => {
         volumeRef.current = initialVolume;
+        if (gainNodeRef.current) {
+            gainNodeRef.current.gain.value = getAudioVolumeGain(initialVolume);
+        }
     }, [initialVolume]);
     React.useEffect(() => {
         const audioContext = new AudioContext();
@@ -23,7 +27,7 @@ export const useAudio = (soundUrl: string, initialVolume: number, sounds: Sound[
                 mediaElement: audioRef.current,
             });
             const gainNode = new GainNode(audioContext);
-            gainNode.gain.value = volumeRef.current / 1000;
+            gainNode.gain.value = getAudioVolumeGain(volumeRef.current);
             gainNodeRef.current = gainNode;
             track.connect(gainNode).connect(audioContext.destination);
         }
@@ -36,7 +40,7 @@ export const useAudio = (soundUrl: string, initialVolume: number, sounds: Sound[
                 mediaElement: audio,
             });
             const gainNode = new GainNode(audioContext);
-            gainNode.gain.value = sound.volume / 1000;
+            gainNode.gain.value = getAudioVolumeGain(sound.volume);
             track.connect(gainNode).connect(audioContext.destination);
             audioRefs.current.push(audio);
         }
@@ -48,7 +52,7 @@ export const useAudio = (soundUrl: string, initialVolume: number, sounds: Sound[
 
     const onUpdateVolume = React.useCallback((newVolume: number) => {
         if (gainNodeRef.current) {
-            gainNodeRef.current.gain.value = newVolume / 1000;
+            gainNodeRef.current.gain.value = getAudioVolumeGain(newVolume);
         }
     }, []);
 
