@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-disable no-console */
 
 const crypto = require('node:crypto');
 const http = require('node:http');
@@ -14,14 +15,11 @@ const MAX_ROOM_NAME_LENGTH = 128;
 const AUTH_PROTOCOL_PREFIX = 'auth.';
 const DEFAULT_ROOM = 'none';
 const PORT = Number(process.env.PORT || 9000);
+const SHUTDOWN_TIMEOUT_MS = 1_000;
 const APP_SECRET = process.env.COLLABORATION_SERVER_SECRET || process.env.APP_SECRET || '1234';
 
 const rooms = new Map();
-
-if (!APP_SECRET) {
-    console.error('COLLABORATION_SERVER_SECRET or APP_SECRET must be set');
-    process.exit(1);
-}
+let isShuttingDown = false;
 
 const server = http.createServer((_req, res) => {
     res.writeHead(200, { 'content-type': 'text/plain' });
@@ -51,10 +49,7 @@ server.on('upgrade', (req, socket) => {
         return;
     }
 
-    const accept = crypto
-        .createHash('sha1')
-        .update(`${key}258EAFA5-E914-47DA-95CA-C5AB0DC85B11`)
-        .digest('base64');
+    const accept = crypto.createHash('sha1').update(`${key}258EAFA5-E914-47DA-95CA-C5AB0DC85B11`).digest('base64');
     const selectedProtocol = getProtocols(req).includes('json') ? '\r\nSec-WebSocket-Protocol: json' : '';
 
     socket.write(
@@ -71,6 +66,14 @@ server.on('upgrade', (req, socket) => {
 
 server.listen(PORT, '0.0.0.0', () => {
     console.log(`Dev websocket server listening on ws://localhost:${PORT}`);
+});
+
+process.on('SIGINT', () => {
+    shutdown('SIGINT');
+});
+
+process.on('SIGTERM', () => {
+    shutdown('SIGTERM');
 });
 
 function addClient(room, socket) {
@@ -130,6 +133,45 @@ function broadcast(room, sender, message) {
             client.write(frame);
         }
     }
+}
+
+function shutdown(signal) {
+    if (isShuttingDown) {
+        return;
+    }
+
+    isShuttingDown = true;
+    console.log(`Dev websocket server received ${signal}, shutting down`);
+
+    closeAllClients();
+    const shutdownTimeout = setTimeout(() => {
+        console.error('Dev websocket server shutdown timed out');
+        process.exit(1);
+    }, SHUTDOWN_TIMEOUT_MS);
+
+    server.close((error) => {
+        clearTimeout(shutdownTimeout);
+        if (error) {
+            console.error(error);
+            process.exit(1);
+        }
+
+        console.log('Dev websocket server stopped');
+        process.exit(0);
+    });
+}
+
+function closeAllClients() {
+    for (const clients of rooms.values()) {
+        for (const socket of clients) {
+            if (!socket.destroyed) {
+                socket.write(Buffer.from([0x88, 0x00]));
+                socket.end();
+            }
+        }
+    }
+
+    rooms.clear();
 }
 
 function readFrame(buffer) {

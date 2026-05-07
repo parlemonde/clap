@@ -5,11 +5,11 @@
 This file is the working guide for coding agents in the `clap` repository.
 It is intentionally focused on the live application code under `src/`.
 
-Do not spend time on separate `server-*` folders when working from this guide.
+Do not spend time on separate standalone service folders when working from this guide.
 If such folders exist, they are out of scope for the main app. The current
 standalone folder is:
 
-- `server-websockets/`
+- `dev-services/`
 
 The old standalone video-generation server has been removed. If a task mentions
 "the app", "the frontend", "the Next.js codebase", or "the main product", treat
@@ -45,14 +45,14 @@ When starting a task, prioritize these files and folders:
 
 Ignore:
 
-- `server-*/`
+- `dev-services/`
 - generated build output such as `.next/`
 - `public/` unless the task is asset-specific
 
 ## Runtime And Tooling
 
 - Package manager: `pnpm`
-- Node version: Volta-pinned to `22.15.1`
+- Node version: Node 22.x
 - Framework: Next.js App Router
 - Language: TypeScript with `strict: true`
 - Lint: ESLint flat config in `eslint.config.mjs`
@@ -322,7 +322,7 @@ Behavior to preserve:
 - websocket messages trigger project refreshes and validation alerts
 - students and teachers have different editing/validation responsibilities
 
-Do not remove or break collaboration hooks inside the app just because `server-websockets/` is out of scope for this guide.
+Do not remove or break collaboration hooks inside the app just because `dev-services/` is out of scope for this guide.
 
 ## Media And Generation
 
@@ -455,7 +455,6 @@ Use this when deciding where new code should go:
 - The `README.md` project-structure section is outdated relative to the current `src/frontend`, `src/server`, and `src/server-actions` layout
 - Some files still import from `src/...` directly instead of aliases; do not expand that pattern
 - `.DS_Store` files exist in a few places; they are not meaningful application code
-- The root ESLint config already ignores the `server-*` and `server-preview-proxy/` directories
 
 ## Suggested First Read For Most Tasks
 
@@ -474,7 +473,7 @@ If a future agent needs quick orientation, this sequence is usually enough:
 Unless the user says otherwise:
 
 - work only in the main Next.js app
-- ignore `server-*` directories
+- ignore `dev-services/`
 - preserve current route structure
 - preserve current project JSON shape unless the task explicitly requires schema changes
 - prefer server actions over new API routes for internal mutations
