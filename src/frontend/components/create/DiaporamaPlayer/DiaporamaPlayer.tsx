@@ -9,6 +9,7 @@ import { KeepRatio } from '@frontend/components/layout/KeepRatio';
 import { Slider } from '@frontend/components/layout/Slider';
 import { sendToast } from '@frontend/components/ui/Toasts';
 import CodeIcon from '@frontend/svg/code.svg';
+import { getClampedAudioVolume, MAX_AUDIO_VOLUME } from '@lib/audio-volume';
 import { getFormatedTime } from '@lib/get-formatted-time';
 import { getProjectDuration } from '@lib/get-project-duration';
 import { isSequenceAvailable } from '@lib/get-sequence-duration';
@@ -20,7 +21,6 @@ import { WaveForm } from './WaveForm';
 import styles from './diaporama-player.module.css';
 import { useAudio } from './useAudio';
 
-const MAX_AUDIO_VOLUME = 200;
 const PLAYER_ID = 'diaporama-player';
 
 type DiaporamaPlayerProps = {
@@ -50,13 +50,19 @@ export const DiaporamaPlayer = ({
     const [isPlaying, setIsPlaying] = React.useState(false);
     const [time, setTime] = React.useState<number>(0);
     const { onPlay: onPlayAudio, onStop: onStopAudio, onUpdateVolume, onUpdateCurrentTime } = useAudio(soundUrl, volume, sounds);
-    const sliderVolume = Math.max(0, Math.min(MAX_AUDIO_VOLUME, volume));
+    const sliderVolume = getClampedAudioVolume(volume);
     const mountingTableRef = React.useRef<HTMLDivElement>(null);
     const [mountingTableWidth, setMountingTableWidth] = React.useState(0);
     const animationFrameRef = React.useRef<number | null>(null);
     const previousTimeRef = React.useRef<number | null>(null);
     const questions = React.useMemo(() => allQuestions.filter((q) => isSequenceAvailable(q)), [allQuestions]);
     const duration = React.useMemo(() => getProjectDuration(questions), [questions]);
+
+    React.useEffect(() => {
+        if (canEdit && volume !== sliderVolume) {
+            setVolume(sliderVolume);
+        }
+    }, [canEdit, setVolume, sliderVolume, volume]);
 
     const resizeObserver = React.useMemo<ResizeObserver>(
         () =>
@@ -566,8 +572,9 @@ export const DiaporamaPlayer = ({
                                     marginY="sm"
                                     value={sliderVolume}
                                     onChange={(newValue: number) => {
-                                        setVolume(newValue);
-                                        onUpdateVolume(newValue);
+                                        const clampedVolume = getClampedAudioVolume(newValue);
+                                        setVolume(clampedVolume);
+                                        onUpdateVolume(clampedVolume);
                                     }}
                                     max={MAX_AUDIO_VOLUME}
                                     min={0}

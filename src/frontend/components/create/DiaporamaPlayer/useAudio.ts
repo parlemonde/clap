@@ -1,10 +1,7 @@
 import React from 'react';
 
+import { getAudioVolumeGain } from '@lib/audio-volume';
 import type { Sound } from '@lib/get-sounds';
-
-const MAX_AUDIO_VOLUME = 200;
-
-const getVolumeGain = (volume: number) => Math.max(0, Math.min(MAX_AUDIO_VOLUME, volume)) / 100;
 
 export const useAudio = (soundUrl: string, initialVolume: number, sounds: Sound[]) => {
     const audioContextRef = React.useRef<AudioContext | null>(null);
@@ -16,7 +13,7 @@ export const useAudio = (soundUrl: string, initialVolume: number, sounds: Sound[
     React.useEffect(() => {
         volumeRef.current = initialVolume;
         if (gainNodeRef.current) {
-            gainNodeRef.current.gain.value = getVolumeGain(initialVolume);
+            gainNodeRef.current.gain.value = getAudioVolumeGain(initialVolume);
         }
     }, [initialVolume]);
     React.useEffect(() => {
@@ -30,7 +27,7 @@ export const useAudio = (soundUrl: string, initialVolume: number, sounds: Sound[
                 mediaElement: audioRef.current,
             });
             const gainNode = new GainNode(audioContext);
-            gainNode.gain.value = getVolumeGain(volumeRef.current);
+            gainNode.gain.value = getAudioVolumeGain(volumeRef.current);
             gainNodeRef.current = gainNode;
             track.connect(gainNode).connect(audioContext.destination);
         }
@@ -43,7 +40,7 @@ export const useAudio = (soundUrl: string, initialVolume: number, sounds: Sound[
                 mediaElement: audio,
             });
             const gainNode = new GainNode(audioContext);
-            gainNode.gain.value = getVolumeGain(sound.volume);
+            gainNode.gain.value = getAudioVolumeGain(sound.volume);
             track.connect(gainNode).connect(audioContext.destination);
             audioRefs.current.push(audio);
         }
@@ -55,7 +52,7 @@ export const useAudio = (soundUrl: string, initialVolume: number, sounds: Sound[
 
     const onUpdateVolume = React.useCallback((newVolume: number) => {
         if (gainNodeRef.current) {
-            gainNodeRef.current.gain.value = getVolumeGain(newVolume);
+            gainNodeRef.current.gain.value = getAudioVolumeGain(newVolume);
         }
     }, []);
 

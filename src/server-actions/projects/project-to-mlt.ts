@@ -5,6 +5,7 @@ import type { MLT, Playlist } from 'mlt-xml';
 import { mltToXml } from 'mlt-xml';
 import path from 'node:path';
 
+import { getAudioVolumeGain } from '@lib/audio-volume';
 import type { ProjectData } from '@server/database/schemas/projects';
 import { getEnvVariable } from '@server/get-env-variable';
 
@@ -17,11 +18,9 @@ export type File = {
 const WIDTH = 1920; // px
 const HEIGHT = 1080; // px
 const FRAMERATE = 25; // img/s
-const MAX_AUDIO_VOLUME = 200;
 
 const getFramesCount = (duration: number) => Math.round((duration * FRAMERATE) / 1000);
 const clamp = (min: number, max: number, value: number) => Math.max(min, Math.min(max, value));
-const getVolumeGain = (volume: number) => clamp(0, MAX_AUDIO_VOLUME / 100, volume / 100);
 
 const toFullUrl = (url: string) => {
     if (url.startsWith('/media/')) {
@@ -239,7 +238,7 @@ export async function projectToMlt(project: ProjectData, name: string, urlKind: 
                 });
             }
 
-            const volume = getVolumeGain(question.soundVolume ?? 100);
+            const volume = getAudioVolumeGain(question.soundVolume ?? 100);
             const gain = Math.round(2000 * Math.log10(volume)) / 100;
 
             if (!fileNames.has(question.soundUrl)) {
@@ -322,7 +321,7 @@ export async function projectToMlt(project: ProjectData, name: string, urlKind: 
             });
         }
 
-        const volume = getVolumeGain(project.soundVolume ?? 100);
+        const volume = getAudioVolumeGain(project.soundVolume ?? 100);
         const gain = Math.round(2000 * Math.log10(volume)) / 100;
 
         producerId += 1;

@@ -125,7 +125,7 @@ export const MontageForm = ({ sequence, setSequence, onSubmit, feedbackForm }: M
                 questions={diaporamaSequences}
                 setQuestion={setSequence}
                 soundUrl={soundUrl}
-                volume={sequence.soundVolume || 100}
+                volume={sequence.soundVolume ?? 100}
                 setVolume={(newVolume) => {
                     setSequence({ ...sequence, soundVolume: newVolume });
                 }}
