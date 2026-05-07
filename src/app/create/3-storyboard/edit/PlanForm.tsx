@@ -15,6 +15,7 @@ import { NextButton } from '@frontend/components/navigation/NextButton';
 import { Cropper } from '@frontend/components/ui/Cropper';
 import { Loader } from '@frontend/components/ui/Loader';
 import { sendToast } from '@frontend/components/ui/Toasts';
+import { deleteLocalMedia, insertLocalMedia, isLocalMediaUrl } from '@frontend/lib/local-media';
 import { uploadImage } from '@frontend/lib/upload-image';
 import type { Plan } from '@server/database/schemas/projects';
 import { deleteImage } from '@server-actions/files/delete-image';
@@ -25,9 +26,10 @@ interface PlanFormProps {
     plan: Plan;
     setPlan: (plan: Plan) => void;
     onSubmit: (plan: Plan) => void;
+    isLocalProject: boolean;
 }
 
-export const PlanForm = ({ plan, setPlan, onSubmit }: PlanFormProps) => {
+export const PlanForm = ({ plan, setPlan, onSubmit, isLocalProject }: PlanFormProps) => {
     const t = useExtracted('create.3-storyboard.edit.PlanForm');
     const commonT = useExtracted('common');
 
@@ -64,7 +66,11 @@ export const PlanForm = ({ plan, setPlan, onSubmit }: PlanFormProps) => {
         // Remove old image if needed.
         if (newImageData !== undefined && plan.imageUrl) {
             try {
-                await deleteImage(plan.imageUrl);
+                if (isLocalMediaUrl(plan.imageUrl)) {
+                    await deleteLocalMedia(plan.imageUrl);
+                } else {
+                    await deleteImage(plan.imageUrl);
+                }
             } catch {
                 // Ignore
             }
@@ -74,7 +80,7 @@ export const PlanForm = ({ plan, setPlan, onSubmit }: PlanFormProps) => {
         // Upload image if needed.
         if (newImageData) {
             try {
-                planToSubmit.imageUrl = await uploadImage(newImageData);
+                planToSubmit.imageUrl = isLocalProject ? await insertLocalMedia(newImageData, { kind: 'image' }) : await uploadImage(newImageData);
             } catch (error) {
                 console.error(error);
                 sendToast({

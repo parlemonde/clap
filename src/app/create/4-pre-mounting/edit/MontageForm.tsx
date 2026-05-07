@@ -10,6 +10,7 @@ import { Title } from '@frontend/components/layout/Typography';
 import { NextButton } from '@frontend/components/navigation/NextButton';
 import { Loader } from '@frontend/components/ui/Loader';
 import { sendToast } from '@frontend/components/ui/Toasts';
+import { deleteLocalMedia, insertLocalMedia, isLocalMediaUrl } from '@frontend/lib/local-media';
 import { uploadSound } from '@frontend/lib/upload-sound';
 import type { Sound } from '@lib/get-sounds';
 import type { Sequence } from '@server/database/schemas/projects';
@@ -19,9 +20,10 @@ interface MontageFormProps {
     sequence: Sequence;
     setSequence: (sequence: Sequence) => void;
     onSubmit: (sequence: Sequence) => void;
+    isLocalProject: boolean;
     feedbackForm?: React.ReactNode;
 }
-export const MontageForm = ({ sequence, setSequence, onSubmit, feedbackForm }: MontageFormProps) => {
+export const MontageForm = ({ sequence, setSequence, onSubmit, isLocalProject, feedbackForm }: MontageFormProps) => {
     const t = useExtracted('create.4-pre-mounting.edit.MontageForm');
     const commonT = useExtracted('common');
 
@@ -44,7 +46,11 @@ export const MontageForm = ({ sequence, setSequence, onSubmit, feedbackForm }: M
         // Remove old sound if needed.
         if (newSoundFile !== undefined && sequence.soundUrl) {
             try {
-                await deleteSound(sequence.soundUrl);
+                if (isLocalMediaUrl(sequence.soundUrl)) {
+                    await deleteLocalMedia(sequence.soundUrl);
+                } else {
+                    await deleteSound(sequence.soundUrl);
+                }
             } catch {
                 // Ignore error
             }
@@ -54,7 +60,9 @@ export const MontageForm = ({ sequence, setSequence, onSubmit, feedbackForm }: M
         // Upload sound if needed.
         if (newSoundFile) {
             try {
-                sequenceToSubmit.soundUrl = await uploadSound(newSoundFile);
+                sequenceToSubmit.soundUrl = isLocalProject
+                    ? await insertLocalMedia(newSoundFile, { kind: 'audio', originalName: newSoundFile.name })
+                    : await uploadSound(newSoundFile);
             } catch (error) {
                 console.error(error);
                 sendToast({

@@ -26,7 +26,7 @@ export default function MontagePage(props: ServerPageProps) {
     const isStudent = user?.role === 'student';
     const t = useExtracted('create.4-pre-mounting.edit');
     const format = useFormatter();
-    const { projectData, setProjectData } = useCurrentProject();
+    const { projectData, setProjectData, isLocalProject } = useCurrentProject();
     const { isCollaborationEnabled, sendCollaborationValidationMsg } = useCollaboration(); // Listen to collaboration updates
 
     const searchParams = React.use(props.searchParams);
@@ -61,6 +61,7 @@ export default function MontagePage(props: ServerPageProps) {
             <MontageForm
                 sequence={newQuestion || sequence}
                 setSequence={setNewQuestion}
+                isLocalProject={isLocalProject}
                 onSubmit={(newSequence) => {
                     const newQuestions = [...projectData.questions];
                     newQuestions[questionIndex] = newSequence;

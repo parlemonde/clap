@@ -22,7 +22,7 @@ export default function StoryboardPlanPage(props: ServerPageProps) {
     const user = React.useContext(userContext);
     const t = useExtracted('create.3-storyboard.edit');
     const format = useFormatter();
-    const { projectData, setProjectData } = useCurrentProject();
+    const { projectData, setProjectData, isLocalProject } = useCurrentProject();
     useCollaboration(); // Listen to collaboration updates
 
     const searchParams = React.use(props.searchParams);
@@ -68,6 +68,7 @@ export default function StoryboardPlanPage(props: ServerPageProps) {
             <PlanForm
                 plan={newPlan || plan}
                 setPlan={setNewPlan}
+                isLocalProject={isLocalProject}
                 onSubmit={(submittedPlan) => {
                     const newQuestions = [...projectData.questions];
                     newQuestions[questionIndex] = {

@@ -4,6 +4,7 @@ import React from 'react';
 import useSWR from 'swr';
 
 import { userContext } from '@frontend/contexts/userContext';
+import { purgeUnusedLocalMedia } from '@frontend/lib/local-media';
 import { jsonFetcher } from '@lib/json-fetcher';
 import type { Project, ProjectData } from '@server/database/schemas/projects';
 import { updateProject } from '@server-actions/projects/update-project';
@@ -13,7 +14,9 @@ import { useLocalStorage } from './useLocalStorage';
 
 interface UseCurrentProjectData {
     name?: string;
+    projectId?: number;
     projectData?: ProjectData;
+    isLocalProject: boolean;
     setProjectData: (newProjectData: ProjectData) => void;
 }
 
@@ -58,6 +61,9 @@ export const useCurrentProject = (): UseCurrentProjectData => {
                     });
             } else {
                 setLocalProjectData(newProjectData);
+                purgeUnusedLocalMedia(newProjectData).catch((error) => {
+                    console.error(error);
+                });
             }
         },
         [projectId, mutate, project, setLocalProjectData],
@@ -65,7 +71,9 @@ export const useCurrentProject = (): UseCurrentProjectData => {
 
     return {
         name: projectId !== undefined ? project?.name : '',
+        projectId,
         projectData: projectId !== undefined ? project?.data : localProjectData,
+        isLocalProject: projectId === undefined,
         setProjectData,
     };
 };

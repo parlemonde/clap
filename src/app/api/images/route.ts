@@ -25,8 +25,8 @@ export async function POST(request: NextRequest) {
             });
         }
 
-        // Image is over 4MB
-        if (file.size > 4 * 1024 * 1024) {
+        // Image is over 50MB
+        if (file.size > 50 * 1024 * 1024) {
             return new NextResponse('File size is too large', {
                 status: 400,
             });
