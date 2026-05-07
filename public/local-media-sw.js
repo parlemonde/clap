@@ -32,6 +32,7 @@ async function getLocalMediaResponse(pathname) {
     return new Response(record.blob, {
         headers: {
             'Content-Type': record.mimeType || record.blob.type || 'application/octet-stream',
+            'Content-Length': String(record.size || record.blob.size),
             'Cache-Control': 'no-store',
         },
     });

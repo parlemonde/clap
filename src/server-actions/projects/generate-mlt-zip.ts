@@ -2,7 +2,6 @@
 
 import archiver from 'archiver';
 import fs from 'fs-extra';
-import http from 'node:http';
 import path from 'node:path';
 import type internal from 'node:stream';
 import { v4 } from 'uuid';
@@ -14,12 +13,17 @@ import { logger } from '@server/logger';
 import type { File } from './project-to-mlt';
 import { projectToMlt } from './project-to-mlt';
 
-async function getFileStream(file: File): Promise<internal.Readable | null> {
+async function getFileStream(file: File): Promise<Buffer | internal.Readable | null> {
     if (file.isLocal) {
         return getFile(file.fileUrl);
-    } else {
-        return new Promise<http.IncomingMessage>((resolve) => http.get(file.fileUrl, resolve));
     }
+
+    const response = await fetch(file.fileUrl);
+    if (!response.ok) {
+        return null;
+    }
+
+    return Buffer.from(await response.arrayBuffer());
 }
 
 export async function getMltZip(project: ProjectData, name: string) {

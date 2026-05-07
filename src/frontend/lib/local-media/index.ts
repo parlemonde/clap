@@ -10,6 +10,7 @@ const DATABASE_NAME = 'clap-local-media';
 const DATABASE_VERSION = 1;
 const STORE_NAME = 'media';
 const LOCAL_MEDIA_URL_PREFIX = '/local-media/';
+const LOCAL_MEDIA_SERVICE_WORKER_SCOPE = '/create/';
 
 export const LOCAL_MEDIA_MAX_SIZE = 50 * 1024 * 1024;
 
@@ -84,7 +85,12 @@ export async function ensureLocalMediaServiceWorker(): Promise<void> {
         throw new Error('Local media storage is not available in this browser.');
     }
 
-    await navigator.serviceWorker.register('/local-media-sw.js', { scope: '/' });
+    await navigator.serviceWorker.register('/local-media-sw.js', { scope: LOCAL_MEDIA_SERVICE_WORKER_SCOPE });
+
+    if (!window.location.pathname.startsWith(LOCAL_MEDIA_SERVICE_WORKER_SCOPE)) {
+        return;
+    }
+
     await navigator.serviceWorker.ready;
 
     if (!navigator.serviceWorker.controller) {
@@ -185,23 +191,21 @@ export async function listLocalMedia(): Promise<LocalMediaRecord[]> {
 export async function purgeUnusedLocalMedia(projectData: ProjectData): Promise<void> {
     const usedUrls = collectProjectMediaUrls(projectData);
     const records = await listLocalMedia();
-    await Promise.all(records.filter((record) => !usedUrls.has(record.url)).map((record) => deleteLocalMedia(record.id)));
+    await deleteLocalMediaRecords(records.filter((record) => !usedUrls.has(record.url)).map((record) => record.id));
 }
 
 export async function getLocalMediaExtensionHints(projectData: ProjectData): Promise<Record<string, string>> {
     const localUrls = [...collectProjectMediaUrls(projectData)].filter(isLocalMediaUrl);
     const hints: Record<string, string> = {};
+    const records = await getLocalMediaRecords(localUrls);
 
-    await Promise.all(
-        localUrls.map(async (url) => {
-            const record = await getLocalMedia(url);
-            if (!record) {
-                throw new Error(`Missing local media: ${url}`);
-            }
-            hints[url] =
-                getExtensionFromFileName(record.originalName) || getExtensionFromMimeType(record.mimeType) || getDefaultExtension(record.kind);
-        }),
-    );
+    for (const url of localUrls) {
+        const record = records.get(url);
+        if (!record) {
+            throw new Error(`Missing local media: ${url}`);
+        }
+        hints[url] = getExtensionFromFileName(record.originalName) || getExtensionFromMimeType(record.mimeType) || getDefaultExtension(record.kind);
+    }
 
     return hints;
 }
@@ -274,6 +278,52 @@ async function putLocalMediaRecord(record: LocalMediaRecord): Promise<void> {
         const transactionDone = transactionToPromise(transaction);
         const store = transaction.objectStore(STORE_NAME);
         await requestToPromise(store.put(record));
+        await transactionDone;
+    } finally {
+        database.close();
+    }
+}
+
+async function getLocalMediaRecords(urlOrIds: string[]): Promise<Map<string, LocalMediaRecord>> {
+    const ids = urlOrIds.map(getLocalMediaId).filter((id): id is string => id !== null);
+    const records = new Map<string, LocalMediaRecord>();
+
+    if (ids.length === 0) {
+        return records;
+    }
+
+    const database = await openDatabase();
+    try {
+        const transaction = database.transaction(STORE_NAME, 'readonly');
+        const transactionDone = transactionToPromise(transaction);
+        const store = transaction.objectStore(STORE_NAME);
+        const results = await Promise.all(ids.map((id) => requestToPromise<LocalMediaRecord | undefined>(store.get(id))));
+        await transactionDone;
+
+        for (const record of results) {
+            if (record) {
+                records.set(record.url, record);
+                records.set(record.id, record);
+            }
+        }
+        return records;
+    } finally {
+        database.close();
+    }
+}
+
+async function deleteLocalMediaRecords(urlOrIds: string[]): Promise<void> {
+    const ids = urlOrIds.map(getLocalMediaId).filter((id): id is string => id !== null);
+    if (ids.length === 0) {
+        return;
+    }
+
+    const database = await openDatabase();
+    try {
+        const transaction = database.transaction(STORE_NAME, 'readwrite');
+        const transactionDone = transactionToPromise(transaction);
+        const store = transaction.objectStore(STORE_NAME);
+        await Promise.all(ids.map((id) => requestToPromise(store.delete(id))));
         await transactionDone;
     } finally {
         database.close();

@@ -43,21 +43,22 @@ export default function MusicPage() {
     const onInputUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files !== null && event.target.files.length > 0) {
             const file = event.target.files[0];
+            const previousSoundUrl = projectData.soundUrl;
             setIsUploading(true);
-            if (projectData.soundUrl) {
-                try {
-                    if (isLocalMediaUrl(projectData.soundUrl)) {
-                        await deleteLocalMedia(projectData.soundUrl);
-                    } else {
-                        await deleteSound(projectData.soundUrl);
-                    }
-                } catch {
-                    // Ignore error
-                }
-            }
             try {
                 const soundUrl = isLocalProject ? await insertLocalMedia(file, { kind: 'audio', originalName: file.name }) : await uploadSound(file);
                 setProjectData({ ...projectData, soundUrl, soundBeginTime: 0 });
+                if (previousSoundUrl) {
+                    try {
+                        if (isLocalMediaUrl(previousSoundUrl)) {
+                            await deleteLocalMedia(previousSoundUrl);
+                        } else {
+                            await deleteSound(previousSoundUrl);
+                        }
+                    } catch {
+                        // Ignore cleanup errors.
+                    }
+                }
             } catch {
                 sendToast({
                     message: commonT("Une erreur est survenue lors de l'importation du son."),
@@ -120,7 +121,7 @@ export default function MusicPage() {
             <input
                 id="project-sound-upload"
                 type="file"
-                accept="audio/acc, audio/mpeg, audio/ogg, audio/opus, audio/wav, audio/x-wav, audio/x-m4a, audio/mp4"
+                accept="audio/aac, audio/mpeg, audio/ogg, audio/opus, audio/wav, audio/x-wav, audio/x-m4a, audio/mp4"
                 onChange={onInputUpload}
                 style={{ display: 'none' }}
             />

@@ -15,6 +15,7 @@ import { NextButton } from '@frontend/components/navigation/NextButton';
 import { Cropper } from '@frontend/components/ui/Cropper';
 import { Loader } from '@frontend/components/ui/Loader';
 import { sendToast } from '@frontend/components/ui/Toasts';
+import { useObjectUrl } from '@frontend/hooks/useObjectUrl';
 import { deleteLocalMedia, insertLocalMedia, isLocalMediaUrl } from '@frontend/lib/local-media';
 import { uploadImage } from '@frontend/lib/upload-image';
 import type { Plan } from '@server/database/schemas/projects';
@@ -35,9 +36,7 @@ export const PlanForm = ({ plan, setPlan, onSubmit, isLocalProject }: PlanFormPr
 
     const [isUploading, setIsUploading] = React.useState(false);
     const [newImageData, setNewImageData] = React.useState<Blob | null | undefined>(undefined); // null = delete image
-    const newImageUrl = React.useMemo(() => {
-        return newImageData ? URL.createObjectURL(newImageData) : null;
-    }, [newImageData]);
+    const newImageUrl = useObjectUrl(newImageData);
     const [showChangeModal, setShowChangeModal] = React.useState(false);
     const [showCameraModal, setShowCameraModal] = React.useState(false);
     const [showDrawModal, setShowDrawModal] = React.useState(false);
@@ -45,12 +44,33 @@ export const PlanForm = ({ plan, setPlan, onSubmit, isLocalProject }: PlanFormPr
     const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
 
     const [imageToResizeUrl, setImageToResizeUrl] = React.useState<string | null>(null);
+    const imageToResizeObjectUrlRef = React.useRef<string | null>(null);
+
+    const clearImageToResizeUrl = React.useCallback(() => {
+        if (imageToResizeObjectUrlRef.current) {
+            URL.revokeObjectURL(imageToResizeObjectUrlRef.current);
+            imageToResizeObjectUrlRef.current = null;
+        }
+        setImageToResizeUrl(null);
+    }, []);
+
+    React.useEffect(() => {
+        return () => {
+            if (imageToResizeObjectUrlRef.current) {
+                URL.revokeObjectURL(imageToResizeObjectUrlRef.current);
+            }
+        };
+    }, []);
+
     const onInputUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files !== null && event.target.files.length > 0) {
-            setImageToResizeUrl(URL.createObjectURL(event.target.files[0]));
+            clearImageToResizeUrl();
+            const objectUrl = URL.createObjectURL(event.target.files[0]);
+            imageToResizeObjectUrlRef.current = objectUrl;
+            setImageToResizeUrl(objectUrl);
             setShowChangeModal(false);
         } else {
-            setImageToResizeUrl(null);
+            clearImageToResizeUrl();
             setShowChangeModal(false);
         }
         event.target.value = ''; // clear input
@@ -62,22 +82,9 @@ export const PlanForm = ({ plan, setPlan, onSubmit, isLocalProject }: PlanFormPr
         event.preventDefault();
         setIsUploading(true);
         const planToSubmit = { ...plan };
+        const previousImageUrl = plan.imageUrl;
 
-        // Remove old image if needed.
-        if (newImageData !== undefined && plan.imageUrl) {
-            try {
-                if (isLocalMediaUrl(plan.imageUrl)) {
-                    await deleteLocalMedia(plan.imageUrl);
-                } else {
-                    await deleteImage(plan.imageUrl);
-                }
-            } catch {
-                // Ignore
-            }
-            planToSubmit.imageUrl = '';
-        }
-
-        // Upload image if needed.
+        // Upload the replacement before deleting the current image so failures keep the existing media intact.
         if (newImageData) {
             try {
                 planToSubmit.imageUrl = isLocalProject ? await insertLocalMedia(newImageData, { kind: 'image' }) : await uploadImage(newImageData);
@@ -89,6 +96,20 @@ export const PlanForm = ({ plan, setPlan, onSubmit, isLocalProject }: PlanFormPr
                 });
                 setIsUploading(false);
                 return;
+            }
+        } else if (newImageData === null) {
+            planToSubmit.imageUrl = '';
+        }
+
+        if (newImageData !== undefined && previousImageUrl) {
+            try {
+                if (isLocalMediaUrl(previousImageUrl)) {
+                    await deleteLocalMedia(previousImageUrl);
+                } else {
+                    await deleteImage(previousImageUrl);
+                }
+            } catch {
+                // Ignore cleanup errors.
             }
         }
 
@@ -223,11 +244,11 @@ export const PlanForm = ({ plan, setPlan, onSubmit, isLocalProject }: PlanFormPr
                 imageUrl={imageToResizeUrl || ''}
                 isOpen={imageToResizeUrl !== null}
                 onClose={() => {
-                    setImageToResizeUrl(null);
+                    clearImageToResizeUrl();
                 }}
                 onCrop={(data) => {
                     setNewImageData(data);
-                    setImageToResizeUrl(null);
+                    clearImageToResizeUrl();
                 }}
             />
 
@@ -245,6 +266,7 @@ export const PlanForm = ({ plan, setPlan, onSubmit, isLocalProject }: PlanFormPr
                         idealResolution={{ width: 1920, height: 1080 }}
                         onTakePhoto={(picture: string) => {
                             setShowCameraModal(false);
+                            clearImageToResizeUrl();
                             setImageToResizeUrl(picture);
                         }}
                         isSilentMode={true}
