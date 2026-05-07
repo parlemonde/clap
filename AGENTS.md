@@ -52,7 +52,7 @@ Ignore:
 ## Runtime And Tooling
 
 - Package manager: `pnpm`
-- Node version: Node 22.x
+- Node version: Node 24.x
 - Framework: Next.js App Router
 - Language: TypeScript with `strict: true`
 - Lint: ESLint flat config in `eslint.config.mjs`
