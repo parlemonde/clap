@@ -1,11 +1,20 @@
-import { buf2hex, hmac } from '@server/aws/utils';
+import { constantTimeEqualHex, hmacSha256, hmacSha256Hex } from '@server/crypto/hmac';
 import { getEnvVariable } from '@server/get-env-variable';
 import { logger } from '@server/logger';
+
+function getImageUrl(url: string): string {
+    if (url.startsWith('/')) {
+        return url;
+    }
+
+    const parsed = new URL(url);
+    return `${parsed.pathname}${parsed.search}`;
+}
 
 export async function getSignedImageUrl(url: string, userId: string): Promise<string> {
     try {
         const secret = getEnvVariable('APP_SECRET');
-        const imageUrl = url.startsWith('/') ? url : `${new URL(url).pathname}${new URL(url).search}`;
+        const imageUrl = getImageUrl(url);
         if (!secret || !imageUrl.startsWith(`/media/images/users/${userId}/`)) {
             return imageUrl; // not a user image
         }
@@ -17,9 +26,8 @@ export async function getSignedImageUrl(url: string, userId: string): Promise<st
         searchParams.set('timestamp', now.toString());
         searchParams.set('expires', (now + 1000 * 60 * 60 * 2).toString()); // 2h
 
-        const kSecret = await hmac('secret', secret);
-        const kSignature = await hmac(kSecret, searchParams.toString());
-        const signature = buf2hex(kSignature);
+        const kSecret = hmacSha256('secret', secret);
+        const signature = hmacSha256Hex(kSecret, searchParams.toString());
         searchParams.set('signature', signature);
 
         const prefix = imageUrl.split('?')[0];
@@ -33,7 +41,7 @@ export async function getSignedImageUrl(url: string, userId: string): Promise<st
 export async function isSignedImageUrlValid(url: string): Promise<boolean> {
     try {
         const secret = getEnvVariable('APP_SECRET');
-        const imageUrl = url.startsWith('/') ? url : `${new URL(url).pathname}${new URL(url).search}`;
+        const imageUrl = getImageUrl(url);
         if (!secret || !imageUrl.startsWith(`/media/images/users/`)) {
             return false; // not a user image
         }
@@ -51,10 +59,9 @@ export async function isSignedImageUrlValid(url: string): Promise<boolean> {
         }
 
         searchParams.delete('signature'); // remove signature from search params to verify
-        const kSecret = await hmac('secret', secret);
-        const kSignature = await hmac(kSecret, searchParams.toString());
-        const computedSignature = buf2hex(kSignature);
-        return computedSignature === signature;
+        const kSecret = hmacSha256('secret', secret);
+        const computedSignature = hmacSha256Hex(kSecret, searchParams.toString());
+        return constantTimeEqualHex(signature, computedSignature);
     } catch (e) {
         logger.error(e);
         return false;
