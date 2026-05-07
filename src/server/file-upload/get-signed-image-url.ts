@@ -2,10 +2,19 @@ import { constantTimeEqualHex, hmacSha256, hmacSha256Hex } from '@server/crypto/
 import { getEnvVariable } from '@server/get-env-variable';
 import { logger } from '@server/logger';
 
+function getImageUrl(url: string): string {
+    if (url.startsWith('/')) {
+        return url;
+    }
+
+    const parsed = new URL(url);
+    return `${parsed.pathname}${parsed.search}`;
+}
+
 export async function getSignedImageUrl(url: string, userId: string): Promise<string> {
     try {
         const secret = getEnvVariable('APP_SECRET');
-        const imageUrl = url.startsWith('/') ? url : `${new URL(url).pathname}${new URL(url).search}`;
+        const imageUrl = getImageUrl(url);
         if (!secret || !imageUrl.startsWith(`/media/images/users/${userId}/`)) {
             return imageUrl; // not a user image
         }
@@ -32,7 +41,7 @@ export async function getSignedImageUrl(url: string, userId: string): Promise<st
 export async function isSignedImageUrlValid(url: string): Promise<boolean> {
     try {
         const secret = getEnvVariable('APP_SECRET');
-        const imageUrl = url.startsWith('/') ? url : `${new URL(url).pathname}${new URL(url).search}`;
+        const imageUrl = getImageUrl(url);
         if (!secret || !imageUrl.startsWith(`/media/images/users/`)) {
             return false; // not a user image
         }

@@ -11,7 +11,7 @@ export function hmacSha256Hex(key: HmacKey, value: string): string {
 }
 
 export function constantTimeEqualHex(actual: string, expected: string): boolean {
-    if (!/^[a-f0-9]+$/i.test(actual) || actual.length !== expected.length || actual.length % 2 !== 0) {
+    if (!/^[a-f0-9]+$/i.test(actual) || !/^[a-f0-9]+$/i.test(expected) || actual.length !== expected.length || actual.length % 2 !== 0) {
         return false;
     }
 
