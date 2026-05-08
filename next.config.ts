@@ -45,19 +45,6 @@ const nextConfig: NextConfig = {
         loader: 'custom',
         loaderFile: './src/image-loader.js',
     },
-    async headers() {
-        return [
-            {
-                source: '/media/local-media-sw.js',
-                headers: [
-                    {
-                        key: 'Service-Worker-Allowed',
-                        value: '/create/',
-                    },
-                ],
-            },
-        ];
-    },
 };
 
 const withNextIntl = createNextIntlPlugin({

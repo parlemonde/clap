@@ -20,6 +20,7 @@ jobs:
             - run: pnpm build
             - run: mkdir --parents dist/assets/_next; mv .next/static $_
             - run: cp -r public/* dist/assets
+            - run: cp -r public .next/standalone
             - run: (cd .next/standalone && zip --symlinks -r - .) > dist/clap.zip
 
             # Upload the build to S3
