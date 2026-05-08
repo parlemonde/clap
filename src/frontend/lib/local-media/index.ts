@@ -10,7 +10,6 @@ const DATABASE_NAME = 'clap-local-media';
 const DATABASE_VERSION = 1;
 const STORE_NAME = 'media';
 const LOCAL_MEDIA_URL_PREFIX = '/local-media/';
-const LOCAL_MEDIA_SERVICE_WORKER_SCOPE = '/create/';
 
 export const LOCAL_MEDIA_MAX_SIZE = 50 * 1024 * 1024;
 
@@ -85,11 +84,7 @@ export async function ensureLocalMediaServiceWorker(): Promise<void> {
         throw new Error('Local media storage is not available in this browser.');
     }
 
-    await navigator.serviceWorker.register('/local-media-sw.js', { scope: LOCAL_MEDIA_SERVICE_WORKER_SCOPE });
-
-    if (!window.location.pathname.startsWith(LOCAL_MEDIA_SERVICE_WORKER_SCOPE)) {
-        return;
-    }
+    await navigator.serviceWorker.register('/local-media-sw.js', { scope: '/' });
 
     await navigator.serviceWorker.ready;
 
