@@ -30,7 +30,7 @@ export const envDefaults = {
     ADMIN_NAME: '',
     // Runtime
     NODE_ENV: 'dev',
-    NEXT_RUNTIME: 'node',
+    NEXT_RUNTIME: 'nodejs',
 };
 
 export function getEnvVariable(key: keyof typeof envDefaults): string {

@@ -1,6 +1,5 @@
 import { hash } from '@node-rs/argon2';
 import { eq } from 'drizzle-orm';
-import type { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { migrate } from 'drizzle-orm/node-postgres/migrator';
 import path from 'node:path';
 import { loadEnvFile } from 'node:process';
@@ -10,7 +9,6 @@ import { logger } from '@server/logger';
 
 import type { AppDatabase } from './runtime';
 import { createDatabaseConnection } from './runtime';
-import type { DatabaseSchema } from './schema';
 import { auth_accounts } from './schemas/auth-schemas';
 import { languages } from './schemas/languages';
 import { users } from './schemas/users';
@@ -84,7 +82,7 @@ const start = async () => {
         // Ignore. Env file might not exist.
     }
     const { db, onClose } = createDatabaseConnection();
-    await migrate(db as NodePgDatabase<DatabaseSchema>, { migrationsFolder: DRIZZLE_MIGRATIONS_FOLDER });
+    await migrate(db, { migrationsFolder: DRIZZLE_MIGRATIONS_FOLDER });
     await seedAdminUser(db);
     await seedDefaultLanguage(db);
     await onClose();
