@@ -2,10 +2,8 @@ import type { NextConfig } from 'next';
 import createNextIntlPlugin from 'next-intl/plugin';
 
 const nextConfig: NextConfig = {
-    experimental: {
-        useCache: true,
-    },
     poweredByHeader: false,
+    cacheComponents: true,
     webpack: (config) => {
         config.module.rules.push({
             test: /\.svg$/,

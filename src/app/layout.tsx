@@ -4,6 +4,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getLocale } from 'next-intl/server';
 import { Tooltip } from 'radix-ui';
 import * as React from 'react';
+import { Suspense } from 'react';
 
 import { AlertModal } from '@frontend/components/collaboration/AlertModal';
 import { LocalMediaServiceWorkerRegistration } from '@frontend/components/local-media/LocalMediaServiceWorkerRegistration';
@@ -24,8 +25,6 @@ import 'react-html5-camera-photo/build/css/index.css';
 const APP_URL = getEnvVariable('HOST_URL');
 const APP_NAME = 'Clap!';
 const APP_DESCRIPTION = 'Clap! Une application pour créer de super vidéos.';
-
-export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
     metadataBase: APP_URL ? new URL(APP_URL) : undefined,
@@ -68,7 +67,7 @@ export const viewport: Viewport = {
     themeColor: '#6065fc',
 };
 
-export default async function RootLayout({ children }: React.PropsWithChildren) {
+async function RootLayoutImpl({ children }: React.PropsWithChildren) {
     const [currentLocale, user] = await Promise.all([getLocale(), getCurrentUser()]);
 
     return (
@@ -90,5 +89,13 @@ export default async function RootLayout({ children }: React.PropsWithChildren) 
                 <LocalMediaServiceWorkerRegistration />
             </body>
         </html>
+    );
+}
+
+export default async function RootLayout({ children }: React.PropsWithChildren) {
+    return (
+        <Suspense>
+            <RootLayoutImpl>{children}</RootLayoutImpl>
+        </Suspense>
     );
 }
