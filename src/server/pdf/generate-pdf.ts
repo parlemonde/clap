@@ -1,5 +1,3 @@
-'use server';
-
 import { eq } from 'drizzle-orm';
 import { getExtracted, getLocale } from 'next-intl/server';
 import puppeteer from 'puppeteer';
