@@ -423,3 +423,51 @@ sudo systemctl status postgresql
 ```
 
 To browse uploaded builds, open the **S3 Console** → `clap-plm` bucket → `builds/`.
+
+---
+
+## 11. GitHub Actions Secrets
+
+The CI/CD pipelines (`.github/workflows/build.yml` and `deploy.yml`) require the following secrets configured in the repository.
+
+Go to your GitHub repo → **Settings** → **Secrets and variables** → **Actions** → **New repository secret**.
+
+### Build workflow
+
+| Secret name            | Value                                                 |
+|------------------------|-------------------------------------------------------|
+| `AWS_ACCESS_KEY_ID`    | IAM access key ID with S3 write permissions           |
+| `AWS_SECRET_ACCESS_KEY`| IAM secret access key                                 |
+| `AWS_REGION`           | `eu-west-3`                                           |
+| `AWS_BUCKET_NAME`      | `clap-plm`                                            |
+
+### Deploy workflow
+
+| Secret name                | Value                                                 |
+|----------------------------|-------------------------------------------------------|
+| `AWS_ACCESS_KEY_ID`        | IAM access key ID (same as above, needs S3 + EC2 permissions) |
+| `AWS_SECRET_ACCESS_KEY`    | IAM secret access key                                 |
+| `AWS_REGION`               | `eu-west-3`                                           |
+| `AWS_SECURITY_GROUP_NAME`  | Name of the EC2 security group (e.g. `clap-sg`)       |
+| `DATABASE_URL`             | `postgres://clap:<password>@<ec2-ip>:5432/clap?sslmode=disable` |
+| `SSH_PRIVATE_KEY`          | PEM private key for SSH access to the EC2 instance    |
+| `SSH_KNOWN_HOSTS`          | SSH known hosts entry for the EC2 instance            |
+| `SERVER_URL`               | SSH connection string (e.g. `ec2-user@<ec2-ip>`)      |
+| `DEV_PORTAL_URL`           | Dev portal base URL (optional, for deploy-state tracking) |
+| `DEV_PORTAL_DEPLOY_TOKEN`  | Bearer token for the dev portal API (optional)        |
+
+### How to obtain each secret
+
+**IAM credentials** (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`):
+Create an IAM user with `AmazonS3FullAccess` and `AmazonEC2FullAccess` policies. Generate an access key in the IAM Console.
+
+**Security group** (`AWS_SECURITY_GROUP_NAME`):
+Use the name of the security group attached to your EC2 instance (visible in the EC2 Console). This is used by the deploy workflow to temporarily allow the GitHub Actions runner IP for SSH and DB access.
+
+**Database URL** (`DATABASE_URL`):
+Same value as in `clap.env`, but use the EC2 public IP instead of `localhost` so the GitHub runner can reach it.
+
+**SSH credentials** (`SSH_PRIVATE_KEY`, `SSH_KNOWN_HOSTS`, `SERVER_URL`):
+- `SSH_PRIVATE_KEY`: the content of the `.pem` key file used to SSH into the EC2 (`cat ~/.ssh/clap-key.pem`)
+- `SSH_KNOWN_HOSTS`: run `ssh-keyscan <ec2-ip>` and use the output
+- `SERVER_URL`: `ec2-user@<ec2-ip>`
