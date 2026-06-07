@@ -8,16 +8,16 @@ A collaborative video creation platform for education. Teachers create themes an
 - **TypeScript**
 - **Drizzle ORM** + **PostgreSQL**
 - **better-auth**
-- **AWS S3 / Lambda**
+- **AWS S3**
 
 ## Getting Started
 
-Prerequisites: Node.js 22+ with pnpm and docker.
+Prerequisites: Node.js 22+ with pnpm.
 
 ```bash
 pnpm install
 pnpm dev
-pnpm db:migrate
+pnpm db:migrate # Optional, to do at first launch and when there are new migrations
 ```
 
 The app runs at `http://localhost:3000`.
@@ -28,6 +28,7 @@ Other useful commands:
 pnpm lint        # ESLint
 pnpm typecheck   # TypeScript
 pnpm db:studio   # Drizzle Studio
+pnpm db:generate # Generate sql migrations
 ```
 
 ## Project Structure
@@ -40,6 +41,10 @@ src/
 ├── server-actions/ # Server actions invoked by the UI
 └── lib/            # Shared utilities
 ```
+
+## Deployment
+
+See [how-to-deploy.md](./how-to-deploy.md) for the full AWS deployment guide.
 
 ## License
 
