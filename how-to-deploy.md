@@ -265,6 +265,17 @@ EOF
 chmod +x /home/ec2-user/deploy.sh
 ```
 
+### 4.9 Install Puppeteer for PDF generation
+
+The app uses Puppeteer (headless Chrome) to generate PDFs. Install the browser and its system dependencies:
+
+```bash
+npx puppeteer browsers install chrome
+sudo dnf install -y \
+  libXcomposite libXdamage libXrandr libxkbcommon \
+  pango alsa-lib atk at-spi2-atk cups-libs libdrm mesa-libgbm
+```
+
 ---
 
 ## 5. CloudFront CDN
@@ -471,3 +482,9 @@ Same value as in `clap.env`, but use the EC2 public IP instead of `localhost` so
 - `SSH_PRIVATE_KEY`: the content of the `.pem` key file used to SSH into the EC2 (`cat ~/.ssh/clap-key.pem`)
 - `SSH_KNOWN_HOSTS`: run `ssh-keyscan <ec2-ip>` and use the output
 - `SERVER_URL`: `ec2-user@<ec2-ip>`
+
+### Re-enable workflows
+
+Go on the actions page: https://github.com/parlemonde/clap/actions
+
+-> Select a disabled workflow in the list on the left, and enable it.
